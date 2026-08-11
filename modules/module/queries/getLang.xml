@@ -1,0 +1,12 @@
+<query id="getLang" action="select">
+    <tables>
+        <table name="lang" />
+    </tables>
+    <columns>
+        <column name="*" />
+    </columns>
+    <conditions>
+        <condition operation="equal" column="name" var="name" />
+        <condition operation="equal" column="lang_code" var="lang_code" pipe="and" />
+    </conditions>
+</query>

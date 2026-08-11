@@ -1,0 +1,20 @@
+<query id="getMemberModifyNickName" action="select">
+	<tables>
+		<table name="member_nickname_log" />
+	</tables>
+	<columns>
+		<column name="*"/>
+	</columns>
+	<conditions>
+		<condition operation="equal" column="member_srl" var="member_srl" />
+		<condition operation="equal" column="user_id" var="user_id" pipe="or" />
+		<condition operation="like" column="after_nick_name" var="after_nick_name" pipe="or" />
+		<condition operation="like" column="before_nick_name" var="before_nick_name" pipe="or" />
+	</conditions>
+	<navigation>
+		<index var="sort_index" default="regdate" order="desc" />
+		<list_count var="list_count" default="20" />
+		<page_count var="page_count" default="10" />
+		<page var="page" default="1" />
+	</navigation>
+</query>

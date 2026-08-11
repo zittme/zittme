@@ -1,0 +1,14 @@
+<query id="getModuleSites" action="select">
+    <tables>
+        <table name="modules" />
+        <table name="domains" />
+    </tables>
+    <columns>
+        <column name="modules.module_srl" alias="module_srl" />
+        <column name="domains.domain" alias="domain" />
+    </columns>
+    <conditions>
+        <condition operation="in" column="modules.module_srl" var="module_srls" notnull="notnull" />
+        <condition operation="equal" column="domains.domain_srl" default="modules.domain_srl" notnull="notnull" pipe="and" />
+    </conditions>
+</query>

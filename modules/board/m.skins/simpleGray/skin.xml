@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+    <title xml:lang="ko">XE 게시판 심플 회색 스킨</title>
+    <title xml:lang="en">XE Board Simple Gray Skin</title>
+    <title xml:lang="zh-TW">簡易灰色面板</title>
+    <title xml:lang="vi">Giao diện bảng tin XE Xám đơn giản</title>
+    <title xml:lang="tr">XE Forum Sade Gri Teması</title>
+    <title xml:lang="ru">Простой серый скин форума XE</title>
+    <title xml:lang="mn">XE самбарын энгийн саарал арьс</title>
+    <title xml:lang="fr">Skin de forum XE Simple Gris</title>
+    <title xml:lang="es">Skin gris simple de foro XE</title>
+    <title xml:lang="de">XE Forumsskin Simple Gray</title>
+    <title xml:lang="zh-CN">XE 论坛简约灰色皮肤</title>
+    <title xml:lang="jp">XE 掲示板 シンプルグレースキン</title>
+    <description xml:lang="ko">
+        XE 게시판의 기본 스킨입니다.
+    </description>
+    <description xml:lang="en">
+        This is the basic board skin of XE.
+    </description>
+    <description xml:lang="zh-TW">
+        XE 基本討論板面板。
+    </description>
+    <description xml:lang="vi">Đây là giao diện bảng tin cơ bản của XE.</description>
+    <description xml:lang="tr">XE'nin temel forum temasıdır.</description>
+    <description xml:lang="ru">Базовый скин форума XE.</description>
+    <description xml:lang="mn">
+        Энэ бол XE-ийн үндсэн самбарын арьс юм.
+    </description>
+    <description xml:lang="fr">Skin de base du forum XE.</description>
+    <description xml:lang="es">Este es el skin básico de foro de XE.</description>
+    <description xml:lang="de">
+        Dies ist der Standard-Forumsskin von XE.
+    </description>
+    <description xml:lang="zh-CN">XE 论坛的基本皮肤。</description>
+    <description xml:lang="jp">XE 掲示板の基本スキンです。</description>
+    <version>0.1</version>
+    <date>2010-06-10</date>
+    <author email_address="developers@xpressengine.com" link="http://www.xpressengine.com/">
+        <name xml:lang="ko">NAVER</name>
+        <name xml:lang="en">NAVER</name>
+        <name xml:lang="zh-TW">NAVER</name>
+    </author>
+</skin>

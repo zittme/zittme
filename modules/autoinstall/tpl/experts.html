@@ -1,0 +1,91 @@
+<config autoescape="on" />
+
+<include target="header.html" />
+
+<div class="zmst">
+	<div class="zmst-head">
+		<div class="zmst-head-titles">
+			<span class="zmst-eyebrow">EXPERTS</span>
+			<h2 class="zmst-title">{$lang->expert_find}</h2>
+		</div>
+		<div class="zmst-account">
+			<!--// 의뢰·등록은 입력과 첨부가 많아 zitt.me 본장에서 처리한다.
+			     계정을 연결해 두었으면 자동 로그인 상태로 열린다. -->
+			<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminProjectWrite')}">{$lang->expert_request_work}</a>
+			<!--@if($zittme_account)-->
+				<span class="zmst-account-name">
+					<img src="{\RX_BASEURL}common/img/logo.png" alt="" />
+					<strong>{$zittme_account->nick_name}</strong>
+				</span>
+				<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminDisconnect', 'from', 'experts')}">{$lang->store_disconnect_account}</a>
+			<!--@else-->
+				<a class="zmst-btn zmst-btn-outline" href="{$zittme_connect_url}">
+					<img src="{\RX_BASEURL}common/img/logo.png" alt="" />{$lang->store_connect_account}
+				</a>
+			<!--@end-->
+		</div>
+	</div>
+
+	<!--// 작업물 / 전문가 -->
+	<nav class="zmst-tabs">
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts')}">{$lang->expert_portfolio}</a>
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts', 'tab', 'expert')}" class="on">{$lang->expert_directory}</a>
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts', 'tab', 'project')}">{$lang->expert_projects}</a>
+	</nav>
+
+	<form action="./" class="zmst-search" no-error-return-url="true">
+		<input type="hidden" name="module" value="admin" />
+		<input type="hidden" name="act" value="dispAutoinstallAdminExperts" />
+		<input type="hidden" name="tab" value="expert" />
+		<input type="hidden" name="field" value="{$expert_field}" />
+		<input type="search" name="s" value="{$expert_keyword}" placeholder="{$lang->cmd_search}" />
+		<button class="zmst-btn" type="submit">{$lang->cmd_search}</button>
+	</form>
+
+	<nav class="zmst-cats">
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts', 'tab', 'expert', 's', $expert_keyword)}" class="on"|cond="$expert_field === ''">{$lang->all}</a>
+		<!--@foreach($expert_fields as $f)-->
+			<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts', 'tab', 'expert', 'field', $f, 's', $expert_keyword)}" class="on"|cond="$expert_field === $f">{$f}</a>
+		<!--@endforeach-->
+	</nav>
+
+	<!--@if($expert_result === null)-->
+		<p class="zmst-empty">{$lang->msg_expert_fetch_failed}</p>
+	<!--@else-->
+		<ul class="zmst-list">
+			<!--@foreach($expert_list as $expert)-->
+				<li class="zmst-item">
+					{@ $profile_url = getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExpertProfile', 'profile_srl', $expert->profile_srl)}
+					<a class="zmst-thumb" href="{$profile_url}">
+						<!--@if($expert->photo)-->
+							<img src="{$expert->photo}" alt="" loading="lazy" />
+						<!--@else-->
+							<span class="zmst-thumb-none">{mb_substr($expert->name, 0, 1)}</span>
+						<!--@end-->
+					</a>
+					<div class="zmst-item-body">
+						<div class="zmst-item-top">
+							<span class="zmst-badge" cond="$expert->region">{$expert->region}</span>
+							<span class="zmst-version" cond="$expert->career_years">{$expert->career_years}{$lang->unit_year}</span>
+							<span class="zmst-chip zmst-chip-installed" cond="$expert->is_business">BIZ</span>
+						</div>
+						<a class="zmst-item-link" href="{$profile_url}">
+							<strong class="zmst-name">{$expert->name}</strong>
+						</a>
+						<p class="zmst-summary">{$expert->intro}</p>
+						<p class="zmst-meta">
+							<span loop="$expert->fields => $f" class="zmst-badge">{$f}</span>
+						</p>
+					</div>
+				</li>
+			<!--@endforeach-->
+			<li cond="!count($expert_list)" class="zmst-empty">{$lang->msg_no_result}</li>
+		</ul>
+
+		<div cond="$expert_total_page > 1" class="zmst-pages">
+			<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts', 'tab', 'expert', 'field', $expert_field, 's', $expert_keyword, 'page', $expert_page - 1)}" cond="$expert_page > 1">&laquo;</a>
+			<strong>{$expert_page} / {$expert_total_page}</strong>
+			<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts', 'tab', 'expert', 'field', $expert_field, 's', $expert_keyword, 'page', $expert_page + 1)}" cond="$expert_page < $expert_total_page">&raquo;</a>
+		</div>
+	<!--@end-->
+</div>

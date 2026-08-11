@@ -1,0 +1,31 @@
+<load target="css/mcommunication.css" />
+<include target="^/modules/member/m.skins/default/common_header.html" cond="empty($messages_skip_header_footer)" />
+
+<div class="hx h2">
+	<h2>{$lang->message_box[$message_type]}<a href="{getUrl('page','','act','dispCommunicationMessageBoxList','message_srl','')}" class="ca">{$lang->cmd_message_box}</a></h2>
+</div>
+<ul class="lt">
+	<li loop="$message_list => $no,$val" class="read"|cond="$val->readed == 'Y'" class="unread"|cond="$val->readed != 'Y'">
+		<a href="{getUrl('message_srl', $val->message_srl, 'message_type', null, 'page', null)}">{$val->title}</a>
+		<span class="memberInfo">{$val->nick_name}  ({zdate($val->regdate,"Y-m-d")})</span>
+	</li>
+</ul>
+<form action="{Context::getRequestUri()}" method="get" no-error-return-url="true" class="search">
+	<input type="hidden" name="mid" value="{$mid}" />
+	<input type="hidden" name="act" value="{$act}" />
+	<input type="hidden" name="message_type" value="{$message_type ?? 'R'}" />
+	<select name="search_target" title="{$lang->search_target}">
+		<option value="title" selected="selected"|cond="isset($search_target) && $search_target == 'title'">{$lang->title}</option>
+		<option value="title_content" selected="selected"|cond="isset($search_target) && $search_target == 'title_content'">{$lang->title_content}</option>
+		<option value="content" selected="selected"|cond="isset($search_target) && $search_target == 'content'">{$lang->content}</option>
+	</select>
+	<input type="text" name="search_keyword" value="{escape($search_keyword ?? '', false)}">
+	<button type="submit" class="btn">{$lang->cmd_search}</button>
+</form>
+<div class="pn">
+	<a cond="$page != 1" href="{getUrl('page',$page-1,'document_srl','')}" class="prev">{$lang->cmd_prev}</a>
+	<strong>{$page} / {$page_navigation->last_page}</strong>
+	<a cond="$page != $page_navigation->last_page" href="{getUrl('page',$page+1,'document_srl','')}" class="next">{$lang->cmd_next}</a>
+</div>
+
+<include target="^/modules/member/m.skins/default/common_footer.html" cond="empty($messages_skip_header_footer)" />

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+    <title xml:lang="ko">기본 로그인 위젯</title>
+    <title xml:lang="en">Default login widget</title>
+    <title xml:lang="vi">Widget đăng nhập mặc định</title>
+    <title xml:lang="tr">Varsayılan giriş widget'ı</title>
+    <title xml:lang="ru">Базовый виджет входа</title>
+    <title xml:lang="mn">Үндсэн нэвтрэх виджет</title>
+    <title xml:lang="fr">Widget de connexion par défaut</title>
+    <title xml:lang="es">Widget de acceso predeterminado</title>
+    <title xml:lang="de">Standard-Login-Widget</title>
+    <title xml:lang="zh-TW">預設登入小工具</title>
+    <title xml:lang="zh-CN">默认登录挂件</title>
+    <title xml:lang="jp">標準ログインウィジェット</title>
+    <version>1.7</version>
+    <date>2013-11-27</date>
+    <author email_address="developer@xpressengine.com" link="http://xpressengine.com/">
+        <name xml:lang="ko">NAVER</name>
+        <name xml:lang="en">NAVER</name>
+    </author>
+</skin>

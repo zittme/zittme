@@ -1,0 +1,20 @@
+<include target="header.html" />
+	<div id="body">
+		<include target="progress_menu.html" />
+		<div id="content">
+			<h2>{$lang->install_progress_menu['language']}</h2>
+			<ul class="language">
+				<li loop="$lang_supported=>$key,$val">
+					<i cond="$l==$key" class="x_icon-ok-sign x_icon-white" title="Selected Language"></i>
+					<a href="{getUrl('l', $key)}" cond="$l!=$key">{$val}</a>
+					<strong cond="$l==$key">{$val}</strong>
+				</li>
+			</ul>
+		</div>
+		<div id="buttons">
+			<div class="align-right">
+				<a href="{getUrl('', 'act', 'dispInstallLicenseAgreement')}" class="button" id="task-choose-language">{$lang->cmd_next} &raquo;</a>
+			</div>
+		</div>
+	</div>
+<include target="footer.html" />

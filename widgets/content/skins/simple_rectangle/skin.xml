@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">네모의 꿈</title>
+	<title xml:lang="en">Rectangular World</title>
+	<title xml:lang="vi">Rectangular World</title>
+	<title xml:lang="tr">Dikdortgen Dunya</title>
+	<title xml:lang="ru">Прямоугольный мир</title>
+	<title xml:lang="mn">Дөрвөлжин ертөнц</title>
+	<title xml:lang="fr">Monde rectangulaire</title>
+	<title xml:lang="es">Mundo rectangular</title>
+	<title xml:lang="de">Rechteckige Welt</title>
+	<title xml:lang="zh-TW">方形世界</title>
+	<title xml:lang="zh-CN">矩形世界</title>
+	<title xml:lang="jp">四角形の世界</title>
+	<description xml:lang="ko">직사각형과 그림자, 테마색상을 활용한 컨텐츠 스킨입니다.</description>
+	<description xml:lang="en">Rectangles, shadows, theme-color.</description>
+	<description xml:lang="vi">Hình chữ nhật, đổ bóng và màu chủ đề.</description>
+	<description xml:lang="tr">Dikdortgenler, golgeler ve tema rengi.</description>
+	<description xml:lang="ru">Прямоугольники, тени и цвет темы.</description>
+	<description xml:lang="mn">Тэгш өнцөгт, сүүдэр, загварын өнгийг ашигласан контент загвар.</description>
+	<description xml:lang="fr">Rectangles, ombres et couleur du thème.</description>
+	<description xml:lang="es">Rectángulos, sombras y color del tema.</description>
+	<description xml:lang="de">Content-Skin mit Rechtecken, Schatten und Themenfarben.</description>
+	<description xml:lang="zh-TW">運用矩形、陰影與主題色彩的內容外觀。</description>
+	<description xml:lang="zh-CN">运用矩形、阴影与主题色的内容皮肤。</description>
+	<description xml:lang="jp">長方形と影、テーマカラーを活かしたコンテンツスキンです。</description>
+	<version>1.0</version>
+	<date>2017-02-26</date>
+	<link>https://github.com/zittme/zittme/</link>
+	<license link="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html">GPLv2</license>
+
+	<author email_address="misol.kr@gmail.com" link="https://github.com/misol/">
+		<name xml:lang="ko">misol</name>
+		<name xml:lang="en">misol</name>
+	</author>
+
+	<colorset>
+		<color name="theme">
+			<title xml:lang="ko">사이트 테마 색</title>
+			<title xml:lang="en">The site theme color</title>
+			<title xml:lang="vi">Màu chủ đề của trang</title>
+			<title xml:lang="tr">Site tema rengi</title>
+			<title xml:lang="ru">Цвет темы сайта</title>
+			<title xml:lang="mn">Сайтын загварын өнгө</title>
+			<title xml:lang="fr">Couleur du thème du site</title>
+			<title xml:lang="es">Color del tema del sitio</title>
+			<title xml:lang="de">Themenfarbe der Website</title>
+			<title xml:lang="zh-TW">網站主題色</title>
+			<title xml:lang="zh-CN">站点主题色</title>
+			<title xml:lang="jp">サイトテーマカラー</title>
+		</color>
+		<color name="red">
+			<title xml:lang="ko">붉은 색</title>
+			<title xml:lang="en">Red</title>
+			<title xml:lang="vi">Đỏ</title>
+			<title xml:lang="tr">Kirmizi</title>
+			<title xml:lang="ru">Красный</title>
+			<title xml:lang="mn">Улаан</title>
+			<title xml:lang="fr">Rouge</title>
+			<title xml:lang="es">Rojo</title>
+			<title xml:lang="de">Rot</title>
+			<title xml:lang="zh-TW">紅色</title>
+			<title xml:lang="zh-CN">红色</title>
+			<title xml:lang="jp">レッド</title>
+		</color>
+		<color name="crimson">
+			<title xml:lang="ko">크림슨</title>
+			<title xml:lang="en">Crimson</title>
+			<title xml:lang="vi">Đỏ thẫm</title>
+			<title xml:lang="tr">Koyu kirmizi</title>
+			<title xml:lang="ru">Малиновый</title>
+			<title xml:lang="mn">Час улаан</title>
+			<title xml:lang="fr">Cramoisi</title>
+			<title xml:lang="es">Carmesí</title>
+			<title xml:lang="de">Karmesinrot</title>
+			<title xml:lang="zh-TW">緋紅</title>
+			<title xml:lang="zh-CN">绯红</title>
+			<title xml:lang="jp">クリムゾン</title>
+		</color>
+		<color name="pink">
+			<title xml:lang="ko">분홍</title>
+			<title xml:lang="en">Pink</title>
+			<title xml:lang="vi">Hồng</title>
+			<title xml:lang="tr">Pembe</title>
+			<title xml:lang="ru">Розовый</title>
+			<title xml:lang="mn">Ягаан</title>
+			<title xml:lang="fr">Rose</title>
+			<title xml:lang="es">Rosa</title>
+			<title xml:lang="de">Rosa</title>
+			<title xml:lang="zh-TW">粉紅</title>
+			<title xml:lang="zh-CN">粉色</title>
+			<title xml:lang="jp">ピンク</title>
+		</color>
+		<color name="purple">
+			<title xml:lang="ko">보라</title>
+			<title xml:lang="en">Purple</title>
+			<title xml:lang="vi">Tím</title>
+			<title xml:lang="tr">Mor</title>
+			<title xml:lang="ru">Пурпурный</title>
+			<title xml:lang="mn">Нил ягаан</title>
+			<title xml:lang="fr">Violet</title>
+			<title xml:lang="es">Morado</title>
+			<title xml:lang="de">Violett</title>
+			<title xml:lang="zh-TW">紫色</title>
+			<title xml:lang="zh-CN">紫色</title>
+			<title xml:lang="jp">パープル</title>
+		</color>
+		<color name="deep-purple">
+			<title xml:lang="ko">진보라</title>
+			<title xml:lang="en">Deep Purple</title>
+			<title xml:lang="vi">Tím đậm</title>
+			<title xml:lang="tr">Koyu Mor</title>
+			<title xml:lang="ru">Тёмно-пурпурный</title>
+			<title xml:lang="mn">Хар нил ягаан</title>
+			<title xml:lang="fr">Violet foncé</title>
+			<title xml:lang="es">Morado oscuro</title>
+			<title xml:lang="de">Dunkelviolett</title>
+			<title xml:lang="zh-TW">深紫</title>
+			<title xml:lang="zh-CN">深紫色</title>
+			<title xml:lang="jp">ディープパープル</title>
+		</color>
+		<color name="indigo">
+			<title xml:lang="ko">인디고</title>
+			<title xml:lang="en">Indigo</title>
+			<title xml:lang="vi">Chàm</title>
+			<title xml:lang="tr">Indigo</title>
+			<title xml:lang="ru">Индиго</title>
+			<title xml:lang="mn">Индиго</title>
+			<title xml:lang="fr">Indigo</title>
+			<title xml:lang="es">Índigo</title>
+			<title xml:lang="de">Indigo</title>
+			<title xml:lang="zh-TW">靛藍</title>
+			<title xml:lang="zh-CN">靛蓝</title>
+			<title xml:lang="jp">インディゴ</title>
+		</color>
+		<color name="deep-blue">
+			<title xml:lang="ko">짙은 파랑</title>
+			<title xml:lang="en">Deep Blue</title>
+			<title xml:lang="vi">Xanh dương đậm</title>
+			<title xml:lang="tr">Koyu Mavi</title>
+			<title xml:lang="ru">Тёмно-синий</title>
+			<title xml:lang="mn">Хар хөх</title>
+			<title xml:lang="fr">Bleu foncé</title>
+			<title xml:lang="es">Azul oscuro</title>
+			<title xml:lang="de">Dunkelblau</title>
+			<title xml:lang="zh-TW">深藍</title>
+			<title xml:lang="zh-CN">深蓝色</title>
+			<title xml:lang="jp">ディープブルー</title>
+		</color>
+		<color name="blue">
+			<title xml:lang="ko">파랑</title>
+			<title xml:lang="en">Blue</title>
+			<title xml:lang="vi">Xanh dương</title>
+			<title xml:lang="tr">Mavi</title>
+			<title xml:lang="ru">Синий</title>
+			<title xml:lang="mn">Хөх</title>
+			<title xml:lang="fr">Bleu</title>
+			<title xml:lang="es">Azul</title>
+			<title xml:lang="de">Blau</title>
+			<title xml:lang="zh-TW">藍色</title>
+			<title xml:lang="zh-CN">蓝色</title>
+			<title xml:lang="jp">ブルー</title>
+		</color>
+		<color name="light-blue">
+			<title xml:lang="ko">밝은 파랑</title>
+			<title xml:lang="en">Light Blue</title>
+			<title xml:lang="vi">Xanh dương nhạt</title>
+			<title xml:lang="tr">Açık Mavi</title>
+			<title xml:lang="ru">Голубой</title>
+			<title xml:lang="mn">Цайвар хөх</title>
+			<title xml:lang="fr">Bleu clair</title>
+			<title xml:lang="es">Azul claro</title>
+			<title xml:lang="de">Hellblau</title>
+			<title xml:lang="zh-TW">淺藍</title>
+			<title xml:lang="zh-CN">浅蓝色</title>
+			<title xml:lang="jp">ライトブルー</title>
+		</color>
+		<color name="cyan">
+			<title xml:lang="ko">시안</title>
+			<title xml:lang="en">Cyan</title>
+			<title xml:lang="vi">Xanh lơ</title>
+			<title xml:lang="tr">Camgöbeği</title>
+			<title xml:lang="ru">Циан</title>
+			<title xml:lang="mn">Цэнхэр</title>
+			<title xml:lang="fr">Cyan</title>
+			<title xml:lang="es">Cian</title>
+			<title xml:lang="de">Cyan</title>
+			<title xml:lang="zh-TW">青色</title>
+			<title xml:lang="zh-CN">青色</title>
+			<title xml:lang="jp">シアン</title>
+		</color>
+		<color name="teal">
+			<title xml:lang="ko">틸</title>
+			<title xml:lang="en">Teal</title>
+			<title xml:lang="vi">Xanh mòng két</title>
+			<title xml:lang="tr">Turkuaz</title>
+			<title xml:lang="ru">Бирюзовый</title>
+			<title xml:lang="mn">Тил</title>
+			<title xml:lang="fr">Sarcelle</title>
+			<title xml:lang="es">Verde azulado</title>
+			<title xml:lang="de">Petrol</title>
+			<title xml:lang="zh-TW">藍綠色</title>
+			<title xml:lang="zh-CN">蓝绿色</title>
+			<title xml:lang="jp">ティール</title>
+		</color>
+		<color name="green">
+			<title xml:lang="ko">초록</title>
+			<title xml:lang="en">Green</title>
+			<title xml:lang="vi">Xanh lá</title>
+			<title xml:lang="tr">Yeşil</title>
+			<title xml:lang="ru">Зелёный</title>
+			<title xml:lang="mn">Ногоон</title>
+			<title xml:lang="fr">Vert</title>
+			<title xml:lang="es">Verde</title>
+			<title xml:lang="de">Grün</title>
+			<title xml:lang="zh-TW">綠色</title>
+			<title xml:lang="zh-CN">绿色</title>
+			<title xml:lang="jp">グリーン</title>
+		</color>
+		<color name="light-green">
+			<title xml:lang="ko">연한 초록</title>
+			<title xml:lang="en">Light Green</title>
+			<title xml:lang="vi">Xanh lá nhạt</title>
+			<title xml:lang="tr">Açık Yeşil</title>
+			<title xml:lang="ru">Светло-зелёный</title>
+			<title xml:lang="mn">Цайвар ногоон</title>
+			<title xml:lang="fr">Vert clair</title>
+			<title xml:lang="es">Verde claro</title>
+			<title xml:lang="de">Hellgrün</title>
+			<title xml:lang="zh-TW">淺綠</title>
+			<title xml:lang="zh-CN">浅绿色</title>
+			<title xml:lang="jp">ライトグリーン</title>
+		</color>
+		<color name="lime">
+			<title xml:lang="ko">라임</title>
+			<title xml:lang="en">Lime</title>
+			<title xml:lang="vi">Xanh chanh</title>
+			<title xml:lang="tr">Limon Yeşili</title>
+			<title xml:lang="ru">Лаймовый</title>
+			<title xml:lang="mn">Лайм</title>
+			<title xml:lang="fr">Lime</title>
+			<title xml:lang="es">Lima</title>
+			<title xml:lang="de">Limette</title>
+			<title xml:lang="zh-TW">萊姆綠</title>
+			<title xml:lang="zh-CN">青柠色</title>
+			<title xml:lang="jp">ライム</title>
+		</color>
+		<color name="yellow">
+			<title xml:lang="ko">노랑</title>
+			<title xml:lang="en">Yellow</title>
+			<title xml:lang="vi">Vàng</title>
+			<title xml:lang="tr">Sarı</title>
+			<title xml:lang="ru">Жёлтый</title>
+			<title xml:lang="mn">Шар</title>
+			<title xml:lang="fr">Jaune</title>
+			<title xml:lang="es">Amarillo</title>
+			<title xml:lang="de">Gelb</title>
+			<title xml:lang="zh-TW">黃色</title>
+			<title xml:lang="zh-CN">黄色</title>
+			<title xml:lang="jp">イエロー</title>
+		</color>
+		<color name="amber">
+			<title xml:lang="ko">앰버</title>
+			<title xml:lang="en">Amber</title>
+			<title xml:lang="vi">Vàng hổ phách</title>
+			<title xml:lang="tr">Kehribar</title>
+			<title xml:lang="ru">Янтарный</title>
+			<title xml:lang="mn">Хув шар</title>
+			<title xml:lang="fr">Ambre</title>
+			<title xml:lang="es">Ámbar</title>
+			<title xml:lang="de">Bernstein</title>
+			<title xml:lang="zh-TW">琥珀色</title>
+			<title xml:lang="zh-CN">琥珀色</title>
+			<title xml:lang="jp">アンバー</title>
+		</color>
+		<color name="orange">
+			<title xml:lang="ko">주황</title>
+			<title xml:lang="en">Orange</title>
+			<title xml:lang="vi">Cam</title>
+			<title xml:lang="tr">Turuncu</title>
+			<title xml:lang="ru">Оранжевый</title>
+			<title xml:lang="mn">Улбар шар</title>
+			<title xml:lang="fr">Orange</title>
+			<title xml:lang="es">Naranja</title>
+			<title xml:lang="de">Orange</title>
+			<title xml:lang="zh-TW">橙色</title>
+			<title xml:lang="zh-CN">橙色</title>
+			<title xml:lang="jp">オレンジ</title>
+		</color>
+		<color name="deep-orange">
+			<title xml:lang="ko">진한 주황</title>
+			<title xml:lang="en">Deep Orange</title>
+			<title xml:lang="vi">Cam đậm</title>
+			<title xml:lang="tr">Koyu Turuncu</title>
+			<title xml:lang="ru">Тёмно-оранжевый</title>
+			<title xml:lang="mn">Хар улбар шар</title>
+			<title xml:lang="fr">Orange foncé</title>
+			<title xml:lang="es">Naranja oscuro</title>
+			<title xml:lang="de">Dunkelorange</title>
+			<title xml:lang="zh-TW">深橙</title>
+			<title xml:lang="zh-CN">深橙色</title>
+			<title xml:lang="jp">ディープオレンジ</title>
+		</color>
+		<color name="brown">
+			<title xml:lang="ko">갈색</title>
+			<title xml:lang="en">Brown</title>
+			<title xml:lang="vi">Nâu</title>
+			<title xml:lang="tr">Kahverengi</title>
+			<title xml:lang="ru">Коричневый</title>
+			<title xml:lang="mn">Бор</title>
+			<title xml:lang="fr">Marron</title>
+			<title xml:lang="es">Marrón</title>
+			<title xml:lang="de">Braun</title>
+			<title xml:lang="zh-TW">棕色</title>
+			<title xml:lang="zh-CN">棕色</title>
+			<title xml:lang="jp">ブラウン</title>
+		</color>
+		<color name="grey">
+			<title xml:lang="ko">회색</title>
+			<title xml:lang="en">Grey</title>
+			<title xml:lang="vi">Xám</title>
+			<title xml:lang="tr">Gri</title>
+			<title xml:lang="ru">Серый</title>
+			<title xml:lang="mn">Саарал</title>
+			<title xml:lang="fr">Gris</title>
+			<title xml:lang="es">Gris</title>
+			<title xml:lang="de">Grau</title>
+			<title xml:lang="zh-TW">灰色</title>
+			<title xml:lang="zh-CN">灰色</title>
+			<title xml:lang="jp">グレー</title>
+		</color>
+		<color name="blue-grey">
+			<title xml:lang="ko">푸른 회색</title>
+			<title xml:lang="en">Blue Grey</title>
+			<title xml:lang="vi">Xám xanh</title>
+			<title xml:lang="tr">Mavi Gri</title>
+			<title xml:lang="ru">Сине-серый</title>
+			<title xml:lang="mn">Хөх саарал</title>
+			<title xml:lang="fr">Gris bleuté</title>
+			<title xml:lang="es">Gris azulado</title>
+			<title xml:lang="de">Blaugrau</title>
+			<title xml:lang="zh-TW">藍灰色</title>
+			<title xml:lang="zh-CN">蓝灰色</title>
+			<title xml:lang="jp">ブルーグレー</title>
+		</color>
+	</colorset>
+</skin>

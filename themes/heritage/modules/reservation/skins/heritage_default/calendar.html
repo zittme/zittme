@@ -1,0 +1,36 @@
+@version(2)
+@load('css/reservation.css')
+@load('js/reservation.js')
+
+<div class="rsv" id="rsv_calendar"
+	data-resource="{{ $resource->resource_srl }}"
+	data-slots-url="{{ getUrl('', 'act', 'procReservationGetSlots') }}"
+	data-form-url="{{ getUrl('', 'mid', $mid, 'act', 'dispReservationForm', 'resource_srl', $resource->resource_srl) }}">
+
+	<h2 class="rsv-title">{{ $resource->title }}</h2>
+	@if (!empty($resource->summary))
+	<p class="rsv-desc">{{ $resource->summary }}</p>
+	@endif
+	<p class="rsv-meta-line">
+		<span class="rsv-price">{{ $resource->price > 0 ? number_format($resource->price) . '원' : $lang->reservation_free }}</span>
+		<span class="rsv-duration">{{ $resource->duration }}분</span>
+	</p>
+
+	<div class="rsv-cal">
+		<div class="rsv-cal-head">
+			<button type="button" class="rsv-cal-nav" data-nav="-1" aria-label="이전 달"><svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+			<strong class="rsv-cal-month" id="rsv_cal_month"></strong>
+			<button type="button" class="rsv-cal-nav" data-nav="1" aria-label="다음 달"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+		</div>
+		<div class="rsv-cal-grid" id="rsv_cal_grid" role="grid"></div>
+	</div>
+
+	<div class="rsv-times" id="rsv_times" hidden>
+		<h3 class="rsv-sub-title">{{ $lang->reservation_select_time }} <span id="rsv_times_date"></span></h3>
+		<div class="rsv-times-grid" id="rsv_times_grid"></div>
+	</div>
+
+	<p class="rsv-foot-links">
+		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispReservationList') }}">{{ $lang->cmd_reservation_back_list }}</a>
+	</p>
+</div>

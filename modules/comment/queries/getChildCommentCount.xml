@@ -1,0 +1,12 @@
+<query id="getChildCommentCount" action="select">
+    <tables>
+        <table name="comments" />
+    </tables>
+    <columns>
+        <column name="count(*)" alias="count" />
+    </columns>
+    <conditions>
+        <condition operation="equal" column="parent_srl" var="comment_srl" filter="number" notnull="notnull" />
+        <condition operation="in" column="status" var="statusList" pipe="and" />
+    </conditions>
+</query>

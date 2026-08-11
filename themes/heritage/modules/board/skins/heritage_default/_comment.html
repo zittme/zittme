@@ -1,0 +1,124 @@
+@version(2)
+<section class="hrb-cmts" id="comment">
+	<h2 class="hrb-cmts-title">{{ $lang->comment }} <em>{{ $oDocument->getCommentCount() }}</em></h2>
+
+	@if ($oDocument->getCommentCount())
+	<ul class="hrb-cmt-list">
+		@foreach ($oDocument->getComments() as $hrb_cmt)
+		<li class="hrb-cmt-item @if ($hrb_cmt->get('depth')) is-reply d{{ min((int)$hrb_cmt->get('depth'), 4) }} @endif" id="comment_{{ $hrb_cmt->comment_srl }}">
+			<div class="hrb-cmt-head">
+				@if ($hrb_cmt->getProfileImage())
+				<img class="hrb-cmt-photo" src="{{ $hrb_cmt->getProfileImage() }}" alt="" />
+				@else
+				<span class="hrb-cmt-photo is-empty" aria-hidden="true"></span>
+				@endif
+				<strong class="hrb-cmt-name">
+					@if ($hrb_cmt->get('member_srl') > 0)
+					<a href="#popup_menu_area" class="member_{{ $hrb_cmt->get('member_srl') }}" onclick="return false">{{ $hrb_cmt->getNickName() }}</a>
+					@elseif ($hrb_cmt->get('homepage'))
+					<a href="{{ $hrb_cmt->getHomepageUrl() }}">{{ $hrb_cmt->getNickName() }}</a>
+					@else
+					{{ $hrb_cmt->getNickName() }}
+					@endif
+				</strong>
+				@php
+			$hrb_cmt_ts = ztime($hrb_cmt->get('regdate'));
+			$hrb_cmt_diff = time() - $hrb_cmt_ts;
+			if ($hrb_cmt_diff < 60) { $hrb_cmt_when = '방금 전'; }
+			elseif ($hrb_cmt_diff < 3600) { $hrb_cmt_when = floor($hrb_cmt_diff / 60) . '분 전'; }
+			elseif ($hrb_cmt_diff < 86400) { $hrb_cmt_when = floor($hrb_cmt_diff / 3600) . '시간 전'; }
+			elseif ($hrb_cmt_diff < 86400 * 30) { $hrb_cmt_when = floor($hrb_cmt_diff / 86400) . '일 전'; }
+			else { $hrb_cmt_when = date('y.m.d', $hrb_cmt_ts); }
+			@endphp
+			<span class="hrb-cmt-date" title="{{ $hrb_cmt->getRegdate('Y.m.d H:i') }}">{{ $hrb_cmt_when }}</span>
+			</div>
+
+			@if ($hrb_cmt->status == RX_STATUS_DELETED)
+			<div class="hrb-cmt-body is-deleted">{{ $lang->msg_deleted_comment }}</div>
+			@elseif ($hrb_cmt->status == RX_STATUS_DELETED_BY_ADMIN)
+			<div class="hrb-cmt-body is-deleted">{{ $lang->msg_admin_deleted_comment }}</div>
+			@elseif (!$hrb_cmt->isAccessible())
+			<form class="hrb-cmt-body hrb-secret" action="./" method="get" onsubmit="return procFilter(this, input_password)">
+				<input type="hidden" name="mid" value="{{ $mid }}" />
+				<input type="hidden" name="page" value="{{ $page }}" />
+				<input type="hidden" name="document_srl" value="{{ $hrb_cmt->get('document_srl') }}" />
+				<input type="hidden" name="comment_srl" value="{{ $hrb_cmt->get('comment_srl') }}" />
+				<p>{{ $lang->msg_is_secret }} {{ $lang->msg_input_password }}</p>
+				<div class="hrb-secret-row">
+					<input type="password" name="password" required />
+					<button type="submit" class="hr-btn">{{ $lang->cmd_input }}</button>
+				</div>
+			</form>
+			@else
+			<div class="hrb-cmt-body rhymix_content Zittme_content">{!! $hrb_cmt->getContent(false) !!}</div>
+			@endif
+
+			@if ($hrb_cmt->hasUploadedFiles())
+			<ul class="hrb-cmt-files">
+				@foreach ($hrb_cmt->getUploadedFiles() as $hrb_cf)
+				<li><a href="{{ getUrl('') }}{{ $hrb_cf->download_url }}">{{ $hrb_cf->source_filename }}</a> <span>{{ FileHandler::filesize($hrb_cf->file_size) }}</span></li>
+				@endforeach
+			</ul>
+			@endif
+
+			<div class="hrb-cmt-actions">
+				@if ($hrb_cmt->get('voted_count'))<span class="hrb-cmt-vote">{{ $lang->cmd_vote }} {{ $hrb_cmt->get('voted_count') }}</span>@endif
+				@if ($oDocument->allowComment())
+				<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispBoardReplyComment', 'comment_srl', $hrb_cmt->comment_srl) }}">{{ $lang->cmd_reply }}</a>
+				@endif
+				@if ($hrb_cmt->isGranted() || !$hrb_cmt->get('member_srl'))
+				<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispBoardModifyComment', 'comment_srl', $hrb_cmt->comment_srl) }}">{{ $lang->cmd_modify }}</a>
+				<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispBoardDeleteComment', 'comment_srl', $hrb_cmt->comment_srl) }}">{{ $lang->cmd_delete }}</a>
+				@endif
+				@if ($is_logged)
+				<a class="comment_{{ $hrb_cmt->comment_srl }} this" href="#popup_menu_area" onclick="return false">{{ $lang->cmd_comment_do }}</a>
+				@endif
+			</div>
+		</li>
+		@endforeach
+	</ul>
+
+	@if ($oDocument->comment_page_navigation)
+	<nav class="hr-pages" aria-label="댓글 페이지 이동">
+		{@ while ($hrb_cp = $oDocument->comment_page_navigation->getNextPage()): }
+			@if ($cpage == $hrb_cp)
+			<strong aria-current="page">{{ $hrb_cp }}</strong>
+			@else
+			<a href="{{ getUrl('cpage', $hrb_cp) }}#comment">{{ $hrb_cp }}</a>
+			@endif
+		{@ endwhile; }
+	</nav>
+	@endif
+	@endif
+
+	@if ($grant->write_comment && $oDocument->isEnableComment())
+	<form class="hrb-cmt-form" id="write_comment" action="./" method="post" onsubmit="return procFilter(this, insert_comment)">
+		<input type="hidden" name="mid" value="{{ $mid }}" />
+		<input type="hidden" name="document_srl" value="{{ $oDocument->document_srl }}" />
+		<input type="hidden" name="comment_srl" value="" />
+		<input type="hidden" name="content" value="" />
+
+		{!! $oDocument->getCommentEditor() !!}
+
+		<div class="hrb-cmt-form-foot">
+			<div class="hrb-cmt-form-fields">
+				@if (!$is_logged)
+				<input type="text" name="nick_name" placeholder="{{ $lang->writer }}" />
+				<input type="password" name="password" placeholder="{{ $lang->password }}" />
+				<input type="text" name="homepage" placeholder="{{ $lang->homepage }}" />
+				@else
+				<label class="hr-check"><input type="checkbox" name="notify_message" value="Y" /> <span>{{ $lang->notify }}</span></label>
+				@endif
+				@if (($module_info->secret ?? 'N') === 'Y')
+				<label class="hr-check"><input type="checkbox" name="is_secret" value="Y" /> <span>{{ $lang->secret }}</span></label>
+				@endif
+			</div>
+			<button type="submit" class="hr-btn hr-btn-primary">{{ $lang->cmd_comment_registration }}</button>
+		</div>
+
+		@if (isset($captcha) && $captcha && $captcha->isTargetAction('comment'))
+		<div class="hrb-captcha">{!! $captcha !!}</div>
+		@endif
+	</form>
+	@endif
+</section>

@@ -1,0 +1,16 @@
+<table name="member_sns_account">
+	<column name="account_srl" type="number" size="11" notnull="notnull" primary_key="primary_key" auto_increment="auto_increment" />
+	<column name="member_srl" type="number" size="11" notnull="notnull" index="idx_member_srl" />
+	<column name="sns_type" type="varchar" size="20" notnull="notnull" index="idx_sns_type" />
+	<column name="sns_id" type="varchar" size="100" notnull="notnull" index="idx_sns_id" />
+	<column name="sns_name" type="varchar" size="40" />
+	<column name="sns_email" type="varchar" size="250" index="idx_sns_email" />
+	<column name="sns_profile_image" type="varchar" size="250" />
+	<column name="access_token" type="text" />
+	<column name="refresh_token" type="text" />
+	<column name="extra_vars" type="text" />
+	<column name="regdate" type="date" index="idx_regdate" />
+	<column name="last_login" type="date" index="idx_last_login" />
+	<index name="idx_member_sns" columns="member_srl,sns_type" type="unique" />
+	<index name="idx_sns_account" columns="sns_type,sns_id" type="unique" />
+</table>

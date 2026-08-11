@@ -1,0 +1,143 @@
+<include target="header.html" />
+<form action="./" class="x_form-horizontal" method="post">
+	<input type="hidden" name="module" value="member" />
+	<input type="hidden" name="act" value="procMemberAdminInsertIdentityConfig" />
+	<input type="hidden" name="success_return_url" value="{getUrl('', 'module', 'admin', 'act', $act)}" />
+
+	<div class="x_control-group">
+		<label class="x_control-label">{$lang->identity_enable}</label>
+		<div class="x_controls">
+			<label for="identity_enable_y" class="x_inline"><input type="radio" name="identity_enable" id="identity_enable_y" value="Y" checked="checked"|cond="$config->identity_enable === 'Y'" /> {$lang->cmd_yes}</label>
+			<label for="identity_enable_n" class="x_inline"><input type="radio" name="identity_enable" id="identity_enable_n" value="N" checked="checked"|cond="$config->identity_enable !== 'Y'" /> {$lang->cmd_no}</label>
+			<p class="x_help-block">{$lang->about_identity_enable}</p>
+		</div>
+	</div>
+
+	<div class="x_control-group">
+		<label class="x_control-label">{$lang->identity_dup_check}</label>
+		<div class="x_controls">
+			<label class="x_inline"><input type="radio" name="identity_dup_check" value="Y" checked="checked"|cond="$config->identity_dup_check === 'Y'" /> {$lang->cmd_yes}</label>
+			<label class="x_inline"><input type="radio" name="identity_dup_check" value="N" checked="checked"|cond="$config->identity_dup_check !== 'Y'" /> {$lang->cmd_no}</label>
+			<p class="x_help-block">{$lang->about_identity_dup_check}</p>
+		</div>
+	</div>
+
+	<div class="x_control-group">
+		<label class="x_control-label">{$lang->identity_signup_required}</label>
+		<div class="x_controls">
+			<label class="x_inline"><input type="radio" name="identity_signup_required" value="Y" checked="checked"|cond="$config->identity_signup_required === 'Y'" /> {$lang->cmd_yes}</label>
+			<label class="x_inline"><input type="radio" name="identity_signup_required" value="N" checked="checked"|cond="$config->identity_signup_required !== 'Y'" /> {$lang->cmd_no}</label>
+			<p class="x_help-block">{$lang->about_identity_signup_required}</p>
+		</div>
+	</div>
+
+	<div class="x_control-group">
+		<label class="x_control-label">{$lang->identity_find_account}</label>
+		<div class="x_controls">
+			<label class="x_inline"><input type="radio" name="identity_find_account" value="Y" checked="checked"|cond="$config->identity_find_account === 'Y'" /> {$lang->cmd_yes}</label>
+			<label class="x_inline"><input type="radio" name="identity_find_account" value="N" checked="checked"|cond="$config->identity_find_account !== 'Y'" /> {$lang->cmd_no}</label>
+			<p class="x_help-block">{$lang->about_identity_find_account}</p>
+		</div>
+	</div>
+
+	<div class="x_control-group">
+		<label class="x_control-label" for="identity_provider">{$lang->identity_provider}</label>
+		<div class="x_controls">
+			<select name="identity_provider" id="identity_provider">
+				<option loop="$identity_providers => $provider" value="{$provider}" selected="selected"|cond="$config->identity_provider === $provider" style="text-transform:capitalize;">{$provider}</option>
+			</select>
+			<p class="x_help-block">{$lang->about_identity_provider}</p>
+		</div>
+	</div>
+
+	<hr />
+
+	<fieldset style="margin-bottom:24px;">
+		<legend style="font-weight:bold;">{$lang->identity_adult_gate}</legend>
+		<div class="x_control-group">
+			<label class="x_control-label" for="identity_adult_age">{$lang->identity_adult_age}</label>
+			<div class="x_controls">
+				<input type="number" id="identity_adult_age" name="identity_adult_age" value="{$config->identity_adult_age}" min="1" max="99" style="width:80px;" />
+				<p class="x_help-block">{$lang->about_identity_adult_age}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->identity_adult_mids}</label>
+			<div class="x_controls">
+				<block cond="count($identity_mid_list)">
+					<label class="x_inline" loop="$identity_mid_list => $mid, $minfo" style="margin-right:14px;">
+						<input type="checkbox" name="identity_adult_mids[]" value="{$mid}" checked="checked"|cond="in_array($mid, $config->identity_adult_mids)" />
+						{$minfo->browser_title} <span style="color:#98a2b3;">({$mid})</span>
+					</label>
+				</block>
+				<p class="x_help-block">{$lang->about_identity_adult_mids}</p>
+			</div>
+		</div>
+	</fieldset>
+
+	<fieldset style="margin-bottom:24px;">
+		<legend style="font-weight:bold;">{$lang->identity_age_groups}</legend>
+		<div class="x_control-group">
+			<div class="x_controls" style="margin-left:0;">
+				<p class="x_help-block" style="margin-top:0;">{$lang->about_identity_age_groups}</p>
+				<table class="x_table x_table-striped" style="max-width:640px;">
+					<thead>
+						<tr>
+							<th style="width:80px;">{$lang->identity_age_group_use}</th>
+							<th>{$lang->group}</th>
+							<th style="width:180px;">{$lang->identity_age_group_min}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr loop="$identity_group_list => $group_srl, $group">
+							<td>
+								<input type="checkbox" name="identity_age_group_on[]" id="identity_age_group_{$group_srl}" value="{$group_srl}" checked="checked"|cond="isset($config->identity_age_groups[$group_srl])" />
+							</td>
+							<td><label for="identity_age_group_{$group_srl}">{$group->title}</label></td>
+							<td>
+								<input type="number" name="identity_age_group_age[{$group_srl}]" value="{$config->identity_age_groups[$group_srl] ?? 19}" min="1" max="99" style="width:80px;" />
+								<span style="color:#98a2b3;">{$lang->identity_age_group_unit}</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</fieldset>
+
+	<fieldset style="margin-bottom:24px;">
+		<legend style="font-weight:bold;">Danal (다날 휴대폰 본인인증)</legend>
+		<div class="x_control-group">
+			<label class="x_control-label" for="identity_danal_cpid">CPID</label>
+			<div class="x_controls">
+				<input type="text" id="identity_danal_cpid" name="identity_danal_cpid" value="{$config->identity_danal_cpid}" class="x_input-xlarge" autocomplete="off" />
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="identity_danal_cppwd">CPPWD</label>
+			<div class="x_controls">
+				<input type="password" id="identity_danal_cppwd" name="identity_danal_cppwd" value="{$config->identity_danal_cppwd}" class="x_input-xlarge" autocomplete="new-password" />
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="identity_danal_charset">Charset</label>
+			<div class="x_controls">
+				<select name="identity_danal_charset" id="identity_danal_charset">
+					<option value="UTF-8" selected="selected"|cond="$config->identity_danal_charset !== 'EUC-KR'">UTF-8</option>
+					<option value="EUC-KR" selected="selected"|cond="$config->identity_danal_charset === 'EUC-KR'">EUC-KR</option>
+				</select>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->identity_callback_url}</label>
+			<div class="x_controls">
+				<input type="text" readonly value="{$identity_callback_url}" class="x_input-xlarge" onclick="this.select();" />
+				<p class="x_help-block">{$lang->about_identity_callback_url}</p>
+			</div>
+		</div>
+	</fieldset>
+
+	<div class="x_clearfix btnArea">
+		<span class="x_pull-right"><input class="x_btn x_btn-primary" type="submit" value="{$lang->cmd_save}" /></span>
+	</div>
+</form>

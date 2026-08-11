@@ -1,0 +1,239 @@
+@version(2)
+@load('css/shop.css')
+
+<div class="shp">
+	<div class="shp-top">
+		<nav class="shp-home-nav">
+			@if (($shop_config->category_layout ?? 'top') !== 'side' && count($shop_categories ?? []))
+			<button type="button" class="shp-catbtn" id="shpCatBtn" aria-expanded="false" aria-controls="shpCatPanel">
+				<svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+				{{ $lang->shop_category ?? '카테고리' }}
+			</button>
+			@endif
+			@foreach ($home_sections as $shp_nav_sec)
+			<a href="{{ getUrl('', 'mid', $mid, 'v', 'list', 'f', $shp_nav_sec->key) }}">{{ $shp_nav_sec->title }}</a>
+			@endforeach
+			@if (count($home_promotions ?? []))
+			<a href="#shpPromos">기획전</a>
+			@endif
+		</nav>
+		<a class="shp-cart-link" href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceMyOrders') }}">
+			<svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 6h13M8 12h13M8 18h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="3.5" cy="6" r="1.4" fill="currentColor"/><circle cx="3.5" cy="12" r="1.4" fill="currentColor"/><circle cx="3.5" cy="18" r="1.4" fill="currentColor"/></svg>
+			{{ $lang->shop_my_orders }}
+		</a>
+		<a class="shp-cart-link" href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceCart') }}">
+			<svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 3h2l2.4 12.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 2-1.6L21 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="20.5" r="1.5" fill="currentColor"/><circle cx="17.5" cy="20.5" r="1.5" fill="currentColor"/></svg>
+			{{ $lang->shop_cart }}
+			@if ($cart_count > 0)<span class="shp-cart-count">{{ $cart_count }}</span>@endif
+		</a>
+	</div>
+
+	@if (($shop_config->category_layout ?? 'top') !== 'side' && count($shop_categories ?? []))
+	<div class="shp-catpanel" id="shpCatPanel" hidden>
+		@php
+			// 1차 카테고리를 열로 세우고 하위는 그 아래에 모은다
+			$shp_cat_cols = [];
+			$shp_cat_cur = -1;
+			foreach ($shop_categories as $shp_c) {
+				if ((int)($shp_c->depth ?? 0) === 0) {
+					$shp_cat_cols[] = ['top' => $shp_c, 'children' => []];
+					$shp_cat_cur = count($shp_cat_cols) - 1;
+				} elseif ($shp_cat_cur >= 0) {
+					$shp_cat_cols[$shp_cat_cur]['children'][] = $shp_c;
+				}
+			}
+		@endphp
+		<div class="shp-catcols">
+			@foreach ($shp_cat_cols as $shp_col)
+			<div class="shp-catcol">
+				<a class="shp-cat-top" href="{{ getUrl('', 'mid', $mid, 'v', 'list', 'category_srl', $shp_col['top']->category_srl) }}">{{ $shp_col['top']->title }}</a>
+				@if (count($shp_col['children']))
+				<ul>
+					@foreach ($shp_col['children'] as $shp_sub)
+					<li class="lv{{ (int)($shp_sub->depth ?? 1) }}">
+						<a href="{{ getUrl('', 'mid', $mid, 'v', 'list', 'category_srl', $shp_sub->category_srl) }}">{{ $shp_sub->title }}</a>
+					</li>
+					@endforeach
+				</ul>
+				@endif
+			</div>
+			@endforeach
+		</div>
+	</div>
+	@endif
+
+
+	@if (count($home_banners))
+	<div class="shp-home-banner" id="shpHomeBanner">
+		<div class="shp-home-banner-track">
+			@foreach ($home_banners as $shp_bi => $shp_bn)
+			@php $shp_bn = (array)$shp_bn; @endphp
+			<a class="shp-home-banner-item @if ($shp_bi === 0) is-on @endif"
+				href="{{ !empty($shp_bn['url']) ? escape($shp_bn['url']) : getUrl('', 'mid', $mid, 'v', 'list') }}"
+				style="{{ $shp_bn['bg_style'] ?? '' }}">
+				<span class="shp-home-banner-copy {{ ($shp_bn['shadow'] ?? 'Y') === 'N' ? 'no-shadow' : '' }}" style="color:{{ $shp_bn['text_color'] ?? '#ffffff' }}">
+					@if (!empty($shp_bn['title']))<strong>{!! $shp_bn['title_html'] ?? escape($shp_bn['title']) !!}</strong>@endif
+					@if (!empty($shp_bn['text']))<span>{!! $shp_bn['text_html'] ?? escape($shp_bn['text']) !!}</span>@endif
+					<span class="shp-home-banner-cta">자세히 보기
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+					</span>
+				</span>
+				@if (!empty($shp_bn['point_image']))
+				<span class="shp-home-banner-point" style="background-image:url('{{ escape($shp_bn['point_image']) }}')"></span>
+				@endif
+			</a>
+			@endforeach
+		</div>
+		@if (count($home_banners) > 1)
+		<div class="shp-home-banner-dots" id="shpBannerDotsAnchor">
+			@foreach ($home_banners as $shp_di => $shp_dv)
+			<button type="button" class="@if ($shp_di === 0) is-on @endif" data-go="{{ $shp_di }}" aria-label="{{ $shp_di + 1 }}"></button>
+			@endforeach
+		</div>
+		@endif
+	</div>
+	@endif
+
+	@php
+	$shp_main_promos = array_values(array_filter($home_promotions ?? [], function($pm) {
+		return ($pm->banner_data['main'] ?? 'N') === 'Y' && !empty($pm->banner_data['logo']);
+	}));
+	@endphp
+	@if (count($shp_main_promos))
+	<nav class="shp-shortcuts">
+		@foreach ($shp_main_promos as $shp_sc)
+		<a href="{{ getUrl('', 'mid', $mid, 'v', 'promo', 'p', $shp_sc->slug) }}">
+			<img src="{{ escape($shp_sc->banner_data['logo']) }}" alt="" loading="lazy" />
+			<span>{{ $shp_sc->title }}</span>
+		</a>
+		@endforeach
+	</nav>
+	@endif
+
+	@php $shp_side_cats = ($shop_config->category_layout ?? 'top') === 'side' && count($shop_categories ?? []); @endphp
+	<div class="{{ $shp_side_cats ? 'shp-home-cols' : '' }}">
+		@if ($shp_side_cats)
+		@include('_sidecats')
+		@endif
+		<div class="shp-home-main">
+			@if (count($home_promotions ?? []))
+			<section class="shp-home-section" id="shpPromos">
+				<div class="shp-home-section-head">
+					<h3>기획전</h3>
+				</div>
+				<div class="shp-promo-cards">
+					@foreach ($home_promotions as $shp_pm)
+					<a class="shp-promo-card" href="{{ getUrl('', 'mid', $mid, 'v', 'promo', 'p', $shp_pm->slug) }}" style="{{ $shp_pm->banner_data['bg_style'] ?? '' }}">
+						<span class="shp-promo-card-copy {{ ($shp_pm->banner_data['shadow'] ?? 'Y') === 'N' ? 'no-shadow' : '' }}" style="color:{{ $shp_pm->banner_data['text_color'] ?? '#ffffff' }}">
+							<strong>{!! $shp_pm->banner_data['title_html'] ?? escape($shp_pm->title) !!}</strong>
+							@if (!empty($shp_pm->banner_data['text']))<span>{!! $shp_pm->banner_data['text_html'] ?? escape($shp_pm->banner_data['text']) !!}</span>@endif
+							<small>{{ $shp_pm->start_date ? zdate($shp_pm->start_date, 'm.d') : '' }} ~ {{ $shp_pm->end_date ? zdate($shp_pm->end_date, 'm.d') : '' }} · {{ $shp_pm->item_count }}개 상품</small>
+						</span>
+						@if (!empty($shp_pm->banner_data['point_image']))
+						<span class="shp-promo-card-point" style="background-image:url('{{ escape($shp_pm->banner_data['point_image']) }}')"></span>
+						@endif
+					</a>
+					@endforeach
+				</div>
+			</section>
+			@endif
+
+			@foreach ($home_sections as $section)
+			<section class="shp-home-section" id="shp-sec-{{ $section->key }}" data-sec="{{ $section->key }}">
+				<div class="shp-home-section-head">
+					<h3>{{ $section->title }}</h3>
+					<a href="{{ getUrl('', 'mid', $mid, 'v', 'list', 'f', $section->key) }}">{{ $lang->shop_view_all ?? '전체 상품 보기' }}</a>
+				</div>
+				<div class="shp-grid">
+					@foreach ($section->items as $it)
+					<a class="shp-card" href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceItem', 'item_srl', $it->item_srl) }}">
+						<span class="shp-card-thumb" @if (!empty($it->thumb)) style="background-image:url('{{ escape($it->thumb) }}')" @endif>
+							@if (empty($it->thumb))<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 11l2.5 3 3.5-4.5L19 16H5z"/></svg>@endif
+						</span>
+						@if ($it->status === 'soldout')<span class="shp-soldout-cover">{{ $lang->shop_soldout }}</span>@endif
+						<span class="shp-card-body">
+							<span class="shp-badges">
+								@if ($it->is_recommend === 'Y')<span class="shp-badge">{{ $lang->shop_badge_recommend }}</span>@endif
+					@foreach (\Zittme\Modules\Commerce\Models\Badge::ofItem($it, $shop_badge_map ?? []) as $shp_bg)
+					@php
+						$shp_bg_style = '';
+						if (!empty($shp_bg->bg_color)) { $shp_bg_style .= 'background:' . $shp_bg->bg_color . ';'; }
+						if (!empty($shp_bg->color)) { $shp_bg_style .= 'color:' . $shp_bg->color . ';'; }
+					@endphp
+					<span class="shp-badge" style="{{ $shp_bg_style }}">{{ $shp_bg->title }}</span>
+					@endforeach
+								@if ($it->is_new === 'Y')<span class="shp-badge">NEW</span>@endif
+							</span>
+							<span class="shp-card-name">{{ $it->item_name }}</span>
+							@if (!empty($it->review_count))
+							<span class="shp-card-rating">
+								<svg width="12" height="12" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21.1 7 14.2 2 9.3l6.9-1L12 2z"/></svg>
+								{{ $it->rating_avg }} <em>({{ number_format($it->review_count) }})</em>
+							</span>
+							@endif
+							<span class="shp-price">
+								@if ($it->sale_price > 0 && $it->sale_price < $it->price)
+								<s>{{ number_format($it->price) }}</s> <strong>{{ number_format($it->sale_price) }}원</strong>
+								@else
+								<strong>{{ number_format($it->price) }}원</strong>
+								@endif
+							</span>
+						</span>
+					</a>
+					@endforeach
+				</div>
+			</section>
+			@endforeach
+
+			<p class="shp-foot-links">
+				<a href="{{ getUrl('', 'mid', $mid, 'v', 'list') }}">{{ $lang->shop_view_all ?? '전체 상품 보기' }}</a>
+			</p>
+		</div>
+	</div>
+
+	<script>
+	(function () {
+		var wrap = document.getElementById('shpHomeBanner');
+		if (!wrap) return;
+		var items = wrap.querySelectorAll('.shp-home-banner-item');
+		var dots = wrap.querySelectorAll('.shp-home-banner-dots button');
+		if (items.length < 2) return;
+		var current = 0;
+		var timer = null;
+		function go(i) {
+			items[current].classList.remove('is-on');
+			if (dots[current]) dots[current].classList.remove('is-on');
+			current = (i + items.length) % items.length;
+			items[current].classList.add('is-on');
+			if (dots[current]) dots[current].classList.add('is-on');
+		}
+		function play() {
+			timer = setInterval(function () { go(current + 1); }, 5000);
+		}
+		dots.forEach(function (btn) {
+			btn.addEventListener('click', function () {
+				clearInterval(timer);
+				go(parseInt(btn.getAttribute('data-go'), 10) || 0);
+				play();
+			});
+		});
+		play();
+	})();
+
+	</script>
+
+</div>
+
+<script>
+(function () {
+	// 상단 카테고리 메뉴 펼치기
+	var btn = document.getElementById('shpCatBtn');
+	var panel = document.getElementById('shpCatPanel');
+	if (!btn || !panel) return;
+	btn.addEventListener('click', function () {
+		var open = btn.getAttribute('aria-expanded') === 'true';
+		btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+		panel.hidden = open;
+	});
+})();
+</script>

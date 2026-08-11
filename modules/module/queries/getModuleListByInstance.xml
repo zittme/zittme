@@ -1,0 +1,15 @@
+<query id="getModuleListByInstance" action="select">
+    <tables>
+        <table name="modules" />
+    </tables>
+    <columns>
+        <column name="module" />
+        <column name="count(*)" alias="instanceCount" />
+    </columns>
+	<conditions>
+		<condition operation="equal" column="domain_srl" var="domain_srl" filter="number" />
+	</conditions>
+	<groups>
+		<group column="module" />
+	</groups>
+</query>

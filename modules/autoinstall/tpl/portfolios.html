@@ -1,0 +1,81 @@
+<config autoescape="on" />
+
+<include target="header.html" />
+
+<div class="zmst">
+	<div class="zmst-head">
+		<div class="zmst-head-titles">
+			<span class="zmst-eyebrow">EXPERTS</span>
+			<h2 class="zmst-title">{$lang->expert_find}</h2>
+		</div>
+		<div class="zmst-account">
+			<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminProjectWrite')}">{$lang->expert_request_work}</a>
+			<!--@if($zittme_account)-->
+				<span class="zmst-account-name">
+					<img src="{\RX_BASEURL}common/img/logo.png" alt="" />
+					<strong>{$zittme_account->nick_name}</strong>
+				</span>
+				<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminDisconnect', 'from', 'experts')}">{$lang->store_disconnect_account}</a>
+			<!--@else-->
+				<a class="zmst-btn zmst-btn-outline" href="{$zittme_connect_url}">
+					<img src="{\RX_BASEURL}common/img/logo.png" alt="" />{$lang->store_connect_account}
+				</a>
+			<!--@end-->
+		</div>
+	</div>
+
+	<!--// 작업물(기본) / 전문가 -->
+	<nav class="zmst-tabs">
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts')}" class="on">{$lang->expert_portfolio}</a>
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts', 'tab', 'expert')}">{$lang->expert_directory}</a>
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts', 'tab', 'project')}">{$lang->expert_projects}</a>
+	</nav>
+
+	<nav class="zmst-cats">
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts')}" class="on"|cond="$expert_field === ''">{$lang->all}</a>
+		<!--@foreach($expert_fields as $f)-->
+			<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts', 'field', $f)}" class="on"|cond="$expert_field === $f">{$f}</a>
+		<!--@endforeach-->
+	</nav>
+
+	<!--@if($expert_result === null)-->
+		<p class="zmst-empty">{$lang->msg_expert_fetch_failed}</p>
+	<!--@else-->
+		<!--// 작업물은 이미지가 주인공이라 카드 위쪽 전체를 썸네일로 쓴다 (zitt.me 와 같은 구성) -->
+		<ul class="zmst-po-grid">
+			<!--@foreach($portfolio_list as $po)-->
+				{@ $po_url = getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminPortfolio', 'portfolio_srl', $po->portfolio_srl)}
+				<li class="zmst-po-card">
+					<a class="zmst-po-thumb" href="{$po_url}">
+						<!--@if($po->thumbnail)-->
+							<img src="{$po->thumbnail}" alt="" loading="lazy" />
+						<!--@else-->
+							<span class="zmst-thumb-none">{$lang->expert_portfolio}</span>
+						<!--@end-->
+					</a>
+					<div class="zmst-po-body">
+						<a class="zmst-item-link" href="{$po_url}">
+							<strong class="zmst-po-title">{$po->title}</strong>
+						</a>
+						<p class="zmst-po-meta">
+							<a class="zmst-po-expert" cond="$po->profile_srl" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExpertProfile', 'profile_srl', $po->profile_srl)}">{$po->expert_name}</a>
+							<span cond="!$po->profile_srl">{$po->expert_name}</span>
+							<span class="zmst-chip zmst-chip-installed" cond="$po->is_business">BIZ</span>
+							<span class="zmst-like">
+								<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 14.2 2.6 9.1a3.3 3.3 0 1 1 4.7-4.7L8 5.1l.7-.7a3.3 3.3 0 1 1 4.7 4.7L8 14.2z"/></svg>
+								{number_format($po->like_count)}
+							</span>
+						</p>
+					</div>
+				</li>
+			<!--@endforeach-->
+			<li cond="!count($portfolio_list)" class="zmst-empty">{$lang->msg_no_result}</li>
+		</ul>
+
+		<div cond="$expert_total_page > 1" class="zmst-pages">
+			<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts', 'field', $expert_field, 'page', $expert_page - 1)}" cond="$expert_page > 1">&laquo;</a>
+			<strong>{$expert_page} / {$expert_total_page}</strong>
+			<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts', 'field', $expert_field, 'page', $expert_page + 1)}" cond="$expert_page < $expert_total_page">&raquo;</a>
+		</div>
+	<!--@end-->
+</div>

@@ -1,0 +1,292 @@
+<?php
+/* Copyright (C) NAVER <http://www.navercorp.com> */
+/**
+ * documentView class
+ * View class of the module document
+ *
+ * @author NAVER (developers@xpressengine.com)
+ * @package /modules/document
+ * @version 0.1
+ */
+class DocumentView extends Document
+{
+	/**
+	 * Initialization
+	 * @return void
+	 */
+	function init()
+	{
+	}
+
+	/**
+	 * Document printing
+	 * I make it out to find the geulman;;
+	 * @return void|Object
+	 */
+	function dispDocumentPrint()
+	{
+		// Bring a list of variables needed to implement
+		$document_srl = Context::get('document_srl');
+
+		// Creates an object for displaying the selected document
+		$oDocument = DocumentModel::getDocument($document_srl);
+		if(!$oDocument->isExists()) throw new Zittme\Framework\Exceptions\TargetNotFound;
+		// Check permissions
+		if(!$oDocument->isAccessible(true)) throw new Zittme\Framework\Exceptions\NotPermitted;
+		// Information setting module
+		//Context::set('module_info', $module_info);	//module_info not use in UI
+		// Browser title settings
+		Context::setBrowserTitle($oDocument->getTitleText());
+		Context::set('oDocument', $oDocument);
+
+		Context::set('layout','none');
+		$this->setTemplatePath($this->module_path.'tpl');
+		$this->setTemplateFile('print_page');
+	}
+
+	/**
+	 * Preview
+	 * @return void
+	 */
+	function dispDocumentPreview()
+	{
+		if(!Zittme\Framework\Security::checkCSRF())
+		{
+			throw new Zittme\Framework\Exceptions\SecurityViolation;
+		}
+
+		$content = (string)Context::get('content');
+		if (Context::get('logged_info')->is_admin !== 'Y')
+		{
+			$content = Zittme\Framework\Filters\HTMLFilter::clean($content);
+		}
+
+		// Editor converter
+		$obj = new stdClass;
+		$obj->content = $content;
+		$obj->module_srl = ModuleModel::getModuleInfoByMid(Context::get('mid'))->module_srl;
+		$content = getModel('editor')->converter($obj, 'document');
+		$content = sprintf('<div class="document_0_%d Zittme_content xe_content">%s</div>', Context::get('logged_info')->member_srl, $content);
+		Context::set('content', $content);
+
+		$this->setTemplatePath($this->module_path.'tpl');
+		$this->setTemplateFile('preview_page');
+		Context::set('layout', 'none');
+	}
+
+	/**
+	 * Selected by the administrator for the document management
+	 * @return void|Object
+	 */
+	function dispDocumentManageDocument()
+	{
+		if(!Context::get('is_logged')) throw new Zittme\Framework\Exceptions\NotPermitted;
+		// Taken from a list of selected sessions
+		$document_srl_list = array();
+		$flag_list = $_SESSION['document_management'] ?? [];
+		if(is_array($flag_list) && count($flag_list))
+		{
+			foreach($flag_list as $key => $val)
+			{
+				if(!is_bool($val)) continue;
+				$document_srl_list[] = $key;
+			}
+		}
+
+		if(count($document_srl_list))
+		{
+			$document_list = DocumentModel::getDocuments($document_srl_list);
+		}
+		else
+		{
+			$document_list = array();
+		}
+		Context::set('document_list', $document_list);
+
+		// Set target module info
+		$target_mid = Context::getRequestVars()->mid ?? '';
+		$module_srl = intval(Context::get('module_srl'));
+
+		// if target mid is provided
+		if($target_mid && $target_mid === Context::get('mid'))
+		{
+			$module_info = ModuleModel::getModuleInfoByMid($target_mid);
+			$module_srl = $module_info ? $module_info->module_srl : 0;
+		}
+		// if module_srl is provided instead of target_mid (legacy)
+		elseif($module_srl > 0)
+		{
+			$module_info = ModuleModel::getModuleInfoByModuleSrl($module_srl);
+			$module_srl = $module_info ? $module_info->module_srl : 0;
+		}
+		// if no module info is provided
+		else
+		{
+			// set module_srl if all documents has one common module_srl
+			$document_module_srl_list = array_unique(array_map(function($document) {
+				return $document->get('module_srl');
+			}, $document_list));
+			if(count($document_module_srl_list) == 1)
+			{
+				$module_srl = array_first($document_module_srl_list);
+			}
+			$module_info = ModuleModel::getModuleInfoByModuleSrl($module_srl);
+			$module_srl = $module_info ? $module_info->module_srl : 0;
+		}
+
+		Context::set('module_srl', $module_srl);
+		Context::set('mid', $module_info ? $module_info->mid : '');
+		Context::set('browser_title', $module_info ? $module_info->browser_title : '');
+
+		// Select Pop-up layout
+		$this->setLayoutPath('./common/tpl');
+		$this->setLayoutFile('popup_layout');
+
+		$this->setTemplatePath($this->module_path.'tpl');
+		$this->setTemplateFile('checked_list');
+	}
+
+	/**
+	 * Trigger method.
+	 * Additional information realte to document setting
+	 * @param string $obj
+	 * @return Object
+	 */
+	function triggerDispDocumentAdditionSetup(&$obj)
+	{
+		$current_module_srl = Context::get('module_srl');
+		$current_module_srls = Context::get('module_srls');
+
+		if(!$current_module_srl && !$current_module_srls)
+		{
+			// Get information of the current module
+			$current_module_info = Context::get('current_module_info');
+			$current_module_srl = $current_module_info->module_srl;
+			if(!$current_module_srl) return new BaseObject();
+		}
+
+		if($current_module_srl)
+		{
+			$document_config = ModuleModel::getModulePartConfig('document', $current_module_srl);
+		}
+		if(!isset($document_config))
+		{
+			$document_config = new stdClass();
+		}
+		if(!isset($document_config->use_history))
+		{
+			$document_config->use_history = 'N';
+		}
+		if(!isset($document_config->use_vote_up))
+		{
+			$document_config->use_vote_up = 'Y';
+		}
+		if(!isset($document_config->use_vote_down))
+		{
+			$document_config->use_vote_down = 'Y';
+		}
+		if(!isset($document_config->allow_vote_from_same_ip))
+		{
+			$document_config->allow_vote_from_same_ip = 'N';
+		}
+		if(!isset($document_config->allow_declare_from_same_ip))
+		{
+			$document_config->allow_declare_from_same_ip = 'N';
+		}
+
+		if ($current_module_srl)
+		{
+			$module_info = ModuleModel::getModuleInfoByModuleSrl($current_module_srl);
+			if (!isset($document_config->allow_vote_cancel))
+			{
+				$document_config->allow_vote_cancel = (($module_info->cancel_vote ?? 'N') === 'Y') ? 'Y' : 'N';
+			}
+			if (!isset($document_config->allow_vote_non_member))
+			{
+				$document_config->allow_vote_non_member = (($module_info->non_login_vote ?? 'N') === 'Y') ? 'Y' : 'N';
+			}
+			if (!isset($document_config->allow_declare_cancel))
+			{
+				$document_config->allow_declare_cancel = (($module_info->cancel_vote ?? 'N') === 'Y') ? 'Y' : 'N';
+			}
+		}
+
+		Context::set('document_config', $document_config);
+
+		$oTemplate = TemplateHandler::getInstance();
+		$tpl = $oTemplate->compile($this->module_path.'tpl', 'document_module_config');
+		$obj = $tpl . $obj;
+
+		return new BaseObject();
+	}
+
+	/**
+	 * Document temp saved list
+	 * @return void
+	 */
+	function dispTempSavedList()
+	{
+		$this->setLayoutFile('popup_layout');
+
+		// A message appears if the user is not logged-in
+		if(!$this->user->member_srl)
+		{
+			throw new Zittme\Framework\Exceptions\MustLogin;
+		}
+		// Get the saved document (module_srl is set to member_srl instead)
+		$logged_info = Context::get('logged_info');
+		$args = new stdClass();
+		$args->member_srl = $logged_info->member_srl;
+		$args->statusList = array($this->getConfigStatus('temp'));
+		$args->page = (int)Context::get('page') ?: 1;
+		$args->list_count = 10;
+
+		$output = DocumentModel::getDocumentList($args, true);
+		Context::set('total_count', $output->total_count);
+		Context::set('total_page', $output->total_page);
+		Context::set('page', $output->page);
+		Context::set('document_list', $output->data);
+		Context::set('page_navigation', $output->page_navigation);
+
+		$this->setTemplatePath($this->module_path.'tpl');
+		$this->setTemplateFile('saved_list_popup');
+	}
+
+	/**
+	 * Report an improper post
+	 * @return void
+	 */
+	function dispDocumentDeclare()
+	{
+		$this->setLayoutFile('popup_layout');
+		$document_srl = Context::get('target_srl');
+
+		// A message appears if the user is not logged-in
+		if(!$this->user->member_srl)
+		{
+			throw new Zittme\Framework\Exceptions\MustLogin;
+		}
+
+		// Creates an object for displaying the selected document
+		$oDocument = DocumentModel::getDocument($document_srl, false, false);
+		if(!$oDocument->isExists())
+		{
+			throw new Zittme\Framework\Exceptions\TargetNotFound;
+		}
+		// Check permissions
+		if(!$oDocument->isAccessible(true))
+		{
+			throw new Zittme\Framework\Exceptions\NotPermitted;
+		}
+
+		// Browser title settings
+		Context::set('target_document', $oDocument);
+
+		Context::set('target_srl', $document_srl);
+
+		$this->setTemplatePath($this->module_path.'tpl');
+		$this->setTemplateFile('declare_document');
+	}
+}
+/* End of file document.view.php */
+/* Location: ./modules/document/document.view.php */

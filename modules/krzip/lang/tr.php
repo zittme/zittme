@@ -1,0 +1,20 @@
+<?php
+$lang->krzip = 'Kore Posta Kodu';
+$lang->cmd_krzip_api_type = 'API Sağlayıcı Seçin';
+$lang->cmd_krzip_daumapi = 'Kakao API';
+$lang->cmd_krzip_epostapi = 'Korea Post API';
+$lang->cmd_krzip_postcodify = 'Postcodify';
+$lang->cmd_krzip_regkey = 'Kayıt Anahtarı';
+$lang->cmd_krzip_postcode = 'Posta Kodu';
+$lang->cmd_krzip_address = 'Posta Adresi';
+$lang->cmd_krzip_detail_address = 'Adres Detayı';
+$lang->about_krzip = 'Güney Kore posta kodları için genel API\'leri kullanarak posta kodu arama.';
+$lang->about_krzip_api_handler = 'Posta kodlarını bulmak için hangi API\'nin kullanılacağını belirler.';
+$lang->about_krzip_epostapi_regkey = 'Korea Post API\'sini kullanmak için alınan kayıt anahtarını girin.';
+$lang->msg_krzip_road_address_expectation = 'Cadde adına dayalı adres: %s';
+$lang->msg_krzip_jibun_address_expectation = 'Parsel numarasına dayalı adres: %s';
+$lang->msg_krzip_no_query = 'Lütfen bir arama kelimesi girin.';
+$lang->msg_krzip_is_maintenance = 'Bakım çalışması sürüyor.';
+$lang->msg_krzip_wrong_regkey = 'Bu kayıt anahtarı geçersiz.';
+$lang->msg_krzip_no_result = 'Adres bulunamadı.';
+$lang->msg_krzip_riddling_wrong = 'Posta kodu modülünde bilinmeyen hata.';

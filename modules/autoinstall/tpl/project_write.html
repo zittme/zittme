@@ -1,0 +1,145 @@
+<config autoescape="on" />
+
+<include target="header.html" />
+
+<div class="zmst zmst-detail">
+	<p class="zmst-back">
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts', 'tab', 'project')}">&larr; {$lang->expert_projects}</a>
+	</p>
+
+	<div class="zmst-head">
+		<div class="zmst-head-titles">
+			<span class="zmst-eyebrow">EXPERTS</span>
+			<h2 class="zmst-title">{$lang->expert_request_work}</h2>
+		</div>
+	</div>
+
+	<!--@if(!$zittme_account)-->
+		<!--// 등록은 연결된 계정 이름으로 올라간다 -->
+		<p class="zmst-notice is-error">{$lang->msg_autoinstall_connect_required}</p>
+		<p><a class="zmst-btn zmst-btn-outline" href="{$zittme_connect_url}">
+			<img src="{\RX_BASEURL}common/img/logo.png" alt="" />{$lang->store_connect_account}
+		</a></p>
+	<!--@else-->
+		<p class="zmst-notice">{sprintf($lang->msg_project_posts_as, $zittme_account->nick_name)}</p>
+
+		<form action="./" method="post" class="zmst-form" enctype="multipart/form-data">
+			<input type="hidden" name="module" value="autoinstall" />
+			<input type="hidden" name="act" value="procAutoinstallAdminCreateProject" />
+
+			<div class="zmst-field">
+				<label for="zmpj_title">{$lang->title} <em>*</em></label>
+				<input type="text" id="zmpj_title" name="title" maxlength="200" required placeholder="{$lang->msg_project_title_hint}" />
+			</div>
+
+			<div class="zmst-field">
+				<label for="zmpj_summary">{$lang->msg_project_summary}</label>
+				<input type="text" id="zmpj_summary" name="summary" maxlength="200" />
+			</div>
+
+			<div class="zmst-field">
+				<label>{$lang->msg_project_fields}</label>
+				<div class="zmst-checks">
+					<label class="zmst-check" loop="$expert_fields => $f">
+						<input type="checkbox" name="fields[]" value="{$f}" /> <span>{$f}</span>
+					</label>
+				</div>
+			</div>
+
+			<div class="zmst-field-row">
+				<div class="zmst-field">
+					<label for="zmpj_bmin">{$lang->msg_project_budget_min}</label>
+					<input type="text" id="zmpj_bmin" name="budget_min" inputmode="numeric" placeholder="{$lang->expert_budget_negotiable}" />
+				</div>
+				<div class="zmst-field">
+					<label for="zmpj_bmax">{$lang->msg_project_budget_max}</label>
+					<input type="text" id="zmpj_bmax" name="budget_max" inputmode="numeric" placeholder="{$lang->expert_budget_negotiable}" />
+				</div>
+				<div class="zmst-field">
+					<label for="zmpj_deadline">{$lang->expert_project_deadline}</label>
+					<input type="date" id="zmpj_deadline" name="deadline" />
+				</div>
+			</div>
+
+			<div class="zmst-field">
+				<label>{$lang->msg_project_client_type} <em>*</em></label>
+				<div class="zmst-checks">
+					<label class="zmst-check"><input type="radio" name="client_type" value="personal" checked="checked" /> <span>{$lang->client_type_personal}</span></label>
+					<label class="zmst-check"><input type="radio" name="client_type" value="individual" /> <span>{$lang->client_type_individual}</span></label>
+					<label class="zmst-check"><input type="radio" name="client_type" value="corporate" /> <span>{$lang->client_type_corporate}</span></label>
+				</div>
+			</div>
+
+			<div class="zmst-field">
+				<label for="zmpj_contact">{$lang->msg_project_contact} <em>*</em></label>
+				<div class="zmst-contact-row">
+					<select name="contact_type" id="zmpj_contact_type">
+						<option value="phone">{$lang->contact_phone}</option>
+						<option value="email">{$lang->contact_email}</option>
+						<option value="kakao">{$lang->contact_kakao}</option>
+						<option value="openchat">{$lang->contact_openchat}</option>
+						<option value="etc">{$lang->etc}</option>
+					</select>
+					<input type="text" id="zmpj_contact" name="contact_value" maxlength="200" required />
+				</div>
+				<p class="zmst-field-hint">{$lang->msg_project_contact_hint}</p>
+			</div>
+
+			<div class="zmst-field">
+				<label>{$lang->content} <em>*</em></label>
+				<!--// 에디터가 이 입력에 내용을 동기화한다. 첨부는 이 사이트에 먼저 올라가고
+				     등록할 때 zitt.me 로 옮겨진다. -->
+				<input type="hidden" name="editor_target_srl" value="{$editor_target_srl}" />
+				<textarea name="content" style="display:none"></textarea>
+				<div class="zmst-editor">{$editor|noescape}</div>
+				<p class="zmst-field-hint">{$lang->msg_project_content_hint}</p>
+			</div>
+
+			<!--// 첨부는 이 사이트를 거치지 않고 zitt.me 로 바로 옮긴다.
+			     의뢰가 그쪽에 올라가므로 파일도 그쪽에 있어야 상대가 열어볼 수 있다. -->
+			<div class="zmst-field">
+				<label for="zmpj_files">{$lang->msg_project_attachments}</label>
+				<input type="file" id="zmpj_files" name="attachments[]" multiple
+					accept=".jpg,.jpeg,.png,.gif,.webp,.pdf,.zip,.txt,.hwp,.docx,.xlsx,.pptx" />
+				<p class="zmst-field-hint">{$lang->msg_project_attachments_hint}</p>
+			</div>
+
+			<!--// 연락처를 받으므로 동의가 필요하다. 무엇을 어디까지 쓰는지 함께 고지한다. -->
+			<div class="zmst-agree-box">
+				<div class="zmst-agree-head">
+					<strong>{$lang->msg_project_agree_title}</strong>
+					<span class="zmst-agree-req">{$lang->msg_project_agree_required_mark}</span>
+				</div>
+				<table class="zmst-agree-table">
+					<tr>
+						<th>{$lang->msg_project_agree_items}</th>
+						<td>{$lang->msg_project_agree_items_desc}</td>
+					</tr>
+					<tr>
+						<th>{$lang->msg_project_agree_purpose}</th>
+						<td>{$lang->msg_project_agree_purpose_desc}</td>
+					</tr>
+					<tr>
+						<th>{$lang->msg_project_agree_period}</th>
+						<td>{$lang->msg_project_agree_period_desc}</td>
+					</tr>
+					<tr>
+						<th>{$lang->msg_project_agree_scope}</th>
+						<td>{$lang->msg_project_agree_scope_desc}</td>
+					</tr>
+				</table>
+				<p class="zmst-agree-note">{$lang->msg_project_agree_refuse}</p>
+				<p class="zmst-agree-owner">{$lang->msg_project_agree_owner}</p>
+				<label class="zmst-check zmst-agree">
+					<input type="checkbox" name="agree_privacy" value="Y" required />
+					<span>{$lang->msg_project_agree}</span>
+				</label>
+			</div>
+
+			<div class="zmst-form-actions">
+				<button type="submit" class="zmst-btn zmst-btn-primary">{$lang->expert_request_work}</button>
+				<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts', 'tab', 'project')}">{$lang->cmd_cancel}</a>
+			</div>
+		</form>
+	<!--@end-->
+</div>

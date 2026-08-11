@@ -1,0 +1,20 @@
+<?php
+$lang->krzip = 'Mã bưu chính Hàn Quốc';
+$lang->cmd_krzip_api_type = 'Chọn nhà cung cấp API';
+$lang->cmd_krzip_daumapi = 'Kakao API';
+$lang->cmd_krzip_epostapi = 'Korea Post API';
+$lang->cmd_krzip_postcodify = 'Postcodify';
+$lang->cmd_krzip_regkey = 'Khóa đăng ký';
+$lang->cmd_krzip_postcode = 'Mã bưu chính';
+$lang->cmd_krzip_address = 'Địa chỉ nhận thư';
+$lang->cmd_krzip_detail_address = 'Địa chỉ chi tiết';
+$lang->about_krzip = 'Tìm kiếm mã bưu chính tại Hàn Quốc bằng các API công khai.';
+$lang->about_krzip_api_handler = 'Xác định API nào sẽ được dùng để tìm mã bưu chính.';
+$lang->about_krzip_epostapi_regkey = 'Nhập khóa đăng ký được cấp bởi Korea Post để sử dụng API của họ.';
+$lang->msg_krzip_road_address_expectation = 'Địa chỉ theo tên đường: %s';
+$lang->msg_krzip_jibun_address_expectation = 'Địa chỉ theo số thửa đất: %s';
+$lang->msg_krzip_no_query = 'Vui lòng nhập từ khóa tìm kiếm.';
+$lang->msg_krzip_is_maintenance = 'Đang bảo trì.';
+$lang->msg_krzip_wrong_regkey = 'Khóa đăng ký không hợp lệ.';
+$lang->msg_krzip_no_result = 'Không tìm thấy địa chỉ nào.';
+$lang->msg_krzip_riddling_wrong = 'Lỗi không xác định trong mô-đun mã bưu chính.';

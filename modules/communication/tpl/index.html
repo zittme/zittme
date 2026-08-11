@@ -1,0 +1,154 @@
+<load target="js/communication_admin.js" usecdn="true" />
+<load target="../../module/tpl/js/module_admin.js" />
+<load target="../../editor/tpl/js/editor_module_config.js" usecdn="true" />
+
+<div class="x_page-header">
+	<h1>
+		{$lang->communication} {$lang->cmd_management}
+		<a href="#aboutCommunication" class="x_pull-right x_icon-question-sign" data-toggle style="margin-top:13px">{$lang->help}</a>
+	</h1>
+</div>
+
+<p class="x_alert x_alert-info" id="aboutCommunication" hidden>{nl2br($lang->about_communication)}</p>
+
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/communication/tpl/index/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+
+<form ruleset="insertConfig" action="./" method="post" class="x_form-horizontal">
+	<input type="hidden" name="module" value="communication" />
+	<input type="hidden" name="act" value="procCommunicationAdminInsertConfig">
+	<input type="hidden" name="xe_validator_id" value="modules/communication/tpl/index/1" />
+
+	<div class="x_control-group">
+		<div class="x_control-label">{$lang->enable_communication_message}</div>
+		<div class="x_controls">
+			<label class="x_inline" for="enable_message_yes">
+				<input type="radio" name="enable_message" id="enable_message_yes" value="Y" checked="checked"|cond="$config->enable_message == 'Y'" /> {$lang->cmd_yes}
+			</label>
+			<label class="x_inline" for="enable_message_no">
+				<input type="radio" name="enable_message" id="enable_message_no" value="N" checked="checked"|cond="$config->enable_message !== 'Y'" /> {$lang->cmd_no}
+			</label>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<div class="x_control-label">{$lang->enable_communication_friend}</div>
+		<div class="x_controls">
+			<label class="x_inline" for="enable_friend_yes">
+				<input type="radio" name="enable_friend" id="enable_friend_yes" value="Y" checked="checked"|cond="$config->enable_friend == 'Y'" /> {$lang->cmd_yes}
+			</label>
+			<label class="x_inline" for="enable_friend_no">
+				<input type="radio" name="enable_friend" id="enable_friend_no" value="N" checked="checked"|cond="$config->enable_friend !== 'Y'" /> {$lang->cmd_no}
+			</label>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<div class="x_control-label">{$lang->enable_attachment}</div>
+		<div class="x_controls">
+			<label class="x_inline" for="enable_attachment_yes">
+				<input type="radio" name="enable_attachment" id="enable_attachment_yes" value="Y" checked="checked"|cond="$config->enable_attachment == 'Y'" /> {$lang->cmd_yes}
+			</label>
+			<label class="x_inline" for="enable_attachment_no">
+				<input type="radio" name="enable_attachment" id="enable_attachment_no" value="N" checked="checked"|cond="$config->enable_attachment !== 'Y'" /> {$lang->cmd_no}
+			</label>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label for="allowed_attach_size" class="x_control-label">{lang('communication.attachment_size_limit')}</label>
+		<div class="x_controls">
+			<input type="number" min="0" name="attachment_size_limit" id="attachment_size_limit" value="{$config->attachment_size_limit ?? ''}" /> KB
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label class="x_control-label" for="editor_skin">{$lang->editor_skin}</label>
+		<div class="x_controls">
+			<select name="editor_skin" id="editor_skin" onchange="getEditorSkinColorList(this.value)">
+				<option loop="$editor_skin_list => $editor_skin" value="{$editor_skin}" selected="selected"|cond="$editor_skin==$config->editor_skin">{$editor_skin}</option>
+			</select>
+			<select name="sel_editor_colorset" style="display:none"></select>
+			<script>
+				getEditorSkinColorList('{$config->editor_skin}','{$config->editor_colorset}');
+			</script>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label class="x_control-label" for="layout">{$lang->layout}</label>
+		<div class="x_controls">
+			<select id="layout" name="layout_srl" style="width:auto">
+				<option value="0">{$lang->notuse}</option>
+				<option loop="$layout_list => $key,$val" value="{$val->layout_srl}" selected="selected"|cond="$val->layout_srl == $config->layout_srl">{$val->title} ({$val->layout})</option>
+			</select>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label class="x_control-label" for="skin">{$lang->skin}</label>
+		<div class="x_controls">
+			<select name="skin" id="skin" style="width:auto" onchange="doGetSkinColorset(this.options[this.selectedIndex].value, 'P')">
+				<option loop="$skin_list => $key, $val" value="{$key}" selected="selected"|cond="$key==$config->skin">{$val->title}</option>
+			</select>
+		</div>
+	</div>
+	<div class="x_control-group" id="__skin_colorset">
+		<label class="x_control-label">{$lang->colorset}</label>
+		<div class="x_controls">
+			<div id="communication_colorset"></div>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label class="x_control-label" for="mlayout_srl">{$lang->mobile_layout}</label>
+		<div class="x_controls">
+			<select id="mlayout_srl" name="mlayout_srl" style="width:auto">
+				<option value="0">{$lang->notuse}</option>
+				<option loop="$mlayout_list => $key,$val" value="{$val->layout_srl}" selected="selected"|cond="$val->layout_srl == $config->mlayout_srl">{$val->title} ({$val->layout})</option>
+			</select>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label class="x_control-label" for="mskin">{$lang->mobile_skin}</label>
+		<div class="x_controls">
+			<select name="mskin" id="mskin" style="width:auto" onchange="doGetSkinColorset(this.options[this.selectedIndex].value, 'M')">
+				<option loop="$mobile_skin_list => $key,$val" value="{$key}" selected="selected"|cond="$key==$config->mskin" >{$val->title}</option>
+			</select>
+		</div>
+	</div>
+	<div class="x_control-group" id="__mskin_colorset">
+		<label class="x_control-label">{$lang->colorset}</label>
+		<div class="x_controls">
+			<div id="communication_mcolorset"></div>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label class="x_control-label" for="grant_send">{$lang->communication_send_message_grant}</label>
+		<div class="x_controls">
+			<select name="grant_send_default" class="grant_default" id="grant_send">
+				<option value="member" selected="selected"|cond="$config->grant_send['default'] == 'member' || $config->grant_send['default'] == 'site'">
+					{$lang->grant_to_login_user}
+				</option>
+				<option value="manager" selected="selected"|cond="$config->grant_send['default'] == 'manager'">
+					{$lang->grant_to_admin}
+				</option>
+				<option value="" selected="selected"|cond="$config->grant_send['default'] == ''">
+					{$lang->grant_to_group}
+				</option>
+			</select>
+			
+			<div id="zone_grant_send" style="margin:8px 0 0 0" hidden>
+				<label loop="$group_list => $group_srl, $item" for="group_{$group_srl}">
+					<input type="checkbox" name="grant_send_group[]" value="{$group_srl}" checked="checked"|cond="isset($config->grant_send['group'][$group_srl])" id="group_{$group_srl}"/>
+					{$item->title}
+				</label>
+			</div>
+		</div>
+	</div>
+	<div class="btnArea">
+		<button class="x_btn x_btn-primary" type="submit">{$lang->cmd_registration}</button>
+	</div>
+</form>
+<script>
+    jQuery(function() { 
+		doGetSkinColorset("{$config->skin}", 'P'); 
+		doGetSkinColorset("{$config->mskin}", 'M'); 
+		jQuery('.grant_default').change( function(event) { doShowGrantZone(); } ); 
+		doShowGrantZone();
+	});
+</script>

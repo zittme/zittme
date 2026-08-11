@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<query id="getMemberIdentityByCi" action="select">
+	<tables>
+		<table name="member_identity" />
+	</tables>
+	<columns>
+		<column name="*" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="ci" var="ci" notnull="notnull" />
+	</conditions>
+</query>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<query id="insertMemberIdentity" action="insert">
+	<tables>
+		<table name="member_identity" />
+	</tables>
+	<columns>
+		<column name="member_srl" var="member_srl" required="true" />
+		<column name="provider" var="provider" required="true" />
+		<column name="ci" var="ci" required="true" />
+		<column name="di" var="di" />
+		<column name="name" var="name" />
+		<column name="birthday" var="birthday" />
+		<column name="sex" var="sex" />
+		<column name="phone" var="phone" />
+		<column name="telecom" var="telecom" />
+		<column name="tid" var="tid" />
+		<column name="regdate" var="regdate" />
+	</columns>
+</query>

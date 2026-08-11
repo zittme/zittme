@@ -1,0 +1,184 @@
+@version(2)
+@load('css/shop.css')
+
+<div class="shp">
+	@php
+	$shp_page_title = $lang->shop_all_items ?? '전체 상품';
+	$shp_filter = Context::get('current_filter') ?: '';
+	if ($current_category)
+	{
+		foreach ($shop_categories as $shp_tc)
+		{
+			if ((int)$shp_tc->category_srl === $current_category) { $shp_page_title = $shp_tc->title; break; }
+		}
+	}
+	elseif ($shp_filter === 'recommend') { $shp_page_title = $lang->shop_home_recommend; }
+	elseif ($shp_filter === 'new') { $shp_page_title = $lang->shop_home_new; }
+	elseif ($shp_filter === 'popular') { $shp_page_title = $lang->shop_home_popular; }
+	elseif ($shp_filter === 'sale') { $shp_page_title = $lang->shop_home_sale; }
+	@endphp
+	<div class="shp-top">
+		<div class="shp-title-wrap">
+			<h2 class="shp-title">{{ $shp_page_title }}</h2>
+			@php
+			$shp_bc = [];
+			if ($current_category)
+			{
+				$shp_bc_map = [];
+				foreach ($shop_categories as $shp_bc_c) { $shp_bc_map[(int)$shp_bc_c->category_srl] = $shp_bc_c; }
+				$shp_bc_cur = $current_category;
+				$shp_bc_guard = 0;
+				while ($shp_bc_cur > 0 && isset($shp_bc_map[$shp_bc_cur]) && $shp_bc_guard++ < 10)
+				{
+					array_unshift($shp_bc, $shp_bc_map[$shp_bc_cur]);
+					$shp_bc_cur = (int)$shp_bc_map[$shp_bc_cur]->parent_srl;
+				}
+			}
+			@endphp
+			<nav class="shp-breadcrumb">
+				<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceList') }}">홈</a>
+				@if ($shp_filter !== '')
+				<span>&rsaquo;</span><em>{{ $shp_page_title }}</em>
+				@endif
+				@foreach ($shp_bc as $shp_bc_i => $shp_bc_c)
+				<span>&rsaquo;</span>
+				@if ($shp_bc_i === count($shp_bc) - 1)
+				<em>{{ $shp_bc_c->title }}</em>
+				@else
+				<a href="{{ getUrl('', 'mid', $mid, 'v', 'list', 'category', $shp_bc_c->category_srl) }}">{{ $shp_bc_c->title }}</a>
+				@endif
+				@endforeach
+			</nav>
+		</div>
+		<a class="shp-cart-link" href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceMyOrders') }}">
+			<svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 6h13M8 12h13M8 18h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="3.5" cy="6" r="1.4" fill="currentColor"/><circle cx="3.5" cy="12" r="1.4" fill="currentColor"/><circle cx="3.5" cy="18" r="1.4" fill="currentColor"/></svg>
+			{{ $lang->shop_my_orders }}
+		</a>
+		<a class="shp-cart-link" href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceCart') }}">
+			<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2.4l.7 2H21l-2.4 8.4a2 2 0 0 1-1.9 1.6H8.5a2 2 0 0 1-2-1.5L4.2 6H3V4zm4.7 4 1.5 6h7.9l1.7-6H7.7zM9 19.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm8 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/></svg>
+			{{ $lang->shop_cart }}
+			@if ($cart_count > 0)<span class="shp-cart-count">{{ $cart_count }}</span>@endif
+		</a>
+	</div>
+
+	@php $shp_side_cats = ($shop_config->category_layout ?? 'top') === 'side' && count($shop_categories ?? []); @endphp
+
+	@php
+		// 카테고리 칩: 1차는 항상, 하위는 고른 1차 밑에서만 보여 준다
+		$shp_chip_tops = [];
+		$shp_chip_subs = [];
+		$shp_chip_cur_top = 0;
+		$shp_chip_parent = -1;
+		foreach ($shop_categories as $shp_cc) {
+			if ((int)($shp_cc->depth ?? 0) === 0) {
+				$shp_chip_tops[] = $shp_cc;
+				$shp_chip_parent = (int)$shp_cc->category_srl;
+				if ((int)$shp_cc->category_srl === $current_category) { $shp_chip_cur_top = $shp_chip_parent; }
+			} else {
+				if ((int)$shp_cc->category_srl === $current_category) { $shp_chip_cur_top = $shp_chip_parent; }
+				$shp_chip_subs[$shp_chip_parent][] = $shp_cc;
+			}
+		}
+	@endphp
+	@if (!$shp_side_cats && count($shp_chip_tops))
+	<nav class="shp-cats" aria-label="카테고리">
+		<a class="shp-cat @if (!$current_category) is-on @endif" href="{{ getUrl('', 'mid', $mid, 'v', 'list', 'category', '', 'q', $current_q, 'sort', $current_sort, 'f', $shp_filter) }}">{{ $lang->shop_all_categories }}</a>
+		@foreach ($shp_chip_tops as $shp_ct)
+		<a class="shp-cat @if ($current_category === (int)$shp_ct->category_srl || $shp_chip_cur_top === (int)$shp_ct->category_srl) is-on @endif" href="{{ getUrl('', 'mid', $mid, 'v', 'list', 'category', $shp_ct->category_srl, 'q', $current_q, 'sort', $current_sort, 'f', $shp_filter) }}">{{ $shp_ct->title }}</a>
+		@endforeach
+	</nav>
+	@if ($shp_chip_cur_top > 0 && count($shp_chip_subs[$shp_chip_cur_top] ?? []))
+	<nav class="shp-cats shp-cats-sub" aria-label="하위 카테고리">
+		@foreach ($shp_chip_subs[$shp_chip_cur_top] as $shp_cs)
+		<a class="shp-cat @if ($current_category === (int)$shp_cs->category_srl) is-on @endif" href="{{ getUrl('', 'mid', $mid, 'v', 'list', 'category', $shp_cs->category_srl, 'q', $current_q, 'sort', $current_sort, 'f', $shp_filter) }}">{{ $shp_cs->title }}</a>
+		@endforeach
+	</nav>
+	@endif
+	@endif
+	<form action="{{ getUrl('') }}" method="get" class="shp-filter">
+		<input type="hidden" name="mid" value="{{ $mid }}" />
+		<input type="hidden" name="v" value="list" />
+		@if ($shp_filter !== '')<input type="hidden" name="f" value="{{ $shp_filter }}" />@endif
+		<input type="hidden" name="category" value="{{ $current_category ?: '' }}" />
+		<span class="shp-search">
+			<input type="text" name="q" placeholder="{{ $lang->shop_search }}" value="{{ $current_q }}" />
+			<button type="submit" aria-label="{{ $lang->cmd_search ?? '검색' }}">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+			</button>
+		</span>
+		<span class="shp-sort">
+			@foreach (['display' => $lang->shop_sort_display, 'new' => $lang->shop_sort_new, 'popular' => $lang->shop_sort_popular, 'price_low' => $lang->shop_sort_price_low, 'price_high' => $lang->shop_sort_price_high] as $key => $label)
+			<a class="{{ $current_sort === $key ? 'is-on' : '' }}" href="{{ getUrl('', 'mid', $mid, 'v', 'list', 'category', $current_category ?: '', 'q', $current_q, 'sort', $key, 'f', $shp_filter) }}">{{ $label }}</a>
+			@endforeach
+		</span>
+	</form>
+
+	<div class="{{ $shp_side_cats ? 'shp-home-cols' : '' }}">
+	@if ($shp_side_cats)
+	@include('_sidecats')
+	@endif
+	<div class="shp-home-main">
+	@if (empty($items))
+	<p class="shp-empty">{{ $lang->shop_no_items }}</p>
+	@else
+	<div class="shp-grid">
+		@foreach ($items as $it)
+		<a class="shp-card" href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceItem', 'item_srl', $it->item_srl) }}">
+			<span class="shp-card-thumb" @if (!empty($it->thumb)) style="background-image:url('{{ escape($it->thumb) }}')" @endif>
+				@if (empty($it->thumb))
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zm1 2v12h14V6H5zm3 3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm-2 8 3.5-4.5 2.5 3 3.5-4.5L19 17H6z"/></svg>
+				@endif
+			</span>
+			@if ($it->status === 'soldout')
+			<span class="shp-soldout-cover">{{ $lang->shop_soldout }}</span>
+			@endif
+			<span class="shp-card-body">
+				<span class="shp-badges">
+					@if ($it->is_recommend === 'Y')<span class="shp-badge">{{ $lang->shop_badge_recommend }}</span>@endif
+					@foreach (\Zittme\Modules\Commerce\Models\Badge::ofItem($it, $shop_badge_map ?? []) as $shp_bg)
+					@php
+						$shp_bg_style = '';
+						if (!empty($shp_bg->bg_color)) { $shp_bg_style .= 'background:' . $shp_bg->bg_color . ';'; }
+						if (!empty($shp_bg->color)) { $shp_bg_style .= 'color:' . $shp_bg->color . ';'; }
+					@endphp
+					<span class="shp-badge" style="{{ $shp_bg_style }}">{{ $shp_bg->title }}</span>
+					@endforeach
+					@if ($it->is_new === 'Y')<span class="shp-badge">NEW</span>@endif
+					@if ($it->is_adult === 'Y')<span class="shp-badge is-adult">19</span>@endif
+				</span>
+				<span class="shp-card-name">{{ $it->item_name }}</span>
+				@if (!empty($it->review_count))
+				<span class="shp-card-rating">
+					<svg width="12" height="12" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21.1 7 14.2 2 9.3l6.9-1L12 2z"/></svg>
+					{{ $it->rating_avg }} <em>({{ number_format($it->review_count) }})</em>
+				</span>
+				@endif
+				<span class="shp-price">
+					@if ($it->sale_price > 0 && $it->sale_price < $it->price)
+					<s>{{ number_format($it->price) }}</s>{{ number_format($it->sale_price) }}원
+					@else
+					{{ number_format($it->price) }}원
+					@endif
+				</span>
+			</span>
+		</a>
+		@endforeach
+	</div>
+
+	@php $shp_nav = Context::get('page_navigation'); @endphp
+	@if ($shp_nav && (int)$shp_nav->last_page > 1)
+	<nav class="shp-paging">
+		@for ($shp_p = (int)$shp_nav->first_page; $shp_p <= (int)$shp_nav->last_page; $shp_p++)
+		@if ($shp_p === (int)$shp_nav->cur_page)
+		<span class="is-on">{{ $shp_p }}</span>
+		@else
+		<a href="{{ getUrl('', 'mid', $mid, 'v', 'list', 'category', $current_category ?: '', 'q', $current_q, 'sort', $current_sort, 'f', $shp_filter, 'page', $shp_p) }}">{{ $shp_p }}</a>
+		@endif
+		@endfor
+	</nav>
+	@endif
+	@endif
+	</div>
+	</div>
+
+</div>

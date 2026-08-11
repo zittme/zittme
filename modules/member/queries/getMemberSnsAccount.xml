@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<query id="getMemberSnsAccount" action="select">
+	<tables>
+		<table name="member_sns_account" />
+	</tables>
+	<columns>
+		<column name="*" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="sns_type" var="sns_type" required="true" />
+		<condition operation="equal" column="sns_id" var="sns_id" required="true" />
+	</conditions>
+</query>

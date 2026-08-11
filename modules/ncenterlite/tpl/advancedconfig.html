@@ -1,0 +1,128 @@
+<include target="header.html" />
+
+<form ruleset="insertConfig" action="./" method="post" class="x_form-horizontal" id="fo_ncenterlite">
+	<input type="hidden" name="module" value="ncenterlite" />
+	<input type="hidden" name="disp_act" value="dispNcenterliteAdminAdvancedconfig" />
+	<input type="hidden" name="act" value="procNcenterliteAdminInsertConfig" />
+
+	<section class="section">
+		<div class="x_control-group">
+			<label class="x_control-label" for="variable_name">{$lang->member_phone_variable}</label>
+			<div class="x_controls">
+				<select name="variable_name" id="variable_name">
+					<option value="-1" selected="selected"|cond="$config->variable_name === '#'">{$lang->member_phone_builtin_field}</option>
+					<option value="0" selected="selected"|cond="!$config->variable_name">{$lang->notuse}</option>
+					<option loop="$variable_name => $val" value="{$val}" selected="selected"|cond="$config->variable_name == $val">{$val}</option>
+				</select>
+				<p class="x_help-block">{$lang->member_phone_variable_about}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->ncenterlite_mention_target}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="radio" id="mention_names_id" name="mention_names" value="id" checked="checked"|cond="$config->mention_names == 'id'" /> {$lang->user_id}
+				</label>
+				<label class="x_inline">
+					<input type="radio" id="mention_names_nick_name" name="mention_names" value="nick_name" checked="checked"|cond="$config->mention_names == 'nick_name'" /> {$lang->nick_name}
+				</label>
+				<p class="x_help-block">{$lang->ncenterlite_mention_target_about}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->mention_suffixes}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="text" name="mention_suffixes" value="{escape(implode(', ', $config->mention_suffixes), false)}" />
+				</label>
+				<p class="x_help-block">{$lang->about_mention_suffixes}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->mention_suffix_always_cut}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="radio" id="mention_suffix_always_cut_y" name="mention_suffix_always_cut" value="Y" checked="checked"|cond="$config->mention_suffix_always_cut == 'Y'" /> {$lang->mention_suffix_always_cut_y}
+				</label>
+				<label class="x_inline">
+					<input type="radio" id="mention_suffix_always_cut_n" name="mention_suffix_always_cut" value="N" checked="checked"|cond="$config->mention_suffix_always_cut != 'Y'" /> {$lang->mention_suffix_always_cut_n}
+				</label>
+				<p class="x_help-block">{$lang->about_mention_suffix_always_cut}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->mention_limit}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="number" name="mention_limit" value="{intval($config->mention_limit)}" />
+				</label>
+				<p class="x_help-block">{$lang->about_mention_limit}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->anonymous_voter}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="radio" name="anonymous_voter" value="Y" checked="checked"|cond="$config->anonymous_voter !== 'N'" /> {$lang->use}
+				</label>
+				<label class="x_inline">
+					<input type="radio" name="anonymous_voter" value="N" checked="checked"|cond="$config->anonymous_voter === 'N'" /> {$lang->notuse}
+				</label>
+				<p class="x_help-block">{$lang->about_anonymous_voter}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->anonymous_scrap}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="radio" name="anonymous_scrap" value="Y" checked="checked"|cond="$config->anonymous_scrap !== 'N'" /> {$lang->use}
+				</label>
+				<label class="x_inline">
+					<input type="radio" name="anonymous_scrap" value="N" checked="checked"|cond="$config->anonymous_scrap === 'N'" /> {$lang->notuse}
+				</label>
+				<p class="x_help-block">{$lang->about_anonymous_scrap}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->highlight_effect}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="radio" name="highlight_effect" value="Y" checked="checked"|cond="$config->highlight_effect !== 'N'" /> {$lang->use}
+				</label>
+				<label class="x_inline">
+					<input type="radio" name="highlight_effect" value="N" checked="checked"|cond="$config->highlight_effect === 'N'" /> {$lang->notuse}
+				</label>
+				<p class="x_help-block">{$lang->about_highlight_effect}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->unsubscribe}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="radio" name="unsubscribe" value="Y" checked="checked"|cond="$config->unsubscribe === 'Y'" /> {$lang->use}
+				</label>
+				<label class="x_inline">
+					<input type="radio" name="unsubscribe" value="N" checked="checked"|cond="$config->unsubscribe !== 'Y'" /> {$lang->notuse}
+				</label>
+				<p class="x_help-block">{$lang->about_unsubscribe}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->fcm_push_format}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="radio" name="fcm_push_format" value="notification" checked="checked"|cond="$config->fcm_push_format !== 'data'" /> {$lang->fcm_push_format_notification}
+				</label>
+				<label class="x_inline">
+					<input type="radio" name="fcm_push_format" value="data" checked="checked"|cond="$config->fcm_push_format === 'data'" /> {$lang->fcm_push_format_data}
+				</label>
+				<p class="x_help-block">{$lang->about_fcm_push_format}</p>
+			</div>
+		</div>
+	</section>
+	<div class="x_clearfix btnArea">
+		<div class="x_pull-right">
+			<button class="x_btn x_btn-primary" type="submit">{$lang->cmd_registration}</button>
+		</div>
+	</div>
+</form>

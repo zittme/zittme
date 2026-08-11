@@ -1,0 +1,183 @@
+/* zittme 파일첨부 영역 리디자인 — 플러그인 기본 CSS(common/js/plugins/jquery.fileupload) 위에 얹는 오버라이드 */
+
+.xefu-container {
+	margin-top: 12px;
+	padding: 0 !important;
+	border: 0 !important;
+	background: transparent !important;
+	font-family: inherit;
+	color: #1c2330;
+}
+
+/* ── 드롭존 ── */
+/* 버튼은 왼편 고정, 텍스트는 그 옆 — 롤오버로 위치가 변하지 않는다 */
+.xefu-dropzone {
+	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 4px 14px;
+	padding: 16px 18px;
+	border: 1.5px dashed #cfd6e0;
+	border-radius: 14px;
+	background: #fafbfd;
+	text-align: left;
+	transition: border-color .15s, background .15s;
+}
+.xefu-dropzone .fileinput-button { flex: none; order: -1; }
+.xefu-dropzone-message { flex: 1 1 auto; min-width: 200px; margin: 0 !important; }
+.xefu-dropzone .upload_info { flex: 1 1 100%; margin: 2px 0 0 !important; }
+.xefu-progress-status, .xefu-progressbar { flex: 1 1 100%; }
+.in .xefu-dropzone,
+.hover .xefu-dropzone,
+.xefu-dropzone:hover {
+	border-color: #2677e3;
+	background: rgba(38, 119, 227, .05);
+}
+.xefu-dropzone p { margin: 8px 0 0; }
+.xefu-dropzone-message { font-size: 13.5px; color: #6b7684; }
+.xefu-dropzone .upload_info { font-size: 12px; color: #8b95a1; }
+.xefu-dropzone .upload_info .allowed_filesize,
+.xefu-dropzone .upload_info .allowed_filetypes { color: #6b7684; font-weight: 600; }
+
+/* 파일 선택 버튼 */
+.xefu-act-selectfile {
+	display: inline-flex !important;
+	align-items: center;
+	gap: 6px;
+	padding: 10px 20px !important;
+	border: 0 !important;
+	border-radius: 999px !important;
+	background: #2677e3 !important;
+	color: #fff !important;
+	font-size: 14px !important;
+	font-weight: 700;
+	line-height: 1 !important;
+	cursor: pointer;
+	box-shadow: 0 4px 12px -4px rgba(38, 119, 227, .5);
+	transition: transform .15s, box-shadow .15s, background .15s;
+}
+/* hover 시 위치 이동 금지 — 색만 변경 */
+.xefu-act-selectfile:hover {
+	background: #1c5fc0 !important;
+	box-shadow: 0 6px 14px -5px rgba(38, 119, 227, .55);
+}
+.xefu-act-selectfile span { color: #fff !important; }
+
+/* 진행 표시 */
+.xefu-progress-status { font-size: 13px; color: #2677e3; font-weight: 700; }
+.xefu-progressbar {
+	height: 8px !important;
+	margin-top: 10px;
+	border: 0 !important;
+	border-radius: 999px !important;
+	background: #e5e9f0 !important;
+	overflow: hidden;
+}
+.xefu-progressbar div {
+	height: 100% !important;
+	border-radius: 999px !important;
+	background: linear-gradient(90deg, #2677e3, #7b3ff2) !important;
+	transition: width .2s;
+}
+
+/* ── 컨트롤 바 ── */
+.xefu-controll {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	margin-top: 10px;
+	padding: 9px 4px;
+	font-size: 12.5px;
+	color: #8b95a1;
+}
+.xefu-controll > div { float: none !important; }
+input.xefu-btn,
+button.xefu-btn {
+	padding: 7px 13px !important;
+	height: auto !important;
+	line-height: 1 !important;
+	vertical-align: middle !important;
+	border: 1px solid #dde3ec !important;
+	border-radius: 9px !important;
+	background: #fff !important;
+	color: #4e5968 !important;
+	font-size: 12.5px !important;
+	font-weight: 600;
+	font-family: inherit !important;
+	cursor: pointer;
+	transition: border-color .13s, color .13s;
+}
+input.xefu-btn:hover,
+button.xefu-btn:hover { border-color: #2677e3 !important; color: #2677e3 !important; }
+.xefu-act-delete-selected:hover { border-color: #e5484d !important; color: #e5484d !important; }
+
+/* ── 파일 목록 ── */
+.xefu-list { margin-top: 4px; }
+.xefu-list-files li {
+	margin: 6px 0 !important;
+	padding: 10px 14px !important;
+	border: 1px solid #eef1f5 !important;
+	border-radius: 11px !important;
+	background: #fff;
+	font-size: 13.5px;
+	transition: border-color .13s, background .13s;
+	cursor: pointer;
+}
+.xefu-list-files li:hover { border-color: #cfd6e0 !important; }
+.xefu-list-files li.selected {
+	background: rgba(38, 119, 227, .06) !important;
+	border-color: rgba(38, 119, 227, .45) !important;
+	box-shadow: inset 0 0 0 1px rgba(38, 119, 227, .3);
+}
+.xefu-list-files .xefu-file-info span { color: #8b95a1; font-size: 12px; }
+
+/* ── 이미지 목록 ── */
+.xefu-list-images li {
+	position: relative !important;
+	border-radius: 12px !important;
+	overflow: hidden;
+	border: 2px solid transparent !important;
+	transition: border-color .13s;
+}
+.xefu-list-images li.selected { border-color: #2677e3 !important; }
+.xefu-list-images .xefu-thumbnail { border-radius: 9px; }
+/* 대표이미지 버튼: 썸네일 하단에 딱 맞게 오버레이 — 밖으로 튀어나가거나 잘리지 않는다 */
+.xefu-list-images .xefu-act-set-cover {
+	position: absolute !important;
+	left: 4px !important;
+	right: 4px !important;
+	bottom: 4px !important;
+	top: auto !important;
+	width: auto !important;
+	box-sizing: border-box;
+	padding: 4px 2px !important;
+	border: 0 !important;
+	border-radius: 7px !important;
+	background: rgba(17, 22, 30, .65) !important;
+	color: #fff !important;
+	font-size: 10.5px !important;
+	font-weight: 700;
+	text-align: center;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	backdrop-filter: blur(4px);
+}
+.xefu-is-cover-image .xefu-act-set-cover { background: #2677e3 !important; }
+
+/* 이미지 목록 하단 구분선: 라이트에선 은은하게, 다크 오버라이드는 아래에서 */
+.xefu-list-images { border-bottom-color: #eef1f5 !important; }
+
+/* 다크 모드 (official 레이아웃 등 data-theme 사용 환경) */
+[data-theme="dark"] .xefu-list-images { border-bottom-color: #2b3038 !important; }
+[data-theme="dark"] .xefu-container { color: #e4e7ec; }
+[data-theme="dark"] .xefu-dropzone { background: #1c1f26; border-color: #2b3038; }
+[data-theme="dark"] .in .xefu-dropzone,
+[data-theme="dark"] .hover .xefu-dropzone,
+[data-theme="dark"] .xefu-dropzone:hover { background: rgba(38, 119, 227, .1); border-color: #2677e3; }
+[data-theme="dark"] .xefu-list-files li { background: #1c1f26; border-color: #2b3038 !important; }
+[data-theme="dark"] input.xefu-btn,
+[data-theme="dark"] button.xefu-btn { background: #1c1f26 !important; border-color: #2b3038 !important; color: #9aa1ad !important; }
+[data-theme="dark"] .xefu-progressbar { background: #2b3038 !important; }

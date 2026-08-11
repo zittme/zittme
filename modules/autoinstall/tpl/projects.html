@@ -1,0 +1,90 @@
+<config autoescape="on" />
+
+<include target="header.html" />
+
+<div class="zmst">
+	<div class="zmst-head">
+		<div class="zmst-head-titles">
+			<span class="zmst-eyebrow">EXPERTS</span>
+			<h2 class="zmst-title">{$lang->expert_find}</h2>
+		</div>
+		<div class="zmst-account">
+			<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminProjectWrite')}">{$lang->expert_request_work}</a>
+			<!--@if($zittme_account)-->
+				<span class="zmst-account-name">
+					<img src="{\RX_BASEURL}common/img/logo.png" alt="" />
+					<strong>{$zittme_account->nick_name}</strong>
+				</span>
+				<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminDisconnect', 'from', 'experts')}">{$lang->store_disconnect_account}</a>
+			<!--@else-->
+				<a class="zmst-btn zmst-btn-outline" href="{$zittme_connect_url}">
+					<img src="{\RX_BASEURL}common/img/logo.png" alt="" />{$lang->store_connect_account}
+				</a>
+			<!--@end-->
+		</div>
+	</div>
+
+	<nav class="zmst-tabs">
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts')}">{$lang->expert_portfolio}</a>
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts', 'tab', 'expert')}">{$lang->expert_directory}</a>
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts', 'tab', 'project')}" class="on">{$lang->expert_projects}</a>
+	</nav>
+
+	<nav class="zmst-cats">
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts', 'tab', 'project')}" class="on"|cond="$expert_field === ''">{$lang->all}</a>
+		<!--@foreach($expert_fields as $f)-->
+			<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts', 'tab', 'project', 'field', $f)}" class="on"|cond="$expert_field === $f">{$f}</a>
+		<!--@endforeach-->
+		<span class="zmst-cats-sep"></span>
+		<!--// 기본은 모집중만 보여준다 -->
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts', 'tab', 'project', 'field', $expert_field, 'closed', $project_closed ? '' : 'Y')}" class="on"|cond="$project_closed">{$lang->expert_include_closed}</a>
+	</nav>
+
+	<!--@if($expert_result === null)-->
+		<p class="zmst-empty">{$lang->msg_expert_fetch_failed}</p>
+	<!--@else-->
+		<ul class="zmst-pj-list">
+			<!--@foreach($project_list as $pj)-->
+				<li class="zmst-pj-item">
+					<div class="zmst-item-top">
+						<span class="zmst-badge" loop="$pj->fields => $f">{$f}</span>
+						<!--@if($pj->status === 'open')-->
+							<span class="zmst-chip zmst-chip-ready">{$lang->expert_project_open}</span>
+						<!--@elseif($pj->status === 'matched')-->
+							<span class="zmst-chip zmst-chip-installed">{$lang->expert_project_matched}</span>
+						<!--@else-->
+							<span class="zmst-chip">{$lang->expert_project_closed}</span>
+						<!--@end-->
+						<!--// 예산: 둘 다 0 이면 협의 -->
+						<span class="zmst-price">
+							<!--@if($pj->budget_min > 0 || $pj->budget_max > 0)-->
+								&#8361;{number_format($pj->budget_min ?: $pj->budget_max)}<!--@if($pj->budget_max > $pj->budget_min)-->~<!--@end-->
+							<!--@else-->
+								{$lang->expert_budget_negotiable}
+							<!--@end-->
+						</span>
+					</div>
+
+					<a class="zmst-item-link" href="{$pj->url}" target="_blank" rel="noopener">
+						<strong class="zmst-pj-title">{$pj->title}</strong>
+					</a>
+					<p class="zmst-summary" cond="$pj->summary">{$pj->summary}</p>
+
+					<p class="zmst-meta">
+						<span class="zmst-author">{$pj->nick_name}</span>
+						<span cond="$pj->deadline">{$lang->expert_project_deadline} {substr($pj->deadline, 0, 4)}.{substr($pj->deadline, 4, 2)}.{substr($pj->deadline, 6, 2)}</span>
+						<span>{$lang->expert_project_applicants} {number_format($pj->applicant_count)}</span>
+						<a class="zmst-link-out" href="{$pj->url}" target="_blank" rel="noopener">{$lang->expert_view_on_zittme}</a>
+					</p>
+				</li>
+			<!--@endforeach-->
+			<li cond="!count($project_list)" class="zmst-empty">{$lang->msg_no_result}</li>
+		</ul>
+
+		<div cond="$expert_total_page > 1" class="zmst-pages">
+			<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts', 'tab', 'project', 'field', $expert_field, 'page', $expert_page - 1)}" cond="$expert_page > 1">&laquo;</a>
+			<strong>{$expert_page} / {$expert_total_page}</strong>
+			<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts', 'tab', 'project', 'field', $expert_field, 'page', $expert_page + 1)}" cond="$expert_page < $expert_total_page">&raquo;</a>
+		</div>
+	<!--@end-->
+</div>

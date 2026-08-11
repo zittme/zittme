@@ -1,0 +1,86 @@
+<include target="header.html" />
+<load target="../../module/tpl/js/module_list.js" />
+
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/integration_search/tpl/index/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+
+<form ruleset="insertConfig" action="./" method="post" class="x_form-horizontal">
+	<input type="hidden" name="act" value="procIntegration_searchAdminInsertConfig" />
+	<input type="hidden" name="module" value="admin" />
+	<input type="hidden" name="xe_validator_id" value="modules/integration_search/tpl/index/1" />
+
+	<div class="x_control-group">
+		<label for="sample_code" class="x_control-label">{$lang->sample_code}</label>
+		<div class="x_controls" style="margin-right:14px">
+			<textarea id="sample_code" readonly style="width:100%;height:120px;cursor:text;font-family:'Courier New', Courier, monospace">{$sample_code}</textarea>
+			<p class="x_help-block">{$lang->about_sample_code}</p>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label for="skin" class="x_control-label">{$lang->skin}</label>
+		<div class="x_controls">
+			<select name="skin" id="skin">
+				<option loop="$skin_list => $key, $val"  value="{$key}" selected="selected"|cond="$config->skin == $key">{$val->title}</option>
+			</select>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label for="mskin" class="x_control-label">{$lang->mobile_skin}</label>
+		<div class="x_controls">
+			<select name="mskin" id="mskin">
+				<option loop="$mskin_list => $key, $val"  value="{$key}" selected="selected"|cond="$config->mskin == $key">{$val->title}</option>
+			</select>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label class="x_control-label">{$lang->integration_search_block_robots}</label>
+		<div class="x_controls">
+			<label for="block_robots_Y" class="x_inline">
+				<input type="radio" name="block_robots" id="block_robots_Y" value="Y" checked="checked"|cond="!isset($config->block_robots) || $config->block_robots" /> {$lang->cmd_yes}
+			</label>
+			<label for="block_robots_N" class="x_inline">
+				<input type="radio" name="block_robots" id="block_robots_N" value="N" checked="checked"|cond="isset($config->block_robots) && !$config->block_robots" /> {$lang->cmd_no}
+			</label>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label class="x_control-label">{$lang->integration_search_target_types}</label>
+		<div class="x_controls">
+			<label class="x_inline">
+				<input type="checkbox" name="target_types[]" value="document" checked="checked"|cond="!isset($config->target_types) || !empty($config->target_types['document'])" /> {$lang->document}
+			</label>
+			<label class="x_inline">
+				<input type="checkbox" name="target_types[]" value="comment" checked="checked"|cond="!isset($config->target_types) || !empty($config->target_types['comment'])" /> {$lang->comment}
+			</label>
+			<label class="x_inline">
+				<input type="checkbox" name="target_types[]" value="multimedia" checked="checked"|cond="!isset($config->target_types) || !empty($config->target_types['multimedia'])" /> {$lang->multimedia}
+			</label>
+			<label class="x_inline">
+				<input type="checkbox" name="target_types[]" value="file" checked="checked"|cond="!isset($config->target_types) || !empty($config->target_types['file'])" /> {$lang->file}
+			</label>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label class="x_control-label">{$lang->integration_search_target_modules}</label>
+		<div class="x_controls">
+			<select name="target">
+				<option value="include">{$lang->include_search_target}</option>
+				<option value="exclude" selected="selected"|cond="$config->target=='exclude'">{$lang->exclude_search_target}</option>
+			</select>
+
+			<input type="hidden" name="target_module_srl" id="target_module_srl" value="{$config->target_module_srl}" />
+			<select class="modulelist_selected" size="8" multiple="multiple" style="display:block;vertical-align:top;margin:5px 0"></select>
+			<a href="#" id="__module_srl_list_target_module_srl" class="x_btn moduleTrigger" data-multiple="true" style="margin:0 -5px 0 0;border-radius:2px 0 0 0px">{$lang->cmd_add}</a>
+			<button type="button" class="x_btn modulelist_del" style="border-radius:0 2px 2px 0">{$lang->cmd_delete}</button>
+			<p class="x_help-block"><strong>{$lang->about_target_module}</strong></p>
+			<script>
+				xe.registerApp(new xe.ModuleListManager('target_module_srl'));
+			</script>
+		</div>
+	</div>
+
+	<div class="btnArea">
+		<button class="x_btn x_btn-primary" type="submit">{$lang->cmd_registration}</button>
+	</div>
+</form>

@@ -1,0 +1,159 @@
+@version(2)
+			<div class="shp-badges" style="margin-bottom:8px">
+				@if ($item->is_recommend === 'Y')<span class="shp-badge">{{ $lang->shop_badge_recommend }}</span>@endif
+				@foreach (\Zittme\Modules\Commerce\Models\Badge::ofItem($item, $shop_badge_map ?? []) as $shp_bg)
+				@php
+					$shp_bg_style = '';
+					if (!empty($shp_bg->bg_color)) { $shp_bg_style .= 'background:' . $shp_bg->bg_color . ';'; }
+					if (!empty($shp_bg->color)) { $shp_bg_style .= 'color:' . $shp_bg->color . ';'; }
+				@endphp
+				<span class="shp-badge" style="{{ $shp_bg_style }}">{{ $shp_bg->title }}</span>
+				@endforeach
+				@if ($item->is_new === 'Y')<span class="shp-badge">NEW</span>@endif
+				@if ($item->is_adult === 'Y')<span class="shp-badge is-adult">{{ $lang->shop_adult_item }}</span>@endif
+				@if ($item->tax_type === 'free')<span class="shp-badge">{{ $lang->shop_tax_free }}</span>@endif
+			</div>
+			<h1>{{ $item->item_name }}</h1>
+			@if (!empty($item->summary))
+			<p class="shp-detail-summary">{{ $item->summary }}</p>
+			@endif
+			<p class="shp-detail-price">
+				@if ($item->sale_price > 0 && $item->sale_price < $item->price)
+				<s>{{ number_format($item->price) }}</s>{{ number_format($effective_price) }}원
+				@else
+				{{ number_format($effective_price) }}원
+				@endif
+			</p>
+
+			@php
+			$shp_ship_type = $item->ship_fee_type ?? 'default';
+			$shp_ship_fee = $shp_ship_type === 'fixed' ? (int)$item->ship_fee : (int)($shop_config->default_ship_fee ?? 0);
+			$shp_free_over = (int)($shop_config->free_ship_over ?? 0);
+			@endphp
+			@if (!empty($credit_rate) && $credit_rate > 0)
+			<div class="shp-ship-info shp-credit-info">
+				<span class="shp-ship-label">{{ $lang->shop_credit_benefit ?? '적립 혜택' }}</span>
+				<span>구매금액의 {{ rtrim(rtrim(number_format($credit_rate, 2), '0'), '.') }}% 적립 <small id="shpCreditEarn" data-credit-rate="{{ $credit_rate }}"></small></span>
+			</div>
+			@endif
+			<div class="shp-ship-info">
+				<span class="shp-ship-label">{{ $lang->shop_ship_fee ?? '배송비' }}</span>
+				<span>
+					@if ($shp_ship_type === 'free' || $shp_ship_fee <= 0)
+					{{ $lang->shop_ship_free ?? '무료배송' }}
+					@else
+					{{ number_format($shp_ship_fee) }}원
+					@if ($shp_free_over > 0) <small>({{ number_format($shp_free_over) }}원 이상 구매 시 무료)</small>@endif
+					@endif
+				</span>
+			</div>
+
+			@if (!$purchasable)
+			<p class="shp-warn">{{ $lang->shop_not_purchasable }}</p>
+			@elseif (!$adult_ok)
+			<p class="shp-warn">{{ $lang->shop_adult_gate }}</p>
+			@else
+			<form action="{{ getUrl('') }}" method="post" id="shpBuyForm">
+				<input type="hidden" name="act" value="procCommerceCartAdd" />
+				<input type="hidden" name="mid" value="{{ $mid }}" />
+				<input type="hidden" name="item_srl" value="{{ $item->item_srl }}" />
+
+				@if (!empty($shop_axes) && count($shp_basic_opts))
+				<div class="shp-axes">
+					@foreach ($shop_axes as $shp_ax)
+					<div class="shp-row shp-axis-row" data-axis-row="{{ $shp_ax->name }}">
+						<label>{{ $shp_ax->name }}<span class="shp-axis-picked" data-picked></span></label>
+						@if ($shp_ax->style === 'select')
+						<select class="shp-axis" data-axis="{{ $shp_ax->name }}">
+							<option value="">{{ $lang->shop_select_option ?? '선택해주세요' }}</option>
+							@foreach ($shp_ax->items as $shp_av)
+							<option value="{{ $shp_av->value }}">{{ $shp_av->value }}</option>
+							@endforeach
+						</select>
+						@else
+						<input type="hidden" class="shp-axis" data-axis="{{ $shp_ax->name }}" value="" />
+						<div class="shp-chips @if ($shp_ax->style === 'color') is-color @endif">
+							@foreach ($shp_ax->items as $shp_av)
+							<button type="button" class="shp-chip @if ($shp_ax->style === 'color' && $shp_av->color !== '') is-swatch @endif" data-chip="{{ $shp_av->value }}" title="{{ $shp_av->value }}"
+								@if ($shp_ax->style === 'color' && $shp_av->color !== '') style="--chip: {{ $shp_av->color }}" @endif>
+								@if ($shp_ax->style === 'color' && $shp_av->color !== '')<span class="shp-chip-dot"></span>@else{{ $shp_av->value }}@endif
+							</button>
+							@endforeach
+						</div>
+						@endif
+					</div>
+					@endforeach
+				</div>
+				@endif
+
+				@if (count($shp_basic_opts))
+				<div class="shp-row">
+					<label>{{ $lang->shop_option ?? '옵션' }}<button type="button" class="shp-opt-tip" data-tip="{{ $lang->shop_option_help }}" aria-label="옵션 안내"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.4"/><rect x="7.3" y="7" width="1.4" height="4.4" rx="0.7" fill="currentColor"/><rect x="7.3" y="4.2" width="1.4" height="1.6" rx="0.7" fill="currentColor"/></svg></button></label>
+					<select class="shp-opt-add" data-opt-type="basic">
+						<option value="0" data-price-add="0" data-label="" @if ($shp_base_soldout) disabled @endif>
+							{{ $lang->shop_option_base ?? '선택 안 함' }}
+							@if ($shp_base_soldout)- {{ $lang->shop_soldout }}@endif
+						</option>
+						@foreach ($shp_basic_opts as $opt)
+						<option value="{{ $opt->option_srl }}" data-price-add="{{ (int)$opt->price_add }}" data-label="{{ $opt->option_label }}" data-combo="{{ $opt->combo ?? '' }}" @if((int)$opt->stock <= 0) disabled @endif>
+							{{ $opt->option_label }}
+							@if ($opt->price_add != 0)({{ $opt->price_add > 0 ? '+' : '' }}{{ number_format($opt->price_add) }}원)@endif
+							@if ((int)$opt->stock <= 0)- {{ $lang->shop_soldout }}@endif
+						</option>
+						@endforeach
+					</select>
+				</div>
+				@endif
+
+				@if (count($shp_extra_opts))
+				<div class="shp-row">
+					<label>{{ $lang->shop_add_option ?? '추가상품' }}<button type="button" class="shp-opt-tip" data-tip="{{ $lang->shop_add_option_help }}" aria-label="추가상품 안내"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.4"/><rect x="7.3" y="7" width="1.4" height="4.4" rx="0.7" fill="currentColor"/><rect x="7.3" y="4.2" width="1.4" height="1.6" rx="0.7" fill="currentColor"/></svg></button></label>
+					<select class="shp-opt-add" data-opt-type="extra">
+						<option value="">{{ $lang->shop_select_option ?? '옵션을 선택해주세요' }}</option>
+						@foreach ($shp_extra_opts as $opt)
+						<option value="{{ $opt->option_srl }}" data-price-add="{{ (int)$opt->price_add }}" data-label="{{ $opt->option_label }}" @if((int)$opt->stock <= 0) disabled @endif>
+							{{ $opt->option_label }}
+							({{ number_format($opt->price_add) }}원)
+							@if ((int)$opt->stock <= 0)- {{ $lang->shop_soldout }}@endif
+						</option>
+						@endforeach
+					</select>
+				</div>
+				@endif
+
+				<div class="shp-select-box" id="shpSelectBox"
+					data-base-price="{{ (int)$effective_price }}"
+					data-item-name="{{ $item->item_name }}"
+					data-base-soldout="{{ $shp_base_soldout ? 'Y' : 'N' }}"
+					data-has-basic="{{ $shp_has_basic ? 'Y' : 'N' }}"
+					data-min-qty="{{ $item->min_qty > 0 ? (int)$item->min_qty : 1 }}"
+					data-max-qty="{{ (int)$item->max_qty }}">
+					<div id="shpRows"></div>
+					@if ($item->min_qty > 0 || $item->max_qty > 0)
+					<p class="shp-qty-limit">
+						@if ($item->min_qty > 0){{ sprintf($lang->shop_min_qty, $item->min_qty) }}@endif
+						@if ($item->max_qty > 0){{ sprintf($lang->shop_max_qty, $item->max_qty) }}@endif
+					</p>
+					@endif
+					<div class="shp-total-row">
+						<span id="shpTotalQty"></span>
+						<span class="shp-total-right">
+							{{ $lang->shop_total_amount ?? '총 금액' }}
+							<button type="button" class="shp-tip-btn" id="shpTipBtn" aria-label="{{ $lang->shop_ship_note_title ?? '총금액 안내' }}">
+								<svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.4"/><rect x="7.3" y="7" width="1.4" height="4.4" rx="0.7" fill="currentColor"/><rect x="7.3" y="4.2" width="1.4" height="1.6" rx="0.7" fill="currentColor"/></svg>
+							</button>
+							<strong id="shpTotalPrice"></strong>
+						</span>
+					</div>
+					<div class="shp-ship-note" id="shpShipNote" hidden>
+						<strong>{{ $lang->shop_ship_note_title ?? '총금액 안내' }}</strong>
+						<p>{{ $lang->shop_ship_note ?? '총 상품금액에 배송비는 포함되어 있지 않습니다. 결제 시 배송비가 추가될 수 있습니다.' }}</p>
+					</div>
+				</div>
+
+				<div class="shp-actions">
+					<button type="submit" name="direct" value="Y" class="shp-btn shp-btn-primary" id="shpBuyBtn">{{ $lang->shop_buy_now }}</button>
+					<button type="submit" class="shp-btn shp-btn-ghost" id="shpCartBtn">{{ $lang->shop_add_cart }}</button>
+				</div>
+			</form>
+			@endif

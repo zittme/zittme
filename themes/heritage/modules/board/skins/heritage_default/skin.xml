@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">헤리티지 기본</title>
+	<title xml:lang="en">Heritage Default</title>
+	<description xml:lang="ko">헤리티지 테마의 게시판 스킨입니다. XE 기본 스킨의 구성을 물려받아 템플릿 v2로 새로 쓰고, 목록·본문·댓글 디자인을 현재 기준으로 다시 잡았습니다.</description>
+	<description xml:lang="en">Board skin of the Heritage theme — the classic XE default skin's structure rewritten on template v2 with a contemporary design.</description>
+	<version>1.0.0</version>
+	<date>2026-08-04</date>
+	<author email_address="zittme-contact@zzan.me" link="https://zitt.me">
+		<name xml:lang="ko">ZZAN Studio</name>
+		<name xml:lang="en">ZZAN Studio</name>
+	</author>
+	<license>GPLv2</license>
+	<responsive>true</responsive>
+	<colorset>
+		<color name="normal">
+			<title xml:lang="ko">기본</title>
+			<title xml:lang="en">Default</title>
+		</color>
+	</colorset>
+	<extra_vars>
+		<var name="hr_board_title" type="text">
+			<title xml:lang="ko">게시판 타이틀</title>
+			<title xml:lang="en">Board title</title>
+			<description xml:lang="ko">게시판 상단에 표시할 제목입니다. 비워두면 헤더가 표시되지 않습니다. 제목을 누르면 게시판 첫 화면으로 이동합니다.</description>
+			<description xml:lang="en">Shown above the board. Leave empty to hide the header. Clicking the title returns to the board's first page.</description>
+		</var>
+		<var name="hr_board_desc" type="text">
+			<title xml:lang="ko">게시판 설명</title>
+			<title xml:lang="en">Board description</title>
+			<description xml:lang="ko">타이틀 아래 한 줄로 표시됩니다.</description>
+			<description xml:lang="en">Shown in one line under the title.</description>
+		</var>
+		<var name="hr_list_style" type="select" default="list">
+			<title xml:lang="ko">목록 형태</title>
+			<title xml:lang="en">List style</title>
+			<options value="list"><title xml:lang="ko">목록형</title><title xml:lang="en">List</title></options>
+			<options value="card"><title xml:lang="ko">카드형 (썸네일)</title><title xml:lang="en">Card (thumbnail)</title></options>
+			<options value="webzine"><title xml:lang="ko">웹진형 (썸네일 + 요약)</title><title xml:lang="en">Webzine (thumbnail + summary)</title></options>
+			<options value="faq"><title xml:lang="ko">FAQ형 (질문 클릭 시 답변 펼침)</title><title xml:lang="en">FAQ (accordion)</title></options>
+		</var>
+		<var name="hr_show_photo" type="select" default="Y">
+			<title xml:lang="ko">프로필 사진 노출</title>
+			<title xml:lang="en">Show profile photo</title>
+			<options value="Y"><title xml:lang="ko">노출</title><title xml:lang="en">On</title></options>
+			<options value="N"><title xml:lang="ko">숨김</title><title xml:lang="en">Off</title></options>
+		</var>
+		<var name="hr_show_sign" type="select" default="Y">
+			<title xml:lang="ko">서명 노출</title>
+			<title xml:lang="en">Show signature</title>
+			<options value="Y"><title xml:lang="ko">노출</title><title xml:lang="en">On</title></options>
+			<options value="N"><title xml:lang="ko">숨김</title><title xml:lang="en">Off</title></options>
+		</var>
+		<var name="hr_show_files" type="select" default="Y">
+			<title xml:lang="ko">본문 하단 첨부파일 노출</title>
+			<title xml:lang="en">Show attachments under the content</title>
+			<description xml:lang="ko">본문 아래 첨부파일 목록을 표시할지 정합니다. 숨겨도 본문 안에 넣은 이미지는 그대로 보입니다.</description>
+			<description xml:lang="en">Whether to list attached files under the content. Images embedded in the content are shown either way.</description>
+			<options value="Y"><title xml:lang="ko">노출</title><title xml:lang="en">On</title></options>
+			<options value="N"><title xml:lang="ko">숨김</title><title xml:lang="en">Off</title></options>
+		</var>
+		<var name="hr_use_vote_up" type="select" default="Y">
+			<title xml:lang="ko">추천 버튼 사용</title>
+			<title xml:lang="en">Use vote up button</title>
+			<options value="Y"><title xml:lang="ko">사용</title><title xml:lang="en">On</title></options>
+			<options value="N"><title xml:lang="ko">사용 안 함</title><title xml:lang="en">Off</title></options>
+		</var>
+		<var name="hr_use_vote_down" type="select" default="N">
+			<title xml:lang="ko">비추천 버튼 사용</title>
+			<title xml:lang="en">Use vote down button</title>
+			<options value="Y"><title xml:lang="ko">사용</title><title xml:lang="en">On</title></options>
+			<options value="N"><title xml:lang="ko">사용 안 함</title><title xml:lang="en">Off</title></options>
+		</var>
+	</extra_vars>
+</skin>

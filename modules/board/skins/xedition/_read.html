@@ -1,0 +1,135 @@
+<div class="board_read">
+	<!-- READ HEADER -->
+	<div class="read_header">
+		<h1>
+			<a href="{getUrl('', 'mid', $mid, 'category', $oDocument->get('category_srl'))}" class="category" cond="$module_info->use_category=='Y' && $oDocument->get('category_srl')">{$category_list[$oDocument->get('category_srl')]->title}</a>
+			<a href="{$oDocument->getUrl()}">{$oDocument->getTitle()}</a>
+		</h1>
+		<p class="meta">
+			<span class="author" cond="($module_info->display_author ?? 'Y') !== 'N'">
+				<i class="xi-user"></i> <a cond="$oDocument->getMemberSrl() <= 0 && $oDocument->isExistsHomepage()" href="{$oDocument->getHomepageUrl()}" target="_blank" rel="noopener" class="author">{$oDocument->getNickName()}</a>
+				<block cond="$oDocument->getMemberSrl() <= 0 && !$oDocument->isExistsHomepage()">{$oDocument->getNickName()}</block>
+				<a cond="$oDocument->getMemberSrl() > 0" href="#popup_menu_area" class="member_{$oDocument->get('member_srl')} author" onclick="return false">{$oDocument->getNickName()}</a>
+			</span>
+			<span class="time">
+				<i class="xi-time"></i> {$oDocument->getRegdate('Y.m.d H:i')}
+			</span>
+			<span class="read_count">
+				<i class="xi-eye"></i> {$lang->readed_count} : {$oDocument->get('readed_count')}
+			</span>
+			<span class="vote_count" cond="$oDocument->get('voted_count')!=0">
+				<i class="xi-thumbs-up"></i>{$lang->cmd_vote}:{$oDocument->get('voted_count')}
+			</span>
+		</p>
+	</div>
+	<!-- /READ HEADER -->
+	<!-- Extra Output -->
+	<div class="exOut" cond="$oDocument->isExtraVarsExists() && $oDocument->isAccessible()">
+		<table border="1" cellspacing="0" summary="Extra Form Output">
+			<tr loop="$oDocument->getExtraVars() => $key,$val" cond="$val->hasValue()">
+				<th scope="row">{$val->name}</th>
+				<td>{$val->getValueHTML()}&nbsp;</td>
+			</tr>
+		</table>
+	</div>
+	<!-- /Extra Output -->
+	<!-- READ BODY -->
+	<div class="read_body">
+		<!--@if(!$oDocument->isAccessible())-->
+		<form action="./" method="get" onsubmit="return procFilter(this, input_password)" class="secretForm">
+			<input type="hidden" name="mid" value="{$mid}" />
+			<input type="hidden" name="page" value="{$page}" />
+			<input type="hidden" name="document_srl" value="{$oDocument->document_srl}" />
+			<p><label for="cpw">{$lang->msg_is_secret} {$lang->msg_input_password}</label></p>
+			<p><input type="password" name="password" id="cpw" class="iText" /><input type="submit" value="{$lang->cmd_input}" class="btn" />
+			</p>
+		</form>
+		<!--@else-->
+		{$oDocument->getContent(false)}
+		<!--@end-->
+	</div>
+	<!-- /READ BODY -->
+	<!-- READ FOOTER -->
+	<div class="read_footer">
+		<div class="sns">
+		    <ul>
+		    <li>
+		        <a href="https://www.facebook.com/" class="facebook tooltip"><i class="xi-facebook"></i></a>
+		    </li>
+		    <li>
+		        <a href="#" class="google"><i class="xi-google-plus"></i></a>
+		    </li>
+		    <li>
+		        <a href="https://twitter.com/" class="twitter"> <i class="xi-twitter"></i></a>
+		    </li>
+		    </ul>
+			<script>
+				var sTitle = {json_encode($oDocument->getTitleText())};
+				jQuery(function($){
+					$('.twitter').snspost({
+						type : 'twitter',
+						content : sTitle + ' {$oDocument->getPermanentUrl()}'
+					});
+					$('.facebook').snspost({
+						type : 'facebook',
+						content : sTitle
+					});
+					$('.google').snspost({
+						type : 'google',
+						content : sTitle
+					});
+				});
+			</script>
+		</div>
+		<div class="vote">
+			<ul>
+				<li cond="$board_features->document->vote_up">
+					<a cond="$oDocument->getMyVote() === false || $oDocument->getMyVote() < 0" href="#" onclick="doCallModuleAction('document','procDocumentVoteUp','{$oDocument->document_srl}');return false;" class="voted"> <i class="xi-thumbs-up"></i><br>{$lang->cmd_vote} {$oDocument->get('voted_count')}</a>
+					<a cond="$oDocument->getMyVote() > 0" href="#" onclick="doCallModuleAction('document','procDocumentVoteUpCancel','{$oDocument->document_srl}');return false;" class="voted"> <i class="xi-thumbs-up"></i><br>{$lang->cmd_vote} {$oDocument->get('voted_count')}</a>
+				</li>
+				<li cond="$board_features->document->vote_down">
+					<a cond="$oDocument->getMyVote() === false || $oDocument->getMyVote() > 0" href="#" onclick="doCallModuleAction('document','procDocumentVoteDown','{$oDocument->document_srl}');return false;" class="voted"> <i class="xi-thumbs-down"></i><br>{$lang->cmd_vote_down} {$oDocument->get('blamed_count')}</a>
+					<a cond="$oDocument->getMyVote() < 0" href="#" onclick="doCallModuleAction('document','procDocumentVoteDownCancel','{$oDocument->document_srl}');return false;" class="voted"> <i class="xi-thumbs-down"></i><br>{$lang->cmd_vote_down} {$oDocument->get('blamed_count')}</a>
+				</li>
+			</ul>
+		</div>
+		<div cond="$oDocument->hasUploadedFiles()" class="fileList">
+			<button type="button" class="toggleFile" onclick="jQuery(this).next('ul.files').toggle();"><i class="xi-diskette"></i> {$lang->uploaded_file} [<strong>{$oDocument->get('uploaded_count')}</strong>]</button>
+			<ul class="files">
+				<li loop="$oDocument->getUploadedFiles()=>$key,$file"><a href="{getUrl('')}{$file->download_url}">{$file->source_filename} <span class="fileSize">[File Size:{FileHandler::filesize($file->file_size)}/Download:{number_format($file->download_count)}]</span></a></li>
+			</ul>
+		</div>
+		<div class="tns">
+			{@ $tag_list = $oDocument->get('tag_list') }
+			<span class="tags" cond="$tag_list">
+				<i class="xi-tags"></i>
+				<!--@foreach($tag_list as $tag)-->
+					<a href="{getUrl('', 'mid', $mid, 'search_target', 'tag', 'search_keyword', $tag)}" class="tag" rel="tag">{escape($tag, false)}</a><span>,</span>
+				<!--@end-->
+			</span>
+			<a class="document_{$oDocument->document_srl} action" href="#popup_menu_area" onclick="return false">{$lang->cmd_document_do}</a>
+		</div>
+		<div class="sign" cond="isset($module_info->display_sign) && $module_info->display_sign != 'N' && ($oDocument->getProfileImage() || $oDocument->getSignature())">
+			<img cond="$oDocument->getProfileImage()" src="{$oDocument->getProfileImage()}" alt="Profile" class="pf" />
+			<div cond="$oDocument->getSignature()" class="tx">{$oDocument->getSignature()}</div>
+		</div>
+		<div class="btnArea">
+			<!--@if($board_features->document->vote_log)-->
+			<a class="btn" href="{getUrl('', 'mid', $mid, 'act', 'dispBoardVoteLog', 'target_srl', $oDocument->document_srl, 'target', 'document')}"><i class="xi-list-ul"></i>{$lang->cmd_document_vote_user}</a>
+			<!--@endif-->
+			<!--@if($module_info->update_log == 'Y' && $grant->can('update_view'))-->
+			<a cond="$update_view" class="btn" href="{getUrl('', 'mid', $mid, 'act', 'dispBoardUpdateLog', 'document_srl', $oDocument->document_srl)}"><i class="xi-list-ul"></i>{$lang->update_log}</a>
+			<!--@endif-->
+			<a cond="$oDocument->isEditable()" class="btn" href="{getUrl('', 'mid', $mid, 'act', 'dispBoardWrite', 'document_srl', $oDocument->document_srl)}"><i class="xi-eraser"></i>{$lang->cmd_modify}</a>
+			<a cond="$oDocument->isEditable()" class="btn" href="{getUrl('', 'mid', $mid, 'act', 'dispBoardDelete', 'document_srl', $oDocument->document_srl)}"><i class="xi-trash"></i>{$lang->cmd_delete}</a>
+			<span class="etc">
+				<a href="{getUrl('document_srl', '', 'comment_srl', '')}" class="btn"><i class="xi-list-ul-l"></i>{$lang->cmd_list}</a>
+			</span>
+		</div>
+	</div>
+	<!-- /READ FOOTER -->
+</div>
+<block cond="$oDocument->allowTrackback()">
+	<include target="_trackback.html" />
+</block>
+<include target="_comment.html" />

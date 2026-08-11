@@ -1,0 +1,110 @@
+@charset "utf-8";
+
+/**
+ * 팝업 창 보정 (common/tpl/popup_layout.html)
+ *
+ * 팝업은 창 폭이 늘 960px 미만이라 관리 화면의 좁은 화면 규칙이 걸린다.
+ * 그 규칙이 표를 가로 스크롤 블록으로 바꾸고 폼을 세로로 눕혀 팝업이 깨진다.
+ * 여기서는 그 부분만 되돌린다.
+ *
+ * 주의: 팝업 화면 중에는 모듈이 자기 CSS 를 따로 싣는 것이 있다(위젯 스타일,
+ * 우편번호 검색 등). 제목·배경처럼 범위가 넓은 규칙을 여기에 두면 그런 화면을
+ * 덮어 버리므로, 아래 규칙은 팝업 골격과 폼·표에만 한정한다.
+ */
+
+/* ── 팝업 껍데기 ── */
+body .x.popup {
+	/* 크기 계산 스크립트가 인라인 width 를 남기는 경우가 있어 되돌린다 */
+	width: 100% !important;
+	max-width: none !important;
+	box-sizing: border-box;
+	padding: 22px 24px 24px;
+}
+
+/* ── 좁은 화면 규칙 되돌리기 (팝업은 원래 작은 창이다) ── */
+@media screen and (max-width: 960px) {
+	.x.popup .x_table {
+		display: table;
+		width: 100%;
+		overflow-x: visible;
+		white-space: normal;
+	}
+	.x.popup .x_table thead th,
+	.x.popup .x_table td { white-space: normal; }
+
+	.x.popup .x_form-horizontal .x_control-group,
+	.x.popup .x_control-group {
+		flex-direction: row;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		gap: 8px 14px;
+	}
+	.x.popup .x_control-label {
+		flex: 0 0 120px;
+		max-width: 120px;
+		padding-top: 8px;
+	}
+	.x.popup .x_controls { flex: 1 1 auto; min-width: 0; }
+}
+
+/* ── 폼 ── */
+.x.popup .x_control-group { border-bottom: 0; }
+.x.popup .x_controls > input[type="text"],
+.x.popup .x_controls > input[type="password"],
+.x.popup .x_controls > input[type="email"],
+.x.popup .x_controls > textarea { width: 100%; box-sizing: border-box; }
+.x.popup .x_controls > input.x_input-mini,
+.x.popup .x_controls > input.x_input-small,
+.x.popup .x_controls > input.x_input-medium,
+.x.popup .x_controls > input.x_input-large { width: auto; }
+
+/* 입력칸 + 버튼이 한 줄에 붙는 형태 (대상 페이지 선택 등) */
+.x.popup .x_input-append { display: flex; align-items: stretch; width: 100%; }
+.x.popup .x_input-append input[type="text"] { flex: 1 1 auto; min-width: 0; width: auto; }
+.x.popup .x_input-append .x_btn { flex: 0 0 auto; white-space: nowrap; }
+
+/* 셀렉트 옆에 버튼이 오는 줄 (모듈 선택기의 검색 등) */
+.x.popup .x_controls > select:not(:only-child) { width: auto; max-width: calc(100% - 110px); vertical-align: middle; }
+.x.popup .x_controls > select:not(:only-child) + .x_btn,
+.x.popup .x_controls > select:not(:only-child) + input[type="submit"] { margin-left: 8px; vertical-align: middle; }
+
+/* ── 표 ── */
+.x.popup .x_table { width: 100%; }
+.x.popup .x_table input[type="text"],
+.x.popup .x_table select,
+.x.popup .x_table textarea { width: 100%; box-sizing: border-box; }
+
+/* ── 모달 골격 ── */
+.x.popup .x_modal-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 0 14px; border-bottom: 1px solid var(--zm-line); }
+.x.popup .x_modal-header h1 { margin: 0; font-size: 18px; }
+.x.popup .x_modal-header .close_window { font-size: 20px; line-height: 1; color: var(--zm-ink-faint); text-decoration: none; }
+.x.popup .x_modal-body { padding: 6px 0 0; border: 0; overflow-x: hidden; }
+.x.popup .x_modal-body textarea,
+.x.popup .x_modal-body input[type="text"],
+.x.popup .x_modal-body select { max-width: 100%; box-sizing: border-box; }
+.x.popup .x_modal-footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	margin-top: 18px;
+	padding: 14px 0 0;
+	border-top: 1px solid var(--zm-line);
+	background: transparent;
+	box-shadow: none;
+	text-align: left;
+}
+.x.popup .x_modal-footer .x_btn-group { display: inline-flex; gap: 8px; float: none; }
+
+/* 한 줄에 붙어야 하는 입력 묶음 (예: 캐시 시간 + 단위)
+ * 각각이 가로를 다 차지해 두 줄로 갈라지고 셀렉트가 눌려 보이던 것 */
+.x.popup .zwc-inline { display: flex; align-items: center; gap: 8px; }
+.x.popup .zwc-inline input[type="number"],
+.x.popup .zwc-inline input[type="text"] { flex: 1 1 auto; min-width: 0; width: auto; }
+.x.popup .zwc-inline select { flex: 0 0 auto; width: auto; min-width: 90px; }
+
+/* 접이식 항목 상자(추출 대상, 정렬, 썸네일 등) 사이 여백 */
+.x.popup .section,
+.x.popup section.section { margin: 0 0 14px; }
+.x.popup .section:last-child,
+.x.popup section.section:last-child { margin-bottom: 0; }

@@ -1,0 +1,24 @@
+<query id="getSiteModules" action="select">
+    <tables>
+        <table name="modules" />
+        <table name="module_categories" alias="module_categories" type="left join">
+            <conditions>
+                <condition operation="equal" column="module_categories.module_category_srl" default="modules.module_category_srl" />
+            </conditions>
+        </table>
+    </tables>
+    <columns>
+        <column name="modules.domain_srl" />
+        <column name="modules.module" />
+        <column name="modules.module_category_srl" />
+        <column name="modules.layout_srl" />
+        <column name="modules.mid" />
+        <column name="modules.browser_title" />
+        <column name="modules.module_srl" />
+        <column name="module_categories.title" alias="category" />
+    </columns>
+    <navigation>
+        <index  var="sort_index1" default="modules.module" order="asc" />
+        <index  var="sort_index2" default="modules.mid" order="asc" />
+    </navigation>
+</query>

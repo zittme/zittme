@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<query id="updateMemberSnsIdentity" action="update">
+	<tables>
+		<table name="member" />
+	</tables>
+	<columns>
+		<column name="user_id" var="user_id" />
+		<column name="email_address" var="email_address" />
+		<column name="email_id" var="email_id" />
+		<column name="email_host" var="email_host" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="member_srl" var="member_srl" notnull="notnull" filter="number" />
+	</conditions>
+</query>

@@ -1,0 +1,171 @@
+<config autoescape="on" />
+
+<include target="header.html" />
+
+<div class="zmst zmst-detail">
+	<p class="zmst-back">
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminIndex', 'type', $type)}">&larr; {$lang->store}</a>
+	</p>
+
+	<!--// 머리 — 앱 아이콘 + 이름·요약·메타 + 설치 버튼 -->
+	<div class="zmst-view-head">
+		<div class="zmst-thumb zmst-view-thumb">
+			<!--@if(!empty($package->extra_vars->thumbnail))-->
+				<img src="{$package->extra_vars->thumbnail}" alt="{$package->title}" />
+			<!--@else-->
+				<span class="zmst-thumb-none">{$package->getType()}</span>
+			<!--@endif-->
+		</div>
+		<div class="zmst-view-info">
+			<div class="zmst-item-top">
+				<span class="zmst-badge">{$package->getType()}</span>
+				<span class="zmst-version" cond="$package->last_release_version">v{$package->last_release_version}</span>
+				<!--@if(($package->extra_vars->distribution ?? 'FREE') === 'PAID')-->
+					<span class="zmst-price">&#8361;{number_format((int)($package->extra_vars->price ?? 0))}<!--@if((int)($package->extra_vars->price ?? 0) > 0)-->~<!--@end--></span>
+				<!--@else-->
+					<span class="zmst-price is-free">FREE</span>
+				<!--@end-->
+			</div>
+			<h2 class="zmst-view-title">{$package->title}</h2>
+			<p class="zmst-view-desc">{($package->extra_vars->summary ?? '') ?: cut_str(trim(strip_tags($package->description)), 200, '...')}</p>
+			<p class="zmst-meta">
+				<span class="zmst-author">{$package->author}</span>
+				<span>{zdate($package->updated, 'Y.m.d')}</span>
+				<span class="zmst-dl">
+					<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1v8.3L4.9 6.2 3.8 7.3 8 11.5l4.2-4.2-1.1-1.1L8 9.3V1H8zM2 13h12v1.5H2V13z"/></svg>
+					{number_format($package->extra_vars->download_count)}
+				</span>
+				<span class="zmst-like">
+					<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 14.2 2.6 9.1a3.3 3.3 0 1 1 4.7-4.7L8 5.1l.7-.7a3.3 3.3 0 1 1 4.7 4.7L8 14.2z"/></svg>
+					{number_format($package->extra_vars->like_count)}
+				</span>
+			</p>
+		</div>
+
+		<!--// 설치/업데이트/삭제 — JS 가 잡는 클래스와 data 속성은 그대로 둔다 -->
+		<div class="zmst-view-cta">
+			<!--@if($package->isInstalled())-->
+				<!--@if($update_info->update_available)-->
+					<!--@if($package->isInstallable())-->
+						<a class="zmst-btn zmst-btn-primary autoinstall_update_btn type_{$package->install_type}" href="#" data-package-srl="{$package->package_srl}" data-downloading="{$lang->msg_autoinstall_downloading}" data-installing="{$lang->msg_autoinstall_installing}" data-cleanup="{$lang->msg_autoinstall_cleanup}" data-complete="{$lang->msg_autoinstall_success_updated}">{$lang->cmd_autoinstall_update_available}</a>
+					<!--@else-->
+						<span class="zmst-btn is-disabled">{$lang->cmd_autoinstall_not_updatable}</span>
+					<!--@end-->
+				<!--@else-->
+					<span class="zmst-btn is-disabled">{$lang->msg_autoinstall_is_installed}</span>
+				<!--@end-->
+				<a class="zmst-btn autoinstall_uninstall_btn" href="#" data-package-srl="{$package->package_srl}" data-confirm="{$lang->msg_autoinstall_confirm_uninstall}">{$lang->cmd_autoinstall_uninstall}</a>
+			<!--@elseif($package->isInstallable())-->
+				<a class="zmst-btn zmst-btn-primary autoinstall_install_btn type_{$package->install_type}" href="#" data-package-srl="{$package->package_srl}" data-downloading="{$lang->msg_autoinstall_downloading}" data-installing="{$lang->msg_autoinstall_installing}" data-cleanup="{$lang->msg_autoinstall_cleanup}" data-complete="{$lang->msg_autoinstall_success_installed}">{$lang->cmd_autoinstall_install}</a>
+			<!--@else-->
+				<span class="zmst-btn is-disabled">{$lang->cmd_autoinstall_install}</span>
+			<!--@end-->
+
+			<a class="zmst-link-out" cond="!empty($package->extra_vars->url)" href="{$package->extra_vars->url}" target="_blank">{$lang->cmd_autoinstall_see_more}</a>
+		</div>
+	</div>
+
+	<!--// 설치 불가 사유 / 주의 안내 -->
+	<div class="zmst-notices">
+		<!--@if(!$package->isInstallable())-->
+			<!--@if(!$package->checkInstallEnvironment())-->
+				<p class="zmst-notice is-error">{$lang->msg_autoinstall_not_installable_environment}</p>
+			<!--@elseif(!$package->checkInstallPermissions())-->
+				<div class="zmst-notice is-error">
+					<p>{$lang->msg_autoinstall_not_installable_permissions}</p>
+					<p class="zmst-notice-path">{$lang->msg_autoinstall_unwritable_path}: <code>{$package->getUnwritablePath()}</code></p>
+					<ul class="zmst-notice-help">
+						<li>{$lang->msg_autoinstall_permissions_help_hosting}</li>
+						<li>{sprintf($lang->msg_autoinstall_permissions_help_server, \Zittme\Modules\Autoinstall\Models\Package::getProcessUser(), \RX_BASEDIR)}</li>
+					</ul>
+				</div>
+			<!--@else-->
+				<p class="zmst-notice is-error">{$lang->msg_autoinstall_not_installable}</p>
+			<!--@end-->
+		<!--@end-->
+
+		<!--@if($package->isInstallable() && $package->install_type === 'free_unverified')-->
+			<p class="zmst-notice is-error">{$lang->msg_autoinstall_unauthed_warning}</p>
+		<!--@end-->
+		<!--@if($package->isInstallable())-->
+			<p class="zmst-notice">{$lang->msg_autoinstall_security_warning}</p>
+			<!--@if($package->isInstalled())-->
+				<p class="zmst-notice">{$lang->msg_autoinstall_experimental_update}</p>
+			<!--@else-->
+				<p class="zmst-notice">{$lang->msg_autoinstall_experimental_install}</p>
+			<!--@end-->
+		<!--@end-->
+	</div>
+
+	<!--// 상세 정보 -->
+	<dl class="zmst-specs">
+		<div class="zmst-spec">
+			<dt>{$lang->cmd_autoinstall_package_type}</dt>
+			<dd>{$package->getType()}</dd>
+		</div>
+		<div class="zmst-spec">
+			<dt>{$lang->cmd_autoinstall_license_type}</dt>
+			<dd>
+				<!--@if($package->license === 'FOR SALE')-->
+					<!--@if($package->extra_vars->pricing && $package->getLowestPrice())-->
+						{sprintf($lang->license_pricing_format, number_format($package->getLowestPrice()))}
+					<!--@else-->
+						{$lang->license_for_sale}
+					<!--@end-->
+				<!--@else-->
+					{$lang->license_free}
+				<!--@end-->
+			</dd>
+		</div>
+		<div class="zmst-spec">
+			<dt>{$lang->cmd_autoinstall_latest_version}</dt>
+			<dd>{$package->last_release_version ?: $lang->cmd_autoinstall_no_information}</dd>
+		</div>
+		<div class="zmst-spec" cond="$update_info->installed_version">
+			<dt>{$lang->cmd_autoinstall_installed_version}</dt>
+			<dd>{$update_info->installed_version}</dd>
+		</div>
+		<div class="zmst-spec">
+			<dt>{$lang->cmd_autoinstall_install_path}</dt>
+			<dd><code>{$package->install_path}</code></dd>
+		</div>
+		<div class="zmst-spec" cond="$package->extra_vars->repo_path">
+			<dt>{$lang->cmd_autoinstall_repository}</dt>
+			<dd><a href="{$package->extra_vars->repo_path}" target="_blank">{$package->extra_vars->repo_path}</a></dd>
+		</div>
+		<div class="zmst-spec">
+			<dt>Zittme Core</dt>
+			<dd>{$package->getInstallEnvironment('core') ?: $lang->cmd_autoinstall_no_information}</dd>
+		</div>
+		<div class="zmst-spec">
+			<dt>PHP</dt>
+			<dd>{$package->getInstallEnvironment('php') ?: $lang->cmd_autoinstall_no_information}</dd>
+		</div>
+	</dl>
+
+	<!--// 릴리즈 노트 -->
+	<!--@if(!empty($package->extra_vars->releases))-->
+		<div class="zmst-releases">
+			<h3 class="zmst-releases-title">{$lang->cmd_autoinstall_release_notes}</h3>
+			<!--@foreach($package->extra_vars->releases as $release)-->
+				<details class="zmst-release">
+					<summary class="zmst-release-head">
+						<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M5.3 3.3 4.2 4.4 7.8 8l-3.6 3.6 1.1 1.1L10 8z"/></svg>
+						<span class="zmst-release-ver">v{$release->version}</span>
+						<span class="zmst-release-date">{substr($release->created, 0, 10)}</span>
+					</summary>
+					<!--@if(trim($release->changelog ?? '') !== '')-->
+						<div class="zmst-release-log">{nl2br(escape(trim($release->changelog)))|noescape}</div>
+					<!--@else-->
+						<p class="zmst-release-log is-empty">{$lang->cmd_autoinstall_no_information}</p>
+					<!--@end-->
+				</details>
+			<!--@endforeach-->
+		</div>
+	<!--@end-->
+
+	<!--// 본문 소개 -->
+	<div class="zmst-content" cond="trim(strip_tags($package->description)) !== ''">
+		{$package->description|noescape}
+	</div>
+</div>

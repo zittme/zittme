@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<skin version="0.2">
+    <title xml:lang="ko">기본 스킨</title>
+    <title xml:lang="en">Default Skin</title>
+    <title xml:lang="vi">Giao diện mặc định</title>
+    <title xml:lang="tr">Varsayılan Tema</title>
+    <title xml:lang="ru">Стандартный скин</title>
+    <title xml:lang="mn">Үндсэн загвар</title>
+    <title xml:lang="fr">Skin par défaut</title>
+    <title xml:lang="es">Skin predeterminada</title>
+    <title xml:lang="de">Standard-Skin</title>
+    <title xml:lang="zh-TW">預設面板</title>
+    <title xml:lang="zh-CN">默认皮肤</title>
+    <title xml:lang="jp">デフォルトスキン</title>
+    <description xml:lang="ko">기존 버전과 호환되는 확장변수 입력란 코드를 제공합니다.</description>
+    <description xml:lang="en">Provides input form codes compatible with older versions.</description>
+    <description xml:lang="vi">Cung cấp mã biểu mẫu nhập liệu tương thích với các phiên bản cũ.</description>
+    <description xml:lang="tr">Eski sürümlerle uyumlu giriş formu kodları sağlar.</description>
+    <description xml:lang="ru">Предоставляет код полей ввода, совместимый с предыдущими версиями.</description>
+    <description xml:lang="mn">Хуучин хувилбартай нийцтэй оруулах маягтын код өгнө.</description>
+    <description xml:lang="fr">Fournit un code de formulaire de saisie compatible avec les versions antérieures.</description>
+    <description xml:lang="es">Proporciona código de formulario compatible con versiones anteriores.</description>
+    <description xml:lang="de">Stellt Eingabeformular-Code bereit, der mit älteren Versionen kompatibel ist.</description>
+    <description xml:lang="zh-TW">提供與舊版相容的輸入表單程式碼。</description>
+    <description xml:lang="zh-CN">提供与旧版本兼容的扩展变量输入表单代码。</description>
+    <description xml:lang="jp">旧バージョンと互換性のある入力フォームのコードを提供します。</description>
+    <version>1.0</version>
+    <date>2024-04-01</date>
+	<author link="https://zitt.me">
+		<name xml:lang="ko">Zittme</name>
+		<name xml:lang="en">Zittme</name>
+	</author>
+</skin>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="0.2">
+	<title xml:lang="ko">확장 변수</title>
+	<title xml:lang="en">Extra Input Fields</title>
+	<title xml:lang="vi">Trường nhập mở rộng</title>
+	<title xml:lang="tr">Ek Giriş Alanları</title>
+	<title xml:lang="ru">Дополнительные поля</title>
+	<title xml:lang="mn">Нэмэлт талбарууд</title>
+	<title xml:lang="fr">Champs personnalisés</title>
+	<title xml:lang="es">Campos adicionales</title>
+	<title xml:lang="de">Zusätzliche Eingabefelder</title>
+	<title xml:lang="zh-TW">擴充輸入欄位</title>
+	<title xml:lang="zh-CN">扩展输入项</title>
+	<title xml:lang="jp">拡張入力項目</title>
+	<description xml:lang="ko">회원정보, 문서 등의 사용자 정의 입력 항목을 관리합니다.</description>
+	<description xml:lang="en">Manage custom input fields in member information, documents, etc.</description>
+	<description xml:lang="vi">Quản lý các trường nhập tùy chỉnh trong thông tin thành viên, bài viết, v.v.</description>
+	<description xml:lang="tr">Üye bilgileri, içerikler vb. için özel giriş alanlarını yönetir.</description>
+	<description xml:lang="ru">Управление пользовательскими полями ввода в профилях участников, документах и т. д.</description>
+	<description xml:lang="mn">Гишүүний мэдээлэл, баримт зэрэгт хэрэглэгчийн тодорхойлсон нэмэлт талбаруудыг удирдана.</description>
+	<description xml:lang="fr">Gérer les champs de saisie personnalisés des profils membres, des documents, etc.</description>
+	<description xml:lang="es">Gestiona los campos personalizados de la información de miembros, documentos, etc.</description>
+	<description xml:lang="de">Benutzerdefinierte Eingabefelder in Mitgliederdaten, Dokumenten usw. verwalten.</description>
+	<description xml:lang="zh-TW">管理會員資料、文件等的自訂輸入欄位。</description>
+	<description xml:lang="zh-CN">管理会员信息、文档等的自定义输入项。</description>
+	<description xml:lang="jp">会員情報や文書などのカスタム入力項目を管理します。</description>
+	<version>RX_VERSION</version>
+	<date>RX_CORE</date>
+	<category>service</category>
+	<author link="https://rhymix.org">
+		<name xml:lang="ko">Rhymix</name>
+		<name xml:lang="en">Rhymix</name>
+	</author>
+</module>

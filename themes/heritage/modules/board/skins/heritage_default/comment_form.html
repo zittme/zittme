@@ -1,0 +1,46 @@
+@version(2)
+<include target="_header.html" />
+
+<div class="hrb-cmts">
+	@if ($oSourceComment->isExists())
+	<div class="hrb-confirm-target">
+		<h3>
+			@if ($oSourceComment->get('homepage'))<a href="{{ $oSourceComment->get('homepage') }}">{{ $oSourceComment->getNickName() }}</a>
+			@else{{ $oSourceComment->getNickName() }}@endif
+		</h3>
+		<div class="rhymix_content Zittme_content">{!! $oSourceComment->getContent(false) !!}</div>
+	</div>
+	@endif
+
+	<form class="hrb-cmt-form" action="./" method="post" onsubmit="return procFilter(this, insert_comment)">
+		<input type="hidden" name="mid" value="{{ $mid }}" />
+		<input type="hidden" name="document_srl" value="{{ $oComment->get('document_srl') }}" />
+		<input type="hidden" name="comment_srl" value="{{ $oComment->get('comment_srl') }}" />
+		<input type="hidden" name="parent_srl" value="{{ $oComment->get('parent_srl') }}" />
+		<input type="hidden" name="content" value="{{ $oComment->get('content') }}" />
+
+		{!! $oComment->getEditor() !!}
+
+		<div class="hrb-cmt-form-foot">
+			<div class="hrb-cmt-form-fields">
+				@if (!$is_logged)
+				<input type="text" name="nick_name" placeholder="{{ $lang->writer }}" value="{{ $oComment->getNickName() }}" />
+				<input type="password" name="password" placeholder="{{ $lang->password }}" />
+				<input type="text" name="homepage" placeholder="{{ $lang->homepage }}" value="{{ $oComment->get('homepage') }}" />
+				@else
+				<label class="hr-check"><input type="checkbox" name="notify_message" value="Y" @if ($oComment->get('notify_message') === 'Y') checked @endif /> <span>{{ $lang->notify }}</span></label>
+				@endif
+				@if (($module_info->secret ?? 'N') === 'Y')
+				<label class="hr-check"><input type="checkbox" name="is_secret" value="Y" @if ($oComment->get('is_secret') === 'Y') checked @endif /> <span>{{ $lang->secret }}</span></label>
+				@endif
+			</div>
+			<button type="submit" class="hr-btn hr-btn-primary">{{ $lang->cmd_comment_registration }}</button>
+		</div>
+
+		@if (isset($captcha) && $captcha && $captcha->isTargetAction('comment'))
+		<div class="hrb-captcha">{!! $captcha !!}</div>
+		@endif
+	</form>
+</div>
+
+<include target="_footer.html" />

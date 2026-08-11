@@ -1,0 +1,22 @@
+<?php
+$lang->feed = 'RSS-Feed veröffentlichen';
+$lang->total_feed = 'Gesamt-Feeds';
+$lang->rss_disable = 'RSS-Feed deaktivieren';
+$lang->feed_copyright = 'Urheberrecht';
+$lang->feed_document_count = 'Anzahl Beiträge pro Seite';
+$lang->feed_image = 'Feed-Bild';
+$lang->rss_type = 'RSS-Feed-Typ';
+$lang->module_feed_management = 'Feeds je Modul';
+$lang->open_rss = 'RSS öffentlich';
+$lang->open_rss_types['Y'] = 'Vollständig';
+$lang->open_rss_types['H'] = 'Zusammenfassung';
+$lang->open_rss_types['N'] = 'Nicht öffentlich';
+$lang->open_feed_to_total = 'Im Gesamt-Feed enthalten';
+$lang->about_rss_disable = 'Wenn aktiviert, wird RSS deaktiviert.';
+$lang->about_rss_type = 'Sie können den RSS-Feed-Typ festlegen.';
+$lang->about_open_rss = 'Sie können festlegen, ob RSS für die aktuelle Seite öffentlich zugänglich ist.\\nWenn aktiviert, ist der Beitrag unabhängig von den Leseberechtigungen öffentlich zugänglich.';
+$lang->about_feed_description = 'Sie können eine Beschreibung für den zu veröffentlichenden RSS-Feed eingeben. Ohne Eingabe wird standardmäßig die Beschreibung des jeweiligen Moduls angezeigt.';
+$lang->about_feed_copyright = 'Sie können Urheberrechtsangaben für den RSS-Feed eingeben. Ohne Eingabe gilt das Urheberrecht aller RSS-Feeds.';
+$lang->about_feed_document_count = 'Anzahl der Beiträge, die auf einer Feed-Seite angezeigt werden (Standard: 15)';
+$lang->msg_rss_is_disabled = 'Die RSS-Funktion ist deaktiviert.';
+$lang->msg_rss_invalid_image_format = 'Ungültiges Bildformat. Es werden nur JPG-, JPEG-, GIF- und PNG-Dateien unterstützt.';

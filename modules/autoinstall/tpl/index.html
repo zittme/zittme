@@ -1,0 +1,128 @@
+<config autoescape="on" />
+
+<include target="header.html" />
+
+<div class="zmst">
+	<div class="zmst-head">
+		<div class="zmst-head-titles">
+			<span class="zmst-eyebrow">STORE</span>
+			<h2 class="zmst-title">{$lang->store}</h2>
+		</div>
+		<!--// zitt.me 계정 연결 자리. 연결 전에는 로그인 버튼, 연결 후에는 계정과 해제 버튼 -->
+		<div class="zmst-account" id="zmstAccount">
+			<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminIndex', 'refresh', 'Y')}">{$lang->store_refresh_list}</a>
+			<!--@if($zittme_account)-->
+				<span class="zmst-account-name">
+					<img src="{\RX_BASEURL}common/img/logo.png" alt="" />
+					<strong>{$zittme_account->nick_name}</strong>
+				</span>
+				<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminDisconnect')}">{$lang->store_disconnect_account}</a>
+			<!--@else-->
+				<!--// 같은 탭에서 zitt.me 승인 화면으로 갔다가 되돌아온다 (팝업 없음) -->
+				<a class="zmst-btn zmst-btn-outline" href="{$zittme_connect_url}">
+					<img src="{\RX_BASEURL}common/img/logo.png" alt="" />{$lang->store_connect_account}
+				</a>
+			<!--@end-->
+		</div>
+	</div>
+
+	<form action="./" class="zmst-search" no-error-return-url="true">
+		<input type="hidden" name="module" value="admin" />
+		<input type="hidden" name="act" value="{$act}" />
+		<input type="search" name="search_keyword" value="{$search_keyword}" placeholder="{$lang->cmd_search}" />
+		<button class="zmst-btn" type="submit">{$lang->cmd_search}</button>
+	</form>
+
+	<nav class="zmst-cats">
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminIndex')}" class="on"|cond="$type == 'featured'">{lang('featured_packages')}</a>
+		<!--@foreach($package_types as $_type => $_typename)-->
+			<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminIndex', 'type', $_type)}" class="on"|cond="$type == $_type">{$_typename}</a>
+		<!--@endforeach-->
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminIndex', 'type', 'updates')}" class="zmst-cat-updates on"|cond="$type == 'updates'">{$lang->tab_updates}</a>
+	</nav>
+
+	<!--// Updates tab with nothing to update -->
+	<p class="zmst-empty" cond="$type == 'updates' && !count($package_list)">{$lang->msg_no_updates_available}</p>
+
+	<ul class="zmst-list">
+		<!--@foreach($package_list as $package)-->
+			<li class="zmst-item">
+				<a class="zmst-thumb" href="{getUrl(['module' => $module, 'act' => 'dispAutoinstallAdminPackageDetail', 'package_srl' => $package->package_srl])}">
+					<!--@if(!empty($package->extra_vars->thumbnail))-->
+						<img src="{$package->extra_vars->thumbnail}" alt="" loading="lazy" />
+					<!--@else-->
+						<span class="zmst-thumb-none">{$package->getType()}</span>
+					<!--@endif-->
+				</a>
+				<div class="zmst-item-body">
+					<!--// 1행: [카테고리][버전] … [가격/FREE][설치상태] -->
+					<div class="zmst-item-top">
+						<span class="zmst-badge">{$package->getType()}</span>
+						<!--@if($type == 'updates')-->
+							<span class="zmst-version">v{$package->getUpdateInfo()->installed_version} &rarr; v{$package->getUpdateInfo()->latest_version}</span>
+						<!--@else-->
+							<span class="zmst-version" cond="$package->last_release_version">v{$package->last_release_version}</span>
+						<!--@end-->
+
+						<!--@if(($package->extra_vars->distribution ?? 'FREE') === 'PAID')-->
+							<span class="zmst-price">&#8361;{number_format((int)($package->extra_vars->price ?? 0))}<!--@if((int)($package->extra_vars->price ?? 0) > 0)-->~<!--@end--></span>
+						<!--@else-->
+							<span class="zmst-price is-free">FREE</span>
+						<!--@end-->
+
+						<!--// 설치 가능 여부는 엔진만 알 수 있으므로 여기서 판단해 표시한다 -->
+						<!--@if($package->isInstalled())-->
+							<!--@if($package->getUpdateInfo()->update_available)-->
+								<span class="zmst-chip zmst-chip-update">{$lang->cmd_autoinstall_update_available}</span>
+							<!--@else-->
+								<span class="zmst-chip zmst-chip-installed">{$lang->installed}</span>
+							<!--@end-->
+						<!--@elseif(($package->extra_vars->distribution ?? 'FREE') === 'PAID')-->
+							<span class="zmst-chip zmst-chip-paid">{$lang->store_purchase_required}</span>
+						<!--@elseif($package->isInstallable('minimal'))-->
+							<span class="zmst-install" title="{$lang->autoinstallable}">
+								<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 4.5 13.5H11l-2 8.5L19.5 10H13l2-8z"/></svg>
+							</span>
+						<!--@end-->
+					</div>
+
+					<!--// 2행: 제품명 -->
+					<a class="zmst-item-link" href="{getUrl(['module' => $module, 'act' => 'dispAutoinstallAdminPackageDetail', 'package_srl' => $package->package_srl])}">
+						<strong class="zmst-name">{$package->title}</strong>
+					</a>
+
+					<!--// 3행: 한 줄 소개 (없으면 본문에서 태그를 걷어내 대신 쓴다) -->
+					<p class="zmst-summary">{($package->extra_vars->summary ?? '') ?: cut_str(trim(strip_tags($package->description)), 160, '...')}</p>
+
+					<!--// 4행: 제작자 / 다운로드 수 -->
+					<p class="zmst-meta">
+						<!--@if(!empty($package->extra_vars->is_official))-->
+							<span class="zmst-official"><img src="{\RX_BASEURL}common/img/logo.png" alt="Zittme" /></span>
+						<!--@else-->
+							<span class="zmst-author">{$package->author}</span>
+						<!--@end-->
+						<span class="zmst-dl">
+							<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1v8.3L4.9 6.2 3.8 7.3 8 11.5l4.2-4.2-1.1-1.1L8 9.3V1H8zM2 13h12v1.5H2V13z"/></svg>
+							{number_format($package->extra_vars->download_count)}
+						</span>
+						<span class="zmst-like">
+							<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 14.2 2.6 9.1a3.3 3.3 0 1 1 4.7-4.7L8 5.1l.7-.7a3.3 3.3 0 1 1 4.7 4.7L8 14.2z"/></svg>
+							{number_format($package->extra_vars->like_count)}
+						</span>
+					</p>
+				</div>
+			</li>
+		<!--@endforeach-->
+		<li cond="!count($package_list)" class="zmst-empty">{$lang->msg_no_result}</li>
+	</ul>
+
+	<div cond="$page_navigation && $page_navigation->last_page > 1" class="zmst-pages">
+		<a href="{getUrl('page', '')}" cond="$page > 1">&laquo;</a>
+		<!--@while($page_no = $page_navigation->getNextPage())-->
+			<strong cond="$page_no == $page">{$page_no}</strong>
+			<a href="{getUrl('page', $page_no)}" cond="$page_no != $page">{$page_no}</a>
+		<!--@end-->
+		<a href="{getUrl('page', $page_navigation->last_page)}" cond="$page < $page_navigation->last_page">&raquo;</a>
+	</div>
+</div>
+

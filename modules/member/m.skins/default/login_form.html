@@ -1,0 +1,59 @@
+<load target="css/mlogin.css" />
+<div class="bd">
+<div class="hx h2">
+	<h2>{$lang->cmd_login}</h2>
+</div>
+	<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/member/m.skin/default/login_form/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+		<p>{$XE_VALIDATOR_MESSAGE}</p>
+	</div>
+	<form ruleset="@login" action="./" method="post" class="ff rx_ajax">
+		<input type="hidden" name="module" value="member" />
+		<input type="hidden" name="act" value="procMemberLogin" />
+		<input type="hidden" name="success_return_url" value="{$referer_url}" />
+		<input type="hidden" name="xe_validator_id" value="modules/member/m.skin/default/login_form/1" />
+		<ul>
+			<li><label for="id"><!--@if($identifier == 'email_address')-->{$lang->email_address}<!--@else-->{$lang->user_id}<!--@end--></label><input name="user_id" type="<!--@if($identifier == 'email_address')-->email<!--@else-->text<!--@end-->" id="id" value="" /></li>
+			<li><label for="pw">{$lang->password}</label><input name="password" type="password" id="pw" value="" /></li>
+		</ul>
+		<div class="captcha" cond="isset($captcha) && $captcha && $captcha->isTargetAction('login')">
+			{$captcha}
+		</div>
+		<div class="hp" id="keep_msg" style="display:none;">
+			<p>{$lang->about_keep_warning}</p>
+		</div>
+		<div style="padding:2px 0 8px;"><input name="keep_signed" type="checkbox" value="Y" id="autoLogin" /> <label for="autoLogin">{$lang->keep_signed}</label></div>
+		<div class="bna">
+			<button type="submit" class="bn dark" style="display:block;width:100%;box-sizing:border-box;">{$lang->cmd_login}</button>
+		</div>
+		<p class="hp" style="text-align:center;margin:12px 0 0;">
+			<a href="{getUrl('','act','dispMemberFindAccount')}">{$lang->cmd_find_member_account}</a>
+			<span style="color:rgba(128,128,128,.6);margin:0 6px;">|</span>
+			<a href="{getUrl('','act','dispMemberSignUpForm')}">{$lang->cmd_signup}</a>
+		</p>
+	</form>
+	{@ $sns_login_services = Zittme\Modules\Member\Social\Base::isEnabled() ? Zittme\Modules\Member\Social\Base::getEnabledServices() : array(); }
+	<div class="member-sns-login" cond="count($sns_login_services)" style="margin-top:16px;">
+		<p style="text-align:center;color:#999;font-size:12px;margin:12px 0;">{$lang->sns_login}</p>
+		<a loop="$sns_login_services => $sns_service" href="{getUrl('', 'module', 'member', 'act', 'procMemberSnsConnect', 'service', $sns_service, 'redirect', $referer_url)}" class="member-sns-btn member-sns-{$sns_service}" style="display:block;padding:11px;margin:8px 0;text-align:center;text-decoration:none;border-radius:6px;font-weight:bold;text-transform:capitalize;">{$sns_service} {$lang->sns_login_with}</a>
+	</div>
+</div>
+<style>
+/* brand buttons keep fixed colors regardless of site/dark theme link colors */
+a.member-sns-btn.member-sns-kakao { background:#FEE500 !important; color:#3C1E1E !important; }
+a.member-sns-btn.member-sns-naver { background:#03C75A !important; color:#fff !important; }
+a.member-sns-btn.member-sns-google { background:#fff !important; color:#757575 !important; border:1px solid #ddd; }
+</style>
+
+<script>
+jQuery(function($){
+	var keep_msg = $('#keep_msg');
+	keep_msg.hide();
+	$('#autoLogin').change(function(){
+		if($(this).is(':checked')){
+			keep_msg.slideDown(200);
+		} else {
+			keep_msg.slideUp(200);
+		}
+	});
+});
+</script>

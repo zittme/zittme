@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<query id="insertMemberSnsAccount" action="insert">
+	<tables>
+		<table name="member_sns_account" />
+	</tables>
+	<columns>
+		<column name="member_srl" var="member_srl" required="true" />
+		<column name="sns_type" var="sns_type" required="true" />
+		<column name="sns_id" var="sns_id" required="true" />
+		<column name="sns_name" var="sns_name" />
+		<column name="sns_email" var="sns_email" />
+		<column name="sns_profile_image" var="sns_profile_image" />
+		<column name="access_token" var="access_token" />
+		<column name="refresh_token" var="refresh_token" />
+		<column name="extra_vars" var="extra_vars" />
+		<column name="regdate" var="regdate" />
+		<column name="last_login" var="last_login" />
+	</columns>
+</query>

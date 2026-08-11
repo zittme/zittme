@@ -1,0 +1,100 @@
+@version(2)
+
+
+<div class="zpay zpay-result" data-status="{{ $order->status }}">
+
+	<header class="zpay-head">
+		@if($order->status === 'paid')
+		<h1 class="zpay-title zpay-title-ok">{{ $lang->zpay_result_paid }}</h1>
+		@elseif($order->status === 'pending')
+		<h1 class="zpay-title zpay-title-wait">{{ $lang->zpay_result_pending }}</h1>
+		@elseif($order->status === 'cancelled' || $order->status === 'partial_cancelled')
+		<h1 class="zpay-title zpay-title-wait">{{ $lang->zpay_result_cancelled }}</h1>
+		@elseif($order->status === 'expired')
+		<h1 class="zpay-title zpay-title-fail">{{ $lang->zpay_result_expired }}</h1>
+		@else
+		<h1 class="zpay-title zpay-title-fail">{{ $lang->zpay_result_failed }}</h1>
+		@endif
+
+		@if($claim_message)
+		<p class="zpay-result-message">{{ $claim_message }}</p>
+		@endif
+	</header>
+
+	<section class="zpay-summary">
+		<dl class="zpay-summary-list">
+			@php $zpay_src = Context::get('source_order_code'); @endphp
+			@if (!empty($zpay_src))
+			<div class="zpay-summary-row">
+				<dt>주문번호</dt>
+				<dd>{{ $zpay_src }}</dd>
+			</div>
+			<div class="zpay-summary-row">
+				<dt><small style="color:#8b95a1">{{ $lang->zpay_order_code }}</small></dt>
+				<dd><small style="color:#8b95a1">{{ $order->order_code }}</small></dd>
+			</div>
+			@else
+			<div class="zpay-summary-row">
+				<dt>{{ $lang->zpay_order_code }}</dt>
+				<dd>{{ $order->order_code }}</dd>
+			</div>
+			@endif
+			<div class="zpay-summary-row">
+				<dt>{{ $lang->zpay_product }}</dt>
+				<dd>{{ $order->title }}</dd>
+			</div>
+			<div class="zpay-summary-row zpay-summary-total">
+				<dt>{{ $lang->zpay_amount }}</dt>
+				<dd><strong>{{ number_format($order->amount) }}</strong> {{ $order->currency }}</dd>
+			</div>
+			@if($order->cancelled_amount > 0)
+			<div class="zpay-summary-row">
+				<dt>{{ $lang->zpay_cancelled_amount }}</dt>
+				<dd>{{ number_format($order->cancelled_amount) }} {{ $order->currency }}</dd>
+			</div>
+			@endif
+		</dl>
+	</section>
+
+	@if($order->status === 'pending' && $order->gateway === 'banktransfer')
+	<section class="zpay-bank-guide">
+		<h2 class="zpay-section-title">{{ $lang->zpay_bank_guide_title }}</h2>
+		<dl class="zpay-summary-list">
+			<div class="zpay-summary-row">
+				<dt>{{ $lang->zpay_bank_name }}</dt>
+				<dd>{{ $order->extra['bank'] ?? '' }}</dd>
+			</div>
+			<div class="zpay-summary-row">
+				<dt>{{ $lang->zpay_bank_account }}</dt>
+				<dd>{{ $order->extra['account'] ?? '' }}</dd>
+			</div>
+			<div class="zpay-summary-row">
+				<dt>{{ $lang->zpay_bank_holder }}</dt>
+				<dd>{{ $order->extra['holder'] ?? '' }}</dd>
+			</div>
+			<div class="zpay-summary-row">
+				<dt>{{ $lang->zpay_depositor_name }}</dt>
+				<dd>{{ $order->extra['depositor_name'] ?? '' }}</dd>
+			</div>
+			@if($order->due_date)
+			<div class="zpay-summary-row">
+				<dt>{{ $lang->zpay_due_date }}</dt>
+				<dd>{{ zdate($order->due_date, 'Y-m-d H:i') }}</dd>
+			</div>
+			@endif
+		</dl>
+	</section>
+	@endif
+
+	@if(!empty($order->extra['receipt_url']))
+	<p class="zpay-receipt">
+		<a href="{{ $order->extra['receipt_url'] }}" target="_blank" rel="noopener">{{ $lang->zpay_receipt }}</a>
+	</p>
+	@endif
+
+	@if($order->return_url)
+	<div class="zpay-actions">
+		<a class="zpay-btn zpay-btn-primary" href="{{ $order->return_url }}">{{ $lang->zpay_back_to_shop }}</a>
+	</div>
+	@endif
+</div>

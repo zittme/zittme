@@ -1,0 +1,36 @@
+<config autoescape="on" />
+
+<!--// Configuration -->
+<include target="config.blade.php" />
+
+<!--// CSS -->
+<load target="css/ckeditor.scss" vars="$ckconfig->css_vars" />
+<load target="^/common/css/xeicon/xeicon.min.css" />
+
+<!--// JS -->
+<!--%load_js_plugin("ckeditor")-->
+<load target="../../tpl/js/editor_common.js" />
+<load target="../../tpl/js/editor.app.js" />
+<load target="js/editor.js" />
+
+<!--// Main Editor Area -->
+<div id="ckeditor_instance_{$editor_sequence}" class="rx_ckeditor"
+	data-editor-sequence="{$editor_sequence}"
+	data-editor-primary-key-name="{$editor_primary_key_name}"
+	data-editor-content-key-name="{$editor_content_key_name}"
+	data-editor-config="{json_encode($ckconfig)|escape}"
+	style="min-height:{$ckconfig->initial_height}px;">
+</div>
+
+<!--@if($enable_autosave)-->
+<p id="editor_autosaved_message_{$editor_sequence}" class="editor_autosaved_message autosave_message">&nbsp;</p>
+<input type="hidden" name="_saved_doc_title" value="{empty($saved_doc) ? '' : $saved_doc->title|escape}" />
+<input type="hidden" name="_saved_doc_content" value="{empty($saved_doc) ? '' : $saved_doc->content|escape}" />
+<input type="hidden" name="_saved_doc_document_srl" value="{empty($saved_doc) ? '' : $saved_doc->document_srl}" />
+<input type="hidden" name="_saved_doc_message" value="{$lang->msg_load_saved_doc}" />
+<script> window.auto_saved_msg = '{$lang->msg_auto_saved}'; </script>
+<!--@endif-->
+
+<!--@if($allow_fileupload)-->
+<include target="file_upload.html" />
+<!--@endif-->

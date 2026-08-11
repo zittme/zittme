@@ -1,0 +1,22 @@
+<?php
+$lang->rss_disable = 'Tắt RSS';
+$lang->rss_type = 'Định dạng RSS';
+$lang->open_rss = 'Mở RSS';
+$lang->open_rss_types['Y'] = 'Mở tất cả';
+$lang->open_rss_types['H'] = 'Mở tóm tắt';
+$lang->open_rss_types['N'] = 'Tắt';
+$lang->about_rss_disable = 'Nếu chọn, RSS sẽ bị tắt.';
+$lang->about_rss_type = 'Bạn có thể đặt định dạng cho RSS.';
+$lang->about_open_rss = 'Bạn có thể mở công khai RSS trên Module hiện tại.\\nKhông ảnh hưởng tới quyền truy cập bài viết, RSS sẽ mở công khai với tùy chọn của nó.';
+$lang->msg_rss_is_disabled = 'Chức năng RSS đã bị tắt.';
+$lang->feed = 'Xuất bản RSS Feed';
+$lang->total_feed = 'Feed tổng hợp';
+$lang->feed_copyright = 'Bản quyền';
+$lang->feed_document_count = 'Số bài viết mỗi trang';
+$lang->feed_image = 'Ảnh feed';
+$lang->module_feed_management = 'Feed theo từng mô-đun';
+$lang->open_feed_to_total = 'Bao gồm trong feed tổng hợp';
+$lang->about_feed_description = 'Bạn có thể nhập mô tả cho RSS feed sẽ được xuất bản. Nếu không nhập, mô tả của từng mô-đun sẽ được hiển thị mặc định.';
+$lang->about_feed_copyright = 'Bạn có thể nhập thông tin bản quyền cho RSS feed. Nếu không nhập, bản quyền của toàn bộ RSS feed sẽ được áp dụng.';
+$lang->about_feed_document_count = 'Số bài viết hiển thị trên một trang feed (mặc định: 15)';
+$lang->msg_rss_invalid_image_format = 'Định dạng ảnh không hợp lệ. Chỉ hỗ trợ tệp JPG, JPEG, GIF và PNG.';

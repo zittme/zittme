@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">헤리티지 기본</title>
+	<title xml:lang="en">Heritage Default</title>
+	<version>0.1</version>
+	<date>2026-07-29</date>
+	<author email="zittme-contact@zzan.me">ZZAN Studio</author>
+	<!--
+	  반응형 여부는 폴더가 아니라 이 표시로 알린다. 결제 화면은 모바일에서 열리는 비중이
+	  높으므로 처음부터 좁은 화면까지 이 스킨 하나로 감당한다. (m.skins 를 따로 두지 않는다)
+	-->
+	<responsive>true</responsive>
+</skin>

@@ -1,0 +1,405 @@
+<load target="css/editor_module_config.css" />
+<load target="js/editor_module_config.js" />
+<div class="x_page-header">
+	<h1>{$lang->editor}</h1>
+</div>
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/editor/tpl/admin_index/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+<!-- Editor Preview -->
+<section class="section collapsed">
+	<h1>{$lang->editor_now}</h1>
+	<div class="x_tabbable _preview">
+		<ul class="x_nav x_nav-tabs" style="margin-bottom:0;border-bottom:0">
+			<li class="x_active"><a href="#pre_document">{$lang->main_editor}</a></li>
+			<li><a href="#pre_comment">{$lang->comment_editor}</a></li>
+		</ul>
+		<div class="x_tab-content x_thumbnail">
+			<div class="x_tab-pane x_active" id="pre_document">
+				<iframe src="{getUrl('','act', 'dispEditorConfigPreview', 'type', 'document')}" id="pre_document_frame" frameborder="0" style="border:0"></iframe>
+			</div>
+			<div class="x_tab-pane" id="pre_comment">
+				<iframe src="{getUrl('','act', 'dispEditorConfigPreview', 'type', 'comment')}" id="pre_comment_frame" frameborder="0" style="border:0"></iframe>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Editor Option -->
+<section class="section">
+	<form action="./" method="post" ruleset="generalConfig" class="x_form-horizontal">
+		<input type="hidden" name="module" value="editor" />
+		<input type="hidden" name="act" value="procEditorAdminGeneralConfig" />
+		<input type="hidden" name="xe_validator_id" value="modules/editor/tpl/admin_index/1" />
+
+		<h1>{$lang->main_editor}</h1>
+
+		<div class="x_control-group">
+			<label for="change_lang_type" class="x_control-label">{$lang->pc}</label>
+			<div class="x_controls">
+				<p>
+					<select name="editor_skin" class="editor_skin_selector">
+						<!--@foreach($editor_skin_list as $skin_name => $skin_info)-->
+							<option value="{$skin_name}" data-colorsets="{json_encode($skin_info->colorset)|escape}" selected="selected"|cond="$skin_name === $editor_config->editor_skin">{$skin_info->title}</option>
+						<!--@endforeach-->
+					</select>
+					<select name="editor_colorset" class="editor_colorset_selector">
+						<!--@foreach($editor_skin_list[$editor_config->editor_skin]->colorset ?: [] as $colorset)-->
+							<option value="{$colorset->name}" selected="selected"|cond="$colorset->name === $editor_config->editor_colorset">{$colorset->title}</option>
+						<!--@endforeach-->
+					</select>
+				</p>
+				<p>
+					<span class="editor_type">{$lang->guide_editor_height}</span>
+					<input type="number" name="editor_height" value="{$editor_config->editor_height}" /> px
+				</p>
+				<p>
+					<span class="editor_type">{$lang->guide_editor_toolbar}</span>
+					<select name="editor_toolbar" style="min-width:104px">
+						<option value="default" selected="selected"|cond="!$editor_config->editor_toolbar || $editor_config->editor_toolbar === 'default'">{$lang->editor_toolbar_default}</option>
+						<option value="simple" selected="selected"|cond="$editor_config->editor_toolbar === 'simple'">{$lang->editor_toolbar_simple}</option>
+					</select> &nbsp;
+					<label class="x_inline"><input type="checkbox" name="editor_toolbar_hide" value="Y" checked="checked"|cond="$editor_config->editor_toolbar_hide === 'Y'"> {$lang->editor_toolbar_hide}</label>
+				</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label for="editor_height" class="x_control-label">{$lang->mobile}</label>
+			<div class="x_controls">
+				<p>
+					<select name="mobile_editor_skin" class="editor_skin_selector">
+						<!--@foreach($editor_skin_list as $skin_name => $skin_info)-->
+						<option value="{$skin_name}" data-colorsets="{json_encode($skin_info->colorset)|escape}" selected="selected"|cond="$skin_name === $editor_config->mobile_editor_skin">{$skin_info->title}</option>
+						<!--@endforeach-->
+					</select>
+					<select name="mobile_editor_colorset" class="editor_colorset_selector">
+						<!--@foreach($editor_skin_list[$editor_config->mobile_editor_skin]->colorset ?: [] as $colorset)-->
+							<option value="{$colorset->name}" selected="selected"|cond="$colorset->name === $editor_config->mobile_editor_colorset">{$colorset->title}</option>
+						<!--@endforeach-->
+					</select>
+				</p>
+				<p>
+					<span class="editor_type">{$lang->guide_editor_height}</span>
+					<input type="number" name="mobile_editor_height" value="{$editor_config->mobile_editor_height}" /> px</p>
+				</p>
+				<p>
+					<span class="editor_type">{$lang->guide_editor_toolbar}</span>
+					<select name="mobile_editor_toolbar" style="min-width:104px">
+						<option value="default" selected="selected"|cond="!$editor_config->mobile_editor_toolbar || $editor_config->mobile_editor_toolbar === 'default'">{$lang->editor_toolbar_default}</option>
+						<option value="simple" selected="selected"|cond="$editor_config->mobile_editor_toolbar === 'simple'">{$lang->editor_toolbar_simple}</option>
+					</select> &nbsp;
+					<label class="x_inline"><input type="checkbox" name="mobile_editor_toolbar_hide" value="Y" checked="checked"|cond="$editor_config->mobile_editor_toolbar_hide === 'Y'"> {$lang->editor_toolbar_hide}</label>
+				</p>
+			</div>
+		</div>
+
+		<h1>{$lang->comment_editor}</h1>
+
+		<div class="x_control-group">
+			<label for="change_lang_type" class="x_control-label">{$lang->pc}</label>
+			<div class="x_controls">
+				<p>
+					<select name="comment_editor_skin" class="editor_skin_selector">
+						<!--@foreach($editor_skin_list as $skin_name => $skin_info)-->
+							<option value="{$skin_name}" data-colorsets="{json_encode($skin_info->colorset)|escape}" selected="selected"|cond="$skin_name === $editor_config->comment_editor_skin">{$skin_info->title}</option>
+						<!--@endforeach-->
+					</select>
+					<select name="comment_editor_colorset" class="editor_colorset_selector">
+						<!--@foreach($editor_skin_list[$editor_config->comment_editor_skin]->colorset ?: [] as $colorset)-->
+							<option value="{$colorset->name}" selected="selected"|cond="$colorset->name === $editor_config->comment_editor_colorset">{$colorset->title}</option>
+						<!--@endforeach-->
+					</select>
+				</p>
+				<p>
+					<span class="editor_type">{$lang->guide_editor_height}</span>
+					<input type="number" name="comment_editor_height" value="{$editor_config->comment_editor_height}" /> px
+				</p>
+				<p>
+					<span class="editor_type">{$lang->guide_editor_toolbar}</span>
+					<select name="comment_editor_toolbar" style="min-width:104px">
+						<option value="default" selected="selected"|cond="!$editor_config->comment_editor_toolbar || $editor_config->comment_editor_toolbar === 'default'">{$lang->editor_toolbar_default}</option>
+						<option value="simple" selected="selected"|cond="$editor_config->comment_editor_toolbar === 'simple'">{$lang->editor_toolbar_simple}</option>
+					</select> &nbsp;
+					<label class="x_inline"><input type="checkbox" name="comment_editor_toolbar_hide" value="Y" checked="checked"|cond="$editor_config->comment_editor_toolbar_hide === 'Y'"> {$lang->editor_toolbar_hide}</label>
+				</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label for="editor_height" class="x_control-label">{$lang->mobile}</label>
+			<div class="x_controls">
+				<p>
+					<select name="mobile_comment_editor_skin" class="editor_skin_selector">
+						<!--@foreach($editor_skin_list as $skin_name => $skin_info)-->
+						<option value="{$skin_name}" data-colorsets="{json_encode($skin_info->colorset)|escape}" selected="selected"|cond="$skin_name === $editor_config->mobile_comment_editor_skin">{$skin_info->title}</option>
+						<!--@endforeach-->
+					</select>
+					<select name="mobile_comment_editor_colorset" class="editor_colorset_selector">
+						<!--@foreach($editor_skin_list[$editor_config->mobile_comment_editor_skin]->colorset ?: [] as $colorset)-->
+							<option value="{$colorset->name}" selected="selected"|cond="$colorset->name === $editor_config->mobile_comment_editor_colorset">{$colorset->title}</option>
+						<!--@endforeach-->
+					</select>
+				</p>
+				<p>
+					<span class="editor_type">{$lang->guide_editor_height}</span>
+					<input type="number" name="mobile_comment_editor_height" value="{$editor_config->mobile_comment_editor_height}" /> px</p>
+				</p>
+				<p>
+					<span class="editor_type">{$lang->guide_editor_toolbar}</span>
+					<select name="mobile_comment_editor_toolbar" style="min-width:104px">
+						<option value="default" selected="selected"|cond="!$editor_config->mobile_comment_editor_toolbar || $editor_config->mobile_comment_editor_toolbar === 'default'">{$lang->editor_toolbar_default}</option>
+						<option value="simple" selected="selected"|cond="$editor_config->mobile_comment_editor_toolbar === 'simple'">{$lang->editor_toolbar_simple}</option>
+					</select> &nbsp;
+					<label class="x_inline"><input type="checkbox" name="mobile_comment_editor_toolbar_hide" value="Y" checked="checked"|cond="$editor_config->mobile_comment_editor_toolbar_hide === 'Y'"> {$lang->editor_toolbar_hide}</label>
+				</p>
+			</div>
+		</div>
+
+		<h1>{$lang->editor_common_settings}</h1>
+
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->guide_choose_font_body}</label>
+			<div class="x_controls">
+				<label class="x_inline fontSelector">
+					<input type="radio" name="content_font" id="font_noFont" value="" checked="checked"|cond="!$editor_config->content_font && $editor_config->font_defined != 'Y'" /> none (inherit)
+				</label>
+				<label style="font-family:{$detail}" class="x_inline fontSelector" loop="$lang->edit->fontlist=>$name,$detail">
+					{@ $fontname_simplified = trim(array_first(explode(',', $detail)), "'\" ")}
+					<input type="radio" name="content_font" id="font_{$name}" value="{$detail}" checked="checked"|cond="$editor_config->content_font == $detail && $editor_config->font_defined != 'Y'" /> {$fontname_simplified}
+				</label>
+				<label>
+					<input type="radio" class="fontSelector" name="font_defined" id="font_defined" value="Y" checked="checked"|cond="$editor_config->font_defined== 'Y'" /> {$lang->by_you} :
+					<input type="text" name="content_font_defined" value="{$editor_config->content_font}"|cond="$editor_config->font_defined == 'Y'" />
+				</label>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->guide_choose_font_preview}</label>
+			<div class="x_controls">
+				<textarea rows="4" cols="42" class="fontPreview" style="
+					font-family: {$editor_config->content_font};
+					font-size: {$editor_config->content_font_size ?: '13px'};
+					line-height: {$editor_config->content_line_height ?: '160%'};
+					width:90%" title="Font Preview">{$lang->font_preview}</textarea>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->guide_additional_css}</label>
+			<div class="x_controls">
+				<textarea id="additional_css" name="additional_css" style="width:90%" rows="4" cols="42">{escape(implode("\n", $editor_config->additional_css ?: array()))}</textarea>
+				<p class="x_help-block">{$lang->about_additional_css}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->guide_additional_mobile_css}</label>
+			<div class="x_controls">
+				<textarea id="additional_css" name="additional_mobile_css" style="width:90%" rows="4" cols="42">{escape(implode("\n", $editor_config->additional_mobile_css ?: array()))}</textarea>
+				<p class="x_help-block">{$lang->about_additional_css}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="font_size">{$lang->guide_additional_plugins}</label>
+			<div class="x_controls">
+				<input type="text" id="additional_plugins" name="additional_plugins" value="{implode(', ', $editor_config->additional_plugins)}" />
+				<p class="x_help-block">{$lang->about_additional_plugins}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="font_size">{$lang->guide_remove_plugins}</label>
+			<div class="x_controls">
+				<input type="text" id="remove_plugins" name="remove_plugins" value="{implode(', ', $editor_config->remove_plugins)}" />
+				<p class="x_help-block">
+					{$lang->about_remove_plugins}
+					<a href="#" class="default_remove_plugins" data-default-list="{implode(', ', Editor::$default_editor_config['remove_plugins'])}">{lang('admin.restore_default_viewport')}</a>
+				</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="font_size">{$lang->guide_choose_font_size_body}</label>
+			<div class="x_controls">
+				<input type="text" id="font_size" name="content_font_size" value="{$editor_config->content_font_size ?: 13}" />
+				<p class="x_help-block">{$lang->about_unit_default_px}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="line_height">{$lang->guide_choose_line_height}</label>
+			<div class="x_controls">
+				<input type="text" id="line_height" name="content_line_height" value="{$editor_config->content_line_height ?: 160}" />
+				<p class="x_help-block">{$lang->about_unit_default_percent}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="paragraph_spacing">{$lang->guide_choose_paragraph_spacing}</label>
+			<div class="x_controls">
+				<input type="text" id="paragraph_spacing" name="content_paragraph_spacing" value="{$editor_config->content_paragraph_spacing ?: 0}" />
+				<p class="x_help-block">{$lang->about_unit_default_px}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->guide_choose_word_break}</label>
+			<div class="x_controls">
+				<label for="word_break_normal">
+					<input type="radio" name="content_word_break" id="word_break_normal" value="normal" checked="checked"|cond="$editor_config->content_word_break == 'normal' || !$editor_config->content_word_break" /> {$lang->word_break_normal}
+				</label>
+				<label for="word_break_keep_all">
+					<input type="radio" name="content_word_break" id="word_break_keep_all" value="keep-all" checked="checked"|cond="$editor_config->content_word_break == 'keep-all'" /> {$lang->word_break_keep_all}
+				</label>
+				<label for="word_break_break_all">
+					<input type="radio" name="content_word_break" id="word_break_break_all" value="break-all" checked="checked"|cond="$editor_config->content_word_break == 'break-all'" /> {$lang->word_break_break_all}
+				</label>
+				<label for="word_break_none">
+					<input type="radio" name="content_word_break" id="word_break_none" value="none" checked="checked"|cond="$editor_config->content_word_break == 'none'" /> {$lang->word_break_none}
+				</label>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->enable_autosave}</label>
+			<div class="x_controls">
+				<label class="x_inline"><input type="radio" name="enable_autosave" value="Y" checked="checked"|cond="$editor_config->enable_autosave != 'N'" /> {$lang->cmd_yes}</label>
+				<label class="x_inline"><input type="radio" name="enable_autosave" value="N" checked="checked"|cond="$editor_config->enable_autosave == 'N'" /> {$lang->cmd_no}</label>
+				<p class="x_help-block">{$lang->about_enable_autosave}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->editor_auto_dark_mode}</label>
+			<div class="x_controls">
+				<label class="x_inline"><input type="radio" name="auto_dark_mode" value="Y" checked="checked"|cond="$editor_config->auto_dark_mode != 'N'" /> {$lang->cmd_yes}</label>
+				<label class="x_inline"><input type="radio" name="auto_dark_mode" value="N" checked="checked"|cond="$editor_config->auto_dark_mode == 'N'" /> {$lang->cmd_no}</label>
+				<p class="x_help-block">{$lang->about_editor_auto_dark_mode}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->allow_html}</label>
+			<div class="x_controls">
+				<label class="x_inline"><input type="radio" name="allow_html" value="Y" checked="checked"|cond="$editor_config->allow_html != 'N'" /> {$lang->cmd_yes}</label>
+				<label class="x_inline"><input type="radio" name="allow_html" value="N" checked="checked"|cond="$editor_config->allow_html == 'N'" /> {$lang->cmd_no}</label>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->guide_choose_autoinsert_types}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="checkbox" name="autoinsert_types[]" value="image" checked="checked"|cond="$editor_config->autoinsert_image !== 'none' && (!isset($editor_config->autoinsert_types) || isset($editor_config->autoinsert_types['image']))" /> {$lang->autoinsert_types['image']}
+				</label>
+				<label class="x_inline">
+					<input type="checkbox" name="autoinsert_types[]" value="audio" checked="checked"|cond="$editor_config->autoinsert_image !== 'none' && (!isset($editor_config->autoinsert_types) || isset($editor_config->autoinsert_types['audio']))" /> {$lang->autoinsert_types['audio']}
+				</label>
+				<label class="x_inline">
+					<input type="checkbox" name="autoinsert_types[]" value="video" checked="checked"|cond="$editor_config->autoinsert_image !== 'none' && (!isset($editor_config->autoinsert_types) || isset($editor_config->autoinsert_types['video']))" /> {$lang->autoinsert_types['video']}
+				</label>
+				<br />
+				<label for="autoinsert_paragraph">
+					<input type="radio" name="autoinsert_position" id="autoinsert_paragraph" value="paragraph" checked="checked"|cond="$editor_config->autoinsert_position == 'paragraph' || !$editor_config->autoinsert_position" /> {$lang->autoinsert_paragraph}
+				</label>
+				<label for="autoinsert_inline">
+					<input type="radio" name="autoinsert_position" id="autoinsert_inline" value="inline" checked="checked"|cond="$editor_config->autoinsert_position == 'inline'" /> {$lang->autoinsert_inline}
+				</label>
+			</div>
+		</div>
+		<div class="x_clearfix btnArea">
+			<div class="x_pull-right">
+				<button type="submit" class="x_btn x_btn-primary">{$lang->cmd_save}</button>
+			</div>
+		</div>
+	</form>
+</section>
+<!-- Editor Preview -->
+<section class="section">
+	<h1>{$lang->editor_component}</h1>
+	<form action="./" method="post" ruleset="componentOrderAndUse">
+		<input type="hidden" name="module" value="editor" />
+		<input type="hidden" name="act" value="procEditorAdminCheckUseListOrder" />
+		<input type="hidden" name="xe_validator_id" value="modules/editor/tpl/admin_index/1" />
+		<table class="x_table x_table-striped x_table-hover sortable dsTg">
+			<caption>
+				<strong>{$lang->total_count}({$component_count})</strong>
+				<div class="x_pull-right x_btn-group">
+					<a class="x_btn x_active __simple">{$lang->simple_view}</a>
+					<a class="x_btn __detail">{$lang->detail_view}</a>
+				</div>
+			</caption>
+			<thead>
+				<tr>
+					<th class="nowr">{$lang->cmd_move}</th>
+					<th>{$lang->component_name}</th>
+					<th class="nowr">{$lang->version}</th>
+					<th class="nowr rx_detail_marks">{$lang->author}</th>
+					<th class="nowr rx_detail_marks">{$lang->path}</th>
+					<th class="nowr">{$lang->use}</th>
+				</tr>
+			</thead>
+			<tbody class="uDrag">
+				<!--@foreach($component_list as $component_name => $xml_info)-->
+				<tr>
+					<td><div class="wrap" style="height:70px"><button type="button" class="dragBtn">Move to</button></div></td>
+					<td class="title">
+						<p><b><a href="{getUrl('', 'module', 'admin', 'act', 'dispEditorAdminSetupComponent', 'component_name', $xml_info->component_name)}">{$xml_info->title}</a></b></p>
+						<input type="hidden" name="component_names[]" value="{$xml_info->component_name}" />
+						<p>{nl2br($xml_info->description)}</p>
+					</td>
+					<td>{$xml_info->version}</td>
+					<td class="nowr rx_detail_marks">
+						<a href="{$author->homepage}" target="_blank" loop="$xml_info->author => $author">{$author->name}</a>
+					</td>
+					<td class="rx_detail_marks">{$xml_info->path}</td>
+					<td><input type="checkbox" name="enables[]" id="enable" value="{$xml_info->component_name}" title="Use this component " <!--@if($xml_info->enabled=='Y')--> checked="checked"<!--@end--> /></td>
+				</tr>
+				<!--@end-->
+			</tbody>
+		</table>
+		<div class="x_clearfix">
+			<div class="x_pull-right">
+				<button type="submit" class="x_btn x_btn-primary">{$lang->cmd_save}</button>
+			</div>
+		</div>
+	</form>
+</section>
+<script>
+jQuery(function($){
+
+	// Restore default list of editor plugins to remove
+	$('.default_remove_plugins').on('click', function(e) {
+		var default_list = $(this).data('default-list');
+		$('#remove_plugins').val(default_list);
+		e.preventDefault();
+	});
+
+	// Editor Preview
+	function preview(){
+		$('._preview iframe').css({
+			width	: "100%",
+			height	: "500px"
+		});
+	}
+	preview();
+	$('._preview li>a').click(preview);
+
+	// init
+	var fontPreview = $('.fontPreview');
+	var fontSelector = $('.fontSelector');
+	var checkedFont = fontSelector.filter(':checked').css('fontFamily');
+	var changedSize = $('#font_size').val();
+
+	// change event
+	fontSelector.change(function(){
+		var myFont = $(this).css('font-family');
+		if ($(this).val() === 'Y') {
+			myFont = $("input[name='content_font_defined']").val();
+		}
+		fontPreview.css('font-family', myFont);
+	});
+	$('#font_size').keyup(function(){
+		fontPreview.css('font-size', $(this).val() + 'px');
+	}).change(function(){$(this).keyup()});
+	$('#line_height').keyup(function(){
+		fontPreview.css('line-height', $(this).val() + '%');
+	}).change(function(){$(this).keyup()});
+
+	$('input[name=font_defined]').click(function(){
+		$('input[name=content_font]').removeAttr('checked');
+	});
+	$('input[name=content_font]').click(function(){
+		$('input[name=font_defined]').removeAttr('checked');
+	});
+});
+</script>
+

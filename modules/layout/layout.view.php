@@ -1,0 +1,356 @@
+<?php
+/* Copyright (C) NAVER <http://www.navercorp.com> */
+/**
+ * @class  layoutView
+ * @author NAVER (developers@xpressengine.com)
+ * admin view class of the layout module
+ */
+class LayoutView extends Layout
+{
+	/**
+	 * Initialization
+	 * @return void
+	 */
+	function init()
+	{
+		$this->setTemplatePath($this->module_path.'tpl');
+	}
+
+	/**
+	 * Pop-up layout details(conf/info.xml)
+	 * @return void
+	 */
+	function dispLayoutInfo()
+	{
+		// Get the layout information
+		$oLayoutModel = getModel('layout');
+		$layout_info = $oLayoutModel->getLayoutInfo(Context::get('selected_layout'));
+		if(!$layout_info) exit();
+		Context::set('layout_info', $layout_info);
+		// Set the layout to be pop-up
+		$this->setLayoutFile('popup_layout');
+		// Set a template file
+		$this->setTemplateFile('layout_detail_info');
+	}
+
+	/**
+	 * Preview a layout with module.
+	 *
+	 * @return Object
+	 */
+	public function dispLayoutPreviewWithModule()
+	{
+		$content = '';
+		$layoutSrl = intval(Context::get('layout_srl'));
+		$module = preg_replace('/[^a-zA-Z0-9_]/', '', Context::get('module_name'));
+		$mid = preg_replace('/[^a-zA-Z0-9\/_-]/', '', Context::get('target_mid'));
+		$skin = preg_replace('/[^a-zA-Z0-9_-]/', '', Context::get('skin'));
+		$skinType = Context::get('skin_type') === 'M' ? 'M' : 'P';
+
+		try
+		{
+			// admin check
+			// this act is admin view but in normal view because do not load admin css/js files
+			$logged_info = Context::get('logged_info');
+			if($logged_info->is_admin != 'Y')
+			{
+				throw new Zittme\Framework\Exceptions\InvalidRequest;
+			}
+
+			// if module is 'ARTiCLE' and from site design setting, make content directly
+			if($module == 'ARTICLE' && !$mid)
+			{
+				$oDocumentModel = getModel('document');
+				$oDocument = $oDocumentModel->getDocument(0);
+
+				$t = lang('article_preview_title');
+
+				$c = '';
+				for($i = 0; $i < 4; $i++)
+				{
+					$c .= '<p>';
+					for($j = 0; $j < 20; $j++)
+					{
+						$c .= lang('article_preview_content') . ' ';
+					}
+					$c .= '</p>';
+				}
+
+				$attr = new stdClass();
+				$attr->title = $t;
+				$attr->content = $c;
+				$attr->document_srl = -1;
+				$oDocument->setAttribute($attr, FALSE);
+
+				Context::set('oDocument', $oDocument);
+
+				if ($skinType == 'M')
+				{
+					$templatePath = RX_BASEDIR . 'modules/page/m.skins/' . $skin;
+					$templateFile = 'mobile';
+				}
+				else
+				{
+					$templatePath = RX_BASEDIR . 'modules/page/skins/' . $skin;
+					$templateFile = 'content';
+				}
+
+				$oTemplate = TemplateHandler::getInstance();
+				$content = $oTemplate->compile($templatePath, $templateFile);
+			}
+
+			// else use real module
+			else
+			{
+				$content = $this->procRealModule($module, $mid, $skin, $skinType);
+			}
+			Context::set('content', $content);
+
+			// find layout
+			if($layoutSrl)
+			{
+				if($layoutSrl == -1)
+				{
+					$site_srl = ($oModule) ? $oModule->module_info->site_srl : 0;
+					$designInfoFile = sprintf(RX_BASEDIR . 'files/site_design/design_%d.php', $site_srl);
+					include($designInfoFile);
+
+					if($skinType == 'M')
+					{
+						$layoutSrl = $designInfo->mlayout_srl;
+					}
+					else
+					{
+						$layoutSrl = $designInfo->layout_srl;
+					}
+				}
+
+				$oLayoutModel = getModel('layout');
+				$layoutInfo = $oLayoutModel->getLayout($layoutSrl);
+
+				// If there is no layout, pass it.
+				if($layoutInfo)
+				{
+					// Adhoc...
+
+					// Input extra_vars into $layout_info
+					if($layoutInfo->extra_var_count)
+					{
+
+						foreach($layoutInfo->extra_var as $var_id => $val)
+						{
+							if($val->type == 'image')
+							{
+								if(strncmp('./files/attach/images/', $val->value, 22) === 0)
+								{
+									$val->value = Context::getRequestUri() . substr($val->value, 2);
+								}
+							}
+							$layoutInfo->{$var_id} = $val->value;
+						}
+					}
+
+					// Set menus into context
+					if($layoutInfo->menu_count)
+					{
+						foreach($layoutInfo->menu as $menu_id => $menu)
+						{
+							// set default menu set(included home menu)
+							if(!$menu->menu_srl || $menu->menu_srl == -1)
+							{
+								$oMenuAdminController = getAdminController('menu');
+								$homeMenuCacheFile = $oMenuAdminController->getHomeMenuCacheFile();
+
+								if(file_exists($homeMenuCacheFile))
+								{
+									include($homeMenuCacheFile);
+								}
+
+								if(!$menu->menu_srl)
+								{
+									$menu->xml_file = str_replace('.xml.php', $homeMenuSrl . '.xml.php', $menu->xml_file);
+									$menu->php_file = str_replace('.php', $homeMenuSrl . '.php', $menu->php_file);
+									$layoutInfo->menu->{$menu_id}->menu_srl = $homeMenuSrl;
+								}
+								else
+								{
+									$menu->xml_file = str_replace($menu->menu_srl, $homeMenuSrl, $menu->xml_file);
+									$menu->php_file = str_replace($menu->menu_srl, $homeMenuSrl, $menu->php_file);
+								}
+							}
+
+							$menu->php_file = FileHandler::getRealPath($menu->php_file);
+							if(FileHandler::exists($menu->php_file))
+							{
+								include($menu->php_file);
+							}
+							Context::set($menu_id, $menu);
+						}
+					}
+
+					Context::set('layout_info', $layoutInfo);
+				}
+			}
+		}
+		catch(Exception $e)
+		{
+			$content = '<div class="message error"><p id="preview_error">' . $e->getMessage() . '</p></div>';
+			Context::set('content', $content);
+			$layoutSrl = 0;
+		}
+
+		// Compile
+		$oTemplate = TemplateHandler::getInstance();
+		Context::clearHtmlHeader();
+
+		if($layoutInfo)
+		{
+			$layout_path = $layoutInfo->path;
+			$editLayoutTPL = $this->getRealLayoutFile($layoutSrl);
+			$editLayoutCSS = $this->getRealLayoutCSS($layoutSrl);
+			if($editLayoutCSS != '')
+			{
+				Context::addCSSFile($editLayoutCSS);
+			}
+			$layout_file = 'layout';
+			$oModuleModel = getModel('module');
+			$part_config = $oModuleModel->getModulePartConfig('layout', $layoutSrl);
+			Context::addHtmlHeader($part_config->header_script);
+		}
+		else
+		{
+			$layout_path = './common/tpl';
+			$layout_file = 'default_layout';
+		}
+
+		$layout_tpl = $oTemplate->compile($layout_path, $layout_file, $editLayoutTPL);
+		Context::set('layout','none');
+
+		// Convert widgets and others
+		Context::set('layout_tpl', $layout_tpl);
+		$this->setTemplatePath($this->module_path.'tpl');
+		$this->setTemplateFile('layout_preview');
+	}
+
+	/**
+	 * Get content of real module
+	 *
+	 * @param string $module module name
+	 * @param string $mid module id
+	 * @param string $skin skin name
+	 * @param string $skinType PC(P) or mobile(M)
+	 * @return string content of real module
+	 */
+	private function procRealModule($module, $mid, $skin, $skinType)
+	{
+		// if form site design and preview module, find target module
+		if($module && !$mid)
+		{
+			$args = new stdClass();
+			$args->module = $module;
+			$output = executeQuery('layout.getOneModuleInstanceByModuleName', $args);
+			if(!$output->toBool())
+			{
+				throw new Zittme\Framework\Exception($output->getMessage());
+			}
+
+			// if there is no module instance, error...
+			if(!$output->data)
+			{
+				throw new Zittme\Framework\Exception(lang('msg_unabled_preview'));
+			}
+
+			$mid = current($output->data)->mid;
+		}
+
+		// if form site design and preview layout, find start module
+		elseif(!$module && !$mid)
+		{
+			$oModuleModel = getModel('module');
+			$columnList = array('modules.mid', 'sites.index_module_srl');
+			$startModuleInfo = $oModuleModel->getSiteInfo(0, $columnList);
+			$mid = $startModuleInfo->mid;
+		}
+
+		$oModuleHandler = new ModuleHandler('', '', $mid, '', '');
+
+		// Adhoc...
+		$oModuleHandler->act = '';
+
+		$oModuleHandler->init();
+
+		// Adhoc...
+		$oModuleHandler->module_info->use_mobile = 'Y';
+		$oModuleHandler->module_info->is_skin_fix = 'Y';
+		$oModuleHandler->module_info->is_mskin_fix = 'Y';
+
+		if($skinType == 'M')
+		{
+			Mobile::setMobile(TRUE);
+			$oModuleHandler->module_info->mskin = $skin;
+		}
+		else
+		{
+			Mobile::setMobile(FALSE);
+			$oModuleHandler->module_info->skin = $skin;
+		}
+
+		// Remove unnecessary variables
+		Context::set('success_return_url', null);
+		Context::set('error_return_url', null);
+		Context::set('skin_type', null);
+		Context::set('skin_vars', null);
+
+		// Set dummy variable
+		Context::set('layout_info', Context::get('layout_info') ?: new stdClass());
+
+		// Proc module
+		$oModule = $oModuleHandler->procModule();
+		if(!$oModule->toBool())
+		{
+			throw new Zittme\Framework\Exception(lang('not_support_layout_preview'));
+		}
+
+		// get module html
+		require_once(RX_BASEDIR . "classes/display/HTMLDisplayHandler.php");
+		$handler = new HTMLDisplayHandler();
+		return $handler->toDoc($oModule);
+	}
+
+	private function getRealLayoutFile($layoutSrl)
+	{
+		$oLayoutModel = getModel('layout');
+		$layoutFile = $oLayoutModel->getUserLayoutHtml($layoutSrl);
+
+		if(file_exists($layoutFile))
+		{
+			return $layoutFile;
+		}
+		else
+		{
+			return '';
+		}
+
+	}
+
+	private function getRealLayoutCSS($layoutSrl)
+	{
+		$oLayoutModel = getModel('layout');
+		$cssFile = $oLayoutModel->getUserLayoutCss($layoutSrl);
+
+		if(file_exists($cssFile))
+		{
+			return $cssFile;
+		}
+		else
+		{
+			return '';
+		}
+
+	}
+
+
+
+}
+/* End of file layout.view.php */
+/* Location: ./modules/layout/layout.view.php */

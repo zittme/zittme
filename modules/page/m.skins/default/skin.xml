@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">Default Mobile Page Skin</title>
+	<title xml:lang="en">Default Mobile Page Skin</title>
+	<title xml:lang="jp">Default Mobile Page Skin</title>
+	<title xml:lang="vi">Giao diện trang mặc định cho di động</title>
+	<title xml:lang="tr">Varsayilan Mobil Sayfa Temasi</title>
+	<title xml:lang="ru">Базовый мобильный скин страницы</title>
+	<title xml:lang="mn">Default Mobile Page Skin</title>
+	<title xml:lang="fr">Skin de page mobile par défaut</title>
+	<title xml:lang="es">Skin móvil predeterminada de Página</title>
+	<title xml:lang="de">Standard-Skin für mobile Seiten</title>
+	<title xml:lang="zh-TW">預設行動版頁面面板</title>
+	<title xml:lang="zh-CN">默认移动页面皮肤</title>
+	<description xml:lang="ko">
+		 문서형 페이지의 기본 스킨입니다.
+	</description>
+	<description xml:lang="jp">
+		 ドキュメント型ページのデフォルトスキンです。
+	</description>
+	<description xml:lang="vi">Giao diện mặc định cho trang dạng tài liệu.</description>
+	<description xml:lang="tr">Belge tipi sayfalar icin varsayilan tema.</description>
+	<description xml:lang="ru">Базовый скин для страниц документного типа.</description>
+	<description xml:lang="mn">Баримт бичгийн төрлийн хуудасны үндсэн загвар.</description>
+	<description xml:lang="fr">Skin par défaut des pages de type document.</description>
+	<description xml:lang="es">Skin predeterminada de las páginas de tipo documento.</description>
+	<description xml:lang="de">Der Standard-Skin für dokumentbasierte Seiten.</description>
+	<description xml:lang="zh-TW">文件型頁面的預設面板。</description>
+	<description xml:lang="zh-CN">文档型页面的默认皮肤。</description>
+	<description xml:lang="en">Default skin for document-type pages.</description>
+	<version>1.7</version>
+	<date>2013-11-27</date>
+
+	<author email_address="developers@xpressengine.com" link="http://xpressengine.com/">
+		<name xml:lang="ko">NAVER</name>
+		<name xml:lang="jp">NAVER</name>
+		<name xml:lang="zh-CN">NAVER</name>
+		<name xml:lang="en">NAVER</name>
+		<name xml:lang="vi">NAVER</name>
+		<name xml:lang="es">NAVER</name>
+		<name xml:lang="zh-TW">NAVER</name>
+		<name xml:lang="tr">NAVER</name>
+	</author>
+	<extra_vars>
+		<var name="display_mobile_title" type="radio" default="show">
+			<title xml:lang="ko">제목표시</title>
+			<title xml:lang="en">Display title</title>
+			<title xml:lang="jp">タイトル表示</title>
+			<title xml:lang="vi">Hiển thị tiêu đề</title>
+			<title xml:lang="tr">Basligi goster</title>
+			<title xml:lang="ru">Показывать заголовок</title>
+			<title xml:lang="mn">Гарчиг харуулах</title>
+			<title xml:lang="fr">Affichage du titre</title>
+			<title xml:lang="es">Mostrar título</title>
+			<title xml:lang="de">Titel anzeigen</title>
+			<title xml:lang="zh-TW">顯示標題</title>
+			<title xml:lang="zh-CN">显示标题</title>
+			<description xml:lang="ko">
+				문서의 제목을 표시 할지 결정합니다.
+			</description>
+			<description xml:lang="jp">
+				ドキュメントのタイトルの表示可否を決定します。
+			</description>
+			<description xml:lang="vi">Chọn có hiển thị tiêu đề của tài liệu hay không.</description>
+			<description xml:lang="tr">Belgenin basliginin gosterilip gosterilmeyecegini belirler.</description>
+			<description xml:lang="ru">Определяет, показывать ли заголовок документа.</description>
+			<description xml:lang="mn">Баримтын гарчгийг харуулах эсэхийг тодорхойлно.</description>
+			<description xml:lang="fr">Détermine si le titre du document doit être affiché.</description>
+			<description xml:lang="es">Determina si se muestra el título del documento.</description>
+			<description xml:lang="de">Legt fest, ob der Titel des Dokuments angezeigt wird.</description>
+			<description xml:lang="zh-TW">設定是否顯示文件的標題。</description>
+			<description xml:lang="zh-CN">设置是否显示文档标题。</description>
+			<description xml:lang="en">Choose whether to display the document title.</description>
+			<options value="show">
+				<title xml:lang="ko">출력</title>
+				<title xml:lang="en">Show</title>
+				<title xml:lang="jp">表示</title>
+				<title xml:lang="vi">Hiện</title>
+				<title xml:lang="tr">Goster</title>
+				<title xml:lang="ru">Показывать</title>
+				<title xml:lang="mn">Харуулах</title>
+				<title xml:lang="fr">Afficher</title>
+				<title xml:lang="es">Mostrar</title>
+				<title xml:lang="de">Anzeigen</title>
+				<title xml:lang="zh-TW">顯示</title>
+				<title xml:lang="zh-CN">显示</title>
+			</options>
+			<options value="hide">
+				<title xml:lang="ko">출력하지 않음</title>
+				<title xml:lang="en">Hide</title>
+				<title xml:lang="jp">非表示</title>
+				<title xml:lang="vi">Ẩn</title>
+				<title xml:lang="tr">Gizle</title>
+				<title xml:lang="ru">Скрыть</title>
+				<title xml:lang="mn">Нуух</title>
+				<title xml:lang="fr">Masquer</title>
+				<title xml:lang="es">Ocultar</title>
+				<title xml:lang="de">Ausblenden</title>
+				<title xml:lang="zh-TW">不顯示</title>
+				<title xml:lang="zh-CN">隐藏</title>
+			</options>
+		</var>
+	</extra_vars>
+</skin>

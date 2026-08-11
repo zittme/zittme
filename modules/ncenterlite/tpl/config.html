@@ -1,0 +1,100 @@
+<load target="js/ncenter_admin.js" />
+<load target="css/ncenter_admin.css" />
+<include target="header.html" />
+
+<form ruleset="insertConfig" action="./" method="post" class="x_form-horizontal" id="fo_ncenterlite">
+	<input type="hidden" name="module" value="ncenterlite" />
+	<input type="hidden" name="disp_act" value="dispNcenterliteAdminConfig" />
+	<input type="hidden" name="act" value="procNcenterliteAdminInsertConfig" />
+
+	<section class="section">
+		<div class="x_control-group">
+			<!--@foreach($notify_types as $notify_type => $notify_srl)-->
+			<!--@if($notify_srl > 0 && lang('ncenterlite_type_' . $notify_type) === 'ncenterlite_type_' . $notify_type)-->
+			<label class="x_control-label">{$notify_type} {$lang->ncenterlite_notify}</label>
+			<!--@else-->
+			<label class="x_control-label">{$lang->get('ncenterlite_type_' . $notify_type)}</label>
+			<!--@end-->
+				<div class="x_controls">
+					<label class="x_inline"><input type="checkbox" name="use[{$notify_type}][web]" value="1" checked="checked"|cond="isset($config->use[$notify_type]['web'])" /> {$lang->cmd_web_notify}</label>
+					<label class="x_inline"><input type="checkbox" name="use[{$notify_type}][mail]" value="1" checked="checked"|cond="isset($config->use[$notify_type]['mail'])" /> {$lang->cmd_mail_notify}</label>
+					<label class="x_inline" disabled="disabled"|cond="!$sms_available"><input type="checkbox" name="use[{$notify_type}][sms]" value="1" disabled="disabled"|cond="!$sms_available" checked="checked"|cond="isset($config->use[$notify_type]['sms'])" /> {$lang->cmd_sms_notify}</label>
+					<label class="x_inline" disabled="disabled"|cond="!$push_available"><input type="checkbox" name="use[{$notify_type}][push]" value="1" disabled="disabled"|cond="!$push_available" checked="checked"|cond="isset($config->use[$notify_type]['push'])" /> {$lang->cmd_push_notify}</label>
+				</div>
+			<!--@endforeach-->
+			<label class="x_control-label">&nbsp;</label>
+			<div class="x_controls">
+				<p class="x_help-block">{$lang->ncenterlite_use_help}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="display_use">{$lang->ncenterlite_display}</label>
+			<div class="x_controls">
+				<select name="display_use" id="display_use">
+					<option value="all" selected="selected"|cond="$config->display_use == 'all'">{$lang->ncenterlite_display_all}</option>
+					<option value="none" selected="selected"|cond="$config->display_use == 'none'">{$lang->ncenterlite_display_none}</option>
+					<option value="pc" selected="selected"|cond="$config->display_use == 'pc'">{$lang->ncenterlite_display_pc}</option>
+					<option value="mobile" selected="selected"|cond="$config->display_use == 'mobile'">{$lang->ncenterlite_display_mobile}</option>
+				</select>
+				<p class="x_help-block">{$lang->ncenterlite_display_about}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->ncenterlite_always_display}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="radio" id="always_display_y" name="always_display" value="Y" checked="checked"|cond="$config->always_display == 'Y'" /> {$lang->use}
+				</label>
+				<label class="x_inline">
+					<input type="radio" id="always_display_n" name="always_display" value="N" checked="checked"|cond="$config->always_display != 'Y'" /> {$lang->notuse}
+				</label>
+				<p class="x_help-block">{$lang->ncenterlite_always_display_about}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->member_menu_view}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="radio" id="user_config_list_id" name="user_config_list" value="Y" checked="checked"|cond="$config->user_config_list == 'Y'" /> {$lang->member_menu_on}
+				</label>
+				<label class="x_inline">
+					<input type="radio" id="user_config_list_nick_name" name="user_config_list" value="N" checked="checked"|cond="$config->user_config_list != 'Y'" /> {$lang->member_menu_off}
+				</label>
+				<p class="x_help-block">{$lang->about_member_menu_view}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->user_notify_setting}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="radio" id="user_notify_setting_y" name="user_notify_setting" value="Y" checked="checked"|cond="$config->user_notify_setting == 'Y'" /> {$lang->use}
+				</label>
+				<label class="x_inline">
+					<input type="radio" id="user_notify_setting_n" name="user_notify_setting" value="N" checked="checked"|cond="$config->user_notify_setting != 'Y'" /> {$lang->notuse}
+				</label>
+				<p class="x_help-block">{$lang->about_user_notify_setting}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->ncenterlite_push_before_sms}</label>
+			<div class="x_controls">
+				<label class="x_inline"><input type="radio" name="push_before_sms" value="Y" checked="checked"|cond="$config->push_before_sms == 'Y'" /> {$lang->use}</label>
+				<label class="x_inline"><input type="radio" name="push_before_sms" value="N" checked="checked"|cond="$config->push_before_sms != 'Y'" /> {$lang->notuse}</label>
+				<p class="x_help-block">{$lang->ncenterlite_push_before_sms_about}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->ncenterlite_document_event_read}</label>
+			<div class="x_controls">
+				<label class="x_inline"><input type="radio" name="document_read" value="Y" checked="checked"|cond="$config->document_read == 'Y'" /> {$lang->ncenterlite_document_event_read_delete}</label>
+				<label class="x_inline"><input type="radio" name="document_read" value="N" checked="checked"|cond="$config->document_read != 'Y'" /> {$lang->ncenterlite_document_event_read_preserve}</label>
+				<p class="x_help-block">{$lang->ncenterlite_document_event_read_about}</p>
+			</div>
+		</div>
+	</section>
+	<div class="x_clearfix btnArea">
+		<div class="x_pull-right">
+			<button class="x_btn x_btn-primary" type="submit">{$lang->cmd_registration}</button>
+		</div>
+	</div>
+</form>

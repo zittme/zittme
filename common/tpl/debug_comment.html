@@ -1,0 +1,233 @@
+<?php if (!defined('RX_BASEDIR')) exit; ?>
+
+<?php echo '[' . $data->timestamp . ']' . "\n"; ?>
+
+<?php if (isset($display_content['request_info'])): ?>
+Request / Response
+==================
+Request URL:         <?php echo $data->url . "\n"; ?>
+Request IP Address:  <?php echo \RX_CLIENT_IP . "\n"; ?>
+Request Method:      <?php echo $data->request->method . "\n" ?>
+Request Body Size:   <?php echo $data->request->size . "\n" ?>
+Response Method:     <?php echo $data->response->method . "\n"; ?>
+Response Body Size:  <?php echo $data->response->size . "\n"; ?>
+
+Page Generation Time
+====================
+Total Time:              <?php echo $data->timing->total . "\n"; ?>
+DB Query Time:           <?php echo $data->timing->db_query . "\n"; ?>
+DB Processing Time:      <?php echo $data->timing->db_class . "\n"; ?>
+Session Lock Wait Time:  <?php echo $data->timing->session . "\n"; ?>
+Remote Request Time:     <?php echo $data->timing->remote . "\n"; ?>
+Layout Processing Time:  <?php echo $data->timing->layout . "\n"; ?>
+Widget Processing Time:  <?php echo $data->timing->widget . "\n"; ?>
+Template Compile Time:   <?php echo $data->timing->template . "\n"; ?>
+Content Transform Time:  <?php echo $data->timing->trans . "\n"; ?>
+
+Resource Usage
+==============
+Peak Memory Usage:  <?php echo sprintf('%0.1f MB', memory_get_peak_usage(true) / 1024 / 1024) . "\n"; ?>
+Included Files:     <?php echo count(get_included_files()) . "\n"; ?>
+<?php endif; ?>
+
+<?php if (isset($display_content['entries'])): ?>
+Debug Entries
+=============
+<?php
+	$entry_count = 0;
+	if (!count($data->entries))
+	{
+		echo 'None' . "\n";
+	}
+	foreach ($data->entries as $entry)
+	{
+		if (is_scalar($entry->message))
+		{
+			$entry->message = var_export($entry->message, true);
+		}
+		else
+		{
+			$entry->message = trim(preg_replace('/\r?\n/', "\n" . '    ', print_r($entry->message, true)));
+		}
+		echo sprintf('%02d. %s', ++$entry_count, $entry->message) . "\n";
+		$is_first_entry = true;
+		foreach ($entry->backtrace as $key => $backtrace)
+		{
+			if (isset($backtrace['file']) && isset($backtrace['line']))
+			{
+				echo sprintf('    - %s line %d', $backtrace['file'], $backtrace['line']);
+				if ($is_first_entry && $entry->count > 1)
+				{
+					echo ' (×' . $entry->count . ')';
+					$is_first_entry = false;
+				}
+				echo "\n";
+			}
+		}
+	}
+?>
+<?php endif; ?>
+
+<?php if (isset($display_content['errors'])): ?>
+PHP Errors and Warnings
+=======================
+<?php
+	$error_count = 0;
+	if (!count($data->errors))
+	{
+		echo 'None' . "\n";
+	}
+	foreach ($data->errors as $error)
+	{
+		echo sprintf('%02d. %s: %s', ++$error_count, $error->type, $error->message) . "\n";
+		$is_first_error = true;
+		foreach ($error->backtrace as $key => $backtrace)
+		{
+			if (isset($backtrace['file']) && isset($backtrace['line']))
+			{
+				echo sprintf('    - %s line %d', $backtrace['file'], $backtrace['line']);
+				if ($is_first_error && $error->count > 1)
+				{
+					echo ' (×' . $error->count . ')';
+					$is_first_error = false;
+				}
+				echo "\n";
+			}
+		}
+	}
+?>
+<?php endif; ?>
+
+<?php if (isset($display_content['queries'])): ?>
+Database Queries
+================
+<?php
+	$query_count = 0;
+	if (!count($data->queries))
+	{
+		echo 'None'. "\n";
+	}
+	foreach ($data->queries as $query)
+	{
+		$query_caller = sprintf('%s line %d (%s)', $query->file, $query->line, $query->method);
+		$query_result = ($query->message === 'success') ? 'success' : $query->message;
+		echo sprintf('%02d. %s', ++$query_count, $query->query_string) . "\n";
+		if (empty($query->backtrace))
+		{
+			echo sprintf('    - Caller:      %s', $query_caller) . ($query->count > 1 ? (' (×' . $query->count . ')') : '') . "\n";
+		}
+		echo sprintf('    - Connection:  %s', $query->query_connection) . "\n";
+		echo sprintf('    - Query ID:    %s', $query->query_id) . "\n";
+		echo sprintf('    - Query Time:  %0.4f sec', $query->query_time) . "\n";
+		echo sprintf('    - Result:      %s', $query_result) . "\n";
+		if (!empty($query->backtrace))
+		{
+			echo sprintf('    - Call Stack:  %s', $query_caller) . ($query->count > 1 ? (' (×' . $query->count . ')') : '') . "\n";
+			foreach ($query->backtrace ?? [] as $key => $backtrace)
+			{
+				if ($key > 0 && isset($backtrace['file']) && isset($backtrace['line']))
+				{
+					echo sprintf('                   %s line %d', $backtrace['file'], $backtrace['line']) . "\n";
+				}
+			}
+		}
+	}
+?>
+<?php endif; ?>
+
+<?php if (isset($display_content['slow_queries'])): ?>
+Slow Queries
+============
+<?php
+	$query_count = 0;
+	if (!count($data->slow_queries))
+	{
+		echo 'None'. "\n";
+	}
+	foreach ($data->slow_queries as $query)
+	{
+		$query_caller = sprintf('%s line %d (%s)', $query->file, $query->line, $query->method);
+		$query_result = ($query->message === 'success') ? 'success' : sprintf('error %d %s', $query->error_code, $query->message);
+		echo sprintf('%02d. %s', ++$query_count, $query->query_string) . "\n";
+		if (empty($query->backtrace))
+		{
+			echo sprintf('    - Caller:      %s', $query_caller) . "\n";
+		}
+		echo sprintf('    - Connection:  %s', $query->query_connection) . "\n";
+		echo sprintf('    - Query ID:    %s', $query->query_id) . "\n";
+		echo sprintf('    - Query Time:  %0.4f sec', $query->query_time) . "\n";
+		echo sprintf('    - Result:      %s', $query_result) . "\n";
+		if (!empty($query->backtrace))
+		{
+			echo sprintf('    - Call Stack:  %s', $query_caller) . "\n";
+			foreach ($query->backtrace as $key => $backtrace)
+			{
+				if (isset($backtrace['file']) && isset($backtrace['line']))
+				{
+					echo sprintf('                   %s line %d', $backtrace['file'], $backtrace['line']) . "\n";
+				}
+			}
+		}
+	}
+?>
+<?php endif; ?>
+
+<?php if (isset($display_content['slow_triggers'])): ?>
+Slow Triggers
+=============
+<?php
+	$trigger_count = 0;
+	if (!count($data->slow_triggers))
+	{
+		echo 'None'. "\n";
+	}
+	foreach ($data->slow_triggers as $trigger)
+	{
+		echo sprintf('%02d. %s', ++$trigger_count, $trigger->trigger_name) . "\n";
+		echo sprintf('    - Target:     %s', $trigger->trigger_target) . "\n";
+		echo sprintf('    - Exec Time:  %0.4f sec', $trigger->trigger_time) . "\n";
+	}
+?>
+<?php endif; ?>
+
+<?php if (isset($display_content['slow_widgets'])): ?>
+Slow Widgets
+============
+<?php
+	$widget_count = 0;
+	if (!count($data->slow_widgets))
+	{
+		echo 'None'. "\n";
+	}
+	foreach ($data->slow_widgets as $widget)
+	{
+		echo sprintf('%02d. %s', ++$widget_count, $widget->widget_name) . "\n";
+		echo sprintf('    - Exec Time:  %0.4f sec', $widget->widget_time) . "\n";
+	}
+?>
+<?php endif; ?>
+
+<?php if (isset($display_content['slow_remote_requests'])): ?>
+Slow Remote Requests
+====================
+<?php
+	$request_count = 0;
+	if (!count($data->slow_remote_requests))
+	{
+		echo 'None'. "\n";
+	}
+	foreach ($data->slow_remote_requests as $request)
+	{
+		$request_caller = sprintf('%s line %d (%s)', $request->file, $request->line, $request->method);
+		echo sprintf('%02d. %s', ++$request_count, escape($request->url)) . "\n";
+		echo sprintf('    - Method:        %s%s', $request->verb, $request->type ? (' (' . $request->type . ')') : '') . "\n";
+		echo sprintf('    - Caller:        %s', $request_caller) . "\n";
+		echo sprintf('    - Elapsed Time:  %0.4f sec', $request->elapsed_time) . "\n";
+		echo sprintf('    - Status Code:   %d', $request->status) . "\n";
+		if ($request->redirect_to)
+		{
+			echo sprintf('    - Redirect To:   %s', escape($request->redirect_to)) . "\n";
+		}
+	}
+?>
+<?php endif; ?>

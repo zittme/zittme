@@ -1,0 +1,27 @@
+<load target="popup.scss" />
+<load target="popup.js" />
+
+{@ Context::addMetaTag('viewport', 'width=device-width', FALSE);}
+
+<script>
+	var lang_success_added = '{$lang->success_added}';
+</script>
+
+<div class="x_modal-header">
+	<h1>{$component_info->title}</h1>
+	<a class="close_window" href="javascript:window.close()">&times;</a>
+</div>
+
+<div class="x_modal-body">
+	<div class="rx_tab">
+		<ul class="rx_tab">
+			<li loop="$emoticon_list => $key, $val" class="rx_active"|cond="$key=='Twemoji'"><a href="#" onclick="getEmoticons('{$key}')"><span>{$val}</span></a></li>
+		</ul>
+	</div>
+	<div id="emoticons" style="min-height:1px"></div>
+	<div class="x_clearfix btnArea">
+		<div class="x_pull-right">
+			<a class="x_btn" href="{getUrl('','module','editor','act','dispEditorComponentInfo','component_name',$component_info->component_name)}" target="_blank" onclick="window.open(this.href,'ComponentInfo','width=10,height=10');return false;">{lang('editor.about_component')}</a>
+		</div>
+	</div>
+</div>

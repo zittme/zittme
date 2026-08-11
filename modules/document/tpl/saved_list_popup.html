@@ -1,0 +1,80 @@
+{@Context::addMetaTag('viewport', 'width=device-width', FALSE);}
+<div>
+<div class="x_modal-header">
+	<h1>{$lang->cmd_view_saved_document}</h1>
+	<a class="close_window" href="javascript:window.close()">&times;</a>
+</div>
+<div class="x_modal-body">
+	<!-- 목록 -->
+	<table class="x_table x_table-striped x_table-hover">
+		<caption>Total : {number_format($total_count)}, Page {number_format($page)}/{number_format($total_page)}</caption>
+		<thead>
+			<tr>
+				<th class="title">{$lang->title}</th>
+				<th class="title">{$lang->module}</th>
+				<th class="title">{$lang->date}</th>
+				<th class="title" style="width:60px">{$lang->cmd_select}</th>
+				<th class="title" style="width:60px">{$lang->cmd_delete}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!--@foreach($document_list as $no => $val)-->
+			<tr>
+				<td>
+					<a href="#" class="toggle_content" data-document-srl="{$val->document_srl}">{$val->getTitle()}</a>
+				</td>
+				<td>{$val->getModuleName()}</td>
+				<td>{$val->getRegdate("Y-m-d H:i:s")}</td>
+				<td><a href="#" class="btn btn_select_temp_saved" data-document-srl="{$val->document_srl}" data-document-type="{$val->getDocumentType()}" data-document-mid="{$val->getDocumentMid()}">{$lang->cmd_select}</a></td>
+				<td><a href="#" class="btn btn_delete_temp_saved" data-document-srl="{$val->document_srl}">{$lang->cmd_delete}</a></td>
+			</tr>
+			<tr id="saved_document_{$val->document_srl}" class="saved_content" style="display:none">
+				<td colspan="4">
+					{$val->getSummary(200)}
+				</td>
+			</tr>
+			<!--@end-->
+		</tbody>
+	</table>
+	<!-- 페이지 네비게이션 -->
+	<div class="pagination">
+		<a href="{getUrl('page','','module_srl','')}" class="direction">&lsaquo; {$lang->first_page}</a>
+		<!--@while($page_no = $page_navigation->getNextPage())-->
+			<!--@if($page == $page_no)-->
+				<strong>{$page_no}</strong>
+			<!--@else-->
+				<a href="{getUrl('page',$page_no,'module_srl','')}">{$page_no}</a>
+			<!--@end-->
+		<!--@end-->
+		<a href="{getUrl('page',$page_navigation->last_page,'module_srl','')}" class="direction">{$lang->last_page} &rsaquo;</a>
+	</div>
+</div>
+</div>
+
+<script type="text/javascript">
+	$(function() {
+		$('.toggle_content').on('click', function(event) {
+			event.preventDefault();
+			var document_srl = $(this).data('documentSrl');
+			$('#saved_document_' + document_srl).toggle();
+			setFixedPopupSize();
+		});
+		$('.btn_select_temp_saved').on('click', function(event) {
+			event.preventDefault();
+			var document_srl = $(this).data('documentSrl');
+			var document_type = $(this).data('documentType');
+			var document_mid = $(this).data('documentMid');
+			doDocumentSelect(document_srl, document_type, document_mid);
+		});
+		$('.btn_delete_temp_saved').on('click', function(event) {
+			event.preventDefault();
+			var document_srl = $(this).data('documentSrl');
+			var msg = '{$lang->confirm_delete|escapejs}';
+			if (confirm(msg)) {
+				exec_json('document.procDocumentDeleteTempSaved', { document_srl: document_srl }, function(data) {
+					window.location.reload();
+				});
+			}
+		});
+	});
+</script>

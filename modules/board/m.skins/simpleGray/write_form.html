@@ -1,0 +1,91 @@
+<load target="js/mboard.js" />
+<load target="css/mboard.css" />
+
+<div class="bd">
+	<!--@if(isset($module_info->mobile_header_text) && $module_info->mobile_header_text)-->
+		<div class="bd_header_text">{$module_info->mobile_header_text}</div>
+	<!--@endif-->
+	<h2 class="h2"><a href="{getUrl('','vid',$vid,'mid',$mid)}">{$module_info->browser_title}</a> &rsaquo; {$lang->cmd_write}</h2>
+	<form action="./" method="POST" onsubmit="return procFilter(this, insert)">
+	<input type="hidden" name="mid" value="{$mid}" />
+	<input type="hidden" name="document_srl" value="{$document_srl}" />
+		<ul class="sn">
+			<!--@if($module_info->use_category == "Y")-->
+			<li>
+				<label for="nCategory" class="db fb">{$lang->category}</label>
+				<select name="category_srl" id="nCategory">
+					<option value="">{$lang->category}</option>
+					<!--@foreach($category_list as $val)-->
+					<option value="{$val->category_srl}" disabled="disabled"|cond="!$val->grant" selected="selected"|cond="$val->grant && (($val->selected && !$oDocument->get('category_srl')) || $val->category_srl == $oDocument->get('category_srl'))">
+						{str_repeat('&nbsp;&nbsp;', $val->depth)} {$val->title} ({$val->document_count})
+					</option>
+					<!--@endforeach-->
+				</select>
+			</li>
+			<!--@end-->
+			<li>
+				<label for="nTitle" class="db fb">{$lang->title}</label>
+				<input name="title" type="text" id="nTitle" class="itx" />
+			</li>
+			<!--@if(count($extra_keys))-->
+			<!--@foreach($extra_keys as $key=> $val)-->
+			<li class="exvar">
+				<label for="ex_{$val->name}" class="db fb">{$val->name} <!--@if($val->is_required=="Y")-->*<!--@end--></label>
+				{$val->getFormHTML()}
+			</li>
+			<!--@endforeach-->
+			<!--@end-->
+			<li>
+				<label for="nText" class="db fb">{$lang->content}</label>
+				<input type="hidden" name="content" value="{$oDocument->getContentText()}" />
+				{$oDocument->getEditor()}
+			</li>
+			<!--@if(!$is_logged)-->
+			<li>
+				<label for="uName" class="db fb">{$lang->writer}</label>
+				<input name="nick_name" type="text" id="uName" class="itx" />
+			</li>
+			<li>
+				<label for="uMail" class="db fb">{$lang->email_address}</label>
+				<input name="email_address" type="email" id="uMail" class="itx" />
+			</li>
+			<li>
+				<label for="uPw" class="db fb">{$lang->password}</label>
+				<input name="password" type="password" id="uPw" class="itx" />
+			</li>
+			<li>
+				<label for="uSite" class="db fb">{$lang->homepage}</label>
+				<input name="homepage" type="url" id="uSite" class="itx" value="" />
+			</li>
+			<!--@endif-->
+			<li>
+				<!--@if($grant->manager)-->
+					<select name="is_notice">
+						<option value="N" selected="selected"|cond="$oDocument->get('is_notice') === 'N'">{$lang->not_notice}</option>
+						<option value="Y" selected="selected"|cond="$oDocument->get('is_notice') === 'Y'">{$lang->notice}</option>
+						<option value="A" selected="selected"|cond="$oDocument->get('is_notice') === 'A'">{$lang->notice_all}</option>
+					</select>
+				<!--@endif-->
+				<input type="checkbox" name="comment_status" value="ALLOW" <!--@if($oDocument->allowComment())-->checked="checked"<!--@end--> id="reAllow" />
+				<label for="reAllow">{$lang->allow_comment}</label>
+				<input type="checkbox" name="allow_trackback" value="Y" <!--@if($oDocument->allowTrackback())-->checked="checked"<!--@end--> id="trAllow" />
+				<label for="trAllow">{$lang->allow_trackback}</label>
+
+				<!--@if(is_array($status_list))-->
+				<div>
+					{$lang->status}
+					<!--@foreach($status_list AS $key=>$value)-->
+					<input type="radio" name="status" value="{$key}" <!--@if($oDocument->get('status') == $key)-->checked<!--@end--> /> {$value}
+					<!--@end-->
+				</div>
+				<!--@end-->
+			</li>
+		</ul>
+		<div class="cm">
+			<button type="submit" class="bn">{$lang->cmd_registration}</button>
+		</div>
+	</form>
+	<!--@if(isset($module_info->mobile_footer_text) && $module_info->mobile_footer_text)-->
+		<div class="bd_footer_text">{$module_info->mobile_footer_text}</div>
+	<!--@endif-->
+</div>

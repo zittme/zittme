@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+    <title xml:lang="ko">XE 커뮤니케이션 모바일 기본 스킨</title>
+    <title xml:lang="vi">Giao diện di động cơ bản XE Communication</title>
+    <title xml:lang="tr">XE İletişim Mobil Temel Teması</title>
+    <title xml:lang="ru">Базовый мобильный скин коммуникаций XE</title>
+    <title xml:lang="mn">XE Харилцаа холбоо мобайл үндсэн загвар</title>
+    <title xml:lang="fr">Skin mobile par défaut XE Communication</title>
+    <title xml:lang="es">Skin móvil básico de Comunicación XE</title>
+    <title xml:lang="de">XE Kommunikation Mobil-Standardskin</title>
+    <title xml:lang="zh-TW">XE 通訊行動版預設面板</title>
+    <title xml:lang="zh-CN">XE 通讯移动版基本皮肤</title>
+    <title xml:lang="jp">XE コミュニケーション モバイル基本スキン</title>
+    <title xml:lang="en">XE Communication Default Mobile Skin</title>
+    <description xml:lang="ko">
+        XE 커뮤니케이션 모바일 기본 스킨입니다.
+        NAVER (developers@xpressengine.com) 
+    </description>
+    <description xml:lang="vi">Đây là giao diện di động cơ bản của XE Communication. NAVER (developers@xpressengine.com)</description>
+    <description xml:lang="tr">XE iletişim modülünün mobil temel temasıdır.
+        NAVER (developers@xpressengine.com)</description>
+    <description xml:lang="ru">Базовый мобильный скин модуля коммуникаций XE. NAVER (developers@xpressengine.com)</description>
+    <description xml:lang="mn">XE Харилцаа холбоо модулийн мобайл үндсэн загвар. NAVER (developers@xpressengine.com)</description>
+    <description xml:lang="fr">Skin mobile par défaut du module XE Communication.
+NAVER (developers@xpressengine.com)</description>
+    <description xml:lang="es">Este es el skin móvil básico del módulo de Comunicación de XE.
+NAVER (developers@xpressengine.com)</description>
+    <description xml:lang="de">
+        Standardskin für XE Kommunikation (mobil).
+        NAVER (developers@xpressengine.com) 
+    </description>
+    <description xml:lang="zh-TW">XE 通訊行動版預設面板。NAVER (developers@xpressengine.com)</description>
+    <description xml:lang="zh-CN">XE 通讯模块的移动版基本皮肤。NAVER (developers@xpressengine.com)</description>
+    <description xml:lang="jp">XE コミュニケーションのモバイル基本スキンです。
+NAVER (developers@xpressengine.com)</description>
+    <description xml:lang="en">The default XE Communication mobile skin. NAVER (developers@xpressengine.com)</description>
+    <version>1.7</version>
+    <date>2013-11-27</date>
+    <author email_address="developers@xpressengine.com" link="http://xpressengine.com/">
+        <name xml:lang="ko">NAVER</name>
+        <name xml:lang="en">NAVER</name>
+        <name xml:lang="zh-TW">NAVER</name>
+        <name xml:lang="tr">NAVER</name>
+    </author>
+</skin>

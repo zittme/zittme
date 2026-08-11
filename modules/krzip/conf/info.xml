@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="0.2">
+	<title xml:lang="ko">한국 우편번호</title>
+	<title xml:lang="en">Korean Postal Code</title>
+	<title xml:lang="vi">Mã bưu chính Hàn Quốc</title>
+	<title xml:lang="tr">Kore Posta Kodu</title>
+	<title xml:lang="ru">Почтовые индексы Кореи</title>
+	<title xml:lang="mn">Солонгосын шуудангийн код</title>
+	<title xml:lang="fr">Code postal coréen</title>
+	<title xml:lang="es">Código postal de Corea</title>
+	<title xml:lang="de">Koreanische Postleitzahl</title>
+	<title xml:lang="zh-TW">韓國郵遞區號</title>
+	<title xml:lang="zh-CN">韩国邮政编码</title>
+	<title xml:lang="jp">韓国郵便番号</title>
+	<description xml:lang="ko">공개 API를 이용해 우편번호 검색 서비스를 이용합니다.</description>
+	<description xml:lang="en">Module to utilize public postal code searching APIs in South Korea.</description>
+	<description xml:lang="vi">Module sử dụng các API công khai để tra cứu mã bưu chính tại Hàn Quốc.</description>
+	<description xml:lang="tr">Güney Kore'deki açık posta kodu arama API'lerini kullanan modül.</description>
+	<description xml:lang="ru">Модуль для поиска почтовых индексов Южной Кореи через публичные API.</description>
+	<description xml:lang="mn">Өмнөд Солонгосын нээлттэй API ашиглан шуудангийн код хайх модуль.</description>
+	<description xml:lang="fr">Module utilisant les API publiques de recherche de codes postaux en Corée du Sud.</description>
+	<description xml:lang="es">Módulo para utilizar las API públicas de búsqueda de códigos postales de Corea del Sur.</description>
+	<description xml:lang="de">Modul zur Nutzung öffentlicher APIs für die Postleitzahlensuche in Südkorea.</description>
+	<description xml:lang="zh-TW">使用南韓公開 API 提供郵遞區號查詢服務的模組。</description>
+	<description xml:lang="zh-CN">使用公开 API 提供韩国邮政编码搜索服务的模块。</description>
+	<description xml:lang="jp">韓国の公開郵便番号検索APIを利用するためのモジュールです。</description>
+	<version>RX_VERSION</version>
+	<date>RX_CORE</date>
+	
+	<author email_address="developers@xpressengine.com" link="http://www.xpressengine.com/">
+		<name xml:lang="ko">NAVER</name>
+		<name xml:lang="en">NAVER</name>
+	</author>
+</module>

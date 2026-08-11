@@ -1,0 +1,123 @@
+<load target="css/msignup.css" />
+<load target="../../tpl/js/signup_check.js" />
+<!--// datepicker javascript plugin load -->
+<!--%load_js_plugin("ui.datepicker")-->
+<div class="bd">
+	<div class="hx h2">
+		<h2>{$lang->cmd_signup}</h2>
+	</div>
+	<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/member/skins/default/modify_info/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+		<p>{$XE_VALIDATOR_MESSAGE}</p>
+	</div>
+	<form ruleset="@insertMember" id="fo_insert_member" class="ff rx_ajax" action="./" method="post" enctype="multipart/form-data">
+		<input type="hidden" name="module" value="member" />
+		<input type="hidden" name="act" value="procMemberInsert" />
+		<input type="hidden" name="xe_validator_id" value="modules/member/skins/default/modify_info/1" />
+		<input type="hidden" name="success_return_url" value="{getUrl('act','dispMemberInfo')}" />
+		<div class="agreement" loop="$member_config->agreements => $i, $agreement" cond="$agreement->type !== 'disabled'">
+			<div class="title">
+				{$agreement->title}
+				<block cond="$agreement->type === 'required'">({$lang->cmd_required})</block>
+				<block cond="$agreement->type === 'optional'">({$lang->cmd_optional})</block>
+			</div>
+			<div class="text">
+				{$agreement->content}
+			</div>
+			<div class="confirm">
+				<label for="accept_agreement_{$i}">
+					<input type="checkbox" name="accept_agreement[{$i}]" value="Y" id="accept_agreement_{$i}" required="required"|cond="$agreement->type === 'required'" />
+					{$lang->about_accept_agreement}
+				</label>
+			</div>
+		</div>
+		<ul>
+			<li cond="$identifierForm->name !== 'phone_number'">
+				<label for="{$identifierForm->name}">{$identifierForm->title} <em style="color:red">*</em></label>
+				<input type="text"|cond="$identifierForm->name!='email_address'" type="email"|cond="$identifierForm->name=='email_address'" name="{$identifierForm->name}" id="{$identifierForm->name}" value="" />
+			</li>
+			<li>
+				<label for="password">{$lang->password} <em style="color:red">*</em></label>
+				<input type="password" name="password" id="password" value=""/>
+				<p class="help-inline">{$lang->about_password_strength[$member_config->password_strength]}</p>
+			</li>
+			<li>
+				<label for="password2">{$lang->password3} <em style="color:red">*</em></label>
+				<input type="password" name="password2" id="password2" value=""/>
+			</li>
+			<li loop="$formTags=>$formTag" cond="$formTag->name != 'signature'">
+				<label for="{$formTag->name}">{$formTag->title}</label>
+				<div>{$formTag->inputTag}</div>
+			</li>
+			<li>
+				<label>{$lang->allow_mailing}</label>
+				<input type="radio" name="allow_mailing" id="mailingYes" value="Y" checked="checked"|cond="$member_info->allow_mailing == 'Y'" /> <label for="mailingYes">{$lang->cmd_yes}</label>
+				<input type="radio" name="allow_mailing" id="mailingNo" value="N" checked="checked"|cond="$member_info->allow_mailing != 'Y'" /> <label for="mailingNo">{$lang->cmd_no}</label>
+			</li>
+			<li>
+				<label>{$lang->allow_message}</label>
+				<block loop="$lang->allow_message_type=>$key,$val">
+					<input type="radio" name="allow_message" value="{$key}" checked="checked"|cond="$member_info->allow_message == $key || (!$member_info && $key == 'Y')" id="allow_{$key}" /> <label for="allow_{$key}">{$val}</label>
+				</block>
+			</li>
+		</ul>
+		<div class="captcha" cond="isset($captcha) && $captcha && $captcha->isTargetAction('signup')">
+			{$captcha}
+		</div>
+		<div cond="!empty($identity_signup_required)" style="padding:10px 6px;border-top:1px solid #eee;">
+			<strong style="display:block;margin-bottom:6px;">{$lang->identity_verification}</strong>
+			<!--@if(!empty($identity_verified_info))-->
+				<span style="color:#2677e3;font-weight:bold;">{$lang->identity_verified}</span>
+				<span style="color:#888;">({$identity_verified_info['name']})</span>
+			<!--@else-->
+				<button type="button" class="bn" onclick="zittmeIdentityVerify();">{$lang->identity_verify}</button>
+				<p style="margin:6px 0 0;color:#888;font-size:12px;">{$lang->about_identity_signup}</p>
+			<!--@end-->
+		</div>
+		<div class="bna">
+			<input type="submit" class="bn dark" value="{$lang->cmd_registration}" />
+		</div>
+	</form>
+</div>
+<script cond="!empty($identity_signup_required)">
+function zittmeIdentityVerify() {
+	var w = window.open('{$identity_verify_url}', 'zittme_identity', 'width=460,height=640,scrollbars=yes');
+	if (w) { w.focus(); }
+}
+window.addEventListener('message', function(e) {
+	if (e.origin !== window.location.origin) return;
+	if (e.data && e.data.type === 'zittme:identity' && e.data.success) {
+		window.location.reload();
+	}
+});
+</script>
+<script>
+(function($){
+	$(function(){
+		// check if the browser support type date.
+		if ( $(".inputDate").prop('type') != 'date' ) {
+			var option = {
+				changeMonth: true,
+				changeYear: true,
+				gotoCurrent: false,
+				yearRange:'-200:+10',
+				dateFormat:'yy-mm-dd',
+				defaultDate: new Date("{date('Y-m-d',time())}"),
+				minDate: new Date("{date('Y-m-d',strtotime('-200 years'))}"),
+
+				onSelect:function(){
+					$(this).prev('input[type="hidden"]').val(this.value.replace(/-/g,""))
+				}
+			};
+			$.extend($.datepicker.regional['{$lang_type}'],option);
+
+			//if the browser does not support type date input, start datepicker. If it does, brower's UI will show their datepicker.
+			$(".inputDate").datepicker(option);
+		} else {
+			$(".inputDate").prop('readonly', false);
+		}
+		$(".dateRemover").click(function() {
+			$(this).prevAll('input').val('');
+			return false;});
+	});
+})(jQuery);
+</script>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">RX 알림센터 로그인 스킨</title>
+	<title xml:lang="en">RX Notification Center Login Skin</title>
+	<title xml:lang="vi">Giao diện đăng nhập RX Notification Center</title>
+	<title xml:lang="tr">RX Bildirim Merkezi Giriş Teması</title>
+	<title xml:lang="ru">Скин входа с центром уведомлений RX</title>
+	<title xml:lang="mn">RX мэдэгдлийн төвийн нэвтрэх скин</title>
+	<title xml:lang="fr">Skin de connexion RX Centre de notifications</title>
+	<title xml:lang="es">Skin de acceso con centro de notificaciones RX</title>
+	<title xml:lang="de">RX Benachrichtigungszentrale Login-Skin</title>
+	<title xml:lang="zh-TW">RX 通知中心登入面板</title>
+	<title xml:lang="zh-CN">RX 通知中心登录皮肤</title>
+	<title xml:lang="jp">RX 通知センターログインスキン</title>
+	<description xml:lang="ko">RX 알림센터겸용 로그인 스킨입니다.</description>
+	<description xml:lang="en">Login Skin supporting Zittme Notification Center</description>
+	<description xml:lang="vi">Giao diện đăng nhập hỗ trợ Trung tâm thông báo Zittme.</description>
+	<description xml:lang="tr">Zittme Bildirim Merkezi'ni destekleyen giriş teması</description>
+	<description xml:lang="ru">Скин входа с поддержкой центра уведомлений Zittme.</description>
+	<description xml:lang="mn">Zittme мэдэгдлийн төвийг дэмждэг нэвтрэх скин</description>
+	<description xml:lang="fr">Skin de connexion compatible avec le centre de notifications Zittme.</description>
+	<description xml:lang="es">Skin de acceso compatible con el centro de notificaciones de Zittme</description>
+	<description xml:lang="de">Login-Skin mit Unterstützung der Zittme Benachrichtigungszentrale</description>
+	<description xml:lang="zh-TW">支援 Zittme 通知中心的登入面板。</description>
+	<description xml:lang="zh-CN">支持 Zittme 通知中心的登录皮肤。</description>
+	<description xml:lang="jp">Zittme 通知センターに対応したログインスキンです。</description>
+	<version>1.0</version>
+	<date>2016-05-27</date>
+	<link>http://bjrambo.com</link>
+
+	<author email_address="qw5414@naver.com" link="http://bjrambo.com">
+		<name xml:lang="ko">NAVER</name>
+		<name xml:lang="en">BJ Rambo</name>
+	</author>
+
+	<colorset>
+		<color name="layout">
+			<title xml:lang="ko">레이아웃에 맞춤</title>
+			<title xml:lang="jp">レイアウトに合わせる</title>
+			<title xml:lang="zh-CN">随布局</title>
+			<title xml:lang="en">레이아웃에 맞춤</title>
+			<title xml:lang="zh-TW">隨版面</title>
+			<title xml:lang="vi">Theo bố cục</title>
+			<title xml:lang="tr">Yerleşime uyumlu</title>
+			<title xml:lang="ru">По макету</title>
+			<title xml:lang="mn">Загварт нийцүүлэх</title>
+			<title xml:lang="fr">Adapté à la mise en page</title>
+			<title xml:lang="es">Adaptado al diseño</title>
+			<title xml:lang="de">An Layout angepasst</title>
+		</color>
+		<color name="white">
+			<title xml:lang="ko">하얀색(기본)</title>
+			<title xml:lang="jp">白（デフォルト）</title>
+			<title xml:lang="zh-CN">白色（默认）</title>
+			<title xml:lang="en">White (default)</title>
+			<title xml:lang="zh-TW">白色(預設)</title>
+			<title xml:lang="vi">Trắng (mặc định)</title>
+			<title xml:lang="tr">Beyaz (varsayılan)</title>
+			<title xml:lang="ru">Белый (по умолчанию)</title>
+			<title xml:lang="mn">Цагаан (үндсэн)</title>
+			<title xml:lang="fr">Blanc (par défaut)</title>
+			<title xml:lang="es">Blanco (predeterminado)</title>
+			<title xml:lang="de">Weiß (Standard)</title>
+		</color>
+		<color name="black">
+			<title xml:lang="ko">검은색</title>
+			<title xml:lang="jp">黒</title>
+			<title xml:lang="en">Black</title>
+			<title xml:lang="zh-CN">黑色</title>
+			<title xml:lang="zh-TW">黑色</title>
+			<title xml:lang="vi">Đen</title>
+			<title xml:lang="tr">Siyah</title>
+			<title xml:lang="ru">Чёрный</title>
+			<title xml:lang="mn">Хар</title>
+			<title xml:lang="fr">Noir</title>
+			<title xml:lang="es">Negro</title>
+			<title xml:lang="de">Schwarz</title>
+		</color>
+	</colorset>
+</skin>

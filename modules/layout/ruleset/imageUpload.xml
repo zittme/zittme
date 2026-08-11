@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ruleset version="1.5.0">
+    <customrules>
+		<rule name="imageExtension" type="regex" test="/\.(gif|jpg|jpeg|gif|png|swf|flv)$/i">
+			<message xml:lang="ko">%s은 gif, png, jpg, swf, flv 파일만 가능합니다.</message>
+			<message xml:lang="vi">%s chỉ cho phép tệp gif, png, jpg, swf, flv.</message>
+			<message xml:lang="tr">%s yalnızca gif, png, jpg, swf, flv dosyası olabilir.</message>
+			<message xml:lang="ru">%s допускает только файлы gif, png, jpg, swf, flv.</message>
+			<message xml:lang="mn">%s зөвхөн gif, png, jpg, swf, flv файл байж болно.</message>
+			<message xml:lang="fr">%s n'accepte que les fichiers gif, png, jpg, swf et flv.</message>
+			<message xml:lang="es">%s solo admite archivos gif, png, jpg, swf o flv.</message>
+			<message xml:lang="de">Für %s sind nur die Dateitypen gif, png, jpg, swf und flv zulässig.</message>
+			<message xml:lang="zh-TW">%s 僅支援 gif、png、jpg、swf、flv 檔案。</message>
+			<message xml:lang="zh-CN">%s 只能使用 gif、png、jpg、swf、flv 文件。</message>
+			<message xml:lang="jp">%sは gif, png, jpg, swf, flv ファイルのみ使用できます。</message>
+			<message xml:lang="en">%s only allows gif, png, jpg, swf and flv files.</message>
+		</rule>
+    </customrules>
+    <fields>
+		<field name="user_layout_image" required="true" rule="imageExtension">
+			<title xml:lang="ko">파일</title>
+			<title xml:lang="vi">Tệp tin</title>
+			<title xml:lang="tr">Dosya</title>
+			<title xml:lang="ru">Файл</title>
+			<title xml:lang="mn">Файл</title>
+			<title xml:lang="fr">Fichier</title>
+			<title xml:lang="es">Archivo</title>
+			<title xml:lang="de">Datei</title>
+			<title xml:lang="zh-TW">檔案</title>
+			<title xml:lang="zh-CN">文件</title>
+			<title xml:lang="jp">ファイル</title>
+			<title xml:lang="en">File</title>
+		</field>
+		<field name="layout_srl" required="true" rule="number" />
+    </fields>
+</ruleset>

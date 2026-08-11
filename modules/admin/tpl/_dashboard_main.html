@@ -1,0 +1,179 @@
+<config autoescape="on" />
+<load target="js/dashboard_default.js" />
+<!--@if($counterAddonActivated)-->
+<load target="js/dashboard_counter.js" />
+<!--@endif-->
+
+<!--// ⓪-1 TODAY -->
+<p class="zdb-kpis-title">TODAY</p>
+<div class="zdb-kpis zdb-kpis-today">
+	<div class="zdb-kpi" cond="$counterAddonActivated">
+		<span class="zdb-kpi-label">오늘 방문</span>
+		<b>{number_format($status->traffic->todayUv)}</b>
+	</div>
+	<div class="zdb-kpi" cond="$counterAddonActivated">
+		<span class="zdb-kpi-label">오늘 PV</span>
+		<b>{number_format($status->traffic->todayPv)}</b>
+	</div>
+	<a class="zdb-kpi" href="{getUrl('', 'module', 'admin', 'act', 'dispMemberAdminList')}">
+		<span class="zdb-kpi-label">오늘 가입</span>
+		<b>{number_format($status->member->todayCount)}</b>
+	</a>
+	<a class="zdb-kpi" href="{getUrl('', 'module', 'admin', 'act', 'dispDocumentAdminList')}">
+		<span class="zdb-kpi-label">오늘 등록 문서</span>
+		<b>{number_format($status->document->todayCount)}</b>
+	</a>
+	<a class="zdb-kpi" href="{getUrl('', 'module', 'admin', 'act', 'dispCommentAdminList')}">
+		<span class="zdb-kpi-label">오늘 등록 댓글</span>
+		<b>{number_format($status->comment->todayCount)}</b>
+	</a>
+</div>
+
+<!--// ⓪-2 TOTAL -->
+<p class="zdb-kpis-title">TOTAL</p>
+<div class="zdb-kpis">
+	<div class="zdb-kpi" cond="$counterAddonActivated">
+		<span class="zdb-kpi-label">누적 방문</span>
+		<b>{number_format($status->traffic->totalUv)}</b>
+	</div>
+	<div class="zdb-kpi" cond="$counterAddonActivated">
+		<span class="zdb-kpi-label">누적 PV</span>
+		<b>{number_format($status->traffic->totalPv)}</b>
+	</div>
+	<a class="zdb-kpi" href="{getUrl('', 'module', 'admin', 'act', 'dispMemberAdminList')}">
+		<span class="zdb-kpi-label">{$lang->menu_gnb['user']}</span>
+		<b>{number_format($status->member->totalCount)}</b>
+	</a>
+	<a class="zdb-kpi" href="{getUrl('', 'module', 'admin', 'act', 'dispDocumentAdminList')}">
+		<span class="zdb-kpi-label">{$lang->menu_gnb_sub['document']}</span>
+		<b>{number_format($status->document->totalCount)}</b>
+	</a>
+	<a class="zdb-kpi" href="{getUrl('', 'module', 'admin', 'act', 'dispCommentAdminList')}">
+		<span class="zdb-kpi-label">댓글</span>
+		<b>{number_format($status->comment->totalCount)}</b>
+	</a>
+</div>
+
+<!--// 1. 트래픽 — 순 방문자 + 페이지 뷰 를 한 줄(2열)로 (카운터 애드온이 켜져 있을 때만) -->
+<div class="zdb-stats" cond="$counterAddonActivated">
+	<section class="status zdb-card">
+		<h2>{$lang->uv}</h2>
+		<div class="zm-chart" id="visitors"></div>
+		<div class="zdb-card-foot">
+			<a href="{getUrl('', 'module', 'admin', 'act', 'dispCounterAdminIndex')}">{$lang->details} <i class="xi-angle-right"></i></a>
+		</div>
+	</section>
+	<section class="status zdb-card">
+		<h2>{$lang->pv}</h2>
+		<div class="zm-chart" id="page_views"></div>
+		<div class="zdb-card-foot">
+			<dl><dt>{$lang->menu_gnb_sub['document']}:</dt><dd><a href="{getUrl('', 'module', 'admin', 'act', 'dispDocumentAdminList')}">{number_format($status->document->totalCount)} (<!--@if($status->document->todayCount > 0)-->+<!--@end-->{number_format($status->document->todayCount)})</a></dd></dl>
+			<a href="{getUrl('', 'module', 'admin', 'act', 'dispCounterAdminIndex')}">{$lang->details} <i class="xi-angle-right"></i></a>
+		</div>
+	</section>
+</div>
+
+<!--// 2. 회원 현황 + 최근 가입 -->
+<section class="member zdb-card zdb-members">
+	<h2>{$lang->menu_gnb['user']}</h2>
+	<div class="zdb-members-inner">
+		<div class="zdb-mem-stats">
+			<div class="zdb-mem-stat">
+				<b>{number_format($status->member->totalCount)}</b>
+				<span>{$lang->menu_gnb['user']}</span>
+			</div>
+			<div class="zdb-mem-stat">
+				<b><!--@if($status->member->todayCount > 0)-->+<!--@end-->{number_format($status->member->todayCount)}</b>
+				<span>{$lang->today}</span>
+			</div>
+		</div>
+		<ul class="zdb-mem-list">
+			<li loop="$latestMemberList => $key,$value">
+				<a href="{getUrl('', 'module', 'admin', 'act', 'dispMemberAdminInsert', 'member_srl', $value->member_srl)}" target="_blank">
+					<span class="zdb-mem-avatar">{mb_substr($value->nick_name, 0, 1)}</span>
+					<span class="zdb-mem-name">{$value->nick_name}</span>
+					<span class="zdb-mem-mail">{$value->email_address}</span>
+					<span class="zdb-mem-date">{zdate($value->regdate, 'Y.m.d')}</span>
+				</a>
+			</li>
+			<li class="zdb-empty" cond="!is_array($latestMemberList) || count($latestMemberList) < 1">{$lang->no_data}</li>
+		</ul>
+	</div>
+	<div class="zdb-card-foot">
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispMemberAdminList')}">{$lang->more} <i class="xi-angle-right"></i></a>
+	</div>
+</section>
+
+<!--// 3. 최근 글 / 최근 댓글 -->
+<div class="zdb-two">
+	<section class="document zdb-card">
+		<h2>{$lang->latest_documents}</h2>
+		<ul class="zdb-list">
+			<li loop="$latestDocumentList => $key,$value">
+				{@$document = $value->variables}
+				<a href="{getUrl('', 'document_srl', $document['document_srl'])}" target="_blank"><!--@if(trim($value->getTitle()) !== '')-->{$value->getTitleText()}<!--@else--><strong>{$lang->no_title_document}</strong><!--@end--></a>
+				<span class="side">{$value->getNickName()}</span>
+				<form class="action" action="{getUrl('')}" method="POST">
+					<input type="hidden" name="module" value="admin" />
+					<input type="hidden" name="act" value="procDocumentManageCheckedDocument" />
+					<input type="hidden" name="cart[]" value="{$document['document_srl']}" />
+					<input type="hidden" name="success_return_url" value="{getUrl('', 'module', 'admin')}" />
+					<button type="submit" name="type" value="trash" class="x_icon-trash" title="{$lang->cmd_trash}">{$lang->cmd_trash}</button>
+					<button type="submit" name="type" value="delete" class="x_icon-remove" title="{$lang->cmd_delete}">{$lang->cmd_delete}</button>
+				</form>
+			</li>
+			<li class="zdb-empty" cond="!is_array($latestDocumentList) || count($latestDocumentList) < 1">{$lang->no_data}</li>
+		</ul>
+		<div class="zdb-card-foot">
+			<a href="{getUrl('', 'module', 'admin', 'act', 'dispDocumentAdminList')}">{$lang->more} <i class="xi-angle-right"></i></a>
+		</div>
+	</section>
+	<section class="reply zdb-card">
+		<h2>{$lang->latest_comments}</h2>
+		<ul class="zdb-list">
+			<li loop="$latestCommentList => $key,$value">
+				<a href="{getUrl('', 'document_srl', $value->document_srl)}#comment_{$value->comment_srl}" target="_blank"><!--@if(trim($value->content) !== '')-->{$value->getSummary()}<!--@else--><strong>{$lang->no_text_comment}</strong><!--@end--></a>
+				<span class="side">{$value->getNickName()}</span>
+				<form class="action" action="{getUrl('')}" method="POST">
+					<input type="hidden" name="module" value="admin" />
+					<input type="hidden" name="act" value="procCommentAdminDeleteChecked" />
+					<input type="hidden" name="cart[]" value="{$value->comment_srl}" />
+					<input type="hidden" name="success_return_url" value="{getUrl('', 'module', 'admin')}" />
+					<button type="submit" name="is_trash" value="true" class="x_icon-trash" title="{$lang->cmd_trash}">{$lang->cmd_trash}</button>
+					<button type="submit" name="is_trash" value="false" class="x_icon-remove" title="{$lang->cmd_delete}">{$lang->cmd_delete}</button>
+				</form>
+			</li>
+			<li class="zdb-empty" cond="!is_array($latestCommentList) || count($latestCommentList) < 1">{$lang->no_data}</li>
+		</ul>
+		<div class="zdb-card-foot">
+			<a href="{getUrl('', 'module', 'admin', 'act', 'dispCommentAdminList')}">{$lang->more} <i class="xi-angle-right"></i></a>
+		</div>
+	</section>
+</div>
+
+<script>
+// KPI 숫자 축약: 10,000 이상은 11.6K, 1,000,000 이상은 1.2M (원본은 title 툴팁)
+document.addEventListener('DOMContentLoaded', function () {
+	document.querySelectorAll('.zdb-kpi b').forEach(function (el) {
+		var n = parseInt(el.textContent.replace(/,/g, ''), 10);
+		if (isNaN(n) || n < 10000) return;
+		el.title = el.textContent;
+		var v, unit;
+		if (n >= 1000000) { v = n / 1000000; unit = 'M'; }
+		else { v = n / 1000; unit = 'K'; }
+		el.textContent = (v >= 100 ? Math.round(v) : Math.round(v * 10) / 10) + unit;
+	});
+});
+xe.lang.confirm_delete = '{$lang->confirm_delete}';
+xe.lang.confirm_trash = '{$lang->confirm_trash}';
+xe.lang.this_week = '{$lang->this_week}';
+xe.lang.last_week = '{$lang->last_week}';
+xe.lang.next_week = '{$lang->next_week}';
+xe.lang.mon = '{$lang->mon}';
+xe.lang.tue = '{$lang->tue}';
+xe.lang.wed = '{$lang->wed}';
+xe.lang.thu = '{$lang->thu}';
+xe.lang.fri = '{$lang->fri}';
+xe.lang.sat = '{$lang->sat}';
+xe.lang.sun = '{$lang->sun}';
+</script>

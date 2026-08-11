@@ -1,0 +1,104 @@
+<include target="./common.html" />
+<load target="css/config.css" />
+<load target="js/config.js" />
+
+<form class="x_form-horizontal" action="./" method="post" id="advanced_mailer">
+	<input type="hidden" name="module" value="advanced_mailer" />
+	<input type="hidden" name="act" value="procAdvanced_mailerAdminInsertConfig" />
+	<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
+	
+	<div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+		<p>{$XE_VALIDATOR_MESSAGE}</p>
+	</div>
+	
+	<section class="section">
+		
+		<h2 style="padding-top:12px">{$lang->cmd_advanced_mailer_sending_method_config}</h2>
+		
+		<div class="advanced_mailer_description">
+			※ {$lang->cmd_advanced_mailer_about_sending_method}
+		</div>
+		
+	</section>
+	
+	<section class="section">
+		
+		<h2 style="padding-top:12px">{$lang->cmd_advanced_mailer_sender_identity}</h2>
+		
+		<div class="advanced_mailer_description">
+			※ {$lang->cmd_advanced_mailer_about_sender_identity}
+		</div>
+	
+	</section>
+	
+	<section class="section">
+		
+		<h2 style="padding-top:12px">{$lang->cmd_advanced_mailer_logging}</h2>
+		
+		<div class="x_control-group">
+			<label class="x_control-label" for="advanced_mailer_log_sent_mail">{$lang->cmd_advanced_mailer_log_mail}</label>
+			<div class="x_controls">
+				<select name="log_sent_mail" id="advanced_mailer_log_sent_mail">
+					<option value="Y" selected="selected"|cond="toBool($advanced_mailer_config->log_sent_mail)" />{$lang->cmd_advanced_mailer_log_yes}</option>
+					<option value="N" selected="selected"|cond="!toBool($advanced_mailer_config->log_sent_mail)" />{$lang->cmd_advanced_mailer_log_no}</option>
+				</select>
+			</div>
+		</div>
+		
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->cmd_advanced_mailer_log_mail_errors}</label>
+			<div class="x_controls">
+				<select name="log_errors" id="advanced_mailer_log_errors">
+					<option value="Y" selected="selected"|cond="toBool($advanced_mailer_config->log_errors)" />{$lang->cmd_advanced_mailer_log_yes}</option>
+					<option value="N" selected="selected"|cond="!toBool($advanced_mailer_config->log_errors)" />{$lang->cmd_advanced_mailer_log_no}</option>
+				</select>
+			</div>
+		</div>
+		
+		<div class="x_control-group">
+			<label class="x_control-label" for="advanced_mailer_log_sent_sms">{$lang->cmd_advanced_mailer_log_sms}</label>
+			<div class="x_controls">
+				<select name="log_sent_sms" id="advanced_mailer_log_sent_sms">
+					<option value="Y" selected="selected"|cond="toBool($advanced_mailer_config->log_sent_sms)" />{$lang->cmd_advanced_mailer_log_yes}</option>
+					<option value="N" selected="selected"|cond="!toBool($advanced_mailer_config->log_sent_sms)" />{$lang->cmd_advanced_mailer_log_no}</option>
+				</select>
+			</div>
+		</div>
+		
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->cmd_advanced_mailer_log_sms_errors}</label>
+			<div class="x_controls">
+				<select name="log_sms_errors" id="advanced_mailer_log_sms_errors">
+					<option value="Y" selected="selected"|cond="toBool($advanced_mailer_config->log_sms_errors)" />{$lang->cmd_advanced_mailer_log_yes}</option>
+					<option value="N" selected="selected"|cond="!toBool($advanced_mailer_config->log_sms_errors)" />{$lang->cmd_advanced_mailer_log_no}</option>
+				</select>
+			</div>
+		</div>
+		
+		<div class="x_control-group">
+			<label class="x_control-label" for="advanced_mailer_log_sent_push">{$lang->cmd_advanced_mailer_log_push}</label>
+			<div class="x_controls">
+				<select name="log_sent_push" id="advanced_mailer_log_sent_push">
+					<option value="Y" selected="selected"|cond="toBool($advanced_mailer_config->log_sent_push)" />{$lang->cmd_advanced_mailer_log_yes}</option>
+					<option value="N" selected="selected"|cond="!toBool($advanced_mailer_config->log_sent_push)" />{$lang->cmd_advanced_mailer_log_no}</option>
+				</select>
+			</div>
+		</div>
+		
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->cmd_advanced_mailer_log_push_errors}</label>
+			<div class="x_controls">
+				<select name="log_push_errors" id="advanced_mailer_log_push_errors">
+					<option value="Y" selected="selected"|cond="toBool($advanced_mailer_config->log_push_errors)" />{$lang->cmd_advanced_mailer_log_yes}</option>
+					<option value="N" selected="selected"|cond="!toBool($advanced_mailer_config->log_push_errors)" />{$lang->cmd_advanced_mailer_log_no}</option>
+				</select>
+			</div>
+		</div>
+		
+	</section>
+	
+	<div class="btnArea x_clearfix">
+		<button type="submit" class="x_btn x_btn-primary x_pull-right">{$lang->cmd_registration}</button>
+	</div>
+	
+</form>

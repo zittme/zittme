@@ -1,0 +1,93 @@
+@version(2)
+<include target="_header.html" />
+
+<form class="hrb-write" action="./" method="post" onsubmit="return procFilter(this, window.insert)">
+	<input type="hidden" name="mid" value="{{ $mid }}" />
+	<input type="hidden" name="content" value="{{ $oDocument->getContentText() }}" />
+	<input type="hidden" name="document_srl" value="{{ $document_srl }}" />
+
+	<div class="hrb-write-head">
+		@if (($module_info->use_category ?? 'N') === 'Y')
+		<select name="category_srl" class="hrb-write-cat">
+			<option value="">{{ $lang->category }}</option>
+			@foreach ($category_list as $hrb_cv)
+			<option value="{{ $hrb_cv->category_srl }}" @if (!$hrb_cv->grant) disabled @endif
+				@if ($hrb_cv->grant && (($hrb_cv->selected && !$oDocument->get('category_srl')) || $hrb_cv->category_srl == $oDocument->get('category_srl'))) selected @endif>
+				{!! str_repeat('&nbsp;&nbsp;', $hrb_cv->depth) !!} {{ $hrb_cv->title }} ({{ $hrb_cv->document_count }})
+			</option>
+			@endforeach
+		</select>
+		@endif
+
+		<input type="text" name="title" class="hrb-write-title" placeholder="{{ $lang->title }}" value="{{ $oDocument->getTitleText() }}" />
+
+		@if ($grant->manager)
+		<select name="is_notice" class="hrb-write-notice">
+			<option value="N" @if ($oDocument->get('is_notice') === 'N') selected @endif>{{ $lang->not_notice }}</option>
+			<option value="Y" @if ($oDocument->get('is_notice') === 'Y') selected @endif>{{ $lang->notice }}</option>
+			<option value="A" @if ($oDocument->get('is_notice') === 'A') selected @endif>{{ $lang->notice_all }}</option>
+		</select>
+		@endif
+	</div>
+
+	@if (count($extra_keys))
+	<div class="hrb-write-extras">
+		@foreach ($extra_keys as $hrb_ek)
+		<div class="hr-field">
+			<label>@if ($hrb_ek->is_required === 'Y')<em>*</em> @endif{{ $hrb_ek->name }}</label>
+			{!! $hrb_ek->getFormHTML() !!}
+		</div>
+		@endforeach
+	</div>
+	@endif
+
+	<div class="hrb-write-editor">{!! $oDocument->getEditor() !!}</div>
+
+	<div class="hrb-write-foot">
+		<div class="hrb-write-opts">
+			@if ($grant->manager)
+			<label class="hr-check"><input type="checkbox" name="title_bold" value="Y" @if ($oDocument->get('title_bold') === 'Y') checked @endif /> <span>{{ $lang->title_bold }}</span></label>
+			@endif
+			@if (($module_info->secret ?? 'N') === 'Y')
+			<label class="hr-check"><input type="checkbox" name="is_secret" value="Y" @if ($oDocument->isSecret()) checked @endif /> <span>{{ $lang->secret }}</span></label>
+			@endif
+			<label class="hr-check"><input type="checkbox" name="comment_status" value="ALLOW" @if ($oDocument->allowComment()) checked @endif /> <span>{{ $lang->allow_comment }}</span></label>
+			@if ($is_logged)
+			<label class="hr-check"><input type="checkbox" name="notify_message" value="Y" @if ($oDocument->useNotify()) checked @endif /> <span>{{ $lang->notify }}</span></label>
+			@endif
+			@if (is_array($status_list))
+				@foreach ($status_list as $hrb_sk => $hrb_sv)
+				<label class="hr-check"><input type="radio" name="status" value="{{ $hrb_sk }}" @if ($oDocument->get('status') == $hrb_sk || ($hrb_sk === 'PUBLIC' && !$document_srl)) checked @endif /> <span>{{ $hrb_sv }}</span></label>
+				@endforeach
+			@endif
+		</div>
+
+		<div class="hrb-write-author">
+			@if (!$is_logged)
+			<input type="text" name="nick_name" placeholder="{{ $lang->writer }}" value="{{ $oDocument->get('nick_name') }}" />
+			<input type="password" name="password" placeholder="{{ $lang->password }}" />
+			<input type="text" name="homepage" placeholder="{{ $lang->homepage }}" value="{{ $oDocument->get('homepage') }}" />
+			@endif
+			<input type="text" name="tags" class="hrb-write-tags" placeholder="{{ $lang->tag }} ({{ $lang->about_tag }})" value="{{ $oDocument->get('tags') ?? '' }}" />
+		</div>
+
+		@if (isset($captcha) && $captcha && $captcha->isTargetAction('document'))
+		<div class="hrb-captcha">{!! $captcha !!}</div>
+		@endif
+
+		<div class="hrb-write-actions">
+			<a class="hr-btn" href="{{ getUrl('act', '', 'document_srl', '') }}">{{ $lang->cmd_cancel ?? '취소' }}</a>
+			<span class="hrb-write-actions-right">
+				@if (!$oDocument->isExists() || $oDocument->get('status') === 'TEMP')
+					@if ($is_logged)
+					<button type="button" class="hr-btn" onclick="doDocumentSave(this);">{{ $lang->cmd_temp_save }}</button>
+					<button type="button" class="hr-btn" onclick="doDocumentLoad(this);">{{ $lang->cmd_load }}</button>
+					@endif
+				@endif
+				<button type="submit" class="hr-btn hr-btn-primary">{{ $lang->cmd_registration }}</button>
+			</span>
+		</div>
+	</div>
+</form>
+
+<include target="_footer.html" />

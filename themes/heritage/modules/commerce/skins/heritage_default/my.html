@@ -1,0 +1,65 @@
+@version(2)
+@load('css/shop.css')
+
+<div class="shp shp-narrow">
+	<div class="shp-top"><h2 class="shp-title">{{ $lang->shop_my_orders }}</h2></div>
+
+	@if ($is_member)
+		<div class="shp-summary" style="margin-bottom:16px">
+			@if (!empty($my_grade))
+			<div class="shp-summary-row"><span>{{ $lang->shop_grade }}</span><span><strong style="color:#2677e3">{{ $my_grade->title }}</strong> <small style="color:#6b7684">(누적 {{ number_format($my_grade->total_spend) }}원)</small></span></div>
+			@endif
+			<div class="shp-summary-row is-total"><span>{{ $lang->shop_credit_balance }}</span><span>{{ number_format($credit_balance) }}원</span></div>
+		</div>
+
+		@if (empty($orders))
+		<p class="shp-empty">{{ $lang->shop_no_orders }}</p>
+		@else
+		<table class="shp-table">
+			<thead><tr><th>{{ $lang->shop_order_code }}</th><th>{{ $lang->shop_total }}</th><th>상태</th><th></th></tr></thead>
+			<tbody>
+				@foreach ($orders as $o)
+				<tr>
+					<td><strong>{{ $o->order_code }}</strong><br /><small style="color:#6b7684">{{ zdate($o->regdate, 'Y.m.d H:i') }}</small></td>
+					<td>{{ number_format($o->payment_price) }}원</td>
+					<td>@php $shp_ds = $o->display_status ?? $o->status; @endphp<span class="shp-st shp-st-{{ $shp_ds }}">{{ $lang->{'shop_status_' . $shp_ds} ?? $shp_ds }}</span></td>
+					<td style="white-space:nowrap"><a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceOrderResult', 'code', $o->order_code) }}" style="color:#2677e3;font-weight:600">{{ $lang->shop_view }}</a>@if ($shp_ds === 'confirmed') <a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceOrderResult', 'code', $o->order_code, 'review', '1') }}" style="color:#1d7a3d;font-weight:600;margin-left:8px">리뷰 작성</a>@endif</td>
+				</tr>
+				@endforeach
+			</tbody>
+		</table>
+		@endif
+
+		@if (!empty($credit_logs))
+		<h3 style="margin:24px 0 8px;font-size:15px">{{ $lang->shop_credit_history }}</h3>
+		<table class="shp-table">
+			<thead><tr><th>{{ $lang->shop_credit_date }}</th><th>{{ $lang->shop_credit_change }}</th><th>{{ $lang->shop_credit_balance }}</th><th>{{ $lang->shop_credit_type }}</th></tr></thead>
+			<tbody>
+				@foreach ($credit_logs as $cl)
+				<tr>
+					<td><small>{{ zdate($cl->regdate, 'Y.m.d H:i') }}</small></td>
+					<td style="{{ $cl->amount >= 0 ? 'color:#2677e3' : 'color:#c0392b' }};font-weight:600">{{ $cl->amount >= 0 ? '+' : '' }}{{ number_format($cl->amount) }}</td>
+					<td>{{ number_format($cl->balance_after) }}</td>
+					<td>{{ $lang->{'shop_credit_type_' . $cl->type} ?? $cl->type }}</td>
+				</tr>
+				@endforeach
+			</tbody>
+		</table>
+		@endif
+	@else
+	<p class="shp-detail-summary">{{ $lang->shop_guest_lookup_help }}</p>
+	<form action="{{ getUrl('') }}" method="post" class="shp-form">
+		<input type="hidden" name="act" value="procCommerceGuestLookup" />
+		<input type="hidden" name="mid" value="{{ $mid }}" />
+		<fieldset>
+			<div class="shp-row"><label>{{ $lang->shop_order_code }}</label><input type="text" name="order_code" required /></div>
+			<div class="shp-row"><label>{{ $lang->shop_guest_password }}</label><input type="password" name="guest_password" required autocomplete="off" /></div>
+			<button type="submit" class="shp-btn shp-btn-primary" style="width:100%">{{ $lang->shop_lookup }}</button>
+		</fieldset>
+	</form>
+	@endif
+
+	<p class="shp-foot-links">
+		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceList') }}">{{ $lang->shop_back_list }}</a>
+	</p>
+</div>

@@ -1,0 +1,22 @@
+<?php
+$lang->rss_disable = 'Desactivar RSS';
+$lang->rss_type = 'Tipo de RSS a imprimir';
+$lang->open_rss = 'Abrir RSS';
+$lang->open_rss_types['Y'] = 'Abrir todo';
+$lang->open_rss_types['H'] = 'Abrir el sumario';
+$lang->open_rss_types['N'] = 'No abrir';
+$lang->about_rss_disable = 'Si selecciona esta opción, RSS será desactivado.';
+$lang->about_rss_type = 'Usted puede asignar el tipo de RSS a imprimir.';
+$lang->about_open_rss = 'Usted puede seleccionar RSS abierto al público en el módulo actual.\\nIndependiente de la atribución de ver, dependiendo de la opción de RSS puede ser abierto al público.';
+$lang->msg_rss_is_disabled = 'Función de RSS esta desactivada.';
+$lang->feed = 'Publicar feed RSS';
+$lang->total_feed = 'Feeds agregados';
+$lang->feed_copyright = 'Derechos de autor';
+$lang->feed_document_count = 'Número de artículos por página';
+$lang->feed_image = 'Imagen del feed';
+$lang->module_feed_management = 'Feeds de cada módulo';
+$lang->open_feed_to_total = 'Incluido en el feed agregado';
+$lang->about_feed_description = 'Puede introducir la descripción del feed RSS que se va a publicar. Si no la introduce, se muestra por defecto la descripción de cada módulo.';
+$lang->about_feed_copyright = 'Puede introducir la información de derechos de autor del feed RSS. Si no la introduce, se aplica la de todos los feeds RSS.';
+$lang->about_feed_document_count = 'Número de artículos que se muestran en una página del feed (por defecto: 15)';
+$lang->msg_rss_invalid_image_format = 'Formato de imagen no válido. Solo se admiten archivos JPG, JPEG, GIF y PNG.';

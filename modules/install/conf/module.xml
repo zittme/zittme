@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+	<grants />
+	<actions>
+		<action name="dispInstallIndex" type="view" index="true" meta-noindex="true" />
+		<action name="dispInstallCheckEnv" type="view" meta-noindex="true" />
+		<action name="dispInstallDBConfig" type="view" meta-noindex="true" />
+		<action name="dispInstallOtherConfig" type="view" meta-noindex="true" />
+
+		<action name="procInstallLicenseAgreement" type="controller" />
+		<action name="procDBConfig" type="controller" />
+		<action name="procInstall" type="controller" ruleset="install" />
+
+		<action name="procInstallAdminInstall" type="controller" />
+		<action name="procInstallAdminUpdate" type="controller" />
+	</actions>
+</module>

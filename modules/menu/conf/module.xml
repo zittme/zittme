@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+	<grants />
+	<actions>
+		<action name="dispMenuMenu" type="mobile" />
+		
+		<action name="dispMenuAdminSiteMap" type="view" admin_index="true" menu_name="siteMap" menu_index="true" />
+		<action name="dispMenuAdminSiteDesign" type="view" menu_name="siteDesign" menu_index="true" />
+		
+		<action name="getMenuAdminSiteMap" type="model" />
+		<action name="getMenuAdminItemInfo" type="model" />
+		<action name="getMenuAdminTplInfo" type="model" />
+		<action name="getMenuAdminInstalledMenuType" type="model" />
+		<action name="getMenuAdminDetailSetup" type="model" />
+		
+		<action name="procMenuAdminInsert" type="controller" ruleset="insertMenu" />
+		<action name="procMenuAdminUpdate" type="controller" ruleset="updateMenuTitle" />
+		<action name="procMenuAdminUpdateDesign" type="controller" ruleset="updateMenuDesign" />
+		<action name="procMenuAdminDelete" type="controller" />
+		<action name="procMenuAdminInsertItem" type="controller" ruleset="insertMenuItem" />
+		<action name="procMenuAdminUpdateItem" type="controller" ruleset="updateMenuItem" />
+		<action name="procMenuAdminDeleteItem" type="controller" />
+		<action name="procMenuAdminMoveItem" type="controller" />
+		<action name="procMenuAdminReorderMenu" type="controller" />
+		<action name="procMenuAdminCopyItem" type="controller" />
+		<action name="procMenuAdminUpdateAuth" type="controller" />
+		<action name="procMenuAdminButtonUpload" type="controller" />
+		<action name="procMenuAdminInsertItemForAdminMenu" type="controller" />
+		<action name="procMenuAdminMakeXmlFile" type="controller" />
+		<action name="procMenuAdminArrangeItem" type="controller" />
+		<action name="procMenuAdminAllActList" type="controller" />
+	</actions>
+	<menus>
+		<menu name="siteMap">
+			<title xml:lang="en">Menu Editor</title>
+			<title xml:lang="vi">Trình quản lý menu</title>
+			<title xml:lang="tr">Menü Düzenleyici</title>
+			<title xml:lang="ru">Редактор меню</title>
+			<title xml:lang="mn">Цэс засварлагч</title>
+			<title xml:lang="fr">Éditeur de menus</title>
+			<title xml:lang="es">Editor de menús</title>
+			<title xml:lang="de">Menü-Editor</title>
+			<title xml:lang="zh-TW">選單編輯器</title>
+			<title xml:lang="zh-CN">菜单编辑器</title>
+			<title xml:lang="jp">メニュー編集</title>
+			<title xml:lang="ko">사이트 메뉴 편집</title>
+			<title xml:lang="jp">サイトマップ</title>
+			<title xml:lang="zh-CN">Menu Editor</title>
+			<title xml:lang="zh-TW">選單管理</title>
+			<title xml:lang="es">Menu Editor</title>
+			<title xml:lang="ru">Menu Editor</title>
+			<title xml:lang="fr">Menu Editor</title>
+			<title xml:lang="vi">Menu Editor</title>
+			<title xml:lang="mn">Menu Editor</title>
+			<title xml:lang="tr">Menu Editor</title>
+		</menu>
+		<menu name="siteDesign">
+			<title xml:lang="en">Site Design</title>
+			<title xml:lang="de">Site-Design</title>
+			<title xml:lang="ko">사이트 디자인 설정</title>
+			<title xml:lang="jp">サイトデザイン</title>
+			<title xml:lang="zh-CN">Site Design</title>
+			<title xml:lang="zh-TW">Site Design</title>
+			<title xml:lang="es">Site Design</title>
+			<title xml:lang="ru">Site Design</title>
+			<title xml:lang="fr">Site Design</title>
+			<title xml:lang="vi">Site Design</title>
+			<title xml:lang="mn">Site Design</title>
+			<title xml:lang="tr">Site Design</title>
+			<title xml:lang="de">Site-Design-Einstellungen</title>
+			<title xml:lang="en">Site Design Settings</title>
+		</menu>
+	</menus>
+</module>

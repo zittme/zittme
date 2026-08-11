@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<grants />
+	<actions>
+		<action name="dispKrzipSearchForm" type="view" meta-noindex="true" />
+		<action name="getKrzipCodeList" type="model" />
+		
+		<action name="dispKrzipAdminConfig" type="view" menu_name="krzip" menu_index="true" admin_index="true" />
+		<action name="procKrzipAdminInsertConfig" type="controller" ruleset="krzipConfig" />
+	</actions>
+	<menus>
+		<menu name="krzip" type="all">
+			<title xml:lang="ko">한국 우편번호</title>
+			<title xml:lang="vi">Mã bưu chính Hàn Quốc</title>
+			<title xml:lang="tr">Kore Posta Kodu</title>
+			<title xml:lang="ru">Почтовые индексы Кореи</title>
+			<title xml:lang="mn">Солонгосын шуудангийн код</title>
+			<title xml:lang="fr">Code postal coréen</title>
+			<title xml:lang="es">Código postal de Corea</title>
+			<title xml:lang="de">Koreanische Postleitzahl</title>
+			<title xml:lang="zh-TW">韓國郵遞區號</title>
+			<title xml:lang="zh-CN">韩国邮政编码</title>
+			<title xml:lang="jp">韓国郵便番号</title>
+			<title xml:lang="en">Korean Postal Code</title>
+		</menu>
+	</menus>
+</module>

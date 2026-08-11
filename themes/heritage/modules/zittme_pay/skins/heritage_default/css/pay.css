@@ -1,0 +1,360 @@
+
+
+.zpay {
+	--zpay-point: #6c5ce0;
+	--zpay-point-dark: #5847c9;
+	--zpay-point-light: #9a8bf0;
+	--zpay-border: #e6e9ef;
+	--zpay-muted: #525c6b;
+	--zpay-bg-soft: #f7f8fb;
+	--zpay-card: #ffffff;
+	--zpay-ink: #10151f;
+	--zpay-radius: 6px;
+
+	box-sizing: border-box;
+	max-width: 560px;
+	margin: 0 auto;
+	padding: 20px 16px 48px;
+	color: var(--zpay-ink);
+	font-size: 15px;
+	line-height: 1.6;
+	word-break: break-word;
+}
+
+.zpay *,
+.zpay *::before,
+.zpay *::after {
+	box-sizing: inherit;
+}
+
+
+.zpay-head {
+	padding-bottom: 16px;
+	border-bottom: 1px solid var(--zpay-border);
+}
+
+.zpay-title {
+	margin: 0;
+	font-size: 22px;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+}
+
+.zpay-title-ok { color: var(--zpay-point); }
+.zpay-title-wait { color: #b45309; }
+.zpay-title-fail { color: #b91c1c; }
+
+.zpay-order-code {
+	margin: 6px 0 0;
+	color: var(--zpay-muted);
+	font-size: 13px;
+}
+
+.zpay-order-code span {
+	font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.zpay-result-message {
+	margin: 8px 0 0;
+	color: var(--zpay-muted);
+	font-size: 14px;
+}
+
+
+.zpay-section-title {
+	margin: 28px 0 12px;
+	font-size: 15px;
+	font-weight: 700;
+}
+
+.zpay-sub-title {
+	margin: 20px 0 8px;
+	font-size: 14px;
+	font-weight: 700;
+}
+
+
+.zpay-summary-list {
+	margin: 0;
+	padding: 16px;
+	background: var(--zpay-bg-soft);
+	border-radius: var(--zpay-radius);
+}
+
+.zpay-summary-row {
+	display: flex;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 6px 0;
+}
+
+.zpay-summary-row dt {
+	flex: 0 0 auto;
+	color: var(--zpay-muted);
+	font-size: 14px;
+}
+
+.zpay-summary-row dd {
+	flex: 1 1 auto;
+	margin: 0;
+	text-align: right;
+}
+
+.zpay-summary-total {
+	margin-top: 6px;
+	padding-top: 12px;
+	border-top: 1px solid var(--zpay-border);
+}
+
+.zpay-summary-total dd strong {
+	font-size: 20px;
+	font-weight: 700;
+	color: var(--zpay-point);
+}
+
+
+.zpay-method-list {
+	display: grid;
+	gap: 8px;
+}
+
+.zpay-method {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 14px 16px;
+	border: 1px solid var(--zpay-border);
+	border-radius: var(--zpay-radius);
+	cursor: pointer;
+	transition: border-color .15s, background-color .15s;
+}
+
+.zpay-method:hover {
+	border-color: var(--zpay-point);
+}
+
+.zpay-method:has(input:checked),
+.zpay-method.is-on {
+	border-color: var(--zpay-point);
+	background: rgba(38, 119, 227, .06);
+}
+
+.zpay-method input {
+	flex: 0 0 auto;
+	margin: 0;
+	accent-color: var(--zpay-point);
+}
+
+.zpay-method-label {
+	font-weight: 600;
+}
+
+
+.zpay-bank {
+	margin-top: 16px;
+	padding: 16px;
+	border: 1px solid var(--zpay-border);
+	border-radius: var(--zpay-radius);
+}
+
+.zpay-bank-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: grid;
+	gap: 6px;
+}
+
+.zpay-bank-item label {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 8px;
+	padding: 10px 12px;
+	background: var(--zpay-bg-soft);
+	border-radius: 8px;
+	cursor: pointer;
+}
+
+.zpay-bank-name { font-weight: 600; }
+
+.zpay-bank-account {
+	font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.zpay-bank-holder {
+	color: var(--zpay-muted);
+	font-size: 13px;
+}
+
+.zpay-field {
+	margin: 14px 0 0;
+}
+
+.zpay-field label {
+	display: block;
+	margin-bottom: 6px;
+	font-size: 13px;
+	color: var(--zpay-muted);
+}
+
+.zpay-field input {
+	width: 100%;
+	padding: 10px 12px;
+	border: 1px solid var(--zpay-border);
+	border-radius: 8px;
+	font-size: 15px;
+}
+
+.zpay-field input:focus {
+	outline: 2px solid rgba(38, 119, 227, .35);
+	outline-offset: 1px;
+	border-color: var(--zpay-point);
+}
+
+.zpay-notice {
+	margin: 12px 0 0;
+	color: var(--zpay-muted);
+	font-size: 13px;
+}
+
+
+.zpay-error {
+	margin: 16px 0 0;
+	padding: 12px 14px;
+	background: #fef2f2;
+	color: #b91c1c;
+	border-radius: 8px;
+	font-size: 14px;
+}
+
+
+.zpay-actions {
+	margin-top: 24px;
+}
+
+.zpay-btn {
+	display: block;
+	width: 100%;
+	padding: 15px 20px;
+	border: 0;
+	border-radius: var(--zpay-radius);
+	font-size: 16px;
+	font-weight: 700;
+	text-align: center;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.zpay-btn-primary,
+a.zpay-btn-primary,
+a.zpay-btn-primary:link,
+a.zpay-btn-primary:visited,
+a.zpay-btn-primary:hover {
+	background: var(--zpay-point);
+	color: #fff !important;
+}
+
+.zpay-btn-primary:hover {
+	filter: brightness(.95);
+}
+
+.zpay-btn:disabled {
+	background: #c7cdd6;
+	cursor: not-allowed;
+}
+
+.zpay-btn.is-busy {
+	opacity: .7;
+	pointer-events: none;
+}
+
+
+.zpay-foot {
+	margin-top: 32px;
+	padding-top: 16px;
+	border-top: 1px solid var(--zpay-border);
+}
+
+.zpay-biz-notice {
+	margin: 0;
+	color: var(--zpay-muted);
+	font-size: 12px;
+	line-height: 1.7;
+}
+
+.zpay-receipt {
+	margin-top: 16px;
+	text-align: center;
+}
+
+.zpay-receipt a {
+	color: var(--zpay-point);
+}
+
+.zpay-bank-guide {
+	margin-top: 24px;
+}
+
+
+@media (min-width: 720px) {
+	.zpay {
+		padding: 40px 24px 64px;
+		font-size: 16px;
+	}
+
+	.zpay-title {
+		font-size: 26px;
+	}
+}
+
+
+@media (prefers-color-scheme: dark) {
+	.zpay {
+		--zpay-border: #333a45;
+		--zpay-muted: #9aa3b0;
+		--zpay-bg-soft: #1c212a;
+		color: #e6e9ee;
+	}
+
+	.zpay-field input {
+		background: #141920;
+		color: #e6e9ee;
+	}
+
+	.zpay-bank-item label {
+		background: #141920;
+	}
+
+	.zpay-error {
+		background: #3a1d1d;
+		color: #fca5a5;
+	}
+}
+
+.zpay-btn { border-radius: 4px; }
+.zpay-btn-primary,
+a.zpay-btn-primary,
+a.zpay-btn-primary:link,
+a.zpay-btn-primary:visited {
+	background: linear-gradient(var(--zpay-point-light), var(--zpay-point));
+	text-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+}
+.zpay-btn-primary:hover, a.zpay-btn-primary:hover {
+	filter: none;
+	background: linear-gradient(var(--zpay-point), var(--zpay-point-dark));
+}
+
+[data-theme="dark"] .zpay {
+	--zpay-border: #2a3040;
+	--zpay-muted: #b3bbc8;
+	--zpay-bg-soft: #1b2130;
+	--zpay-card: #141822;
+	--zpay-ink: #e7eaf0;
+}
+[data-theme="dark"] .zpay input, [data-theme="dark"] .zpay select, [data-theme="dark"] .zpay textarea {
+	background: var(--zpay-card);
+	color: var(--zpay-ink);
+	border-color: var(--zpay-border);
+}
+[data-theme="dark"] .zpay-btn:disabled { background: #394152; }

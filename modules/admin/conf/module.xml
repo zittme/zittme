@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+	<grants />
+	<actions>
+		<!-- Dashboard -->
+		<action name="dispAdminIndex" class="Controllers\Dashboard" index="true" />
+		<action name="procAdminLogout" class="Controllers\Dashboard" method="GET,POST" />
+		<!-- Maintenance -->
+		<action name="procAdminRecompileCacheFile" class="Controllers\Maintenance\CacheReset" />
+		<action name="dispAdminCleanupList" class="Controllers\Maintenance\Cleanup" />
+		<action name="procAdminAddCleanupException" class="Controllers\Maintenance\Cleanup" />
+		<action name="procAdminResetCleanupException" class="Controllers\Maintenance\Cleanup" />
+		<action name="procAdminCleanupFiles" class="Controllers\Maintenance\Cleanup" />
+		<!-- Server Env -->
+		<action name="dispAdminViewServerEnv" class="Controllers\ServerEnv" />
+		<action name="dispAdminRewriteTest" class="Controllers\ServerEnv" standalone="true" />
+		<action name="procAdminClearApcu" class="Controllers\ServerEnv" />
+		<action name="procAdminClearOpcache" class="Controllers\ServerEnv" />
+		<!-- System Config: Domains -->
+		<action name="dispAdminConfigGeneral" class="Controllers\SystemConfig\Domains" menu_name="adminConfigurationGeneral" menu_index="true" />
+		<action name="dispAdminInsertDomain" class="Controllers\SystemConfig\Domains" menu_name="adminConfigurationGeneral" />
+		<action name="dispAdminCopyDomain" class="Controllers\SystemConfig\Domains" menu_name="adminConfigurationGeneral" />
+		<action name="procAdminUpdateDomainConfig" class="Controllers\SystemConfig\Domains" />
+		<action name="procAdminInsertDomain" class="Controllers\SystemConfig\Domains" />
+		<action name="procAdminDeleteDomain" class="Controllers\SystemConfig\Domains" />
+		<!-- System Config: Other -->
+		<action name="dispAdminConfigNotification" class="Controllers\SystemConfig\Notification" type="view" menu_name="adminConfigurationGeneral" />
+		<action name="procAdminUpdateNotification" class="Controllers\SystemConfig\Notification" />
+		<action name="dispAdminConfigSecurity" class="Controllers\SystemConfig\Security" menu_name="adminConfigurationGeneral" />
+		<action name="procAdminUpdateSecurity" class="Controllers\SystemConfig\Security" />
+		<!-- 설치된 테마. 적용은 여기가 아니라 사이트 메뉴 편집의 디자인 설정에서 한다. -->
+		<action name="dispAdminInstalledTheme" class="Controllers\Theme" menu_name="installedTheme" menu_index="true" />
+		<action name="procAdminDeleteTheme" class="Controllers\Theme" />
+		<action name="dispAdminApplyTheme" class="Controllers\Theme" menu_name="installedTheme" />
+		<action name="procAdminApplyTheme" class="Controllers\Theme" />
+		<action name="procAdminRevertTheme" class="Controllers\Theme" />
+		<!-- 디자인 설정 패널이 쓰는 ajax. JSON 을 돌려줘야 하므로 view 가 아니다. -->
+		<action name="getAdminThemeList" class="Controllers\Theme" type="controller" />
+		<action name="procAdminApplyThemeDesign" class="Controllers\Theme" type="controller" />
+		<action name="dispAdminConfigAdvanced" class="Controllers\SystemConfig\Advanced" menu_name="adminConfigurationGeneral" />
+		<action name="procAdminUpdateAdvanced" class="Controllers\SystemConfig\Advanced" />
+		<action name="dispAdminConfigDebug" class="Controllers\SystemConfig\Debug" menu_name="adminConfigurationGeneral" />
+		<action name="procAdminUpdateDebug" class="Controllers\SystemConfig\Debug" />
+		<action name="dispAdminConfigSEO" class="Controllers\SystemConfig\SEO" menu_name="adminConfigurationGeneral" />
+		<action name="procAdminUpdateSEO" class="Controllers\SystemConfig\SEO" />
+		<action name="dispAdminConfigQueue" class="Controllers\SystemConfig\Queue" menu_name="adminConfigurationGeneral" />
+		<action name="procAdminUpdateQueue" class="Controllers\SystemConfig\Queue" />
+		<action name="dispAdminConfigSitelock" class="Controllers\SystemConfig\SiteLock" menu_name="adminConfigurationGeneral" />
+		<action name="procAdminUpdateSitelock" class="Controllers\SystemConfig\SiteLock" />
+		<!-- Admin Interface Config -->
+		<action name="dispAdminSetup" class="Controllers\AdminMenu" menu_name="adminMenuSetup" menu_index="true" />
+		<action name="procAdminMenuReset" class="Controllers\AdminMenu" />
+		<action name="procAdminInsertLogo" class="Controllers\AdminMenu" />
+		<action name="procAdminUpdateFrontBar" class="Controllers\AdminMenu" />
+		<action name="procAdminUpdateGnbPosition" class="Controllers\AdminMenu" />
+		<action name="dispAdminResponsiveBulkApply" class="Controllers\ResponsiveView" />
+		<action name="procAdminApplyResponsiveView" class="Controllers\ResponsiveView" />
+		<action name="procAdminToggleFavorite" class="Controllers\AdminMenu" />
+		<!-- Design Config -->
+		<action name="procAdminInsertDefaultDesignInfo" class="Controllers\Design" />
+		<!-- Legacy API -->
+		<action name="dispAdminConfigFtp" type="view" menu_name="adminConfigurationFtp" menu_index="true" />
+		<action name="procAdminUpdateFTPInfo" type="controller" />
+		<action name="procAdminRemoveFTPInfo" type="controller" />
+		<action name="procAdminUpdateConfig" type="controller" />
+		<action name="procAdminDeleteLogo" type="controller" />
+		<action name="getSiteAllList" type="model" permission="root" />
+	</actions>
+	<menus>
+		<menu name="installedTheme">
+			<title xml:lang="ko">설치된 테마</title>
+			<title xml:lang="en">Installed themes</title>
+			<title xml:lang="jp">インストール済みテーマ</title>
+			<title xml:lang="zh-CN">已安装主题</title>
+			<title xml:lang="zh-TW">已安裝佈景</title>
+			<title xml:lang="es">Temas instalados</title>
+			<title xml:lang="fr">Thèmes installés</title>
+			<title xml:lang="de">Installierte Themes</title>
+			<title xml:lang="ru">Установленные темы</title>
+			<title xml:lang="tr">Yüklü temalar</title>
+			<title xml:lang="vi">Giao diện đã cài</title>
+			<title xml:lang="mn">Суулгасан загварууд</title>
+		</menu>
+		<menu name="adminConfigurationGeneral" type="all">
+			<title xml:lang="en">System Settings</title>
+			<title xml:lang="vi">Cài đặt hệ thống</title>
+			<title xml:lang="tr">Sistem Ayarları</title>
+			<title xml:lang="ru">Настройки системы</title>
+			<title xml:lang="mn">Системийн тохиргоо</title>
+			<title xml:lang="fr">Paramètres système</title>
+			<title xml:lang="es">Configuración del sistema</title>
+			<title xml:lang="de">Systemeinstellungen</title>
+			<title xml:lang="zh-TW">系統設定</title>
+			<title xml:lang="zh-CN">系统设置</title>
+			<title xml:lang="jp">システム設定</title>
+			<title xml:lang="ko">시스템 설정</title>
+			<title xml:lang="zh-CN">系统设置</title>
+			<title xml:lang="zh-TW">系統設置</title>
+			<title xml:lang="jp">システムの設定</title>
+			<title xml:lang="es">System Settings</title>
+			<title xml:lang="ru">System Settings</title>
+			<title xml:lang="fr">System Settings</title>
+			<title xml:lang="zh-TW">System Settings</title>
+			<title xml:lang="vi">System Settings</title>
+			<title xml:lang="mn">System Settings</title>
+			<title xml:lang="tr">System Settings</title>
+		</menu>
+		<menu name="adminMenuSetup" type="all">
+			<title xml:lang="en">Admin Panel Settings</title>
+			<title xml:lang="de">Einstellungen des Administrationsbereichs</title>
+			<title xml:lang="ko">관리자 화면 설정</title>
+			<title xml:lang="zh-CN">管理者页面设置</title>
+			<title xml:lang="zh-TW">管理者頁面設置</title>
+			<title xml:lang="jp">管理者画面の設定</title>
+			<title xml:lang="es">Admin Panel Settings</title>
+			<title xml:lang="ru">Admin Panel Settings</title>
+			<title xml:lang="fr">Admin Panel Settings</title>
+			<title xml:lang="zh-TW">Admin Panel Settings</title>
+			<title xml:lang="vi">Admin Panel Settings</title>
+			<title xml:lang="mn">Admin Panel Settings</title>
+			<title xml:lang="tr">Admin Panel Settings</title>
+		</menu>
+		<menu name="adminConfigurationFtp" type="all">
+			<title xml:lang="en">FTP Settings</title>
+			<title xml:lang="de">FTP-Einstellungen</title>
+			<title xml:lang="ko">FTP 설정</title>
+			<title xml:lang="zh-CN">FTP设置</title>
+			<title xml:lang="zh-TW">FTP設置</title>
+			<title xml:lang="jp">FTP設定</title>
+			<title xml:lang="es">FTP Settings</title>
+			<title xml:lang="ru">FTP Settings</title>
+			<title xml:lang="fr">FTP Settings</title>
+			<title xml:lang="zh-TW">FTP Settings</title>
+			<title xml:lang="vi">FTP Settings</title>
+			<title xml:lang="mn">FTP Settings</title>
+			<title xml:lang="tr">FTP Settings</title>
+			<title xml:lang="de">FTP-Einstellungen</title>
+			<title xml:lang="en">FTP Settings</title>
+		</menu>
+	</menus>
+</module>

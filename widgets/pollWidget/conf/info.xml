@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget version="0.2">
+    <title xml:lang="ko">설문조사 위젯</title>
+    <title xml:lang="vi">Widget khảo sát</title>
+    <title xml:lang="tr">Anket Widget'ı</title>
+    <title xml:lang="ru">Виджет опросов</title>
+    <title xml:lang="mn">Санал асуулгын виджет</title>
+    <title xml:lang="fr">Widget Sondage</title>
+    <title xml:lang="es">Widget de encuestas</title>
+    <title xml:lang="de">Umfrage-Widget</title>
+    <title xml:lang="zh-TW">問卷調查小工具</title>
+    <title xml:lang="zh-CN">投票挂件</title>
+    <title xml:lang="jp">アンケートウィジェット</title>
+    <title xml:lang="en">Poll Widget</title>
+    <description xml:lang="ko">설문조사를 표시하는 위젯입니다.</description>
+    <description xml:lang="vi">Widget hiển thị cuộc khảo sát.</description>
+    <description xml:lang="tr">Anketleri görüntüleyen widget.</description>
+    <description xml:lang="ru">Виджет для отображения опроса.</description>
+    <description xml:lang="mn">Санал асуулгыг харуулах виджет.</description>
+    <description xml:lang="fr">Widget qui affiche un sondage.</description>
+    <description xml:lang="es">Widget que muestra una encuesta.</description>
+    <description xml:lang="de">Ein Widget zur Anzeige von Umfragen.</description>
+    <description xml:lang="zh-TW">顯示問卷調查的小工具。</description>
+    <description xml:lang="zh-CN">用于显示投票调查的挂件。</description>
+    <description xml:lang="jp">アンケートを表示するウィジェットです。</description>
+    <description xml:lang="en">A widget that displays a poll.</description>
+    <version>RX_VERSION</version>
+    <date>RX_CORE</date>
+
+    <author email_address="developers@xpressengine.com" link="http://xpressengine.com/">
+        <name xml:lang="ko">NAVER</name>
+        <name xml:lang="jp">NAVER</name>
+        <name xml:lang="vi">NAVER</name>
+        <name xml:lang="zh-CN">NAVER</name>
+        <name xml:lang="en">NAVER</name>
+        <name xml:lang="es">NAVER</name>
+        <name xml:lang="ru">NAVER</name>
+        <name xml:lang="zh-TW">NAVER</name>
+        <name xml:lang="tr">NAVER</name>
+    </author>
+
+    <extra_vars>
+            <var id="poll_srl" type="text">
+                <name xml:lang="ko">설문 SRL</name>
+                <name xml:lang="vi">SRL khảo sát</name>
+                <name xml:lang="tr">Anket SRL</name>
+                <name xml:lang="ru">SRL опроса</name>
+                <name xml:lang="mn">Санал асуулгын SRL</name>
+                <name xml:lang="fr">SRL du sondage</name>
+                <name xml:lang="es">SRL de la encuesta</name>
+                <name xml:lang="de">Umfrage-SRL</name>
+                <name xml:lang="zh-TW">問卷 SRL</name>
+                <name xml:lang="zh-CN">投票 SRL</name>
+                <name xml:lang="jp">アンケート SRL</name>
+                <name xml:lang="en">Poll SRL</name>
+                <description xml:lang="ko">설문 SRL은 투표 코드의 poll_srl="(숫자)"입니다.</description>
+                <description xml:lang="vi">SRL khảo sát là giá trị poll_srl="(số)" trong mã bình chọn.</description>
+                <description xml:lang="tr">Anket SRL, anket kodundaki poll_srl="(sayı)" değeridir.</description>
+                <description xml:lang="ru">SRL опроса — это значение poll_srl="(число)" в коде опроса.</description>
+                <description xml:lang="mn">Санал асуулгын SRL нь санал хураалтын кодын poll_srl="(тоо)" утга юм.</description>
+                <description xml:lang="fr">Le SRL du sondage correspond à poll_srl="(nombre)" dans le code du sondage.</description>
+                <description xml:lang="es">El SRL de la encuesta es el valor poll_srl="(número)" del código de la encuesta.</description>
+                <description xml:lang="de">Die Umfrage-SRL ist der Wert poll_srl="(Zahl)" im Umfrage-Code.</description>
+                <description xml:lang="zh-TW">問卷 SRL 為投票程式碼中的 poll_srl="(數字)"。</description>
+                <description xml:lang="zh-CN">投票 SRL 为投票代码中的 poll_srl="(数字)"。</description>
+                <description xml:lang="jp">アンケート SRL は投票コードの poll_srl="(数字)" です。</description>
+                <description xml:lang="en">The Poll SRL is the poll_srl="(number)" value in the poll code.</description>
+            </var>
+    </extra_vars>
+</widget>

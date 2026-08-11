@@ -1,0 +1,16 @@
+<query id="getLangList" action="select">
+    <tables>
+        <table name="lang" />
+    </tables>
+    <columns>
+        <column name="name" />
+    </columns>
+    <conditions>
+    </conditions>
+    <navigation>
+        <index var="sort_index" default="list_order" order="order_type" />
+    </navigation>
+    <groups>
+        <group column="name" />
+    </groups>
+</query>

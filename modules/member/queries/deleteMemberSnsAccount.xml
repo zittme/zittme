@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<query id="deleteMemberSnsAccount" action="delete">
+	<tables>
+		<table name="member_sns_account" />
+	</tables>
+	<conditions>
+		<condition operation="equal" column="member_srl" var="member_srl" required="true" />
+		<condition operation="equal" column="sns_type" var="sns_type" />
+	</conditions>
+</query>

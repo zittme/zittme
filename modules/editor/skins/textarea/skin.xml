@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">Textarea</title>
+	<title xml:lang="vi">Textarea</title>
+	<title xml:lang="tr">Textarea</title>
+	<title xml:lang="ru">Textarea</title>
+	<title xml:lang="mn">Textarea</title>
+	<title xml:lang="fr">Textarea</title>
+	<title xml:lang="es">Textarea</title>
+	<title xml:lang="de">Textarea</title>
+	<title xml:lang="zh-TW">Textarea</title>
+	<title xml:lang="zh-CN">Textarea</title>
+	<title xml:lang="jp">Textarea</title>
+	<title xml:lang="en">Textarea</title>
+	<description xml:lang="ko">Textarea</description>
+	<description xml:lang="vi">Textarea</description>
+	<description xml:lang="tr">Textarea</description>
+	<description xml:lang="ru">Textarea</description>
+	<description xml:lang="mn">Textarea</description>
+	<description xml:lang="fr">Textarea</description>
+	<description xml:lang="es">Textarea</description>
+	<description xml:lang="de">Textarea</description>
+	<description xml:lang="zh-TW">Textarea</description>
+	<description xml:lang="zh-CN">Textarea</description>
+	<description xml:lang="jp">Textarea</description>
+	<description xml:lang="en">Textarea</description>
+	<version>1.0.0</version>
+	<date>2017-06-27</date>
+	<colorset>
+		<color name="light">
+			<title xml:lang="ko">Light</title>
+			<title xml:lang="vi">Sáng</title>
+			<title xml:lang="tr">Açık</title>
+			<title xml:lang="ru">Светлая</title>
+			<title xml:lang="mn">Цайвар</title>
+			<title xml:lang="fr">Clair</title>
+			<title xml:lang="es">Claro</title>
+			<title xml:lang="de">Hell</title>
+			<title xml:lang="zh-TW">淺色</title>
+			<title xml:lang="zh-CN">浅色</title>
+			<title xml:lang="jp">ライト</title>
+			<title xml:lang="en">Light</title>
+		</color>
+		<color name="dark">
+			<title xml:lang="ko">Dark</title>
+			<title xml:lang="vi">Tối</title>
+			<title xml:lang="tr">Koyu</title>
+			<title xml:lang="ru">Тёмная</title>
+			<title xml:lang="mn">Бараан</title>
+			<title xml:lang="fr">Sombre</title>
+			<title xml:lang="es">Oscuro</title>
+			<title xml:lang="de">Dunkel</title>
+			<title xml:lang="zh-TW">深色</title>
+			<title xml:lang="zh-CN">深色</title>
+			<title xml:lang="jp">ダーク</title>
+			<title xml:lang="en">Dark</title>
+		</color>
+	</colorset>
+	<extra_vars>
+		<var name="converter" value="text"></var>
+	</extra_vars>
+</skin>

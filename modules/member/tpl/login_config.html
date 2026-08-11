@@ -1,0 +1,74 @@
+<include target="header.html" />
+<form action="./" class="x_form-horizontal" ruleset="insertLoginConfig" method="post">
+	<input type="hidden" name="module" value="member" />
+	<input type="hidden" name="act" value="procMemberAdminInsertLoginConfig" />
+	<input type="hidden" name="success_return_url" value="{getUrl('', 'module', 'admin', 'act', $act)}" />
+	<input type="hidden" name="xe_validator_id" value="modules/member/tpl/1" />
+	<div class="x_control-group">
+		<p class="x_control-label">{$lang->identifier}</p>
+		<div class="x_controls">
+			<label class="x_inline" for="identifiers_user_id">
+				<input type="checkbox" name="identifiers[]" id="identifiers_user_id" value="user_id" checked="checked"|cond="!is_array($config->identifiers) || in_array('user_id', $config->identifiers)" />
+				{$lang->user_id}
+			</label>
+			<label class="x_inline" for="identifiers_email_address">
+				<input type="checkbox" name="identifiers[]" id="identifiers_email_address" value="email_address" checked="checked"|cond="!is_array($config->identifiers) || in_array('email_address', $config->identifiers)" />
+				{$lang->email_address}
+			</label>
+			<label class="x_inline" for="identifiers_phone_number">
+				<input type="checkbox" name="identifiers[]" id="identifiers_phone_number" value="phone_number" checked="checked"|cond="is_array($config->identifiers) && in_array('phone_number', $config->identifiers)" />
+				{$lang->phone_number}
+			</label>
+			<p class="x_help-block">{$lang->about_identifier}</p>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label class="x_control-label" for="change_password_date">{$lang->change_password_date}</label>
+		<div class="x_controls">
+			<input type="number" min="0" id="change_password_date" name="change_password_date" value="{$config->change_password_date}" /> {$lang->unit_day}
+			<p class="x_help-block">{$lang->about_change_password_date}</p>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<p class="x_control-label">{$lang->login_trial_limit}</p>
+		<div class="x_controls">
+			<p>
+				<input type="number" min="0" id="max_error_count" name="max_error_count" value="{$config->max_error_count}" /> {$lang->unit_count} /
+				<input type="number" min="0" id="max_error_count_time" name="max_error_count_time" value="{$config->max_error_count_time}" /> {$lang->unit_sec}
+			</p>
+			<p class="x_help-block">{$lang->about_login_trial_limit}</p>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label class="x_control-label" for="login_failure_except_ip">{$lang->login_failure_except_ip}</label>
+		<div class="x_controls">
+			<textarea id="login_failure_except_ip" name="login_failure_except_ip">{implode("\n", $config->login_failure_except_ip ?? [])}</textarea>
+			<p class="x_help-block">{$lang->about_login_failure_except_ip}</p>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label class="x_control-label">{$lang->cmd_login_invalidate_other_sessions}</label>
+		<div class="x_controls">
+			<label for="login_invalidate_other_sessions_y" class="x_inline"><input type="radio" name="login_invalidate_other_sessions" id="login_invalidate_other_sessions_y" value="Y" checked="checked"|cond="$config->login_invalidate_other_sessions === 'Y'" /> {$lang->cmd_yes}</label>
+			<label for="login_invalidate_other_sessions_n" class="x_inline"><input type="radio" name="login_invalidate_other_sessions" id="login_invalidate_other_sessions_n" value="N" checked="checked"|cond="$config->login_invalidate_other_sessions !== 'Y'" /> {$lang->cmd_no}</label>
+			<p class="x_help-block">{$lang->about_login_invalidate_other_sessions}</p>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label class="x_control-label" for="after_login_url">{$lang->after_login_url}</label>
+		<div class="x_controls">
+			<input type="url" id="after_login_url" name="after_login_url" value="{$config->after_login_url}" />
+			<p class="x_help-block">{$lang->about_after_login_url}</p>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label class="x_control-label" for="after_logout_url">{$lang->after_logout_url}</label>
+		<div class="x_controls">
+			<input type="url" id="after_logout_url" name="after_logout_url" value="{$config->after_logout_url}" />
+			<p class="x_help-block">{$lang->about_after_logout_url}</p>
+		</div>
+	</div>
+	<div class="x_clearfix btnArea">
+		<span class="x_pull-right"><input class="x_btn x_btn-primary" type="submit" value="{$lang->cmd_save}" /></span>
+	</div>
+</form>

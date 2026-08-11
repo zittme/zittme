@@ -1,0 +1,291 @@
+<include target="header.html" />
+<load target="js/signup_config.js" />
+<load target="../../file/lang/lang.xml" />
+<load target="../../editor/tpl/js/editor_module_config.js" />
+<script>
+	xe.lang.msg_delete_extend_form = '{$lang->msg_delete_extend_form}';
+	xe.lang.confirm_delete = '{$lang->confirm_delete}';
+	xe.lang.cmd_delete = '{$lang->cmd_delete}';
+	xe.lang.msg_null_prohibited_id = '{$lang->msg_null_prohibited_id}';
+	xe.lang.msg_null_prohibited_nick_name = '{$lang->msg_null_prohibited_nick_name}';
+	xe.lang.msg_null_managed_emailhost = '{$lang->msg_null_managed_emailhost}';
+	xe.lang.msg_exists_user_id= '{$lang->msg_exists_user_id}';
+</script>
+<form action="./" class="x_form-horizontal" method="post">
+	<input type="hidden" name="module" value="member" />
+	<input type="hidden" name="act" value="procMemberAdminInsertSignupConfig" />
+	<input type="hidden" name="success_return_url" value="{getUrl('act', $act)}" />
+	<input type="hidden" name="agreement" value="{$config->agreement}" />
+	<input type="hidden" name="xe_validator_id" value="modules/member/tpl/1" />
+	<div class="x_control-group">
+		<label class="x_control-label" for="limit_day">{$lang->limit_day}</label>
+		<div class="x_controls">
+			<input type="number" min="0" id="limit_day" name="limit_day" value="{$config->limit_day}" /> {$lang->unit_day}
+			<input type="text" name="limit_day_description" value="{$config->limit_day_description|autoescape}" placeholder="{$lang->limit_day_description}" style="width:90%" class="lang_code" />
+			<p class="x_help-block">{$lang->about_limit_day}</p>
+		</div>
+	</div>
+<!--// Managed Email Host Control -->
+	<div class="x_control-group">
+		<label class="x_control-label" for="manage_email_host">{$lang->cmd_manage_email_host}</label>
+		<div class="x_controls">
+			<input type="radio" id="emailhost_check_allowed" name="emailhost_check" value="allowed" checked="checked"|cond="$config->emailhost_check =='allowed'" /><label for="emailhost_check_allowed" class="x_inline"> {$lang->cmd_allowed}</label>
+			<input type="radio" id="emailhost_check_prohibited" name="emailhost_check" value="prohibited" checked="checked"|cond="$config->emailhost_check =='prohibited'" /><label for="emailhost_check_prohibited" class="x_inline"> {$lang->cmd_prohibited}</label>
+			<ul class="textList" id="managedEmailHost" style="margin-left:0">
+				<li loop="$managedEmailHost=>$emailInfo" id="managed_{str_replace('.','__',$emailInfo->email_host)}">{$emailInfo->email_host} <button type="button" class="x_icon-remove" onclick="doUpdateManagedEmailHost('{$emailInfo->email_host}','delete','{$lang->confirm_delete}');return false;">{$lang->delete}</button></li>
+			</ul>
+			<textarea rows="2" cols="42" id="manage_email_host" title="{$lang->add_managed_emailhost}" style="vertical-align:top"></textarea>
+			<button type="button" class="_addManagedEmailHost x_btn">{$lang->add}</button>
+			<p class="x_help-inline">{$lang->multi_line_input}</p>
+			<p class="x_help-block">{$lang->about_emailhost_check}</p>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label class="x_control-label" for="prohibited_nick_name">{$lang->cmd_manage_nick_name}</label>
+		<div class="x_controls">
+			<p>{sprintf($lang->count_manage_nick_name, count($deniedNickNames))}</p>
+			<ul class="textList" id="deniedNickNameList" style="margin-left:0">
+				<li loop="$deniedNickNames=>$nicknameInfo" id="denied_{$nicknameInfo->nick_name}">{$nicknameInfo->nick_name} <button type="button" class="x_icon-remove" onclick="doUpdateDeniedNickName('{$nicknameInfo->nick_name}','delete','{$lang->confirm_delete}');return false;">{$lang->delete}</button></li>
+			</ul>
+			<textarea rows="2" cols="42" id="prohibited_nick_name" title="{$lang->add_prohibited_nickname}" style="vertical-align:top"></textarea>
+			<button type="button" class="_addDeniedNickName x_btn">{$lang->add}</button>
+			<p class="x_help-inline">{$lang->multi_line_input}</p>
+		</div>
+	</div>
+	<div class="x_control-group" cond="$useUserID">
+		<label class="x_control-label" for="prohibited_id">{$lang->cmd_manage_id}</label>
+		<div class="x_controls">
+			<p>{sprintf($lang->count_manage_id, count($deniedIDs))}</p>
+			<ul class="textList" id="deniedList" style="margin-left:0">
+				<li loop="$deniedIDs=>$denied_info" id="denied_{$denied_info->user_id}">{$denied_info->user_id} <button type="button" class="x_icon-remove" onclick="doUpdateDeniedID('{$denied_info->user_id}','delete','{$lang->confirm_delete}');return false;">{$lang->delete}</button></li>
+			</ul>
+			<textarea rows="2" cols="42" id="prohibited_id" title="{$lang->add_prohibited_id}" style="vertical-align:top"></textarea>
+			<button type="button" class="_addDeniedID x_btn">{$lang->add}</button>
+			<p class="x_help-inline">{$lang->multi_line_input}</p>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label class="x_control-label" for="redirect_url">{$lang->cmd_special_phone_number}</label>
+		<div class="x_controls">
+			<input type="text" name="special_phone_number" value="{$config->special_phone_number}" placeholder="{$lang->phone_number}" />
+			<input type="text" name="special_phone_code" value="{$config->special_phone_code}" placeholder="{$lang->verify_by_sms_code}" />
+			<p class="x_help-block">{$lang->about_special_phone_number}</p>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<p class="x_control-label">{$lang->cmd_max_auth_sms_count}</p>
+		<div class="x_controls">
+			<input type="number" min="0" name="max_auth_sms_count" value="{$config->max_auth_sms_count ?: 5}" /> {$lang->unit_count} /
+			<input type="number" min="0" name="max_auth_sms_count_time" value="{$config->max_auth_sms_count_time ?: 600}" /> {$lang->unit_sec}
+			<p class="x_help-block">{$lang->about_max_auth_sms_count}</p>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label class="x_control-label" for="redirect_url">{$lang->redirect_url}</label>
+		<div class="x_controls">
+			<input type="text" class="x_full-width" name="redirect_url" value="{$config->redirect_url}" />
+			<p class="x_help-block">{$lang->about_redirect_url}</p>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<p class="x_control-label">{$lang->cmd_manage_form}</p>
+		<div class="x_controls">
+			<table class="__join_form sortable x_table x_table-striped x_table-hover">
+				<thead>
+					<tr>
+						<th scope="col" class="nowr" style="text-align:center">{$lang->target}</th>
+						<th scope="col" class="nowr" style="text-align:center">{$lang->use}</th>
+						<th scope="col" class="nowr" style="text-align:center">{$lang->public}
+							[<a href="#helpPublic" data-toggle>?</a>]
+							<div class="layer x_alert x_alert-info" id="helpPublic">
+								<p>{$lang->about_public_item}</p>
+							</div>
+						</th>
+						<th scope="col" class="nowr">{$lang->cmd_required}/{$lang->cmd_optional}</th>
+						<th scope="col" class="desc" style="text-align:center">{$lang->description}</th>
+						<th scope="col" class="nowr" style="text-align:center">{$lang->cmd_edit}</th>
+					</tr>
+				</thead>
+				<tbody class="uDrag">
+					{@ $disabled_list = array('find_account_question')}
+					{@ $fixed_public_list = array('nick_name')}
+					{@ $fixed_private_list = array('email_address', 'phone_number', 'password')}
+					<!--@foreach($config->signupForm as $item)-->
+					<!--@if(in_array($item->name, $disabled_list))-->
+					<!--@elseif(isset($item->isDefaultForm) && $item->isDefaultForm)-->
+					<tr class="_imageType"|cond="$item->imageType">
+						<input type="hidden" name="list_order[]" value="{$item->name}" />
+						<input type="hidden" name="usable_list[]" value="{$item->name}" cond="$item->isIdentifier || $item->mustRequired"/>
+						<input type="hidden" name="{$item->name}" value="required" cond="$item->isIdentifier || $item->mustRequired"/>
+						<th scope="row">
+							<div class="wrap">
+								<button type="button" class="dragBtn">Move to</button>
+								<!--@if(in_array($item->name, ['birthday', 'signature', 'profile_image', 'image_name', 'image_mark']))-->
+									<input class="_title_edit lang_code" type="text" name="{$item->name}_title_edit" value="{$item->title|autoescape}" placeholder="{lang($item->name)}" />
+								<!--@else-->
+									<span class="_title" style="display:inline-block;white-space:pre-line;overflow:inherit;width:120px;text-overflow:ellipsis" title="{$item->title|autoescape}">{$item->title}</span>
+								<!--@endif-->
+							</div>
+						</th>
+						<td style="text-align:center">
+							<input type="checkbox" name="usable_list[]" value="{$item->name}" title="{$lang->use}" checked="checked"|cond="$item->isIdentifier || $item->mustRequired || $item->isUse" disabled="disabled"|cond="$item->isIdentifier || $item->mustRequired" />
+						</td>
+						<td style="text-align:center">
+							<!--@if(!in_array($item->name, $fixed_private_list))-->
+								<input type="checkbox" name="is_{$item->name}_public" value="Y" checked="checked"|cond="$item->isPublic == 'Y'" disabled="disabled"|cond="in_array($item->name, $fixed_public_list) || !$item->isUse" />
+							<!--@endif-->
+						</td>
+						<td class="nowr">
+							<label for="{$item->name}_re" class="x_inline"><input type="radio" id="{$item->name}_re" name="{$item->name}" class="item_required" value="required" checked="checked"|cond="$item->mustRequired || $item->required" disabled="disabled"|cond="!$item->isUse" /> {$lang->cmd_required}</label>
+							<!--@if(!$item->mustRequired)-->
+								<label for="{$item->name}_op" class="x_inline"><input type="radio" id="{$item->name}_op" name="{$item->name}" class="item_optional" value="option" checked="checked"|cond="!$item->mustRequired && ($item->isUse && !$item->required)" disabled="disabled"|cond="!$item->isUse" /> {$lang->cmd_optional}</label>
+							<!--@endif-->
+
+							<div cond="$item->imageType" class="_subItem" style="display:none"|cond="!$item->isUse">
+								<p class="x_help-block">
+									<label class="x_inline" for="{$item->name}_max_width">{$lang->cmd_image_max_width}</label> <input type="number" min="1" name="{$item->name}_max_width" id="{$item->name}_max_width" value="{$item->max_width}" /> px
+								</p>
+								<p class="x_help-block">
+									<label class="x_inline" for="{$item->name}_max_height">{$lang->cmd_image_max_height}</label> <input type="number" min="1" name="{$item->name}_max_height" id="{$item->name}_max_height" value="{$item->max_height}" /> px
+								</p>
+								<p class="x_help-block">
+									<label class="x_inline" for="{$item->name}_max_filesize">{$lang->allowed_filesize}</label> <input type="number" min="1" name="{$item->name}_max_filesize" id="{$item->name}_max_filesize" value="{$item->max_filesize}" /> KB
+								</p>
+								<!--@if($item->name === 'profile_image')-->
+									<p class="x_help-block">
+										<label class="x_inline">{$lang->cmd_image_force_ratio}</label>
+										<label class="x_inline"><input type="radio" name="profile_image_force_ratio" value="Y" checked="checked"|cond="$config->profile_image_force_ratio !== 'N'" /> {$lang->cmd_yes}</label>
+										<label class="x_inline"><input type="radio" name="profile_image_force_ratio" value="N" checked="checked"|cond="$config->profile_image_force_ratio === 'N'" /> {$lang->cmd_no}</label>
+									</p>
+								<!--@endif-->
+							</div>
+
+							<div cond="$item->name == 'phone_number'" class="_subItem" style="display:none"|cond="!$item->isUse">
+								<label for="phone_number_default_country" class="x_inline">{$lang->phone_number_default_country}</label>
+								<select id="phone_number_default_country" name="phone_number_default_country">
+									<!--@foreach($country_list as $country_info)-->
+										<!--@if($country_info->calling_code)-->
+											<option value="{$country_info->iso_3166_1_alpha3}" selected="selected"|cond="$country_info->iso_3166_1_alpha3 === $config->phone_number_default_country || $country_info->calling_code === $config->phone_number_default_country">
+												{$lang_type === 'ko' ? $country_info->name_korean : $country_info->name_english} (+{$country_info->calling_code})
+											</option>
+										<!--@endif-->
+									<!--@endforeach-->
+								</select>
+								<p class="x_help-block">
+									<label class="x_inline">{$lang->phone_number_hide_country}</label>
+									<label class="x_inline"><input type="radio" name="phone_number_hide_country" value="Y" checked="checked"|cond="$config->phone_number_hide_country === 'Y'" /> {$lang->cmd_yes}</label>
+									<label class="x_inline"><input type="radio" name="phone_number_hide_country" value="N" checked="checked"|cond="$config->phone_number_hide_country !== 'Y'" /> {$lang->cmd_no}</label>
+								</p>
+								<p class="x_help-block">
+									<label class="x_inline">{$lang->phone_number_allow_duplicate}</label>
+									<label class="x_inline"><input type="radio" name="phone_number_allow_duplicate" value="Y" checked="checked"|cond="$config->phone_number_allow_duplicate === 'Y'" /> {$lang->cmd_yes}</label>
+									<label class="x_inline"><input type="radio" name="phone_number_allow_duplicate" value="N" checked="checked"|cond="$config->phone_number_allow_duplicate !== 'Y'" /> {$lang->cmd_no}</label>
+								</p>
+								<p class="x_help-block">
+									<label class="x_inline">{$lang->phone_number_verify_by_sms}</label>
+									<label class="x_inline"><input type="radio" name="phone_number_verify_by_sms" value="Y" checked="checked"|cond="$config->phone_number_verify_by_sms === 'Y'" /> {$lang->cmd_yes}</label>
+									<label class="x_inline"><input type="radio" name="phone_number_verify_by_sms" value="N" checked="checked"|cond="$config->phone_number_verify_by_sms !== 'Y'" /> {$lang->cmd_no}</label>
+								</p>
+							</div>
+
+							<div cond="$item->name == 'signature'" class="_subItem" style="display:none;padding-top:5px"|cond="!$item->isUse">
+								<select id="signature_editor" name="signature_editor_skin" onchange="getEditorSkinColorList(this.value)">
+									<!--@foreach($editor_skin_list as $editor_skin)-->
+									<option value="{$editor_skin}" selected="selected"|cond="$editor_skin == $config->signature_editor_skin">{$editor_skin}</option>
+									<!--@end-->
+								</select>
+								<select name="sel_editor_colorset" id="sel_editor_colorset" style="display:none"></select>
+								<p class="x_help-block">
+									<label class="x_inline" for="signature_max_height">{$lang->signature_max_height}</label>
+									<input type="number" min="0" name="signature_max_height" id="signature_max_height" value="{$config->signature_max_height ?? 100}" /> px
+								</p>
+								<p class="x_help-block">
+									<label class="x_inline">{lang('allow_html')}</label>
+									<label class="x_inline"><input type="radio" name="signature_html" id="signature_html_yes" value="Y" checked="checked"|cond="$config->signature_html != 'N'" /> {$lang->cmd_yes}</label>
+									<label class="x_inline"><input type="radio" name="signature_html" id="signature_html_no" value="N" checked="checked"|cond="$config->signature_html == 'N'" /> {$lang->cmd_no}</label>
+									<label class="x_inline" id="signature_html_retroact" title="{$lang->signature_html_retroact}" style="">
+										<input type="checkbox" name="signature_html_retroact" value="Y" checked="checked"|cond="$config->signature_html_retroact == 'Y'" /> {$lang->retroactive_application}
+									</label>
+								</p>
+								<p class="x_help-block">
+									<label class="x_inline">{lang('file.file_upload')}</label>
+									<label class="x_inline"><input type="radio" name="member_allow_fileupload" value="Y" checked="checked"|cond="$config->member_allow_fileupload == 'Y'" /> {$lang->cmd_yes}</label>
+									<label class="x_inline"><input type="radio" name="member_allow_fileupload" value="N" checked="checked"|cond="$config->member_allow_fileupload != 'Y'" /> {$lang->cmd_no}</label>
+								</p>
+								<p class="x_help-block">
+									<label class="x_inline" for="member_max_filesize">{$lang->allowed_filesize}</label> <input type="number" min="0" name="member_max_filesize" id="member_max_filesize" value="{$config->member_max_filesize}" /> KB
+								</p>
+								<script>
+									getEditorSkinColorList('{$config->signature_editor_skin}','{$config->sel_editor_colorset}');
+
+									if(!$('#signature_html_no').is(':checked'))
+									{
+										$('#signature_html_retroact').hide();
+									}
+									$('#signature_html_yes').change(function(){
+										if($(this).is(':checked')){
+											$('#signature_html_retroact').hide();
+										}
+									});
+									$('#signature_html_no').change(function(){
+										if($(this).is(':checked')){
+											$('#signature_html_retroact').show();
+										}
+									});
+								</script>
+							</div>
+						</td>
+						<td class="desc">&nbsp;</td>
+						<td style="text-align:center">&nbsp;</td>
+					</tr>
+					<!--@else-->
+					<tr>
+						<th scope="row">
+							<input type="hidden" name="list_order[]" value="{$item->name}" />
+							<input type="hidden" name="{$item->name}_member_join_form_srl" value="{$item->member_join_form_srl}" />
+							<div class="wrap">
+								<button type="button" class="dragBtn">Move to</button>
+								<span class="_title" style="display:inline-block;white-space:pre-line;overflow:inherit;width:120px;text-overflow:ellipsis" title="{$item->title}">{$item->title}</span>
+							</div>
+						</th>
+						<td style="text-align:center"><input type="checkbox" name="usable_list[]" value="{$item->name}" title="{$lang->use}" checked="checked"|cond="$item->isUse" /></td>
+						<td style="text-align:center"><input type="checkbox" name="is_{$item->name}_public" value="Y" checked="checked"|cond="$item->isPublic == 'Y'" disabled="disabled"|cond="!$item->isUse" /></td>
+						<td class="nowr">
+							<label for="{$item->name}_re" class="x_inline"><input type="radio" id="{$item->name}_re" name="{$item->name}" class="item_required" value="required" checked="checked"|cond="$item->required" disabled="disabled"|cond="!$item->isUse" /> {$lang->cmd_required}</label>
+							<label for="{$item->name}_op" class="x_inline"><input type="radio" id="{$item->name}_op" name="{$item->name}" class="item_optional" value="option" checked="checked"|cond="$item->isUse && !$item->required" disabled="disabled"|cond="!$item->isUse" /> {$lang->cmd_optional}</label>
+						</td>
+						<td class="desc" title="{$item->description}">{$item->description}</td>
+						<td id="{$item->member_join_form_srl}" class="nowr" style="text-align:center"><a href="#userDefine" class="modalAnchor _extendFormEdit">{$lang->cmd_edit}</a> <i>|</i> <a href="#" class="_extendFormDelete">{$lang->cmd_delete}</a></td>
+					</tr>
+					<!--@end-->
+					<!--@end-->
+				</tbody>
+			</table>
+			<a href="#userDefine" class="modalAnchor _extendFormEdit x_btn"><i class="x_icon-plus-sign"></i> {$lang->add_extend_form}</a>
+<style scoped>
+.x_table .desc{white-space:nowrap;overflow:hidden;max-width:200px;text-overflow:ellipsis}
+@media all and (max-width:1250px){
+.x_table .desc{display:none}
+}
+</style>
+		</div>
+	</div>
+	</section>
+	<div class="x_clearfix btnArea">
+		<span class="x_pull-right"><input class="x_btn x_btn-primary" type="submit" value="{$lang->cmd_save}" /></span>
+	</div>
+</form>
+<form action="./" class="x_modal" id="userDefine" ruleset="insertJoinForm" method="post">
+	<input type="hidden" name="module" value="member" />
+	<input type="hidden" name="act" value="procMemberAdminInsertJoinForm" />
+	<input type="hidden" name="success_return_url" value="{getUrl('act', $act)}" />
+	<input type="hidden" name="xe_validator_id" value="modules/member/tpl/1" />
+	<div id="extendForm" class="x_form-horizontal">
+	</div>
+</form>
+<style scoped>
+@media all and (min-width:981px){
+/* 중앙 정렬은 관리자 공통 .x_modal 규칙(transform)이 담당 — margin-left 방식 제거 */
+#userDefine{max-width:60%}
+}
+</style>

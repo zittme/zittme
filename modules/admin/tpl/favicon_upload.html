@@ -1,0 +1,9 @@
+<config autoescape="on" />
+
+<script>
+<!--@if($msg)-->
+	parent.alertUploadMessage('{$msg}');
+<!--@else-->
+	parent.afterUploadConfigImage('{$name}', '{$tmpFileName}');
+<!--@end-->
+</script>

@@ -1,0 +1,482 @@
+<config autoescape="on" />
+<include target="header.html" />
+<load target="../../module/tpl/js/multi_order.js" />
+<!--// subtitle_primary 등은 admin 모듈 언어 키다. 프론트 경로(/mid/dispBoardAdminBoardInfo)로
+     들어오면 admin 언어가 로드되지 않아 키 이름이 그대로 보이므로 여기서 직접 로드한다. -->
+{@ Context::loadLang('modules/admin/lang'); }
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/board/tpl/board_insert/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+<form ruleset="insertBoard" class="x_form-horizontal" action="./" method="post" enctype="multipart/form-data">
+	<input type="hidden" name="module" value="board" />
+	<input type="hidden" name="act" value="procBoardAdminInsertBoard" />
+	<input type="hidden" name="page" value="{$page}" />
+	<input type="hidden" name="module_srl" value="{$module_info->module_srl}" />
+	<input cond="!empty($mid) || !empty($module_srl)" type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
+	<input cond="$logged_info->is_admin != 'Y'" type="hidden" name="board_name" value="{$module_info->mid}" />
+	<input type="hidden" name="xe_validator_id" value="modules/board/tpl/board_insert/1" />
+	<section class="section">
+		<h1>{$lang->subtitle_primary}</h1>
+		<div cond="$logged_info->is_admin == 'Y'" class="x_control-group">
+			<label class="x_control-label" for="board_name">{$lang->url}</label>
+			<div class="x_controls">
+				<select name="domain_srl" id="domain_srl">
+					<option value="-1" selected="selected"|cond="!isset($module_info->domain_srl) || $module_info->domain_srl == -1">{lang('admin.cmd_any_domain')}</option>
+					{@ $domain_srl_list = []}
+					<!--@foreach(ModuleModel::getAllDomains(100)->data as $domain)-->
+						<option value="{$domain->domain_srl}" selected="selected"|cond="$domain->domain_srl == $module_info->domain_srl">{$domain->domain}</option>
+						{@ $domain_srl_list[] = $domain->domain_srl}
+					<!--@endif-->
+					<!--@if(isset($module_info->domain_srl) && $module_info->domain_srl > -1 && !in_array($module_info->domain_srl, $domain_srl_list))-->
+						<option value="-1" selected="selected">{$lang->deleted_domain}</option>
+					<!--@endif-->
+				</select>
+				<span class="baseurl">{\RX_BASEURL}<!--@if(!config('url.rewrite'))-->index.php?mid=<!--@endif--></span>
+				<input type="text" name="board_name" id="board_name" value="{$module_info->mid}" />
+				<p class="x_help-block">{$lang->about_mid}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="lang_browser_title">{$lang->browser_title}</label>
+			<div class="x_controls">
+				<input type="text" name="browser_title" id="browser_title" value="{$module_info->browser_title}" class="lang_code" />
+				<a href="#browser_title_help" class="x_icon-question-sign" data-toggle>{$lang->help}</a>
+				<p id="browser_title_help" class="x_help-block x_hide">{$lang->about_browser_title}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->cmd_robots_tag}</label>
+			<div class="x_controls">
+				<label class="x_inline" for="robots_tag_all"><input type="radio" name="robots_tag" id="robots_tag_all" value="all" checked="checked"|cond="$module_info->robots_tag !== 'noindex'" /> {$lang->cmd_yes}</label>
+				<label class="x_inline" for="robots_tag_noindex"><input type="radio" name="robots_tag" id="robots_tag_noindex" value="noindex" checked="checked"|cond="$module_info->robots_tag === 'noindex'" /> {$lang->cmd_no}</label>
+				<p class="x_help-inline">{$lang->msg_about_robots_tag}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="lang_meta_keywords">{$lang->meta_keywords}</label>
+			<div class="x_controls">
+				<input type="text" name="meta_keywords" id="meta_keywords" value="{$module_info->meta_keywords}" class="x_full-width lang_code" />
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="lang_meta_description">{$lang->meta_description}</label>
+			<div class="x_controls">
+				<input type="text" name="meta_description" id="meta_description" value="{$module_info->meta_description}" class="x_full-width lang_code" />
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="layout_srl">{$lang->layout}</label>
+			<div class="x_controls">
+				<select name="layout_srl" id="layout_srl">
+					<option value="0">{$lang->notuse}</option>
+					<option loop="$layout_list => $key, $val" value="{$val->layout_srl}" selected="selected"|cond="$module_info->layout_srl == $val->layout_srl">{$val->title} ({$val->layout})</option>
+				</select>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="skin">{$lang->skin}</label>
+			<div class="x_controls">
+				<select name="skin" id="skin" style="width:auto">
+					<option loop="$skin_list=> $key, $val" value="{$key}" selected="selected"|cond="$module_info->skin == $key || (!$module_info->skin && $key == 'default')">{$val->title}</option>
+				</select>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="list_count">{$lang->list_count}</label>
+			<div class="x_controls">
+				<input type="number" min="1" name="list_count" id="list_count" value="{$module_info->list_count ?: BoardModel::DEFAULT_MODULE_CONFIG['list_count']}" />
+				<p class="x_help-inline">{$lang->about_list_count}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="search_list_count">{$lang->search_list_count}</label>
+			<div class="x_controls">
+				<input type="number" min="1" name="search_list_count" id="search_list_count" value="{$module_info->search_list_count ?: BoardModel::DEFAULT_MODULE_CONFIG['search_list_count']}" />
+				<p class="x_help-inline">{$lang->about_search_list_count}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="page_count">{$lang->page_count}</label>
+			<div class="x_controls">
+				<input type="number" min="1" name="page_count" id="page_count" value="{$module_info->page_count ?: BoardModel::DEFAULT_MODULE_CONFIG['page_count']}" />
+				<p class="x_help-inline">{$lang->about_page_count}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="lang_header_text">{$lang->header_text}</label>
+			<div class="x_controls">
+				<textarea name="header_text" id="header_text" class="x_full-width x_code-font lang_code" rows="8" cols="42">{$module_info->header_text}</textarea>
+				<p id="header_text_help" class="x_help-block">{$lang->about_header_text}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="lang_footer_text">{$lang->footer_text}</label>
+			<div class="x_controls">
+				<textarea name="footer_text" id="footer_text" class="x_full-width x_code-font lang_code" rows="8" cols="42">{$module_info->footer_text}</textarea>
+				<p id="footer_text_help" class="x_help-block">{$lang->about_footer_text}</p>
+			</div>
+		</div>
+	</section>
+	<section class="section">
+		<h1>{$lang->mobile_settings}</h1>
+		<div class="x_control-group">
+			<label class="x_control-label" for="use_mobile">{$lang->view_mode}</label>
+			<div class="x_controls">
+				<select name="use_mobile" id="use_mobile">
+					<option value="" selected="selected"|cond="!in_array($module_info->use_mobile ?? '', ['Y','N','R'], true)">{sprintf($lang->view_mode_inherit_current, Mobile::getViewModeLabel(Mobile::getViewMode((object)['use_mobile' => ''])))}</option>
+					<option value="R" selected="selected"|cond="($module_info->use_mobile ?? '') === 'R'">{$lang->view_mode_responsive}</option>
+					<option value="Y" selected="selected"|cond="($module_info->use_mobile ?? '') === 'Y'">{$lang->view_mode_mobile}</option>
+					<option value="N" selected="selected"|cond="($module_info->use_mobile ?? '') === 'N'">{$lang->view_mode_none}</option>
+				</select>
+				<p class="x_help-block">{$lang->about_view_mode}</p>
+			</div>
+		</div>
+		<div class="hide-if-not-mobile-view">
+		<div class="zm-mskin-fields">
+		<div class="x_control-group">
+			<label class="x_control-label" for="mlayout_srl">{$lang->mobile_layout}</label>
+			<div class="x_controls">
+				<select name="mlayout_srl" id="mlayout_srl">
+					<option value="0">{$lang->notuse}</option>
+					<option loop="$mlayout_list => $key, $val" value="{$val->layout_srl}" selected="selected"|cond="$module_info->mlayout_srl == $val->layout_srl">{$val->title} <block cond="$val->layout">({$val->layout})</block></option>
+				</select>
+				<a href="#mobile_layout_help" class="x_icon-question-sign" data-toggle>{$lang->help}</a>
+				<p id="mobile_layout_help" class="x_help-block x_hide">{$lang->about_layout}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="mskin">{$lang->mobile_skin}</label>
+			<div class="x_controls">
+				<select name="mskin" id="mskin">
+					<option loop="$mskin_list=> $key, $val" value="{$key}" selected="selected"|cond="$module_info->mskin == $key || (!$module_info->skin && $key == 'default')">{$val->title}</option>
+				</select>
+				<a href="#mobile_skin_help" class="x_icon-question-sign" data-toggle>{$lang->help}</a>
+				<p id="mobile_skin_help" class="x_help-block x_hide">{$lang->about_skin}</p>
+			</div>
+		</div>
+		</div>
+		<div class="zm-narrow-fields">
+		<div class="x_control-group">
+			<label class="x_control-label" for="mobile_list_count">{$lang->list_count}</label>
+			<div class="x_controls">
+				<input type="number" min="1" name="mobile_list_count" id="mobile_list_count" value="{$module_info->mobile_list_count ?: BoardModel::DEFAULT_MODULE_CONFIG['mobile_list_count']}" />
+				<p class="x_help-inline">{$lang->about_list_count}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="mobile_search_list_count">{$lang->search_list_count}</label>
+			<div class="x_controls">
+				<input type="number" min="1" name="mobile_search_list_count" id="mobile_search_list_count" value="{$module_info->mobile_search_list_count ?: BoardModel::DEFAULT_MODULE_CONFIG['mobile_search_list_count']}" />
+				<p class="x_help-inline">{$lang->about_search_list_count}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="mobile_page_count">{$lang->page_count}</label>
+			<div class="x_controls">
+				<input type="number" min="1" name="mobile_page_count" id="mobile_page_count" value="{$module_info->mobile_page_count ?: BoardModel::DEFAULT_MODULE_CONFIG['mobile_page_count']}" />
+				<p class="x_help-inline">{$lang->about_mobile_page_count}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="lang_mobile_header_text">{$lang->mobile_header_text}</label>
+			<div class="x_controls">
+				<textarea name="mobile_header_text" id="mobile_header_text" class="x_full-width x_code-font lang_code" rows="8" cols="42">{$module_info->mobile_header_text}</textarea>
+				<p id="mobile_header_text_help" class="x_help-block">{$lang->about_mobile_header_text}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="lang_mobile_footer_text">{$lang->mobile_footer_text}</label>
+			<div class="x_controls">
+				<textarea name="mobile_footer_text" id="mobile_footer_text" class="x_full-width x_code-font lang_code" rows="8" cols="42">{$module_info->mobile_footer_text}</textarea>
+				<p id="mobile_footer_text_help" class="x_help-block">{$lang->about_mobile_footer_text}</p>
+			</div>
+		</div>
+		</div>
+		</div>
+	</section>
+	<section class="section">
+		<h1>{$lang->cmd_list_setting}</h1>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->cmd_list_items}</label>
+			<div class="x_controls">
+				{@$list = array_keys($list_config)}
+				<input type="hidden" name="list" value="{implode(',', $list)}" />
+				<p style="padding:3px 0 0 0">{$lang->about_list_config}</p>
+				<div style="display:inline-block">
+					<select class="multiorder_show" size="8" multiple="multiple" style="width:220px;vertical-align:top;margin-bottom:8px">
+						<option loop="$extra_vars => $key, $val" cond="empty($list_config[$key])" value="{$key}">{Context::replaceUserLang($val->name)}</option>
+					</select><br />
+					<button type="button" class="x_btn multiorder_add" style="vertical-align:top">{$lang->cmd_insert}</button>
+				</div>
+				<div style="display:inline-block">
+					<select class="multiorder_selected" size="8" multiple="multiple" style="width:220px;vertical-align:top;margin-bottom:8px">
+						<option loop="$list_config => $key, $val" value="{$key}">{Context::replaceUserLang($val->name)}</option>
+					</select><br />
+					<span class="x_btn-group">
+						<button type="button" class="x_btn multiorder_up" style="vertical-align:top">{$lang->cmd_move_up}</button>
+						<button type="button" class="x_btn multiorder_down" style="vertical-align:top">{$lang->cmd_move_down}</button>
+						<button type="button" class="x_btn multiorder_del" style="vertical-align:top">{$lang->cmd_delete}</button>
+					</span>
+				</div>
+				<script>
+					xe.registerApp(new xe.MultiOrderManager('list'));
+				</script>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->order_type}</label>
+			<div class="x_controls">
+				<select name="order_target" id="order_target" title="{$lang->order_target}">
+					<option loop="$order_target=> $key, $val" value="{$key}" selected="selected"|cond="$module_info->order_target == $key">{$val}</option>
+					<block cond="$extra_order_target">
+					<option loop="$extra_order_target=> $key, $val" value="{$key}" selected="selected"|cond="$module_info->order_target == $key">{Context::replaceUserLang($val)}</option>
+					</block>
+				</select>
+				<select name="order_type" id="order_type" title="{$lang->order_type}">
+					<option value="asc" selected="selected"|cond="$module_info->order_type != 'desc'">{$lang->order_asc}</option>
+					<option value="desc" selected="selected"|cond="$module_info->order_type == 'desc'">{$lang->order_desc}</option>
+				</select>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->except_notice}</label>
+			<div class="x_controls">
+				<label class="x_inline" for="except_notice_Y"><input type="radio" name="except_notice" id="except_notice_Y" value="Y" checked="checked"|cond="$module_info->except_notice !== 'N'" /> {$lang->cmd_yes}</label>
+				<label class="x_inline" for="except_notice_N"><input type="radio" name="except_notice" id="except_notice_N" value="N" checked="checked"|cond="$module_info->except_notice === 'N'" /> {$lang->cmd_no}</label>
+				<p class="x_help-block">{$lang->about_except_notice}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->use_bottom_list}</label>
+			<div class="x_controls">
+				<label class="x_inline" for="use_bottom_list_Y"><input type="radio" name="use_bottom_list" id="use_bottom_list_Y" value="Y" checked="checked"|cond="$module_info->use_bottom_list !== 'N'" /> {$lang->cmd_yes}</label>
+				<label class="x_inline" for="use_bottom_list_N"><input type="radio" name="use_bottom_list" id="use_bottom_list_N" value="N" checked="checked"|cond="$module_info->use_bottom_list === 'N'" /> {$lang->cmd_no}</label>
+				<p class="x_help-block">{$lang->about_use_bottom_list}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->customize_bottom_list}</label>
+			<div class="x_controls">
+				<label for="skip_bottom_list_for_olddoc" class="x_inline">
+					<input type="checkbox" name="skip_bottom_list_for_olddoc" id="skip_bottom_list_for_olddoc" value="Y" checked="checked"|cond="$module_info->skip_bottom_list_for_olddoc === 'Y'" />
+					{$lang->skip_bottom_list_for_olddoc}
+				</label>
+				<input type="number" min="1" name="skip_bottom_list_days" value="{$module_info->skip_bottom_list_days ?: 30}" /> {$lang->unit_day}
+				<br />
+				<label for="skip_bottom_list_for_robot">
+					<input type="checkbox" name="skip_bottom_list_for_robot" id="skip_bottom_list_for_robot" value="Y" checked="checked"|cond="$module_info->skip_bottom_list_for_robot !== 'N'" />
+					{$lang->skip_bottom_list_for_robot}
+				</label>
+				<p class="x_help-block">{$lang->about_customize_bottom_list}</p>
+			</div>
+		</div>
+	</section>
+	<section class="section">
+		<h1>{$lang->subtitle_advanced}</h1>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->consultation}</label>
+			<div class="x_controls">
+				<label class="x_inline" for="consultation"><input type="checkbox" name="consultation" id="consultation" value="Y" checked="checked"|cond="$module_info->consultation == 'Y'" /> {$lang->use_consultation}</label>
+				<p class="x_help-block">{$lang->about_consultation}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->use_anonymous}</label>
+			<div class="x_controls">
+				<label class="x_inline" for="use_anonymous"><input type="checkbox" name="use_anonymous" id="use_anonymous" value="Y" checked="checked"|cond="$module_info->use_anonymous == 'Y'" /> {$lang->about_use_anonymous_part1}</label>
+				<p class="x_help-block">{$lang->about_use_anonymous_part2}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->anonymous_except_admin}</label>
+			<div class="x_controls">
+				<label class="x_inline" for="anonymous_except_admin"><input type="checkbox" name="anonymous_except_admin" id="anonymous_except_admin" value="Y" checked="checked"|cond="$module_info->anonymous_except_admin == 'Y'" /> {$lang->about_anonymous_except_admin}</label>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->anonymous_name}</label>
+			<div class="x_controls">
+				<input type="text" name="anonymous_name" id="anonymous_name" value="{$module_info->anonymous_name ?: BoardModel::DEFAULT_MODULE_CONFIG['anonymous_name']}" />
+				<p class="x_help-block">{$lang->about_anonymous_name}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->document_length_limit}</label>
+			<div class="x_controls">
+				<input type="number" min="1" name="document_length_limit" id="document_length_limit" value="{$module_info->document_length_limit ?: BoardModel::DEFAULT_MODULE_CONFIG['document_length_limit']}" /> KB
+				<p class="x_help-block">{$lang->about_document_length_limit}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->comment_length_limit}</label>
+			<div class="x_controls">
+				<input type="number" min="1" name="comment_length_limit" id="comment_length_limit" value="{$module_info->comment_length_limit ?: BoardModel::DEFAULT_MODULE_CONFIG['comment_length_limit']}" /> KB
+				<p class="x_help-block">{$lang->about_comment_length_limit}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->inline_data_url_limit}</label>
+			<div class="x_controls">
+				<input type="number" min="1" name="inline_data_url_limit" id="inline_data_url_limit" value="{$module_info->inline_data_url_limit ?: BoardModel::DEFAULT_MODULE_CONFIG['inline_data_url_limit']}" /> KB
+				<p class="x_help-block">{$lang->about_inline_data_url_limit}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->update_log}</label>
+			<div class="x_controls">
+				<label class="x_inline" for="update_log"><input type="checkbox" name="update_log" id="update_log" value="Y" checked="checked"|cond="$module_info->update_log == 'Y'" /> {$lang->about_update_log}</label>
+				<p class="x_help-block">{$lang->msg_warning_update_log}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->update_order_on_comment}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="radio" id="update_order_on_comment_y" name="update_order_on_comment" value="Y" checked="checked"|cond="$module_info->update_order_on_comment != 'N'" /> {$lang->cmd_yes}
+				</label>
+				<label class="x_inline">
+					<input type="radio" id="update_order_on_comment_n" name="update_order_on_comment" value="N" checked="checked"|cond="$module_info->update_order_on_comment == 'N'" /> {$lang->cmd_no}
+				</label>
+				<p class="x_help-block">{$lang->about_update_order_on_comment}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->document_force_to_move}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="radio" id="trash_use_y" name="trash_use" value="Y" checked="checked"|cond="$module_info->trash_use == 'Y'" /> {$lang->cmd_yes}
+				</label>
+				<label class="x_inline">
+					<input type="radio" id="trash_use_n" name="trash_use" value="N" checked="checked"|cond="$module_info->trash_use != 'Y'" /> {$lang->cmd_no}
+				</label>
+				<p class="x_help-block">{$lang->about_document_force_to_move}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->filter_specialchars}</label>
+			<div class="x_controls">
+				<label class="x_inline">
+					<input type="radio" id="filter_specialchars_y" name="filter_specialchars" value="Y" checked="checked"|cond="$module_info->filter_specialchars !== 'N'" /> {$lang->cmd_yes}
+				</label>
+				<label class="x_inline">
+					<input type="radio" id="filter_specialchars_n" name="filter_specialchars" value="N" checked="checked"|cond="$module_info->filter_specialchars === 'N'" /> {$lang->cmd_no}
+				</label>
+				<p class="x_help-block">{$lang->about_filter_specialchars}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->protect_content}</label>
+			<div class="x_controls">
+				<label for="protect_update_content">
+					<input type="checkbox" name="protect_update_content" id="protect_update_content" value="Y" checked="checked"|cond="$module_info->protect_update_content == 'Y'" />
+					{array_first(explode('%d', $lang->about_protect_content_update))}
+					<input type="number" min="0" name="protect_update_content_limit" value="{$module_info->protect_update_content_limit ?? 1}" style="width:50px" />
+					{array_last(explode('%d', $lang->about_protect_content_update))}
+				</label>
+				<label for="protect_delete_content">
+					<input type="checkbox" name="protect_delete_content" id="protect_delete_content" value="Y" checked="checked"|cond="$module_info->protect_delete_content == 'Y'" />
+					{array_first(explode('%d', $lang->about_protect_content_delete))}
+					<input type="number" min="0" name="protect_delete_content_limit" value="{$module_info->protect_delete_content_limit ?? 1}" style="width:50px" />
+					{array_last(explode('%d', $lang->about_protect_content_delete))}
+				</label>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->protect_comment}</label>
+			<div class="x_controls">
+				<label for="protect_update_comment">
+					<input type="checkbox" name="protect_update_comment" id="protect_update_comment" value="Y" checked="checked"|cond="$module_info->protect_update_comment == 'Y'" />
+					{array_first(explode('%d', $lang->about_protect_comment_update))}
+					<input type="number" min="0" name="protect_update_comment_limit" value="{$module_info->protect_update_comment_limit ?? 1}" style="width:50px" />
+					{array_last(explode('%d', $lang->about_protect_comment_update))}
+				</label>
+				<label for="protect_delete_comment">
+					<input type="checkbox" name="protect_delete_comment" id="protect_delete_comment" value="Y" checked="checked"|cond="$module_info->protect_delete_comment == 'Y'" />
+					{array_first(explode('%d', $lang->about_protect_comment_delete))}
+					<input type="number" min="0" name="protect_delete_comment_limit" value="{$module_info->protect_delete_comment_limit ?? 1}" style="width:50px" />
+					{array_last(explode('%d', $lang->about_protect_comment_delete))}
+				</label>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->protect_regdate}</label>
+			<div class="x_controls">
+				<label for="protect_document_regdate">
+					<input type="checkbox" name="protect_document_regdate" id="protect_document_regdate" value="Y" checked="checked"|cond="!empty($module_info->protect_document_regdate)" />
+					{array_first(explode('%d', $lang->about_protect_document_regdate))}
+					<input type="number" min="0" name="protect_document_regdate_limit" value="{$module_info->protect_document_regdate ?? ''}" style="width:50px" />
+					{array_last(explode('%d', $lang->about_protect_document_regdate))}
+				</label>
+				<label for="protect_comment_regdate">
+					<input type="checkbox" name="protect_comment_regdate" id="protect_comment_regdate" value="Y" checked="checked"|cond="!empty($module_info->protect_comment_regdate)" />
+					{array_first(explode('%d', $lang->about_protect_comment_regdate))}
+					<input type="number" min="0" name="protect_comment_regdate_limit" value="{$module_info->protect_comment_regdate ?? ''}" style="width:50px" />
+					{array_last(explode('%d', $lang->about_protect_comment_regdate))}
+				</label>
+			</div>
+		</div>
+		<!--@if($this->user->isAdmin())-->
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->protect_admin_content}</label>
+			<div class="x_controls">
+				<label class="x_inline" for="protect_admin_content_delete"><input type="checkbox" name="protect_admin_content_delete" id="protect_admin_content_delete" value="Y" checked="checked"|cond="$module_info->protect_admin_content_delete !== 'N'" /> {$lang->cmd_delete}</label>
+				<label class="x_inline" for="protect_admin_content_update"><input type="checkbox" name="protect_admin_content_update" id="protect_admin_content_update" value="Y" checked="checked"|cond="$module_info->protect_admin_content_update !== 'N'" /> {$lang->cmd_modify}</label>
+				<p>{$lang->about_protect_admin_content}</p>
+			</div>
+		</div>
+		<!--@end-->
+		<div class="x_control-group">
+			<label class="x_control-label" for="comment_delete_message">{$lang->comment_delete_message}</label>
+			<div class="x_controls">
+				<select name="comment_delete_message" id="comment_delete_message">
+					<option value="no" selected="selected"|cond="$module_info->comment_delete_message == 'no'">{$lang->cmd_do_not_message}</option>
+					<option value="yes" selected="selected"|cond="$module_info->comment_delete_message == 'yes'">{$lang->cmd_all_comment_message}</option>
+					<option value="only_comment" selected="selected"|cond="starts_with('only_comm', $module_info->comment_delete_message)">{$lang->cmd_only_p_comment}</option>
+				</select>
+				<p class="x_help-block">{$lang->about_comment_delete_message}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->status}</label>
+			<div class="x_controls">
+				<input type="hidden" name="use_status[]" value="PUBLIC" />
+				<label class="x_inline"><input type="checkbox" name="" value="" checked="checked" disabled="disabled" /> {$document_status_list['PUBLIC']}</label>
+				<block loop="$document_status_list => $key, $value">
+					<block cond="$key != 'PRIVATE' && $key != 'TEMP' && $key != 'PUBLIC'">
+						<label class="x_inline" for="{$key}"><input type="checkbox" name="use_status[]" id="{$key}" value="{$key}" checked="checked"|cond="@in_array($key, $module_info->use_status) || ($key == 'PUBLIC' && !$module_srl)" /> {$value}</label>
+					</block>
+				</block>
+				<p class="x_help-block">{$lang->about_use_status}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="admin_mail">{$lang->admin_mail}</label>
+			<div class="x_controls">
+				<input type="text" name="admin_mail" id="admin_mail" value="{$module_info->admin_mail}" />
+				<p class="x_help-block">{$lang->about_admin_mail}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="module_category_srl">{$lang->module_category}</label>
+			<div class="x_controls">
+				<select name="module_category_srl" id="module_category_srl">
+					<option value="0">{$lang->notuse}</option>
+					<option loop="$module_category => $key, $val" value="{$key}" selected="selected"|cond="$module_info->module_category_srl == $key">{$val->title}</option>
+				</select>
+				<p class="x_help-block">{$lang->about_module_category}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="description">{$lang->description}</label>
+			<div class="x_controls">
+				<textarea name="description" id="description" rows="4" cols="42" placeholder="{$lang->about_description}" style="vertical-align:top">{$module_info->description}</textarea>
+			</div>
+		</div>
+	</section>
+	<div class="x_clearfix btnArea">
+		<div class="x_pull-right">
+			<button class="x_btn x_btn-primary" type="submit">{$lang->cmd_registration}</button>
+		</div>
+	</div>
+</form>
+<style>.g11n{vertical-align:top !important}</style>

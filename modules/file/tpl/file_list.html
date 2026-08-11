@@ -1,0 +1,263 @@
+<include target="header.html" />
+
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/file/tpl/file_list/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+<script>
+xe.lang.msg_empty_search_target = '{$lang->msg_empty_search_target}';
+xe.lang.msg_empty_search_keyword = '{$lang->msg_empty_search_keyword}';
+</script>
+
+<form id="fo_list" action="./" method="post">
+	<input type="hidden" name="module" value="file" />
+	<table id="fileListTable" class="x_table x_table-striped x_table-hover">
+		<caption>
+			<a href="{getUrl('search_target', $search_target, 'search_keyword', $search_keyword)}" cond="!empty($search_target) && !empty($search_keyword)" class="active">{$lang->cmd_search}({number_format($total_count)})</a>
+			<i>|</i>
+			<a href="{getUrl('', 'module', 'admin', 'act', 'dispFileAdminList')}" class="active"|cond="empty($isvalid) && empty($search_target) && empty($search_keyword)">{$lang->all}<block cond="empty($isvalid) && empty($search_target) && empty($search_keyword)">({number_format($total_count)})</block></a>
+			<i>|</i>
+			<a href="{getUrl('isvalid', 'Y')}" class="active"|cond="$isvalid == 'Y'">{$lang->is_valid}<block cond="$isvalid == 'Y'">({number_format($total_count)})</block></a>
+			<i>|</i>
+			<a href="{getUrl('isvalid', 'N')}" class="active"|cond="$isvalid == 'N'">{$lang->is_stand_by}<block cond="$isvalid == 'N'">({number_format($total_count)})</block></a>
+
+			<span class="x_pull-right"><a href="#listManager" class="x_btn modalAnchor" onclick="getFileList();">{$lang->delete}</a></span>
+		</caption>
+		<thead>
+			<tr>
+				<th scope="col">{$lang->file}</th>
+				<th scope="col" class="nowr">
+					<a href="{getUrl('', 'module', 'admin', 'act', 'dispFileAdminList', 'sort_index', 'file_size', 'order_type',  ($order_type == 'desc' && $sort_index == 'file_size') ? 'asc' : 'desc', 'isvalid', $isvalid ?? null)}">
+						{$lang->file_size}
+						<block cond="$sort_index == 'file_size'">
+							<em cond="$order_type=='asc'">▲</em><em cond="$order_type != 'asc'">▼</em>
+						</block>
+					</a>
+				</th>
+				<th scope="col" class="nowr">
+					{$lang->image_size}
+				</th>
+				<th scope="col" class="nowr">
+					<a href="{getUrl('', 'module', 'admin', 'act', 'dispFileAdminList', 'sort_index', 'download_count', 'order_type',  ($order_type == 'desc' && $sort_index == 'download_count') ? 'asc' : 'desc', 'isvalid', $isvalid ?? null)}">
+						{$lang->cmd_download}
+						<block cond="$sort_index == 'download_count'">
+							<em cond="$order_type=='asc'">▲</em><em cond="$order_type != 'asc'">▼</em>
+						</block>
+					</a>
+				</th>
+				<th scope="col" class="nowr">{$lang->author}</th>
+				<th scope="col" class="nowr">
+					<a href="{getUrl('', 'module', 'admin', 'act', 'dispFileAdminList', 'sort_index', 'regdate', 'order_type', ($order_type == 'desc' && $sort_index == 'regdate') ? 'asc' : 'desc', 'isvalid', $isvalid ?? null)}">
+						{$lang->date}
+						<block cond="$sort_index == 'regdate'">
+							<em cond="$order_type=='asc'">▲</em><em cond="$order_type != 'asc'">▼</em>
+						</block>
+					</a>
+				</th>
+				<th scope="col" class="nowr">{$lang->ipaddress}</th>
+				<th scope="col" class="nowr">{$lang->status}</th>
+				<th scope="col" class="nowr">{$lang->cmd_edit}</th>
+				<th scope="col"><input type="checkbox" data-name="cart" title="Check All" /></th>
+			</tr>
+		</thead>
+		<tbody>
+			<!--@foreach($file_list as $no => $val)-->
+				<!-- one document start -->
+				<!--@if($val->upload_target_srl != $cur_upload_target_srl)-->
+					<!--@if(in_array($val->upload_target_type, ['com', 'ev:com']))-->
+						{@ $document_srl = $val->target_document_srl}
+						{@ $move_uri = getUrl('', 'document_srl', $document_srl).'#comment_'.$val->upload_target_srl}
+					<!--@elseif(in_array($val->upload_target_type, ['doc', 'ev:doc']))-->
+						{@ $document_srl = $val->upload_target_srl}
+						{@ $move_uri = getUrl('', 'mid', $module_list[$val->module_srl]->mid, 'document_srl', $document_srl)}
+					<!--@end-->
+					{@ $cur_upload_target_srl = $val->upload_target_srl}
+			<tr>
+				<th colspan="10" scope="col">
+					<!--@if(!$val->upload_target_type)-->
+						<!--@if($val->isvalid=='Y')-->
+							{$lang->is_valid}
+						<!--@else-->
+							{$lang->is_stand_by}
+						<!--@end-->
+					<!--@else-->
+						<!--@if($val->upload_target_type == 'com')-->[{$lang->comment}] <!--@end-->
+						<!--@if($val->upload_target_type == 'mod')-->[{$lang->module}] <!--@end-->
+						<!--@if($val->upload_target_type == 'msg')-->[{$lang->member_message}] <!--@end-->
+
+						<!--@if(preg_match('/^(?:ev:)?doc$/', $val->upload_target_type) && $document_list[$document_srl] && $document_list[$document_srl]->get('module_srl') == $document_list[$document_srl]->get('member_srl'))-->[{$lang->cmd_temp_save}] <!--@end-->
+						<!--@if(preg_match('/^(?:ev:)?doc$/', $val->upload_target_type) && $document_list[$document_srl] && $document_list[$document_srl]->get('module_srl') == 0)-->[{$lang->cmd_trash}] <!--@end-->
+
+						<!--@if(isset($module_list[$val->module_srl]))-->
+							<!--@if($module_list[$val->module_srl]->domain_srl == -1 || $module_list[$val->module_srl]->domain_srl == $site_module_info->domain_srl)-->
+								<a href="{getUrl('', 'mid', $module_list[$val->module_srl]->mid)}" target="_blank">{$module_list[$val->module_srl]->browser_title}</a> -
+							<!--@else-->
+								{@ $module_url = ModuleModel::getDomainByModuleSrl($val->module_srl); $move_uri = $module_url . $move_uri; }
+								<a href="{$module_url}{getUrl('', 'mid', $module_list[$val->module_srl]->mid)}" target="_blank">{$module_list[$val->module_srl]->browser_title}</a> -
+							<!--@endif-->
+						<!--@endif-->
+
+						<!--@if($document_list[$document_srl] && preg_match('/^(?:ev:)?(?:doc|com)$/', $val->upload_target_type))-->
+							<!--@if($document_list[$document_srl]->get('module_srl') != $document_list[$document_srl]->get('member_srl'))--><a href="{$move_uri}" target="_blank">{$document_list[$document_srl]->getTitle()}</a><!--@else-->{$document_list[$document_srl]->getTitle()}<!--@end-->
+						<!--@end-->
+					<!--@end-->
+				</th>
+			</tr>
+				<!--@endif-->
+				<!-- one document end -->
+			<tr>
+				<td><!--@if(preg_match('/\.(?:bmp|gif|jpe?g|png|webp)$/i', $val->source_filename))-->
+					<img src="{$val->uploaded_filename}" style="width:50px;height:50px;object-fit:cover;margin-right:4px">
+					<!--@elseif($val->thumbnail_filename)-->
+					<img src="{$val->thumbnail_filename}" style="width:50px;height:50px;object-fit:cover;margin-right:4px">
+					<!--@end-->
+					<a href="{$val->download_url}">{escape($val->source_filename, false)}</a></td>
+				<td class="nowr">{FileHandler::filesize($val->file_size)}</td>
+				<td class="nowr">
+					<!--@if($val->width && $val->height)-->
+						{$val->width}x{$val->height}
+					<!--@endif-->
+					<!--@if($val->duration)-->
+						<br>({$val->duration}{$lang->unit_sec})
+					<!--@endif-->
+				</td>
+				<td class="nowr">{$val->download_count}</td>
+				<td class="nowr">
+					<!--@if($val->upload_target_type == 'doc' && $document_list[$document_srl])-->
+					<a href="#popup_menu_area" class="member_{$document_list[$document_srl]->get('member_srl')}">{$document_list[$document_srl]->getNickName()}</a>
+					<!--@elseif($val->upload_target_type == 'com' && $comment_list[$val->upload_target_srl])-->
+					<a href="#popup_menu_area" class="member_{$comment_list[$val->upload_target_srl]->get('member_srl')}">{$comment_list[$val->upload_target_srl]->getNickName()}</a>
+					<!--@else-->
+					<a href="#popup_menu_area" class="member_{$val->member_srl}">{$val->nick_name}</a>
+					<!--@end-->
+				</td>
+				<td class="nowr">{zdate($val->regdate,"Y-m-d H:i")}</td>
+				<td class="nowr"><a href="{getUrl('search_target','ipaddress','search_keyword',$val->ipaddress)}">{$val->ipaddress}</a></td>
+				<td class="nowr"><!--@if($val->isvalid=='Y')-->{$lang->is_valid}<!--@else-->{$lang->is_stand_by}<!--@end--></td>
+				<td class="nowr">
+					<a href="{getUrl(['module' => 'admin', 'act' => 'dispFileAdminEdit', 'file_srl' => $val->file_srl])}">{$lang->cmd_edit}</a>
+				</td>
+				<td>
+					<input type="checkbox" name="cart" value="{$val->file_srl}" />
+				</td>
+			</tr>
+			<!--@endforeach-->
+			<tr cond="!$file_list">
+				<td>{$lang->no_files}</td>
+			</tr>
+		</tbody>
+	</table>
+	<span class="x_pull-right">
+		<a href="#listManager" class="x_btn modalAnchor" onclick="getFileList();">{$lang->delete}</a>
+	</span>
+</form>
+
+<form action="" class="x_pagination">
+	<input type="hidden" name="error_return_url" value="" />
+	<input type="hidden" name="module" value="{$module}" />
+	<input type="hidden" name="act" value="{$act}" />
+  	<input cond="$search_keyword" type="hidden" name="search_keyword" value="{$search_keyword}" />
+  	<input cond="$search_target" type="hidden" name="search_target" value="{$search_target}" />
+
+	<ul>
+		<li class="x_disabled"|cond="!$page || $page == 1"><a href="{getUrl('page', '')}">&laquo; {$lang->first_page}</a></li>
+		<block cond="$page_navigation->first_page != 1 && $page_navigation->first_page + $page_navigation->page_count > $page_navigation->last_page - 1 && $page_navigation->page_count != $page_navigation->total_page">
+		{@$isGoTo = true}
+		<li>
+			<a href="#goTo" data-toggle title="{$lang->cmd_go_to_page}">&hellip;</a>
+			<span cond="$isGoTo" id="goTo" class="x_input-append">
+				<input type="number" min="1" max="{$page_navigation->last_page}" required name="page" title="{$lang->cmd_go_to_page}" />
+				<button type="submit" class="x_add-on">Go</button>
+			</span>
+		</li>
+		</block>
+
+		<!--@while($page_no = $page_navigation->getNextPage())-->
+		{@$last_page = $page_no}
+		<li class="x_active"|cond="$page_no == $page"><a  href="{getUrl('page', $page_no)}">{$page_no}</a></li>
+		<!--@end-->
+
+		<block cond="$last_page != $page_navigation->last_page && $last_page + 1 != $page_navigation->last_page">
+		{@$isGoTo = true}
+		<li>
+			<a href="#goTo" data-toggle title="{$lang->cmd_go_to_page}">&hellip;</a>
+			<span cond="$isGoTo" id="goTo" class="x_input-append">
+				<input type="number" min="1" max="{$page_navigation->last_page}" required name="page" title="{$lang->cmd_go_to_page}" />
+				<button type="submit" class="x_add-on">Go</button>
+			</span>
+		</li>
+		</block>
+		<li class="x_disabled"|cond="$page == $page_navigation->last_page"><a href="{getUrl('page', $page_navigation->last_page)}" title="{$page_navigation->last_page}">{$lang->last_page} &raquo;</a></li>
+	</ul>
+</form>
+
+<form action="./" method="get" onsubmit="return checkSearch(this)" class="search center x_input-append">
+	<input type="hidden" name="module" value="{$module}" />
+	<input type="hidden" name="act" value="{$act}" />
+	<input type="hidden" name="error_return_url" value="" />
+	<select name="module_srl" style="margin-right:4px">
+		<option value="">{lang('all')}</option>
+		<!--@foreach($module_list as $item)-->
+			<option value="{$item->module_srl}" <!--@if(isset($module_srl) && $module_srl == $item->module_srl)-->selected="selected"<!--@end-->>{$item->browser_title}</option>
+		<!--@endforeach-->
+	</select>
+	<select name="search_target" title="{$lang->search_target}" style="margin-right:4px">
+		<!--@foreach(lang('file.file_search_target_list') as $key => $val)-->
+		<option value="{$key}" <!--@if($search_target==$key)-->selected="selected"<!--@end-->>{$val}</option>
+		<!--@end-->
+	</select>
+	<input type="search" name="search_keyword" value="{htmlspecialchars($search_keyword, ENT_COMPAT | ENT_HTML401, 'UTF-8', false)}" />
+	<button type="submit" class="x_btn x_btn-inverse">{$lang->cmd_search}</button>
+	<a href="{getUrl('','module',$module,'act',$act)}" class="x_btn">{$lang->cmd_cancel}</a>
+</form>
+
+<form ruleset="deleteChecked" action="./" method="post" class="x_modal" id="listManager">
+	<input type="hidden" name="module" value="file" />
+	<input type="hidden" name="act" value="procFileAdminDeleteChecked" />
+	<input type="hidden" name="page" value="{$page}" />
+	<input type="hidden" name="success_return_url" value="{getUrl('', 'module', 'admin', 'act', 'dispFileAdminList', 'page', $page, 'search_target', $search_target, 'search_keyword', $search_keyword)}" />
+	<input type="hidden" name="xe_validator_id" value="modules/file/tpl/file_list/1" />
+	<div class="x_modal-header">
+		<h1>{$lang->file_manager}: {$lang->delete}</h1>
+	</div>
+	<div class="x_modal-body">
+		<table width="100%" id="fileManageListTable" class="x_table x_table-striped x_table-hover">
+			<caption>
+				<strong>{$lang->selected_file} <span id="selectedFileCount"></span></strong>
+			</caption>
+			<thead>
+				<tr>
+					<th scope="col">{$lang->file}</th>
+					<th scope="col" class="nowr">{$lang->file_size}</th>
+					<th scope="col" class="nowr">{$lang->status}</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+	<div class="x_modal-footer">
+		<button type="submit" class="x_btn x_btn-inverse">{$lang->cmd_delete}</button>
+	</div>
+</form>
+<script>
+jQuery(function($){
+	// Modal anchor activation
+	var $docTable = $('#fileListTable');
+	$docTable.find(':checkbox').change(function(){
+		var $modalAnchor = $('a.modalAnchor');
+		if($docTable.find('tbody :checked').length == 0){
+			$modalAnchor.removeAttr('href').addClass('x_disabled');
+		} else {
+			$modalAnchor.attr('href','#listManager').removeClass('x_disabled');
+		}
+	}).change();
+	// Button action
+	$('a.modalAnchor').bind('before-open.mw', function(){
+		if($docTable.find('tbody :checked').length == 0){
+			$('body').css('overflow','auto');
+			alert('{$lang->msg_file_cart_is_null}');
+			return false;
+		}
+	});
+});
+</script>

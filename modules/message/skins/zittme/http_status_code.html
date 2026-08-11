@@ -1,0 +1,133 @@
+<!--// Zittme error page (404/500 등) — 반응형, 레이아웃 위를 덮는 풀스크린 -->
+{@Context::addHtmlHeader('<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">')}
+<style>
+.zm-error {
+	position: fixed;
+	inset: 0;
+	z-index: 9999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #f8fafc;
+	font-family: "Pretendard Variable", Pretendard, system-ui, sans-serif;
+	overflow: hidden;
+}
+.zm-error::before,
+.zm-error::after {
+	content: "";
+	position: absolute;
+	border-radius: 50%;
+	filter: blur(90px);
+	opacity: .35;
+	pointer-events: none;
+}
+.zm-error::before {
+	width: 420px; height: 420px;
+	left: -120px; top: -120px;
+	background: #7ab3ff;
+}
+.zm-error::after {
+	width: 380px; height: 380px;
+	right: -100px; bottom: -100px;
+	background: #c3b5fd;
+}
+.zm-error-inner {
+	position: relative;
+	z-index: 1;
+	max-width: 560px;
+	padding: 40px 24px;
+	text-align: center;
+}
+.zm-error-code {
+	margin: 0;
+	font-size: clamp(88px, 22vw, 150px);
+	font-weight: 800;
+	line-height: 1;
+	letter-spacing: -4px;
+	background: linear-gradient(120deg, #2677e3, #7c5cff);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+.zm-error-title {
+	margin: 18px 0 10px;
+	font-size: 22px;
+	font-weight: 700;
+	color: #1d2433;
+}
+.zm-error-desc {
+	margin: 0 0 32px;
+	font-size: 15px;
+	line-height: 1.7;
+	color: #667085;
+	word-break: keep-all;
+}
+.zm-error-actions {
+	display: flex;
+	gap: 10px;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+.zm-error-actions a,
+.zm-error-actions button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 132px;
+	height: 46px;
+	padding: 0 22px;
+	border-radius: 12px;
+	font-family: inherit;
+	font-size: 14.5px;
+	font-weight: 700;
+	text-decoration: none;
+	cursor: pointer;
+	transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+}
+.zm-error-actions .zm-btn-primary {
+	border: 0;
+	background: #2677e3;
+	color: #fff;
+	box-shadow: 0 6px 16px rgba(38,119,227,.25);
+}
+.zm-error-actions .zm-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(38,119,227,.32); }
+.zm-error-actions .zm-btn-ghost {
+	border: 1.5px solid #d0d5dd;
+	background: #fff;
+	color: #475467;
+}
+.zm-error-actions .zm-btn-ghost:hover { background: #f2f4f7; }
+.zm-error-brand {
+	margin-top: 44px;
+	font-size: 12.5px;
+	color: #98a2b3;
+	letter-spacing: .2px;
+}
+@media (max-width: 480px) {
+	.zm-error-inner { padding: 32px 20px; }
+	.zm-error-title { font-size: 19px; }
+	.zm-error-desc { font-size: 14px; }
+	.zm-error-actions a, .zm-error-actions button { min-width: 0; flex: 1 1 40%; }
+}
+</style>
+
+<section class="zm-error">
+	<div class="zm-error-inner">
+		<h1 class="zm-error-code">{$http_status_code}</h1>
+		<!--@if($http_status_code == 404)-->
+			<p class="zm-error-title">{$lang->zm_error_404_title}</p>
+			<p class="zm-error-desc">{$lang->zm_error_404_desc}</p>
+		<!--@elseif($http_status_code >= 500)-->
+			<p class="zm-error-title">{$lang->zm_error_500_title}</p>
+			<p class="zm-error-desc">{$lang->zm_error_500_desc}</p>
+		<!--@else-->
+			<p class="zm-error-title">{$http_status_message}</p>
+			<p class="zm-error-desc">{$lang->zm_error_generic_desc}</p>
+		<!--@end-->
+		<div class="zm-error-actions">
+			<button type="button" class="zm-btn-ghost" onclick="if (history.length > 1) { history.back(); } else { window.location.href = '{\RX_BASEURL}'; }">{$lang->zm_error_go_back}</button>
+			<a class="zm-btn-primary" href="{\RX_BASEURL}">{$lang->zm_error_go_home}</a>
+		</div>
+		<p class="zm-error-brand">{Context::getSiteTitle()}</p>
+	</div>
+</section>

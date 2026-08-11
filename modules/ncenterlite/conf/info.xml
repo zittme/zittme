@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="0.2">
+	<title xml:lang="ko">알림 센터</title>
+	<title xml:lang="en">Notification Center</title>
+	<title xml:lang="vi">Trung tâm thông báo</title>
+	<title xml:lang="tr">Bildirim Merkezi</title>
+	<title xml:lang="ru">Центр уведомлений</title>
+	<title xml:lang="mn">Мэдэгдлийн төв</title>
+	<title xml:lang="fr">Centre de notifications</title>
+	<title xml:lang="es">Centro de notificaciones</title>
+	<title xml:lang="de">Benachrichtigungscenter</title>
+	<title xml:lang="zh-TW">通知中心</title>
+	<title xml:lang="zh-CN">通知中心</title>
+	<title xml:lang="jp">通知センター</title>
+	<description xml:lang="ko">사이트 사용자간의 커뮤니케이션에 대한 정보를 알려주는 모듈입니다.</description>
+	<description xml:lang="en">This module notify users of information about new documents, comments and/or messages that call them. This module will enhance communication beween site users.</description>
+	<description xml:lang="vi">Module này thông báo cho người dùng về bài viết, bình luận và tin nhắn mới có nhắc đến họ, giúp tăng cường giao tiếp giữa các thành viên trên site.</description>
+	<description xml:lang="tr">Bu modül, kullanıcılara kendilerini ilgilendiren yeni içerik, yorum ve mesajları bildirir. Site kullanıcıları arasındaki iletişimi güçlendirir.</description>
+	<description xml:lang="ru">Модуль уведомляет пользователей о новых записях, комментариях и сообщениях, в которых они упомянуты, улучшая общение между участниками сайта.</description>
+	<description xml:lang="mn">Шинэ бичлэг, сэтгэгдэл болон зурвасын талаар хэрэглэгчдэд мэдэгдэнэ. Сайтын хэрэглэгчдийн хоорондын харилцааг сайжруулна.</description>
+	<description xml:lang="fr">Ce module informe les membres des nouveaux documents, commentaires et messages qui les concernent. Il améliore la communication entre les utilisateurs du site.</description>
+	<description xml:lang="es">Este módulo notifica a los usuarios sobre nuevos documentos, comentarios y mensajes que los mencionan, mejorando la comunicación entre los usuarios del sitio.</description>
+	<description xml:lang="de">Dieses Modul benachrichtigt Benutzer über neue Beiträge, Kommentare und Nachrichten, die sie betreffen, und verbessert so die Kommunikation zwischen den Benutzern der Website.</description>
+	<description xml:lang="zh-TW">本模組會通知使用者有關新文件、新留言或提及自己的訊息等資訊，強化站台使用者之間的交流。</description>
+	<description xml:lang="zh-CN">该模块会将提及用户的新文章、评论和消息通知给用户，有助于加强站点用户之间的交流。</description>
+	<description xml:lang="jp">新しい文書・コメント・メッセージなど、利用者に関わる情報を通知するモジュールです。サイト利用者間のコミュニケーションを促進します。</description>
+	<version>RX_VERSION</version>
+	<date>RX_CORE</date>
+	<category>service</category>
+	<author link="https://rhymix.org">
+		<name xml:lang="ko">Rhymix</name>
+		<name xml:lang="en">Rhymix</name>
+	</author>
+</module>

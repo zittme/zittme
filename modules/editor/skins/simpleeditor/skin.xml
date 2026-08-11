@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">SimpleEditor</title>
+	<title xml:lang="vi">SimpleEditor</title>
+	<title xml:lang="tr">SimpleEditor</title>
+	<title xml:lang="ru">SimpleEditor</title>
+	<title xml:lang="mn">SimpleEditor</title>
+	<title xml:lang="fr">SimpleEditor</title>
+	<title xml:lang="es">SimpleEditor</title>
+	<title xml:lang="de">SimpleEditor</title>
+	<title xml:lang="zh-TW">SimpleEditor</title>
+	<title xml:lang="zh-CN">SimpleEditor</title>
+	<title xml:lang="jp">SimpleEditor</title>
+	<title xml:lang="en">SimpleEditor</title>
+	<description xml:lang="ko">SimpleEditor</description>
+	<description xml:lang="vi">SimpleEditor</description>
+	<description xml:lang="tr">SimpleEditor</description>
+	<description xml:lang="ru">SimpleEditor</description>
+	<description xml:lang="mn">SimpleEditor</description>
+	<description xml:lang="fr">SimpleEditor</description>
+	<description xml:lang="es">SimpleEditor</description>
+	<description xml:lang="de">SimpleEditor</description>
+	<description xml:lang="zh-TW">SimpleEditor</description>
+	<description xml:lang="zh-CN">SimpleEditor</description>
+	<description xml:lang="jp">SimpleEditor</description>
+	<description xml:lang="en">SimpleEditor</description>
+	<version>1.0.0</version>
+	<date>2020-07-07</date>
+	<colorset>
+		<color name="light">
+			<title xml:lang="ko">Light</title>
+			<title xml:lang="vi">Sáng</title>
+			<title xml:lang="tr">Açık</title>
+			<title xml:lang="ru">Светлая</title>
+			<title xml:lang="mn">Цайвар</title>
+			<title xml:lang="fr">Clair</title>
+			<title xml:lang="es">Claro</title>
+			<title xml:lang="de">Hell</title>
+			<title xml:lang="zh-TW">淺色</title>
+			<title xml:lang="zh-CN">浅色</title>
+			<title xml:lang="jp">ライト</title>
+			<title xml:lang="en">Light</title>
+		</color>
+		<color name="dark">
+			<title xml:lang="ko">Dark</title>
+			<title xml:lang="vi">Tối</title>
+			<title xml:lang="tr">Koyu</title>
+			<title xml:lang="ru">Тёмная</title>
+			<title xml:lang="mn">Бараан</title>
+			<title xml:lang="fr">Sombre</title>
+			<title xml:lang="es">Oscuro</title>
+			<title xml:lang="de">Dunkel</title>
+			<title xml:lang="zh-TW">深色</title>
+			<title xml:lang="zh-CN">深色</title>
+			<title xml:lang="jp">ダーク</title>
+			<title xml:lang="en">Dark</title>
+		</color>
+	</colorset>
+</skin>

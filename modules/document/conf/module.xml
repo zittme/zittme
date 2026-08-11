@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<grants />
+	<actions>
+		<action name="dispDocumentPrint" type="view" meta-noindex="true"/>
+		<action name="dispDocumentPreview" type="view" meta-noindex="true"/>
+		<action name="dispTempSavedList" type="view" permission="member" meta-noindex="true" />
+		<action name="dispDocumentDeclare" type="view" permission="member" meta-noindex="true" />
+		<action name="dispDocumentManageDocument" type="view" permission="all-managers" meta-noindex="true" />
+
+		<action name="getDocumentMenu" type="model" />
+		<action name="getDocumentCategories" type="model" permission="all-managers" />
+		<action name="getDocumentCategoryTree" type="model" permission="all-managers" />
+		<action name="getDocumentCategoryTplInfo" type="model" permission="manager" check_var="module_srl" />
+		<action name="getDocumentVotedMemberList" type="model" permission="root" />
+
+		<action name="procDocumentVoteUp" type="controller" />
+		<action name="procDocumentVoteUpCancel" type="controller" />
+		<action name="procDocumentVoteDown" type="controller" />
+		<action name="procDocumentVoteDownCancel" type="controller" />
+		<action name="procDocumentTempSave" type="controller" permission="member" />
+		<action name="procDocumentDeclare" type="controller" permission="member" />
+		<action name="procDocumentDeclareCancel" type="controller" permission="member" />
+		<action name="procDocumentDeleteTempSaved" type="controller" permission="member" />
+		<action name="procDocumentGetList" type="controller" permission="manager:moderate:document" check_type="document" check_var="document_srls" />
+		<action name="procDocumentAddCart" type="controller" permission="manager:moderate:document" check_type="document" check_var="srls" />
+		<action name="procDocumentManageCheckedDocument" type="controller" permission="manager:moderate:document" check_type="document" check_var="cart" />
+		<action name="procDocumentInsertModuleConfig" type="controller" permission="manager:config:*" check_var="target_module_srl" />
+		<action name="procDocumentInsertCategory" type="controller" permission="manager:config:*" check_var="module_srl" ruleset="insertCategory" />
+		<action name="procDocumentDeleteCategory" type="controller" permission="manager:config:*" check_var="module_srl" />
+		<action name="procDocumentMoveCategory" type="controller" permission="manager:config:*" check_var="module_srl" />
+		<action name="procDocumentMakeXmlFile" type="controller" permission="manager:config:*" check_var="module_srl" />
+
+		<action name="dispDocumentAdminList" type="view" admin_index="true" menu_name="document" menu_index="true" />
+		<action name="dispDocumentAdminConfig" type="view" menu_name="document" />
+		<action name="dispDocumentAdminDeclared" type="view" menu_name="document" />
+		<action name="dispDocumentAdminDeclaredLogByDocumentSrl" type="view" menu_name="document" />
+		<action name="dispDocumentAdminAlias" type="view" menu_name="document" />
+		<action name="dispDocumentAdminTrashList" type="view" menu_name="document" />
+
+		<action name="procDocumentAdminDeleteChecked" type="controller" />
+		<action name="procDocumentAdminInsertConfig" type="controller" />
+		<action name="procDocumentAdminDeleteAllThumbnail" type="controller" />
+		<action name="procDocumentAdminCancelDeclare" type="controller" />
+		<action name="procDocumentAdminInsertAlias" type="controller" ruleset="insertAlias" />
+		<action name="procDocumentAdminDeleteAlias" type="controller" ruleset="deleteAlias" />
+		<action name="procDocumentAdminMoveToTrash" type="controller" permission="manager:moderate:document" check_type="document" check_var="document_srl" />
+		<action name="procDocumentAdminRestoreTrash" type="controller" />
+		<action name="procDocumentAdminInsertExtraVar" type="controller" permission="manager:config:*" check_var="module_srl" ruleset="insertExtraVar" />
+		<action name="procDocumentAdminDeleteExtraVar" type="controller" permission="manager:config:*" check_var="module_srl" />
+		<action name="procDocumentAdminMoveExtraVar" type="controller" permission="manager:config:*" check_var="module_srl" />
+		<action name="procDocumentAdminReorderExtraVars" type="controller" permission="manager:config:*" check_var="module_srl" />
+		<action name="procDocumentAdminRecalculateCategoryCounts" type="controller" />
+	</actions>
+	<eventHandlers>
+		<eventHandler after="module.deleteModule" class="controller" method="triggerDeleteModuleDocuments" />
+		<eventHandler after="module.procModuleAdminCopyModule" class="controller" method="triggerCopyModuleExtraKeys" />
+		<eventHandler after="module.procModuleAdminCopyModule" class="controller" method="triggerCopyModule" />
+		<eventHandler after="file.deleteFile" class="controller" method="triggerAfterDeleteFile" />
+		<eventHandler before="module.dispAdditionSetup" class="view" method="triggerDispDocumentAdditionSetup" />
+	</eventHandlers>
+	<menus>
+		<menu name="document">
+			<title xml:lang="en">Document</title>
+			<title xml:lang="vi">Bài viết</title>
+			<title xml:lang="tr">İçerik</title>
+			<title xml:lang="ru">Документы</title>
+			<title xml:lang="mn">Баримт бичиг</title>
+			<title xml:lang="fr">Document</title>
+			<title xml:lang="es">Contenidos</title>
+			<title xml:lang="de">Dokument</title>
+			<title xml:lang="zh-TW">文件</title>
+			<title xml:lang="zh-CN">文档</title>
+			<title xml:lang="jp">文書</title>
+			<title xml:lang="ko">문서</title>
+			<title xml:lang="zh-CN">Document</title>
+			<title xml:lang="jp">ドキュメント</title>
+			<title xml:lang="es">Document</title>
+			<title xml:lang="ru">Document</title>
+			<title xml:lang="fr">Document</title>
+			<title xml:lang="zh-TW">文章</title>
+			<title xml:lang="vi">Document</title>
+			<title xml:lang="mn">Document</title>
+			<title xml:lang="tr">Document</title>
+			<title xml:lang="de">Dokument</title>
+			<title xml:lang="en">Documents</title>
+		</menu>
+	</menus>
+</module>

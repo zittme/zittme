@@ -1,0 +1,38 @@
+<!-- 성인인증 게이트: 지정 모듈 진입 차단 안내 + 로그인/본인인증 유도 -->
+<div style="max-width:420px;margin:0 auto;padding:48px 20px;text-align:center;">
+	<div style="font-size:44px;line-height:1;margin-bottom:16px;">
+		<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#e5484d" stroke-width="1.8" style="vertical-align:middle;"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+	</div>
+	<h1 style="font-size:19px;margin:0 0 8px;">{$lang->identity_adult_gate_title}</h1>
+	<p style="font-size:14px;color:#667085;line-height:1.7;margin:0 0 24px;">
+		{sprintf($lang->about_identity_adult_gate, $identity_adult_age)}
+	</p>
+
+	<!--@if(!$identity_is_member)-->
+		<a href="{$identity_login_url}" class="x_btn x_btn-primary" style="min-width:160px;">{$lang->cmd_login}</a>
+		<p style="font-size:12.5px;color:#98a2b3;margin-top:12px;">{$lang->about_identity_gate_login}</p>
+	<!--@elseif($identity_underage)-->
+		<p style="font-size:14px;color:#e5484d;font-weight:bold;margin-bottom:16px;">{sprintf($lang->identity_adult_underage, $identity_adult_age)}</p>
+		<a href="{getNotEncodedFullUrl('', 'mid', '', 'act', '')}" class="x_btn" style="min-width:120px;">{$lang->cmd_back}</a>
+	<!--@else-->
+		<button type="button" class="x_btn x_btn-primary" style="min-width:160px;" onclick="zittmeIdentityVerify();">{$lang->identity_verify}</button>
+		<p style="font-size:12.5px;color:#98a2b3;margin-top:12px;">{$lang->about_identity_gate_verify}</p>
+	<!--@end-->
+</div>
+
+<script cond="$identity_is_member && !$identity_underage">
+function zittmeIdentityVerify() {
+	var w = window.open('{$identity_verify_url}', 'zittme_identity', 'width=460,height=640,scrollbars=yes');
+	if (w) { w.focus(); }
+}
+window.addEventListener('message', function(e) {
+	if (e.origin !== window.location.origin) return;
+	if (e.data && e.data.type === 'zittme:identity' && e.data.success && e.data.data && e.data.data.ticket) {
+		// reload the gate with the ticket — the server claims it (saves the
+		// verification) and then forwards to the original page
+		var u = new URL(window.location.href);
+		u.searchParams.set('identity_ticket', e.data.data.ticket);
+		window.location.href = u.toString();
+	}
+});
+</script>

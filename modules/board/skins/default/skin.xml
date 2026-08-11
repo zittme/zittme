@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+    <title xml:lang="ko">XE Default</title>
+    <title xml:lang="jp">XE Default</title>
+    <title xml:lang="vi">XE Default</title>
+    <title xml:lang="tr">XE Default</title>
+    <title xml:lang="ru">XE Default</title>
+    <title xml:lang="mn">XE Default</title>
+    <title xml:lang="fr">XE Default</title>
+    <title xml:lang="es">XE Default</title>
+    <title xml:lang="de">XE Default</title>
+    <title xml:lang="zh-TW">XE Default</title>
+    <title xml:lang="zh-CN">XE Default</title>
+    <title xml:lang="en">XE Default</title>
+    <description xml:lang="ko">XE 기본 게시판.</description>
+    <description xml:lang="jp">XE基本掲示板.</description>
+    <description xml:lang="vi">Bảng tin cơ bản của XE.</description>
+    <description xml:lang="tr">XE temel forum teması.</description>
+    <description xml:lang="ru">Базовый форум XE.</description>
+    <description xml:lang="mn">XE-ийн үндсэн самбар.</description>
+    <description xml:lang="fr">Forum de base XE.</description>
+    <description xml:lang="es">Foro básico de XE.</description>
+    <description xml:lang="de">XE Standard-Forum.</description>
+    <description xml:lang="zh-TW">XE 預設討論板。</description>
+    <description xml:lang="zh-CN">XE 基本论坛皮肤。</description>
+    <description xml:lang="en">The default XE board skin.</description>
+    <version>1.0</version>
+    <date>2010-12-24</date>
+    <author email_address="developers@xpressengine.com" link="http://xpressengine.com/">
+        <name xml:lang="ko">NHN</name>
+        <name xml:lang="jp">NHN</name>
+    </author>
+    <license>LGPL v2</license>
+    <extra_vars>
+        <var name="title_image" type="image">
+            <title xml:lang="ko">게시판 제목 이미지</title>
+            <title xml:lang="jp">掲示板タイトル画像</title>
+            <title xml:lang="vi">Ảnh tiêu đề bảng tin</title>
+            <title xml:lang="tr">Forum başlık görseli</title>
+            <title xml:lang="ru">Изображение заголовка форума</title>
+            <title xml:lang="mn">Самбарын гарчгийн зураг</title>
+            <title xml:lang="fr">Image de titre du forum</title>
+            <title xml:lang="es">Imagen de título del foro</title>
+            <title xml:lang="de">Titelbild des Forums</title>
+            <title xml:lang="zh-TW">討論板標題圖片</title>
+            <title xml:lang="zh-CN">论坛标题图片</title>
+            <title xml:lang="en">Board Title Image</title>
+			<description xml:lang="ko">작성하면 화면에 표시 됨</description>
+			<description xml:lang="jp">作成すると画面に表示される</description>
+			<description xml:lang="vi">Nếu được thiết lập, ảnh sẽ hiển thị trên màn hình</description>
+			<description xml:lang="tr">Girilirse ekranda gösterilir</description>
+			<description xml:lang="ru">Если указано, отображается на странице</description>
+			<description xml:lang="mn">Оруулбал дэлгэцэд харагдана</description>
+			<description xml:lang="fr">Si elle est renseignée, elle s'affiche à l'écran</description>
+			<description xml:lang="es">Si se indica, se muestra en pantalla</description>
+			<description xml:lang="de">Wird angezeigt, sofern angegeben</description>
+			<description xml:lang="zh-TW">填寫後將顯示於畫面上</description>
+			<description xml:lang="zh-CN">填写后将显示在页面上</description>
+			<description xml:lang="en">If set, it will be displayed on screen.</description>
+        </var>
+        <var name="title_alt" type="text">
+            <title xml:lang="ko">게시판 제목 이미지 alt</title>
+            <title xml:lang="jp">掲示板タイトル画像の代替テキスト</title>
+            <title xml:lang="vi">Thuộc tính alt của ảnh tiêu đề</title>
+            <title xml:lang="tr">Forum başlık görseli alt metni</title>
+            <title xml:lang="ru">Атрибут alt изображения заголовка</title>
+            <title xml:lang="mn">Самбарын гарчгийн зургийн alt</title>
+            <title xml:lang="fr">Texte alternatif de l'image de titre</title>
+            <title xml:lang="es">Texto alt de la imagen de título</title>
+            <title xml:lang="de">Alt-Text des Titelbilds</title>
+            <title xml:lang="zh-TW">討論板標題圖片 alt</title>
+            <title xml:lang="zh-CN">论坛标题图片 alt</title>
+            <title xml:lang="en">Board Title Image Alt Text</title>
+			<description xml:lang="ko">게시판 제목 이미지 대체 텍스트</description>
+			<description xml:lang="jp">掲示板タイトル画像の代替テキスト</description>
+			<description xml:lang="vi">Văn bản thay thế cho ảnh tiêu đề bảng tin</description>
+			<description xml:lang="tr">Başlık görseli için alternatif metin</description>
+			<description xml:lang="ru">Альтернативный текст для изображения заголовка форума</description>
+			<description xml:lang="mn">Самбарын гарчгийн зургийн орлуулах текст</description>
+			<description xml:lang="fr">Texte alternatif de l'image de titre du forum</description>
+			<description xml:lang="es">Texto alternativo de la imagen de título del foro</description>
+			<description xml:lang="de">Alternativtext für das Titelbild des Forums</description>
+			<description xml:lang="zh-TW">討論板標題圖片的替代文字</description>
+			<description xml:lang="zh-CN">论坛标题图片的替代文字</description>
+			<description xml:lang="en">Alternative text for the board title image.</description>
+        </var>
+    </extra_vars>
+</skin>
+

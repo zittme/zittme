@@ -1,0 +1,20 @@
+<?php
+$lang->krzip = '韓國郵遞區號';
+$lang->cmd_krzip_api_type = '選擇 API 供應商';
+$lang->cmd_krzip_daumapi = 'Kakao API';
+$lang->cmd_krzip_epostapi = '韓國郵政 API';
+$lang->cmd_krzip_postcodify = 'Postcodify';
+$lang->cmd_krzip_regkey = '註冊金鑰';
+$lang->cmd_krzip_postcode = '郵遞區號';
+$lang->cmd_krzip_address = '郵寄地址';
+$lang->cmd_krzip_detail_address = '詳細地址';
+$lang->about_krzip = '使用公開 API 提供韓國郵遞區號查詢服務。';
+$lang->about_krzip_api_handler = '決定使用哪一個 API 來查詢郵遞區號。';
+$lang->about_krzip_epostapi_regkey = '請輸入由韓國郵政核發的註冊金鑰，以使用其 API。';
+$lang->msg_krzip_road_address_expectation = '道路名地址：%s';
+$lang->msg_krzip_jibun_address_expectation = '地段號地址：%s';
+$lang->msg_krzip_no_query = '請輸入搜尋關鍵字。';
+$lang->msg_krzip_is_maintenance = '維護中。';
+$lang->msg_krzip_wrong_regkey = '註冊金鑰無效。';
+$lang->msg_krzip_no_result = '找不到符合的地址。';
+$lang->msg_krzip_riddling_wrong = '郵遞區號模組發生不明錯誤。';

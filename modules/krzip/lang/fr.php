@@ -1,0 +1,20 @@
+<?php
+$lang->krzip = 'Code postal coréen';
+$lang->cmd_krzip_api_type = 'Choisir le fournisseur d\'API';
+$lang->cmd_krzip_daumapi = 'API Kakao';
+$lang->cmd_krzip_epostapi = 'API Korea Post';
+$lang->cmd_krzip_postcodify = 'Postcodify';
+$lang->cmd_krzip_regkey = 'Clé d\'enregistrement';
+$lang->cmd_krzip_postcode = 'Code postal';
+$lang->cmd_krzip_address = 'Adresse postale';
+$lang->cmd_krzip_detail_address = 'Complément d\'adresse';
+$lang->about_krzip = 'Recherche de codes postaux via des API publiques de codes postaux en Corée du Sud.';
+$lang->about_krzip_api_handler = 'Détermine l\'API utilisée pour rechercher les codes postaux.';
+$lang->about_krzip_epostapi_regkey = 'Saisissez la clé d\'enregistrement fournie par Korea Post pour utiliser son API.';
+$lang->msg_krzip_road_address_expectation = 'Adresse par nom de rue : %s';
+$lang->msg_krzip_jibun_address_expectation = 'Adresse par numéro de parcelle : %s';
+$lang->msg_krzip_no_query = 'Veuillez saisir un mot-clé de recherche.';
+$lang->msg_krzip_is_maintenance = 'Maintenance en cours.';
+$lang->msg_krzip_wrong_regkey = 'Clé d\'enregistrement non valide.';
+$lang->msg_krzip_no_result = 'Aucune adresse trouvée.';
+$lang->msg_krzip_riddling_wrong = 'Erreur inconnue dans le module de code postal.';

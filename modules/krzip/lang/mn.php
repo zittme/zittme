@@ -1,0 +1,20 @@
+<?php
+$lang->krzip = 'Солонгосын шуудангийн код';
+$lang->cmd_krzip_api_type = 'API нийлүүлэгч сонгох';
+$lang->cmd_krzip_daumapi = 'Kakao API';
+$lang->cmd_krzip_epostapi = 'Korea Post API';
+$lang->cmd_krzip_postcodify = 'Postcodify';
+$lang->cmd_krzip_regkey = 'Бүртгэлийн түлхүүр';
+$lang->cmd_krzip_postcode = 'Шуудангийн код';
+$lang->cmd_krzip_address = 'Шуудангийн хаяг';
+$lang->cmd_krzip_detail_address = 'Дэлгэрэнгүй хаяг';
+$lang->about_krzip = 'Өмнөд Солонгосын шуудангийн кодыг нээлттэй API ашиглан хайна.';
+$lang->about_krzip_api_handler = 'Шуудангийн код хайхад аль API ашиглахыг тодорхойлно.';
+$lang->about_krzip_epostapi_regkey = 'Korea Post-ын API-г ашиглахын тулд тэднээс авсан бүртгэлийн түлхүүрээ оруулна уу.';
+$lang->msg_krzip_road_address_expectation = 'Замын нэр дээр суурилсан хаяг: %s';
+$lang->msg_krzip_jibun_address_expectation = 'Газрын зүсмэл дээр суурилсан хаяг: %s';
+$lang->msg_krzip_no_query = 'Хайх түлхүүр үг оруулна уу.';
+$lang->msg_krzip_is_maintenance = 'Засвар үйлчилгээ хийгдэж байна.';
+$lang->msg_krzip_wrong_regkey = 'Бүртгэлийн түлхүүр буруу байна.';
+$lang->msg_krzip_no_result = 'Хаяг олдсонгүй.';
+$lang->msg_krzip_riddling_wrong = 'Шуудангийн код модульд тодорхойгүй алдаа гарлаа.';

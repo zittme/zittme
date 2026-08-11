@@ -1,0 +1,227 @@
+<load target="../../tpl/js/signup_check.js" />
+<include target="./common_header.html" />
+    <h1>{$lang->cmd_signup}</h1>
+	<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/member/skins'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+		<p>{$XE_VALIDATOR_MESSAGE}</p>
+	</div>
+
+	{@ $identity_step1 = !empty($identity_signup_required) && empty($identity_verified_info); }
+
+	<div class="zm-signup-steps" cond="!empty($identity_signup_required)">
+		<span class="on"|cond="$identity_step1" class="done"|cond="!$identity_step1">1. {$lang->signup_step_agreement}</span>
+		<span class="done"|cond="!$identity_step1">2. {$lang->identity_verification}</span>
+		<span class="on"|cond="!$identity_step1">3. {$lang->signup_step_form}</span>
+	</div>
+
+    <form ruleset="@insertMember" id="fo_insert_member" action="./" method="post" enctype="multipart/form-data" class="form-horizontal rx_ajax">
+		<input type="hidden" name="act" value="procMemberInsert" />
+		<input type="hidden" name="xe_validator_id" value="modules/member/skins" />
+		<input type="hidden" name="success_return_url" value="" />
+
+		<div id="zmAgreements" class="zm-agreements-collapsed"|cond="!empty($identity_signup_required) && !$identity_step1">
+			<div class="agreement" loop="$member_config->agreements => $i, $agreement" cond="$agreement->type !== 'disabled'">
+				<div class="title">
+					{$agreement->title}
+					<block cond="$agreement->type === 'required'">({$lang->cmd_required})</block>
+					<block cond="$agreement->type === 'optional'">({$lang->cmd_optional})</block>
+				</div>
+				<div class="text">
+					{$agreement->content}
+				</div>
+				<div class="confirm">
+					<label for="accept_agreement_{$i}">
+						<input type="checkbox" name="accept_agreement[{$i}]" value="Y" id="accept_agreement_{$i}" required="required"|cond="$agreement->type === 'required'" />
+						{$lang->about_accept_agreement}<em class="required-mark" cond="$agreement->type === 'required'">*</em>
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<block cond="$identity_step1">
+			<div style="display:block;border-top:1px solid rgba(128,128,128,.25);margin-top:16px;padding-top:16px;">
+				<button type="button" class="btn btn-inverse" style="display:block;width:100%;box-sizing:border-box;padding:12px;font-weight:bold;font-size:15px;" onclick="zmStep1Continue();">{$lang->identity_verify_and_continue}</button>
+				<p style="display:block;text-align:center;color:var(--zm-text-sub);font-size:12.5px;margin:10px 0 0;">{$lang->about_identity_signup}</p>
+			</div>
+		</block>
+
+		<block cond="!$identity_step1">
+		<div class="control-group zm-identity-done" cond="!empty($identity_verified_info)">
+			<div class="control-label">{$lang->identity_verification}</div>
+			<div class="controls" style="padding-top:5px">
+				<span style="color:#6c5ce0;font-weight:bold;"> {$lang->identity_verified}</span>
+				<span style="color:var(--zm-text-sub);">({$identity_verified_info['name']})</span>
+			</div>
+		</div>
+		<div class="control-group" cond="$identifierForm->name !== 'phone_number'">
+			<label for="{$identifierForm->name}" class="control-label"><em style="color:red">*</em> {$identifierForm->title}</label>
+			<div class="controls">
+				<input type="text"|cond="$identifierForm->name!='email_address'" type="email"|cond="$identifierForm->name=='email_address'" name="{$identifierForm->name}" id="{$identifierForm->name}" value="" required />
+				<p class="help-inline" cond="$identifierForm->name == 'email_address' && $email_confirmation_required == 'Y'">
+					{$lang->msg_email_confirmation_required}
+				</p>
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="password" class="control-label"><em style="color:red">*</em> {$lang->password}</label>
+			<div class="controls">
+				<input type="password" name="password" id="password" value="" required />
+				<p class="help-inline">{$lang->about_password_strength[$member_config->password_strength]}</p>
+			</div>
+		</div>
+		<div class="control-group">
+			<label for="password2" class="control-label"><em style="color:red">*</em> {$lang->password3}</label>
+			<div class="controls">
+				<input type="password" name="password2" id="password2" value="" required />
+			</div>
+		</div>
+		<div class="control-group" loop="$formTags=>$formTag">
+			<label for="{$formTag->name}" class="control-label">{$formTag->title}</label>
+			<div class="controls" cond="$formTag->name != 'signature'">
+				{$formTag->inputTag}
+				<p class="help-inline" cond="$formTag->name == 'email_address' && $email_confirmation_required == 'Y'">
+					{$lang->msg_email_confirmation_required}
+				</p>
+			</div>
+			<div class="controls" cond="$formTag->name == 'signature'">
+				<input type="hidden" name="signature" value="" />
+				{$editor|noescape}
+				<style scoped>
+				.xpress-editor>#smart_content,
+				.xpress-editor>#smart_content>.tool{clear:none}
+				</style>
+			</div>
+		</div>
+		<div class="control-group">
+			<div class="control-label">{$lang->allow_mailing}</div>
+			<div class="controls" style="padding-top:5px">
+				<label for="mailingYes"><input type="radio" name="allow_mailing" id="mailingYes" value="Y" checked="checked"|cond="$member_info->allow_mailing == 'Y'" /> {$lang->cmd_yes}</label>
+				<label for="mailingNo"><input type="radio" name="allow_mailing" id="mailingNo" value="N" checked="checked"|cond="$member_info->allow_mailing != 'Y'" /> {$lang->cmd_no}</label>
+			</div>
+		</div>
+		<div class="control-group">
+			<div class="control-label">{$lang->allow_message}</div>
+			<div class="controls" style="padding-top:5px">
+				<label for="allow_{$key}" loop="$lang->allow_message_type=>$key,$val"><input type="radio" name="allow_message" value="{$key}" checked="checked"|cond="$member_info->allow_message == $key || (!$member_info && $key == 'Y')" id="allow_{$key}" /> {$val}</label>
+			</div>
+		</div>
+		<div class="control-group captcha" cond="isset($captcha) && $captcha && $captcha->isTargetAction('signup')">
+			<div class="control-label">{$lang->captcha}</div>
+			<div class="controls">{$captcha}</div>
+		</div>
+		<div class="btnArea" style="border-top:1px solid #ccc;padding-top:10px">
+			<input type="submit" value="{$lang->cmd_registration}" class="btn btn-inverse pull-right" />
+			<a href="{getUrl('act','','member_srl','')}" class="btn pull-left">{$lang->cmd_cancel}</a>
+		</div>
+		</block>
+	</form>
+
+<style cond="!empty($identity_signup_required)">
+.zm-signup-steps { display: flex; gap: 6px; margin: 8px 0 18px; }
+.zm-signup-steps span { flex: 1; text-align: center; padding: 9px 4px; font-size: 12.5px; border-radius: 8px; background: rgba(128,128,128,.12); color: rgba(128,128,128,.9); }
+.zm-signup-steps span.on { background: #6c5ce0; color: #fff; font-weight: bold; }
+.zm-signup-steps span.done { background: rgba(108, 92, 224,.15); color: #6c5ce0; }
+/* 인증 후에는 약관을 접어서 표시 (체크 상태는 유지) */
+.zm-agreements-collapsed .agreement .text { display: none; }
+.zm-agreements-collapsed .agreement { margin-bottom: 8px; }
+/* 본인인증으로 잠긴 입력 */
+.zm-identity-locked { opacity: .75; pointer-events: none; background: rgba(128,128,128,.08) !important; }
+</style>
+
+<script cond="!empty($identity_signup_required)">
+function zittmeIdentityVerify() {
+	var w = window.open('{$identity_verify_url}', 'zittme_identity', 'width=460,height=640,scrollbars=yes');
+	if (w) { w.focus(); }
+}
+/* STEP 1: 필수 약관 체크 확인 → 체크 상태 저장 → 본인인증 팝업 */
+function zmStep1Continue() {
+	var required = document.querySelectorAll('#zmAgreements input[type="checkbox"][required]');
+	for (var i = 0; i < required.length; i++) {
+		if (!required[i].checked) {
+			alert('{$lang->msg_accept_agreement}');
+			required[i].focus();
+			return;
+		}
+	}
+	var checks = {};
+	document.querySelectorAll('#zmAgreements input[type="checkbox"]').forEach(function(c){ checks[c.name] = c.checked; });
+	try { sessionStorage.setItem('zm_signup_agreements', JSON.stringify(checks)); } catch(e) {}
+	zittmeIdentityVerify();
+}
+/* strip the ticket from the URL once consumed (history/Referer hygiene) */
+(function(){ var u = new URL(window.location.href); if (u.searchParams.has("identity_ticket")) { u.searchParams.delete("identity_ticket"); history.replaceState(null, "", u.toString()); } })();
+window.addEventListener('message', function(e) {
+	if (e.origin !== window.location.origin) return;
+	if (e.data && e.data.type === 'zittme:identity' && e.data.success && e.data.data && e.data.data.ticket) {
+		var u = new URL(window.location.href);
+		u.searchParams.set('identity_ticket', e.data.data.ticket);
+		window.location.href = u.toString();
+	}
+});
+/* STEP 3: 약관 체크 복원 + 인증 정보 채우고 잠금 */
+(function(){
+	var verified = <!--@if(!empty($identity_verified_info))-->true<!--@else-->false<!--@end-->;
+	if (!verified) return;
+	try {
+		var saved = JSON.parse(sessionStorage.getItem('zm_signup_agreements') || '{}');
+		document.querySelectorAll('#zmAgreements input[type="checkbox"]').forEach(function(c){
+			if (saved[c.name]) c.checked = true;
+		});
+	} catch(e) {}
+	var v = {
+		name: '{escape($identity_verified_info['name'] ?? '')}',
+		birthday: '{escape($identity_verified_info['birthday'] ?? '')}',
+		phone: '{escape($identity_verified_info['phone'] ?? '')}'
+	};
+	function lock(el) { if (el) { el.readOnly = true; el.classList.add('zm-identity-locked'); el.tabIndex = -1; } }
+	var nameInput = document.querySelector('#fo_insert_member input[name="user_name"]');
+	if (nameInput && v.name) { nameInput.value = v.name; lock(nameInput); }
+	var bdHidden = document.querySelector('#fo_insert_member input[name="birthday"]');
+	var bdUi = document.querySelector('#fo_insert_member input[name="birthday_ui"], #fo_insert_member .inputDate');
+	if (v.birthday && v.birthday.length === 8) {
+		var bdFmt = v.birthday.slice(0,4) + '-' + v.birthday.slice(4,6) + '-' + v.birthday.slice(6,8);
+		if (bdHidden) { bdHidden.value = v.birthday; }
+		if (bdUi) { bdUi.value = bdFmt; lock(bdUi); }
+	}
+	var phoneInput = document.querySelector('#fo_insert_member input[name="phone_number"]');
+	if (phoneInput && v.phone) { phoneInput.value = v.phone; lock(phoneInput); }
+	var phoneCountry = document.querySelector('#fo_insert_member select[name="phone_country"]');
+	if (phoneCountry && v.phone) { phoneCountry.value = 'KOR'; phoneCountry.classList.add('zm-identity-locked'); phoneCountry.tabIndex = -1; }
+})();
+</script>
+<script>
+(function($){
+	$('.control-label[for]').each(function(){
+		var $this = $(this);
+		if($this.attr('for') == ''){
+			$this.attr('for', $this.next().children(':visible:first').attr('id'));
+		}
+	});
+
+	$(function(){
+		if ( $(".inputDate").prop('type') != 'date' ) {
+			var option = {
+				changeMonth: true,
+				changeYear: true,
+				gotoCurrent: false,
+				yearRange:'-200:+10',
+				dateFormat:'yy-mm-dd',
+				defaultDate: new Date("{date('Y-m-d',time())}"),
+				minDate: new Date("{date('Y-m-d',strtotime('-200 years'))}"),
+
+				onSelect:function(){
+					$(this).prev('input[type="hidden"]').val(this.value.replace(/-/g,""))
+				}
+			};
+			$.extend($.datepicker.regional['{$lang_type}'],option);
+
+			$(".inputDate").datepicker(option);
+		} else {
+			$(".inputDate").prop('readonly', false);
+		}
+		$(".dateRemover").click(function() {
+			$(this).prevAll('input').val('');
+			return false;});
+	});
+})(jQuery);
+</script>
+<include target="./common_footer.html" />

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+    <title xml:lang="ko">Content 위젯 기본 스킨</title>
+    <title xml:lang="vi">Skin mặc định Widget Nội dung</title>
+    <title xml:lang="zh-CN">全局内容控件默认皮肤</title>
+    <title xml:lang="zh-TW">内容預設面板</title>
+    <title xml:lang="jp">コンテンツウィジェットのデフォルトスキン</title>
+    <title xml:lang="tr">Genel içerik durumunda varsayılan dış görünüm.</title>
+    <title xml:lang="ru">Базовый скин виджета Content</title>
+    <title xml:lang="mn">Content виджетийн үндсэн загвар</title>
+    <title xml:lang="fr">Skin par défaut du widget Contenu</title>
+    <title xml:lang="es">Skin básica del widget Content</title>
+    <title xml:lang="de">Content-Widget Standard-Skin</title>
+    <title xml:lang="en">Content Widget Default Skin</title>
+    <description xml:lang="ko">Content 위젯 기본 스킨 입니다.</description>
+    <description xml:lang="vi">Skin mặc định Widget Nội dung.</description>
+    <description xml:lang="zh-CN">全局内容控件默认皮肤。</description>
+    <description xml:lang="zh-TW">内容預設面板。</description>
+    <description xml:lang="jp">コンテンツウィジェットのデフォルトスキン</description>
+    <description xml:lang="tr">Genel içerik durumunda varsayılan dış görünüm.</description>
+    <description xml:lang="ru">Базовый скин виджета Content.</description>
+    <description xml:lang="mn">Content виджетийн үндсэн загвар.</description>
+    <description xml:lang="fr">Skin par défaut du widget Contenu.</description>
+    <description xml:lang="es">Skin básica del widget Content.</description>
+    <description xml:lang="de">Standard-Skin für das Content-Widget.</description>
+    <description xml:lang="en">Default skin for the Content widget.</description>
+    <version>1.7</version>
+    <date>2013-11-27</date>
+    <link>http://xpressengine.com/</link>
+
+    <author email_address="developers@xpressengine.com" link="http://xpressengine.com/">
+        <name xml:lang="ko">NAVER</name>
+        <name xml:lang="jp">NAVER</name>
+        <name xml:lang="en">NAVER</name>
+        <name xml:lang="vi">NAVER</name>
+        <name xml:lang="zh-CN">NAVER</name>
+        <name xml:lang="zh-TW">NAVER</name>
+        <name xml:lang="tr">NAVER</name>
+    </author>
+
+    <colorset>
+        <color name="white">
+            <title xml:lang="ko">흰색 바탕용</title>
+            <title xml:lang="jp">白い背景用</title>
+            <title xml:lang="zh-CN">白色背景</title>
+            <title xml:lang="en">White Background</title>
+            <title xml:lang="vi">Nền sáng</title>
+            <title xml:lang="zh-TW">白色背景</title>
+            <title xml:lang="tr">Beyaz Arkaplan</title>
+            <title xml:lang="ru">Для светлого фона</title>
+            <title xml:lang="mn">Цагаан дэвсгэр</title>
+            <title xml:lang="fr">Fond blanc</title>
+            <title xml:lang="es">Fondo blanco</title>
+            <title xml:lang="de">Für hellen Hintergrund</title>
+        </color>
+        <color name="black">
+            <title xml:lang="ko">어두운 바탕용</title>
+            <title xml:lang="jp">暗い背景用</title>
+            <title xml:lang="zh-CN">暗色背景</title>
+            <title xml:lang="en">Dark Background</title>
+            <title xml:lang="vi">Nền tối</title>
+            <title xml:lang="zh-TW">黑色背景</title>
+            <title xml:lang="tr">Siyah Arkaplan</title>
+            <title xml:lang="ru">Для тёмного фона</title>
+            <title xml:lang="mn">Бараан дэвсгэр</title>
+            <title xml:lang="fr">Fond sombre</title>
+            <title xml:lang="es">Fondo oscuro</title>
+            <title xml:lang="de">Für dunklen Hintergrund</title>
+        </color>
+        <color name="layout">
+            <title xml:lang="ko">레이아웃에 맞춤</title>
+            <title xml:lang="jp">レイアウトに合わせる</title>
+            <title xml:lang="zh-CN">随布局</title>
+            <title xml:lang="en">Custom Layout</title>
+            <title xml:lang="zh-TW">隨版面</title>
+            <title xml:lang="tr">Yerleşim Düzeni</title>
+            <title xml:lang="vi">Theo bố cục</title>
+            <title xml:lang="ru">По макету</title>
+            <title xml:lang="mn">Загварт тохируулах</title>
+            <title xml:lang="fr">Adapté à la mise en page</title>
+            <title xml:lang="es">Adaptado al diseño</title>
+            <title xml:lang="de">An Layout anpassen</title>
+        </color>
+    </colorset>
+</skin>

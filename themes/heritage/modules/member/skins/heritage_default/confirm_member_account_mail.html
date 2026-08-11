@@ -1,0 +1,16 @@
+<!--// 가입 이메일 인증 메일 — 본문 조각만 만든다.
+     바깥 레이아웃(헤더/카드/버튼/푸터)은 발송 시점에 Zittme\Framework\MailTemplate 이 씌운다. -->
+<p style="margin:0 0 4px">{$lang->msg_confirm_account_info}</p>
+
+<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:20px 0;background:#f7f9fc;border:1px solid #eaeef3;border-radius:12px">
+	<tr>
+		<td style="padding:11px 18px;font-size:13px;color:#8b95a1;white-space:nowrap;vertical-align:top">{$lang->site}</td>
+		<td style="padding:11px 18px 11px 0;font-size:14px;color:#333d4b;font-weight:600;word-break:break-all">{MemberController::generateSafeLink()}</td>
+	</tr>
+	<tr loop="$memberInfo=>$name,$value" cond="!is_object($value)&&!is_array($value)">
+		<td style="padding:11px 18px;font-size:13px;color:#8b95a1;white-space:nowrap;vertical-align:top">{$name}</td>
+		<td style="padding:11px 18px 11px 0;font-size:14px;color:#333d4b;font-weight:600;word-break:break-all">{$value}</td>
+	</tr>
+</table>
+
+<p style="margin:0">{$lang->msg_confirm_account_comment}</p>

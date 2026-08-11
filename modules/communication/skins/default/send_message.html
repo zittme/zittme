@@ -1,0 +1,55 @@
+<load target="css/communication.css" />
+<load target="js/communication.js" />
+
+<!--@if(isset($window_type) && $window_type === 'self')-->
+	<include target="./common_header.html" />
+<!--@endif-->
+
+<div class="xc">
+	<h1>{$lang->cmd_send_message}</h1>
+	<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/communication/skins/default/send_message/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+		<p>{$XE_VALIDATOR_MESSAGE}</p>
+	</div>
+	<div class="x_label x_label-important" cond="$logged_info->allow_message !== 'Y'">
+		{$lang->warning}
+		<br>
+		<!--@if($logged_info->allow_message == 'F')-->
+			{$lang->msg_allow_message_friend}
+		<!--@elseif($logged_info->allow_message == 'N')-->
+			{$lang->msg_allow_meesage_Block}
+		<!--@end-->
+		<br>{$lang->msg_allow_message_please}
+	</div>
+	<form ruleset="sendMessage" action="./" method="post">
+		<input type="hidden" name="module" value="communication" />
+		<input type="hidden" name="act" value="procCommunicationSendMessage" />
+		<input type="hidden" name="content" value="{htmlspecialchars($source_message->content)}" />
+		<input type="hidden" name="receiver_srl" value="{$receiver_info->member_srl}" />
+		<input type="hidden" name="xe_validator_id" value="modules/communication/skins/default/send_message/1" />
+		<input type="hidden" name="success_return_url" value="{getNotEncodedUrl('', 'mid', $mid, 'act', 'dispCommunicationMessages')}" />
+		<input type="hidden" name="window_type" value="{escape($window_type ?? '')}" />
+		<!--// 표 대신 위→아래 필드 배치. 표 레이아웃에서는 제목 입력이 칸 안에 갇혀 좁아 보였다 -->
+		<div class="xc-msg-form">
+			<div class="xc-msg-field">
+				<span class="xc-msg-label">{$lang->receiver}</span>
+				<a href="#popup_menu_area" class="xc-msg-receiver member_{$receiver_info->member_srl}">{$receiver_info->nick_name}</a>
+			</div>
+			<div class="xc-msg-field">
+				<label for="message_title" class="xc-msg-label">{$lang->title}</label>
+				<input type="text" name="title" id="message_title" value="{$source_message->title}" class="xc-msg-title" />
+			</div>
+			<!--@if($this->user->isAdmin())-->
+			<div class="xc-msg-field">
+				<span class="xc-msg-label">{$lang->cmd_option}</span>
+				<label class="xc-msg-inline"><input type="checkbox" value="Y" name="send_mail" /> {$lang->cmd_send_mail}</label>
+			</div>
+			<!--@endif-->
+		</div>
+
+		<div class="xc-msg-editor">{$editor|noescape}</div>
+
+		<div class="btnArea xc-msg-actions">
+			<input type="submit" value="{$lang->cmd_send_message}" class="btn btn-inverse" />
+		</div>
+	</form>
+</div>

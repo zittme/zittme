@@ -1,0 +1,58 @@
+<include target="./common_header.html" />
+
+<h1>{$member_title = $lang->identity_verification}</h1>
+
+<!--@if($identity_record)-->
+<table class="table table-striped">
+	<tbody>
+		<tr>
+			<th style="width:140px;">{$lang->identity_verification}</th>
+			<td><span style="color:#2677e3;font-weight:bold;">{$lang->identity_verified}</span></td>
+		</tr>
+		<tr>
+			<th>{$lang->user_name}</th>
+			<td>{$identity_record->name}</td>
+		</tr>
+		<tr cond="$identity_record->birthday">
+			<th>{$lang->birthday}</th>
+			<td>{substr($identity_record->birthday,0,4)}-{substr($identity_record->birthday,4,2)}-{substr($identity_record->birthday,6,2)}</td>
+		</tr>
+		<tr cond="$identity_record->phone">
+			<th>{$lang->phone_number}</th>
+			<td>{$identity_record->phone}</td>
+		</tr>
+		<tr>
+			<th>{$lang->date}</th>
+			<td>{zdate($identity_record->regdate, 'Y-m-d H:i')}</td>
+		</tr>
+	</tbody>
+</table>
+<p class="x_help-block">{$lang->about_identity_reverify}</p>
+<!--@else-->
+<p class="x_help-block" style="margin-bottom:20px;">
+	<span style="color:#aaa;">{$lang->identity_not_verified}</span> — {$lang->about_identity_verify_now}
+</p>
+<!--@end-->
+
+<div style="margin-top:16px;">
+	<button type="button" class="btn btn-primary" onclick="zittmeIdentityVerify();">{$lang->identity_verify}</button>
+</div>
+
+<script>
+function zittmeIdentityVerify() {
+	var w = window.open('{$identity_verify_url}', 'zittme_identity', 'width=460,height=640,scrollbars=yes');
+	if (w) { w.focus(); }
+}
+/* strip the ticket from the URL once consumed (history/Referer hygiene) */
+(function(){ var u = new URL(window.location.href); if (u.searchParams.has("identity_ticket")) { u.searchParams.delete("identity_ticket"); history.replaceState(null, "", u.toString()); } })();
+window.addEventListener('message', function(e) {
+	if (e.origin !== window.location.origin) return;
+	if (e.data && e.data.type === 'zittme:identity' && e.data.success && e.data.data && e.data.data.ticket) {
+		var u = new URL(window.location.href);
+		u.searchParams.set('identity_ticket', e.data.data.ticket);
+		window.location.href = u.toString();
+	}
+});
+</script>
+
+<include target="./common_footer.html" />

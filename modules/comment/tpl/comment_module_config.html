@@ -1,0 +1,113 @@
+<section class="section">
+	<h1>{$lang->comment}</h1>
+	<form ruleset="insertCommentModuleConfig" action="./" method="post" class="x_form-horizontal">
+		<input type="hidden" name="module" value="comment" />
+		<input type="hidden" name="act" value="procCommentInsertModuleConfig" />
+		<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
+		<input type="hidden" name="target_module_srl" value="{!empty($module_info->module_srl) ? $module_info->module_srl : $module_srls}" />
+		<div class="x_control-group">
+			<label for="comment_count" class="x_control-label">{$lang->comment_count}</label>
+			<div class="x_controls">
+				<input type="number" min="1" name="comment_count" id="comment_count" value="{$comment_config->comment_count}" />
+				<p class="x_help-inline">{$lang->about_comment_count}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label for="comment_count" class="x_control-label">{$lang->comment_page_count}</label>
+			<div class="x_controls">
+				<input type="number" min="1" name="comment_page_count" id="comment_page_count" value="{$comment_config->comment_page_count}" />
+				<p class="x_help-inline">{$lang->about_comment_page_count}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label for="max_thread_depth" class="x_control-label">{$lang->max_thread_depth}</label>
+			<div class="x_controls">
+				<input type="number" min="0" name="max_thread_depth" id="max_thread_depth" value="{$comment_config->max_thread_depth ?? ''}" />
+				<p class="x_help-inline">{$lang->about_max_thread_depth}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label for="comment_count" class="x_control-label">{$lang->comment_default_page}</label>
+			<div class="x_controls">
+				<select name="default_page" id="default_page">
+					<option value="first" selected="selected"|cond="isset($comment_config->default_page) && $comment_config->default_page === 'first'">{$lang->comment_default_page_first}</option>
+					<option value="last" selected="selected"|cond="!isset($comment_config->default_page) || $comment_config->default_page !== 'first'">{$lang->comment_default_page_last}</option>
+				</select>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label for="use_comment_validation" class="x_control-label">{$lang->cmd_comment_validation}</label>
+			<div class="x_controls">
+				<label for="use_comment_validation_Y" class="x_inline">
+					<input type="radio" id="use_comment_validation_Y" name="use_comment_validation" value="Y" checked="checked"|cond="isset($comment_config->use_comment_validation) && $comment_config->use_comment_validation === 'Y'">
+					{$lang->cmd_yes}
+				</label>
+				<label for="use_comment_validation_N" class="x_inline">
+					<input type="radio" id="use_comment_validation_N" name="use_comment_validation" value="N" checked="checked"|cond="!isset($comment_config->use_comment_validation) || $comment_config->use_comment_validation !== 'Y'">
+					{$lang->cmd_no}
+				</label>
+				<p class="x_help-inline">{$lang->about_comment_validation}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label for="c_use_vote_up" class="x_control-label">{$lang->cmd_vote}</label>
+			<div class="x_controls">
+				<select name="use_vote_up" id="c_use_vote_up">
+					<option value="Y" selected="selected"|cond="$comment_config->use_vote_up=='Y'">{$lang->use}</option>
+					<option value="S" selected="selected"|cond="$comment_config->use_vote_up=='S'">{$lang->use_and_display}</option>
+					<option value="N" selected="selected"|cond="$comment_config->use_vote_up=='N'">{$lang->notuse}</option>
+				</select>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label for="c_use_vote_down" class="x_control-label">{$lang->cmd_vote_down}</label>
+			<div class="x_controls">
+				<select name="use_vote_down" id="c_use_vote_down">
+					<option value="Y" selected="selected"|cond="$comment_config->use_vote_down=='Y'">{$lang->use}</option>
+					<option value="S" selected="selected"|cond="$comment_config->use_vote_down=='S'">{$lang->use_and_display}</option>
+					<option value="N" selected="selected"|cond="$comment_config->use_vote_down=='N'">{$lang->notuse}</option>
+				</select>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->cmd_vote_config}</label>
+			<div class="x_controls">
+				<label for="c_allow_vote_from_same_ip" class="x_inline">
+					<input type="checkbox" id="c_allow_vote_from_same_ip" name="allow_vote_from_same_ip" value="Y" checked="checked"|cond="$comment_config->allow_vote_from_same_ip === 'Y'">
+					{lang('document.allow_vote_from_same_ip')}
+				</label>
+				<label for="c_allow_vote_cancel" class="x_inline">
+					<input type="checkbox" id="c_allow_vote_cancel" name="allow_vote_cancel" value="Y" checked="checked"|cond="$comment_config->allow_vote_cancel === 'Y'">
+					{lang('document.allow_vote_cancel')}
+				</label>
+				<label for="c_allow_vote_non_member" class="x_inline">
+					<input type="checkbox" id="c_allow_vote_non_member" name="allow_vote_non_member" value="Y" checked="checked"|cond="$comment_config->allow_vote_non_member === 'Y'">
+					{lang('document.allow_vote_non_member')}
+				</label>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->cmd_declare_config}</label>
+			<div class="x_controls">
+				<label for="c_allow_declare_from_same_ip" class="x_inline">
+					<input type="checkbox" id="c_allow_declare_from_same_ip" name="allow_declare_from_same_ip" value="Y" checked="checked"|cond="$comment_config->allow_declare_from_same_ip === 'Y'">
+					{lang('document.allow_declare_from_same_ip')}
+				</label>
+				<label for="c_allow_declare_cancel" class="x_inline">
+					<input type="checkbox" id="c_allow_declare_cancel" name="allow_declare_cancel" value="Y" checked="checked"|cond="$comment_config->allow_declare_cancel === 'Y'">
+					{lang('document.allow_declare_cancel')}
+				</label>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{lang('document.cmd_declared_message')}</label>
+			<div class="x_controls">
+				<label class="x_inline" for="comment_declared_message_admin"><input type="checkbox" name="declared_message[]" id="comment_declared_message_admin" value="admin" checked="checked"|cond="$comment_config->declared_message && in_array('admin', $comment_config->declared_message)" /> {$lang->cmd_declared_message_admin}</label>
+				<label class="x_inline" for="comment_declared_message_manager"><input type="checkbox" name="declared_message[]" id="comment_declared_message_manager" value="manager" checked="checked"|cond="$comment_config->declared_message && in_array('manager', $comment_config->declared_message)" /> {$lang->cmd_declared_message_manager}</label>
+			</div>
+		</div>
+		<div class="x_clearfix btnArea">
+			<button type="submit" class="x_btn x_btn-primary">{$lang->cmd_save}</button>
+		</div>
+	</form>
+</section>

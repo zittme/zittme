@@ -1,0 +1,9 @@
+<query id="getModuleInfos" action="select">
+    <tables>
+        <table name="modules" />
+    </tables>
+    <columns>
+        <column name="*" />
+    </columns>
+    <conditions />
+</query>

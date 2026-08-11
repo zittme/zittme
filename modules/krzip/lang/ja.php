@@ -1,0 +1,20 @@
+<?php
+$lang->krzip = '韓国郵便番号';
+$lang->cmd_krzip_api_type = 'API提供元の選択';
+$lang->cmd_krzip_daumapi = 'Kakao API';
+$lang->cmd_krzip_epostapi = '韓国郵政API';
+$lang->cmd_krzip_postcodify = 'Postcodify';
+$lang->cmd_krzip_regkey = '登録キー';
+$lang->cmd_krzip_postcode = '郵便番号';
+$lang->cmd_krzip_address = '住所';
+$lang->cmd_krzip_detail_address = '詳細住所';
+$lang->about_krzip = '公開APIを利用して韓国の郵便番号を検索します。';
+$lang->about_krzip_api_handler = '郵便番号の検索に使用するAPIを指定します。';
+$lang->about_krzip_epostapi_regkey = '韓国郵政のAPIを利用するために発行された登録キーを入力します。';
+$lang->msg_krzip_road_address_expectation = '道路名住所: %s';
+$lang->msg_krzip_jibun_address_expectation = '地番住所: %s';
+$lang->msg_krzip_no_query = '検索キーワードを入力してください。';
+$lang->msg_krzip_is_maintenance = 'メンテナンス中です。';
+$lang->msg_krzip_wrong_regkey = '登録キーが正しくありません。';
+$lang->msg_krzip_no_result = '該当する住所が見つかりません。';
+$lang->msg_krzip_riddling_wrong = '郵便番号モジュールで不明なエラーが発生しました。';

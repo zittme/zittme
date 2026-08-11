@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<grants />
+	<actions>
+		<action name="dispMemberIndex" type="view" index="true" />
+		<action name="dispMemberSignUpForm" type="view" meta-noindex="true">
+			<route route="signup" />
+			<route route="signup$document_srl:delete" />
+			<route route="signup$document_srl:delete$page:delete" />
+			<route route="signup$member_srl:delete" />
+			<route route="signup$page:delete" />
+		</action>
+		<action name="dispMemberLoginForm" type="view" meta-noindex="true">
+			<route route="login" />
+			<route route="login$document_srl:delete" />
+			<route route="login$document_srl:delete$page:delete" />
+			<route route="login$member_srl:delete" />
+			<route route="login$page:delete" />
+		</action>
+		<action name="dispMemberFindAccount" type="view" meta-noindex="true" />
+		<action name="dispMemberResendAuthMail" type="view" meta-noindex="true" />
+		<action name="dispMemberInfo" type="view" permission="member" meta-noindex="true" route="member_info" />
+		<action name="dispMemberModifyInfo" type="view" permission="member" meta-noindex="true" />
+		<action name="dispMemberModifyPassword" type="view" permission="member" meta-noindex="true" />
+		<action name="dispMemberModifyEmailAddress" type="view" permission="member" meta-noindex="true" />
+		<action name="dispMemberLeave" type="view" permission="member" meta-noindex="true" />
+		<action name="dispMemberScrappedDocument" type="view" permission="member" meta-noindex="true" route="my_scrap" />
+		<action name="dispMemberSavedDocument" type="view" permission="member" meta-noindex="true" route="my_saved_documents" />
+		<action name="dispMemberOwnDocument" type="view" permission="member" meta-noindex="true" route="my_documents" />
+		<action name="dispMemberOwnComment" type="view" permission="member" meta-noindex="true" route="my_comments" />
+		<action name="dispMemberActiveLogins" type="view" permission="member" meta-noindex="true" route="active_logins" />
+		<action name="dispMemberModifyNicknameLog" type="view" permission="member" meta-noindex="true" />
+		<action name="dispMemberLogout" type="view" meta-noindex="true" />
+		<action name="dispMemberSpammer" type="view" permission="manager" check_var="module_srl" meta-noindex="true" />
+
+		<action name="getLoginStatus" type="model" method="POST" check_csrf="false" meta-noindex="true" />
+		<action name="getMemberMenu" type="model" />
+		<action name="getApiGroups" type="model" permission="root" />
+
+		<action name="procMemberInsert" type="controller" route="signup" />
+		<action name="procMemberCheckValue" type="controller" />
+		<action name="procMemberLogin" type="controller" route="login" />
+		<action name="procMemberFindAccount" type="controller" ruleset="findAccount" />
+		<action name="procMemberFindAccountByQuestion" type="controller" />
+		<action name="procMemberAuthAccount" type="controller" method="GET|POST" route="auth/$member_srl/$auth_key" />
+		<action name="procMemberAuthEmailAddress" type="controller" method="GET|POST" route="authEmail/$member_srl/$auth_key" />
+		<action name="procMemberResendAuthMail" type="controller" ruleset="resendAuthMail" />
+		<action name="procMemberSendVerificationSMS" type="controller" />
+		<action name="procMemberConfirmVerificationSMS" type="controller" />
+		<action name="procMemberModifyInfoBefore" type="controller" permission="member" ruleset="recheckedPassword" />
+		<action name="procMemberModifyInfo" type="controller" permission="member" />
+		<action name="procMemberModifyPassword" type="controller" permission="member" ruleset="modifyPassword" />
+		<action name="procMemberResetPassword" type="controller" ruleset="resetPassword" />
+		<action name="procMemberModifyEmailAddress" type="controller" permission="member" ruleset="modifyEmailAddress" />
+		<action name="procMemberLeave" type="controller" permission="member" ruleset="leaveMember" />
+		<action name="procMemberInsertProfileImage" type="controller" permission="member" ruleset="insertProfileImage" />
+		<action name="procMemberDeleteProfileImage" type="controller" permission="member" />
+		<action name="procMemberInsertImageName" type="controller" permission="member" ruleset="insertImageName" />
+		<action name="procMemberDeleteImageName" type="controller" permission="member" />
+		<action name="procMemberInsertImageMark" type="controller" permission="member" ruleset="insertImageMark" />
+		<action name="procMemberDeleteImageMark" type="controller" permission="member" />
+		<action name="procMemberScrapDocument" type="controller" permission="member" />
+		<action name="procMemberDeleteScrap" type="controller" permission="member" />
+		<action name="procMemberMoveScrapFolder" type="controller" permission="member" />
+		<action name="procMemberInsertScrapFolder" type="controller" permission="member" />
+		<action name="procMemberRenameScrapFolder" type="controller" permission="member" />
+		<action name="procMemberDeleteScrapFolder" type="controller" permission="member" />
+		<action name="procMemberSaveDocument" type="controller" permission="member" />
+		<action name="procMemberDeleteSavedDocument" type="controller" permission="member" />
+		<action name="procMemberDeleteAutologin" type="controller" permission="member" />
+		<action name="procMemberSiteSignUp" type="controller" permission="member" />
+		<action name="procMemberSiteLeave" type="controller" permission="member" />
+		<action name="procMemberLogout" type="controller" permission="member" />
+		<action name="procMemberSpammerManage" type="controller" permission="manager" check_var="module_srl" />
+
+		<action name="dispMemberSnsAccounts" type="view" permission="member" meta-noindex="true" />
+		<action name="procMemberSnsConnect" type="controller" method="GET|POST" check-csrf="false" meta-noindex="true" />
+		<action name="procMemberSnsCallback" type="controller" method="GET|POST" check-csrf="false" meta-noindex="true" />
+		<action name="procMemberSnsUnlink" type="controller" permission="member" method="POST" />
+
+		<action name="dispMemberIdentityVerify" type="view" standalone="true" meta-noindex="true" />
+		<action name="dispMemberIdentityStatus" type="view" permission="member" meta-noindex="true" />
+		<action name="dispMemberIdentityGate" type="view" standalone="true" meta-noindex="true" />
+		<action name="procMemberIdentityResetPassword" type="controller" method="POST" />
+		<action name="procMemberIdentityCallback" type="controller" method="GET|POST" check-csrf="false" standalone="true" meta-noindex="true" />
+
+		<action name="procMemberRegisterDevice" class="Controllers\Device" route="device/register" standalone="true" />
+		<action name="procMemberLoginWithDevice" class="Controllers\Device" route="device/login" standalone="true" />
+		<action name="procMemberUnregisterDevice" class="Controllers\Device" route="device/unregister" standalone="true" />
+		<action name="procMemberDeleteDevice" class="Controllers\Device" permission="member" standalone="true" />
+
+		<action name="dispMemberAdminList" type="view" admin_index="true" menu_name="userList" menu_index="true"/>
+		<action name="dispMemberAdminInfo" type="view" menu_name="userList" />
+		<action name="dispMemberAdminInsert" type="view" menu_name="userList" />
+		<action name="dispMemberAdminConfig" type="view" menu_name="userSetting" menu_index="true" />
+		<action name="dispMemberAdminFeaturesConfig" type="view" menu_name="userSetting" />
+		<action name="dispMemberAdminAgreementsConfig" type="view" menu_name="userSetting" />
+		<action name="dispMemberAdminSignUpConfig" type="view" menu_name="userSetting" />
+		<action name="dispMemberAdminLoginConfig" type="view" menu_name="userSetting" />
+		<action name="dispMemberAdminSnsLoginConfig" type="view" menu_name="userSetting" />
+		<action name="dispMemberAdminIdentityConfig" type="view" menu_name="userSetting" />
+		<action name="dispMemberAdminDesignConfig" type="view" menu_name="userSetting" />
+		<action name="dispMemberAdminNickNameLog" type="view" menu_name="userSetting" />
+		<action name="dispMemberAdminGroupList" type="view" menu_name="userGroup" menu_index="true" />
+		<action name="dispMemberAdminInsertJoinForm" type="view" />
+
+		<action name="getMemberAdminColorset" type="model" />
+		<action name="getMemberAdminInsertJoinForm" type="model" />
+		<action name="getMemberAdminIPCheck" type="model" />
+
+		<action name="procMemberAdminInsert" type="controller" ruleset="insertAdminMember" />
+		<action name="procMemberAdminDelete" type="controller" />
+		<action name="procMemberAdminSelectedMemberManage" type="controller" ruleset="updateSeletecdMemberInfo" />
+		<action name="procMemberAdminInsertDefaultConfig" type="controller" ruleset="insertDefaultConfig" />
+		<action name="procMemberAdminInsertFeaturesConfig" type="controller" />
+		<action name="procMemberAdminInsertAgreementsConfig" type="controller" />
+		<action name="procMemberAdminInsertSignupConfig" type="controller" />
+		<action name="procMemberAdminInsertLoginConfig" type="controller" />
+		<action name="procMemberAdminInsertSnsLoginConfig" type="controller" />
+		<action name="procMemberAdminInsertIdentityConfig" type="controller" />
+		<action name="procMemberAdminInsertDesignConfig" type="controller" />
+		<action name="procMemberAdminUpdateManagedEmailHosts" type="controller" />
+		<action name="procMemberAdminUpdateDeniedNickName" type="controller" />
+		<action name="procMemberAdminInsertDeniedID" type="controller" ruleset="insertDeniedId" />
+		<action name="procMemberAdminUpdateDeniedID" type="controller" />
+		<action name="procMemberAdminInsertJoinForm" type="controller" ruleset="insertJoinForm" />
+		<action name="procMemberAdminUpdateJoinForm" type="controller" />
+		<action name="procMemberAdminDeleteJoinForm" type="controller" />
+		<action name="procMemberAdminGroupConfig" type="controller" />
+		<action name="procMemberAdminInsertGroup" type="controller" ruleset="insertGroup" />
+		<action name="procMemberAdminUpdateGroup" type="controller" ruleset="updateGroup" />
+		<action name="procMemberAdminDeleteGroup" type="controller" ruleset="deleteGroup" />
+		<action name="procMemberAdminUpdateGroupOrder" type="controller" />
+		<action name="procMemberAdminUpdateMembersGroup" type="controller" ruleset="manageMemberGroup" />
+		<action name="procMemberAdminDeleteMembers" type="controller" />
+	</actions>
+	<eventHandlers>
+		<eventHandler after="document.getDocumentMenu" class="controller" method="triggerGetDocumentMenu" />
+		<eventHandler after="comment.getCommentMenu" class="controller" method="triggerGetCommentMenu" />
+		<eventHandler after="document.deleteDocument" class="controller" method="triggerDeleteDocument" />
+		<eventHandler after="moduleHandler.init" class="controller" method="triggerIdentityAdultGate" />
+	</eventHandlers>
+	<menus>
+		<menu name="userList">
+			<title xml:lang="en">Member List</title>
+			<title xml:lang="vi">Danh sách thành viên</title>
+			<title xml:lang="tr">Üye Listesi</title>
+			<title xml:lang="ru">Список участников</title>
+			<title xml:lang="mn">Гишүүдийн жагсаалт</title>
+			<title xml:lang="fr">Liste des membres</title>
+			<title xml:lang="es">Lista de miembros</title>
+			<title xml:lang="de">Mitgliederliste</title>
+			<title xml:lang="zh-TW">會員清單</title>
+			<title xml:lang="zh-CN">会员列表</title>
+			<title xml:lang="jp">会員リスト</title>
+			<title xml:lang="ko">회원 목록</title>
+			<title xml:lang="zh-CN">Member List</title>
+			<title xml:lang="jp">会員リスト</title>
+			<title xml:lang="es">Member List</title>
+			<title xml:lang="ru">Member List</title>
+			<title xml:lang="fr">Member List</title>
+			<title xml:lang="zh-TW">會員列表</title>
+			<title xml:lang="vi">Member List</title>
+			<title xml:lang="mn">Member List</title>
+			<title xml:lang="tr">Member List</title>
+		</menu>
+		<menu name="userGroup">
+			<title xml:lang="en">Member Group</title>
+			<title xml:lang="de">Mitgliedergruppen</title>
+			<title xml:lang="ko">회원 그룹</title>
+			<title xml:lang="zh-CN">Member Group</title>
+			<title xml:lang="jp">会員グループ</title>
+			<title xml:lang="es">Member Group</title>
+			<title xml:lang="ru">Member Group</title>
+			<title xml:lang="fr">Member Group</title>
+			<title xml:lang="zh-TW">會員群組</title>
+			<title xml:lang="vi">Member Group</title>
+			<title xml:lang="mn">Member Group</title>
+			<title xml:lang="tr">Member Group</title>
+		</menu>
+		<menu name="userSetting">
+			<title xml:lang="en">Member Setting</title>
+			<title xml:lang="de">Mitgliedereinstellungen</title>
+			<title xml:lang="ko">회원 설정</title>
+			<title xml:lang="zh-CN">Member Setting</title>
+			<title xml:lang="jp">会員設定</title>
+			<title xml:lang="es">Member Setting</title>
+			<title xml:lang="ru">Member Setting</title>
+			<title xml:lang="fr">Member Setting</title>
+			<title xml:lang="zh-TW">會員設定</title>
+			<title xml:lang="vi">Member Setting</title>
+			<title xml:lang="mn">Member Setting</title>
+			<title xml:lang="tr">Member Setting</title>
+			<title xml:lang="de">Mitgliedereinstellungen</title>
+			<title xml:lang="en">Member Settings</title>
+		</menu>
+	</menus>
+</module>

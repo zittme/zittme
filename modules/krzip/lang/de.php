@@ -1,0 +1,20 @@
+<?php
+$lang->krzip = 'Koreanische Postleitzahl';
+$lang->cmd_krzip_api_type = 'API-Anbieter wählen';
+$lang->cmd_krzip_daumapi = 'Kakao-API';
+$lang->cmd_krzip_epostapi = 'Korea-Post-API';
+$lang->cmd_krzip_postcodify = 'Postcodify';
+$lang->cmd_krzip_regkey = 'Registrierungsschlüssel';
+$lang->cmd_krzip_postcode = 'Postleitzahl';
+$lang->cmd_krzip_address = 'Postanschrift';
+$lang->cmd_krzip_detail_address = 'Adresszusatz';
+$lang->about_krzip = 'Postleitzahlensuche über öffentliche APIs für Postleitzahlen in Südkorea.';
+$lang->about_krzip_api_handler = 'Legt fest, über welche API die Postleitzahlen gesucht werden.';
+$lang->about_krzip_epostapi_regkey = 'Geben Sie den von Korea Post ausgestellten Registrierungsschlüssel zur Nutzung der API ein.';
+$lang->msg_krzip_road_address_expectation = 'Adresse nach Straßenname: %s';
+$lang->msg_krzip_jibun_address_expectation = 'Adresse nach Flurstücksnummer: %s';
+$lang->msg_krzip_no_query = 'Bitte geben Sie einen Suchbegriff ein.';
+$lang->msg_krzip_is_maintenance = 'Wartungsarbeiten.';
+$lang->msg_krzip_wrong_regkey = 'Ungültiger Registrierungsschlüssel.';
+$lang->msg_krzip_no_result = 'Keine Adresse gefunden.';
+$lang->msg_krzip_riddling_wrong = 'Unbekannter Fehler im Postleitzahlen-Modul.';

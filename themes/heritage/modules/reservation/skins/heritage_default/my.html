@@ -1,0 +1,45 @@
+@version(2)
+@load('css/reservation.css')
+
+<div class="rsv rsv-narrow">
+	<h2 class="rsv-title">{{ $lang->reservation_my }}</h2>
+
+	@if ($is_member)
+		@if (empty($bookings))
+		<p class="rsv-empty">{{ $lang->reservation_no_bookings }}</p>
+		@else
+		<ul class="rsv-my-list">
+			@foreach ($bookings as $b)
+			<li>
+				<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispReservationResult', 'code', $b->booking_code) }}">
+					<span class="rsv-my-code">{{ $b->booking_code }}</span>
+					<span class="rsv-my-status rsv-st-{{ $b->status }}">{{ $lang->{'reservation_status_' . $b->status} ?? $b->status }}</span>
+					<span class="rsv-my-date">{{ zdate($b->regdate, 'Y.m.d') }}</span>
+				</a>
+			</li>
+			@endforeach
+		</ul>
+		@endif
+	@else
+	<p class="rsv-desc">{{ $lang->reservation_guest_lookup_help }}</p>
+	<form action="{{ getUrl('') }}" method="post" class="rsv-form rx_ajax">
+		<input type="hidden" name="act" value="procReservationGuestLookup" />
+		<input type="hidden" name="mid" value="{{ $mid }}" />
+		<div class="rsv-row">
+			<label for="rsv_lookup_code">{{ $lang->reservation_booking_code }}</label>
+			<input type="text" name="booking_code" id="rsv_lookup_code" required />
+		</div>
+		<div class="rsv-row">
+			<label for="rsv_lookup_pw">{{ $lang->reservation_guest_password }}</label>
+			<input type="password" name="guest_password" id="rsv_lookup_pw" required autocomplete="off" />
+		</div>
+		<div class="rsv-actions">
+			<button type="submit" class="rsv-btn rsv-btn-primary">{{ $lang->cmd_reservation_lookup }}</button>
+		</div>
+	</form>
+	@endif
+
+	<p class="rsv-foot-links">
+		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispReservationList') }}">{{ $lang->cmd_reservation_back_list }}</a>
+	</p>
+</div>

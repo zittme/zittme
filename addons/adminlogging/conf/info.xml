@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon version="0.2">
+    <title xml:lang="ko">어드민 메뉴 접근 로깅</title>
+    <title xml:lang="en">Logging Access to the Administrator Menu</title>
+	<title xml:lang="zh-CN">后台访问日志</title>
+    <title xml:lang="zh-TW">管理選單訪問日誌</title>
+    <title xml:lang="vi">Ghi nhật ký truy cập menu quản trị</title>
+    <title xml:lang="tr">Yonetici Menusu Erisim Kaydi</title>
+    <title xml:lang="ru">Журнал доступа к меню администратора</title>
+    <title xml:lang="mn">Админ цэсийн хандалтын бүртгэл</title>
+    <title xml:lang="fr">Journalisation des accès au menu d'administration</title>
+    <title xml:lang="es">Registro de accesos al menú de administración</title>
+    <title xml:lang="de">Protokollierung der Zugriffe auf das Administrationsmenü</title>
+    <title xml:lang="jp">管理メニューへのアクセスログ</title>
+    <description xml:lang="ko">
+		admin menu에 접근한 기록을 로깅하는 애드온입니다.
+    </description>
+	<description xml:lang="zh-CN">
+		后台访问以及登陆日志。
+	</description>
+    <description xml:lang="zh-TW">
+		管理選單訪問紀錄及登入日誌。
+    </description>
+    <description xml:lang="en">
+		This addon will record Zittme administrators' access to the menu.
+    </description>
+    <description xml:lang="vi">Addon này ghi lại lịch sử truy cập menu quản trị của quản trị viên Zittme.</description>
+    <description xml:lang="tr">Bu eklenti, Zittme yoneticilerinin yonetim menusune erisimlerini kaydeder.</description>
+    <description xml:lang="ru">Аддон записывает обращения администраторов Zittme к меню управления.</description>
+    <description xml:lang="mn">Энэ нэмэлт нь Zittme админуудын цэс рүү хандсан бүртгэлийг хөтөлнө.</description>
+    <description xml:lang="fr">Cet addon enregistre les accès des administrateurs Zittme au menu d'administration.</description>
+    <description xml:lang="es">Este addon registra los accesos de los administradores de Zittme al menú de administración.</description>
+    <description xml:lang="de">Dieses Addon protokolliert die Zugriffe von Zittme-Administratoren auf das Administrationsmenü.</description>
+    <description xml:lang="jp">
+		Zittme の管理者による管理メニューへのアクセス履歴を記録するアドオンです。
+    </description>
+    <version>RX_VERSION</version>
+    <date>RX_CORE</date>
+
+    <author email_address="developers@xpressengine.com" link="http://xpressengine.com/">
+        <name xml:lang="ko">NAVER</name>
+        <name xml:lang="jp">NAVER</name>
+        <name xml:lang="en">NAVER</name>
+        <name xml:lang="vi">NAVER</name>
+        <name xml:lang="zh-CN">NAVER</name>
+        <name xml:lang="es">NAVER</name>
+        <name xml:lang="ru">NAVER</name>
+        <name xml:lang="ge">NAVER</name>
+        <name xml:lang="zh-TW">NAVER</name>
+    </author>
+</addon>

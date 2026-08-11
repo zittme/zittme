@@ -1,0 +1,71 @@
+<div class="x_page-header">
+	<h1>{$lang->installed_addons}</h1>
+</div>
+<p>{$lang->about_installed_addon}</p>
+<form action="./" method="post">
+	<input type="hidden" name="module" value="addon" />
+	<input type="hidden" name="act" value="procAddonAdminSaveActivate" />
+	<input type="hidden" name="xe_validator_id" value="modules/addon/tpl/addon_list/1" />
+
+	<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/addon/tpl/addon_list/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+		<p>{$XE_VALIDATOR_MESSAGE}</p>
+	</div>
+	<table class="x_table x_table-striped x_table-hover dsTg">
+		<caption>
+			<strong>{lang('all')} ({$addon_count})</strong>
+			<div class="x_pull-right x_btn-group">
+				<button type="button" class="x_btn x_active __simple">{$lang->simple_view}</button>
+				<button type="button" class="x_btn __detail">{$lang->detail_view}</button>
+			</div>
+		</caption>
+		<thead>
+			<tr>
+				<th class="title">{$lang->addon_name}</th>
+				<th class="nowr">{$lang->version}</th>
+				<th class="nowr rx_detail_marks">{$lang->author}</th>
+				<th class="nowr rx_detail_marks">{$lang->installed_path}</th>
+				<th class="nowr">{$lang->cmd_setup}</th>
+				<th class="nowr">PC</th>
+				<th class="nowr">Mobile</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr loop="$addon_list => $addon">
+				<td class="title">
+					<p>
+						<a cond="!$addon->isBlacklisted" href="{getUrl('act', 'dispAddonAdminSetup', 'selected_addon', $addon->addon_name)}">{$addon->title}</a>
+						<strong cond="$addon->isBlacklisted" style="color:#aaa">{$addon->title}</strong>
+					</p>
+					<p style="color:#aaa"|cond="$addon->isBlacklisted">{$addon->description}</p>
+					<p cond="$addon->need_update == 'Y'" class="update">
+						{$lang->msg_avail_easy_update} <a href="{$addon->update_url}&amp;return_url={urlencode(getRequestUriByServerEnviroment())}">{$lang->msg_do_you_like_update}</a>
+					</p>
+				</td>
+				<td>
+					<!--@if($addon->version === 'RX_VERSION' && Context::isDefaultPlugin($addon->addon_name, 'addon'))-->
+						<img src="{\RX_BASEURL}common/img/icon.png" class="core_symbol" alt="Zittme Core" title="Zittme Core" />
+					<!--@else-->
+						<span style="color:#aaa"|cond="$addon->isBlacklisted">{$addon->version}</span>
+					<!--@endif-->
+				</td>
+				<td class="nowr rx_detail_marks">
+					<block loop="$addon->author => $author">
+						<a cond="$author->homepage" href="{$author->homepage}" target="_blank">{$author->name}</a>
+						<block cond="!$author->homepage">{$author->name}</block>
+					</block>
+				</td>
+				<td class="rx_detail_marks"><span style="color:#aaa"|cond="$addon->isBlacklisted">{$addon->path}</span></td>
+				<td>
+					<a href="{getUrl('act', 'dispAddonAdminSetup', 'selected_addon', $addon->addon_name)}">{$lang->cmd_setup}</a>
+				</td>
+				<td><input type="checkbox" name="pc_on[]" title="PC" value="{escape($addon->addon_name, false)}" checked="checked"|cond="$addon->activated && !$addon->isBlacklisted" disabled="disabled"|cond="$addon->isBlacklisted" /></td>
+				<td><input type="checkbox" name="mobile_on[]" title="Mobile" value="{escape($addon->addon_name, false)}" checked="checked"|cond="$addon->mactivated && !$addon->isBlacklisted" disabled="disabled"|cond="$addon->isBlacklisted" /></td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="x_clearfix">
+		<div class="x_pull-right">
+			<button type="submit" class="x_btn x_btn-primary">{$lang->cmd_save}</button>
+		</div>
+	</div>
+</form>

@@ -1,0 +1,107 @@
+@version(2)
+@load('css/reservation.css')
+
+<div class="rsv rsv-narrow">
+	<h2 class="rsv-title">{{ $lang->cmd_reservation_book }}</h2>
+
+	<div class="rsv-summary">
+		<strong>{{ $resource->title }}</strong>
+		<span>{{ substr($slot->slot_date, 0, 4) }}.{{ substr($slot->slot_date, 4, 2) }}.{{ substr($slot->slot_date, 6, 2) }} {{ $slot->start_time }} ~ {{ $slot->end_time }}</span>
+		@if ($need_pay)
+		<span class="rsv-price" id="rsv_total" data-unit="{{ $resource->price }}">{{ number_format($resource->price) }}원</span>
+		@else
+		<span class="rsv-price">{{ $lang->reservation_free }}</span>
+		@endif
+	</div>
+
+	@if ($need_pay && !$pay_available)
+	<p class="rsv-warn">{{ $lang->msg_reservation_pay_unavailable }}</p>
+	@else
+	<form action="{{ getUrl('') }}" method="post" class="rsv-form rx_ajax">
+		<input type="hidden" name="act" value="procReservationSubmit" />
+		<input type="hidden" name="mid" value="{{ $mid }}" />
+		<input type="hidden" name="slot_srl" value="{{ $slot->slot_srl }}" />
+
+		<fieldset>
+			<legend>{{ $lang->reservation_booker_info }}</legend>
+
+			@if ($resource->capacity_default > 1)
+			<div class="rsv-row">
+				<label for="rsv_person">{{ $lang->reservation_person }}</label>
+				<select name="person_count" id="rsv_person" onchange="if(window.rsvUpdateTotal)rsvUpdateTotal(this.value)">
+					@for ($i = 1; $i <= min(10, (int)$resource->capacity_default); $i++)
+					<option value="{{ $i }}">{{ $i }}</option>
+					@endfor
+				</select>
+			</div>
+			@endif
+
+			<div class="rsv-row">
+				<label for="rsv_name">{{ $lang->reservation_booker_name }} <em>*</em></label>
+				<input type="text" name="booker_name" id="rsv_name" maxlength="80" required value="{{ $is_member ? ($logged_info->nick_name ?? '') : '' }}" />
+			</div>
+			<div class="rsv-row">
+				<label for="rsv_phone">{{ $lang->reservation_booker_phone }} @if (!$is_member)<em>*</em>@endif</label>
+				<input type="tel" name="booker_phone" id="rsv_phone" maxlength="30" @if (!$is_member) required @endif />
+			</div>
+			<div class="rsv-row">
+				<label for="rsv_email">{{ $lang->reservation_booker_email }}</label>
+				<input type="email" name="booker_email" id="rsv_email" maxlength="120" />
+			</div>
+
+			@if (!$is_member)
+			<div class="rsv-row">
+				<label for="rsv_gp">{{ $lang->reservation_guest_password }} <em>*</em></label>
+				<input type="password" name="guest_password" id="rsv_gp" minlength="4" maxlength="40" required autocomplete="new-password" />
+				<small>{{ $lang->reservation_guest_password_help }}</small>
+			</div>
+			@endif
+
+			@foreach ($form_fields as $f)
+			<div class="rsv-row">
+				<label for="rf_{{ $f->field_name }}">{{ $f->label }} @if ($f->required === 'Y')<em>*</em>@endif</label>
+				@if ($f->field_type === 'textarea')
+				<textarea name="rf_{{ $f->field_name }}" id="rf_{{ $f->field_name }}" rows="3" @if ($f->required === 'Y') required @endif></textarea>
+				@elseif ($f->field_type === 'select')
+				<select name="rf_{{ $f->field_name }}" id="rf_{{ $f->field_name }}" @if ($f->required === 'Y') required @endif>
+					<option value="">-</option>
+					@foreach (preg_split('/[\r\n]+/', (string)$f->options) as $opt)
+					@if (trim($opt) !== '')
+					<option value="{{ trim($opt) }}">{{ trim($opt) }}</option>
+					@endif
+					@endforeach
+				</select>
+				@elseif ($f->field_type === 'checkbox')
+				<label class="rsv-check"><input type="checkbox" name="rf_{{ $f->field_name }}" value="Y" @if ($f->required === 'Y') required @endif /> {{ $f->label }}</label>
+				@else
+				<input type="{{ $f->field_type === 'tel' ? 'tel' : 'text' }}" name="rf_{{ $f->field_name }}" id="rf_{{ $f->field_name }}" @if ($f->required === 'Y') required @endif />
+				@endif
+			</div>
+			@endforeach
+		</fieldset>
+
+		<div class="rsv-agree">
+			<label class="rsv-check">
+				<input type="checkbox" name="agree_privacy" value="Y" required />
+				{{ $lang->reservation_agree_privacy }}
+			</label>
+			@if (!empty($rsv_config->privacy_text))
+			<div class="rsv-privacy-text">{{ $rsv_config->privacy_text }}</div>
+			@endif
+		</div>
+
+		<div class="rsv-actions">
+			<button type="submit" class="rsv-btn rsv-btn-primary">{{ $need_pay ? $lang->cmd_reservation_pay : $lang->cmd_reservation_book }}</button>
+		</div>
+	</form>
+	@endif
+</div>
+
+<script>
+window.rsvUpdateTotal = function(n) {
+	var el = document.getElementById('rsv_total');
+	if (!el) return;
+	var unit = parseInt(el.getAttribute('data-unit'), 10) || 0;
+	el.textContent = (unit * (parseInt(n, 10) || 1)).toLocaleString() + '원';
+};
+</script>

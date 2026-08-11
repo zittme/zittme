@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon version="0.2">
+    <title xml:lang="ko">포인트 레벨 아이콘 표시 애드온</title>
+    <title xml:lang="zh-CN">积分级别图标</title>
+    <title xml:lang="jp">ポイントレベルアイコン表示アドオン</title>
+    <title xml:lang="en">Point Level Icon</title>
+    <title xml:lang="vi">Icon cấp độ của điểm</title>
+    <title xml:lang="ge">Point-Level-Symbol</title>
+    <title xml:lang="es">Addon para mostar el nivel del ícono</title>
+    <title xml:lang="ru">Иконка уровня поинтов</title>
+    <title xml:lang="zh-TW">點數等級圖案</title>
+    <title xml:lang="tr">Puan Seviye Simgesi</title>
+    <title xml:lang="mn">Онооны түвшний дүрс</title>
+    <title xml:lang="fr">Icône de niveau de points</title>
+    <title xml:lang="de">Punkte-Level-Symbol</title>
+    <description xml:lang="ko">
+        포인트 시스템을 사용중일 경우 사용자 이름 앞에 레벨 아이콘을 표시하도록 합니다.
+        레벨 아이콘은 설치된 모듈 &gt; 포인트시스템에서 선택 가능합니다.
+    </description>
+    <description xml:lang="zh-CN">
+        使用积分系统时，可以在用户名前显示级别图标。
+        级别图标可以在模块 &gt; 积分系统中进行选择。
+    </description>
+    <description xml:lang="jp">
+        ポイントシステムを使用する場合、ユーザ名の前にレベルアイコンの表示します。
+        レベルアイコンは、「モジュール &gt; ポイントシステム」で選択します。
+    </description>
+    <description xml:lang="en">
+        This addon displays level icon in front of the user name when you are using the point system.
+        You can choose the level icon in Module &gt; Point System.
+    </description>
+    <description xml:lang="vi">
+        Addon này sẽ hiển thị Icon cấp độ trước tên người sử dụng khi bạn sử dụng hệ thống tính điểm.
+        Bạn có thể chọn Icon cấp độ tại Module &gt; cỉa hệ thống điểm.
+    </description>
+    <description xml:lang="ge">
+        Dieses Addon zeigt Level Icon vor dem Benutzernamen, wenn Sie die Punkte-System.
+        Sie können wählen, der Level Icon in Modul> Point-System.
+    </description>
+    <description xml:lang="es">
+        Este addon muestra el nivel del ícono delante del nombre del usuario cuando es usado el sistema de puntos.
+        Tu puedes elegir los icono de cada nivel en el módulo &gt; Sistema de Puntos.
+    </description>
+    <description xml:lang="ru">
+        Этот аддон отображает иконку уровня поинтов напротив имени пользователя, когда используется система поинтов.
+        Вы можете выбрать иконку уровня в Модуле Системы Поинтов.
+    </description>
+    <description xml:lang="zh-TW">
+        使用點數系統時，可以在用戶名前顯示等級圖案。
+        等級圖案可以在模組 &gt; 點數系統中進行選擇。
+    </description>
+    <description xml:lang="tr">Bu eklenti, puan sistemi kullanildiginda kullanici adinin onunde seviye simgesi gosterir. Seviye simgesini Moduller &gt; Puan Sistemi bolumunden secebilirsiniz.</description>
+    <description xml:lang="mn">Онооны системийг ашиглаж байгаа үед хэрэглэгчийн нэрийн өмнө түвшний дүрс тэмдгийг харуулна. Түвшний дүрсийг Модуль &gt; Онооны систем хэсгээс сонгоно.</description>
+    <description xml:lang="fr">Cet addon affiche une icône de niveau devant le nom du membre lorsque le système de points est utilisé. L'icône de niveau se choisit dans Modules &gt; Système de points.</description>
+    <description xml:lang="de">Dieses Addon zeigt bei aktivem Punktesystem ein Level-Symbol vor dem Benutzernamen an. Das Level-Symbol kann unter Module &gt; Punktesystem ausgewählt werden.</description>
+    <version>RX_VERSION</version>
+    <date>RX_CORE</date>
+
+    <author email_address="developers@xpressengine.com" link="http://xpressengine.com/">
+        <name xml:lang="ko">NAVER</name>
+        <name xml:lang="zh-CN">NAVER</name>
+        <name xml:lang="jp">NAVER</name>
+        <name xml:lang="en">NAVER</name>
+        <name xml:lang="vi">NAVER</name>
+        <name xml:lang="ge">NAVER</name>
+        <name xml:lang="es">NAVER</name>
+        <name xml:lang="ru">NAVER</name>
+        <name xml:lang="zh-TW">NAVER</name>
+    </author>
+
+	<extra_vars>
+		<var name="icon_duplication" type="select">
+			<title xml:lang="ko">아이콘 중복 방지</title>
+			<title xml:lang="vi">Ngăn trùng lặp biểu tượng</title>
+			<title xml:lang="tr">Simge tekrarini onle</title>
+			<title xml:lang="ru">Предотвращение дублирования значков</title>
+			<title xml:lang="mn">Дүрс давхардахаас сэргийлэх</title>
+			<title xml:lang="fr">Éviter les icônes en double</title>
+			<title xml:lang="es">Evitar iconos duplicados</title>
+			<title xml:lang="de">Doppelte Symbole vermeiden</title>
+			<title xml:lang="zh-TW">避免圖示重複</title>
+			<title xml:lang="zh-CN">防止图标重复</title>
+			<title xml:lang="jp">アイコンの重複防止</title>
+			<title xml:lang="en">Prevent Duplicate Icons</title>
+			<description xml:lang="ko">그룹아이콘이 있을 경우 중복으로 레벨 아이콘을 달지 않습니다.</description>
+			<description xml:lang="vi">Không hiển thị biểu tượng cấp độ nếu đã có biểu tượng nhóm.</description>
+			<description xml:lang="tr">Grup simgesi varsa seviye simgesi ayrica eklenmez.</description>
+			<description xml:lang="ru">Если у пользователя есть значок группы, значок уровня дополнительно не выводится.</description>
+			<description xml:lang="mn">Бүлгийн дүрс байгаа тохиолдолд түвшний дүрсийг давхардуулан харуулахгүй.</description>
+			<description xml:lang="fr">N'ajoute pas d'icône de niveau lorsqu'une icône de groupe est déjà présente.</description>
+			<description xml:lang="es">Si el usuario ya tiene un icono de grupo, no se añade además el icono de nivel.</description>
+			<description xml:lang="de">Wenn bereits ein Gruppensymbol vorhanden ist, wird zusätzlich kein Level-Symbol angezeigt.</description>
+			<description xml:lang="zh-TW">已有群組圖示時，不重複顯示等級圖示。</description>
+			<description xml:lang="zh-CN">已有用户组图标时，不再重复显示等级图标。</description>
+			<description xml:lang="jp">グループアイコンがある場合、レベルアイコンを重複して表示しません。</description>
+			<description xml:lang="en">Does not add a level icon when a group icon is already shown.</description>
+			<options value="">
+				<title xml:lang="ko">사용함</title>
+				<title xml:lang="en">Enabled</title>
+				<title xml:lang="vi">Bật</title>
+				<title xml:lang="tr">Etkin</title>
+				<title xml:lang="ru">Включено</title>
+				<title xml:lang="mn">Идэвхтэй</title>
+				<title xml:lang="fr">Activé</title>
+				<title xml:lang="es">Activado</title>
+				<title xml:lang="de">Aktiviert</title>
+				<title xml:lang="zh-TW">啟用</title>
+				<title xml:lang="zh-CN">启用</title>
+				<title xml:lang="jp">使用する</title>
+			</options>
+			<options value="N">
+				<title xml:lang="ko">사용하지 않음</title>
+				<title xml:lang="en">Disabled</title>
+				<title xml:lang="vi">Tắt</title>
+				<title xml:lang="tr">Devre disi</title>
+				<title xml:lang="ru">Отключено</title>
+				<title xml:lang="mn">Идэвхгүй</title>
+				<title xml:lang="fr">Désactivé</title>
+				<title xml:lang="es">Desactivado</title>
+				<title xml:lang="de">Deaktiviert</title>
+				<title xml:lang="zh-TW">停用</title>
+				<title xml:lang="zh-CN">禁用</title>
+				<title xml:lang="jp">使用しない</title>
+			</options>
+		</var>
+	</extra_vars>
+</addon>

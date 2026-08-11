@@ -1,0 +1,16 @@
+@version(2)
+@load('css/skin.css')
+<div class="hr hrb" id="hrb_board">
+@if (trim($module_info->hr_board_title ?? '') !== '')
+<header class="hrb-board-head">
+	<h2 class="hrb-board-title"><a href="{{ getUrl('', 'mid', $mid) }}">{{ $module_info->hr_board_title }}</a></h2>
+	@if (trim($module_info->hr_board_desc ?? '') !== '')
+	<p class="hrb-board-desc">{{ $module_info->hr_board_desc }}</p>
+	@endif
+</header>
+@endif
+@if (!empty($m) && !empty($module_info->mobile_header_text))
+<div class="hrb-notice-text">{!! $module_info->mobile_header_text !!}</div>
+@elseif (!empty($module_info->header_text))
+<div class="hrb-notice-text">{!! $module_info->header_text !!}</div>
+@endif

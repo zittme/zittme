@@ -1,0 +1,36 @@
+<include target="./common_header.html" />
+
+<h1>{$member_title = $lang->sns_my_services}</h1>
+<p class="x_help-block" style="margin-bottom:20px;">{$lang->about_sns_my_services}</p>
+
+<table class="table table-striped table-hover">
+	<thead>
+		<tr>
+			<th>{$lang->sns_service}</th>
+			<th>{$lang->sns_link_status}</th>
+			<th>{$lang->sns_link_manage}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr loop="$sns_supported_services => $service">
+			<td style="text-transform:capitalize;"><strong>{$service}</strong></td>
+			<td>
+					<span style="color:var(--zm-brand);font-weight:bold;">{$lang->sns_linked}</span>
+					<!--@if($sns_linked_accounts[$service]->sns_email)--> <span style="color:var(--zm-text-sub);">({$sns_linked_accounts[$service]->sns_email})</span>
+					<span style="color:var(--zm-text-sub);">{$lang->sns_not_linked}</span>
+			</td>
+			<td>
+					<form action="./" method="post" style="display:inline-block;margin:0;" onsubmit="return confirm('{$lang->confirm_sns_unlink}');">
+						<input type="hidden" name="_rx_csrf_token" value="{getCsrfToken()}" />
+						<input type="hidden" name="module" value="member" />
+						<input type="hidden" name="act" value="procMemberSnsUnlink" />
+						<input type="hidden" name="sns_type" value="{$service}" />
+						<button type="submit" class="btn btn-inverse">{$lang->sns_unlink}</button>
+					</form>
+					<a href="{getUrl('', 'module', 'member', 'act', 'procMemberSnsConnect', 'service', $service)}" class="btn">{$lang->sns_link}</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<include target="./common_footer.html" />

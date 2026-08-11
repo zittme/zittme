@@ -1,0 +1,5 @@
+@charset "UTF-8";
+/* for mobile view */
+div.xe_mobile {
+	display:none!important;
+}

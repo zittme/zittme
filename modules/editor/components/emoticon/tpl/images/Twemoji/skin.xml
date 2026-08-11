@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">트위터 이모티콘</title>
+	<title xml:lang="en">Twitter Emoji</title>
+	<title xml:lang="vi">Biểu tượng cảm xúc Twitter</title>
+	<title xml:lang="tr">Twitter Emoji</title>
+	<title xml:lang="ru">Эмодзи Twitter</title>
+	<title xml:lang="mn">Twitter эможи</title>
+	<title xml:lang="fr">Twitter Emoji</title>
+	<title xml:lang="es">Emojis de Twitter</title>
+	<title xml:lang="de">Twitter Emoji</title>
+	<title xml:lang="zh-TW">Twitter Emoji</title>
+	<title xml:lang="zh-CN">Twitter 表情</title>
+	<title xml:lang="jp">Twitter 絵文字</title>
+	<description xml:lang="ko">Twitter 가 자유로운 CC-BY 4.0 하에 사용 배포한 Noto Emoji 의 이미지 파일을 활용하였습니다.
+A simple library that provides standard Unicode emoji support across all platforms.
+Twemoji v11.0 adheres to the Unicode 11.0 spec and supports the Emoji 11.0 draft spec
+The Twemoji library offers support for 2,841 emojis, including skin tone and gender modifiers.</description>
+	<description xml:lang="en">These image files are from Twitter Emoji (Twemoji), graphics licensed under CC-BY 4.0.
+A simple library that provides standard Unicode emoji support across all platforms.
+Twemoji v11.0 adheres to the Unicode 11.0 spec and supports the Emoji 11.0 draft spec
+The Twemoji library offers support for 2,841 emojis, including skin tone and gender modifiers.</description>
+	<description xml:lang="vi">Các tệp hình ảnh này lấy từ Twitter Emoji (Twemoji), đồ họa được cấp phép theo CC-BY 4.0.
+Một thư viện đơn giản cung cấp hỗ trợ emoji Unicode chuẩn trên mọi nền tảng.
+Twemoji v11.0 tuân theo đặc tả Unicode 11.0 và hỗ trợ bản nháp đặc tả Emoji 11.0.
+Thư viện Twemoji hỗ trợ 2.841 emoji, bao gồm cả tùy chọn tông màu da và giới tính.</description>
+	<description xml:lang="tr">Bu görsel dosyaları, CC-BY 4.0 lisansıyla sunulan Twitter Emoji (Twemoji) grafiklerinden alınmıştır.
+Tüm platformlarda standart Unicode emoji desteği sağlayan basit bir kütüphanedir.
+Twemoji v11.0, Unicode 11.0 belirtimine uyar ve Emoji 11.0 taslak belirtimini destekler.
+Twemoji kütüphanesi, ten rengi ve cinsiyet değiştiricileri dahil 2.841 emoji desteği sunar.</description>
+	<description xml:lang="ru">Эти изображения взяты из Twitter Emoji (Twemoji), графика распространяется по лицензии CC-BY 4.0.
+Простая библиотека, обеспечивающая поддержку стандартных эмодзи Unicode на всех платформах.
+Twemoji v11.0 соответствует спецификации Unicode 11.0 и поддерживает черновую спецификацию Emoji 11.0.
+Библиотека Twemoji поддерживает 2841 эмодзи, включая модификаторы тона кожи и пола.</description>
+	<description xml:lang="mn">Эдгээр зургийн файлууд нь CC-BY 4.0 лицензтэй Twitter Emoji (Twemoji) графикаас авсан болно.
+Бүх платформ дээр стандарт Unicode эможийн дэмжлэг олгодог энгийн сан.
+Twemoji v11.0 нь Unicode 11.0 стандартыг баримталж, Emoji 11.0 төслийн стандартыг дэмждэг.
+Twemoji сан нь арьсны өнгө болон хүйсийн хувиргагч оруулаад 2,841 эможиг дэмждэг.</description>
+	<description xml:lang="fr">Ces fichiers d'images proviennent de Twitter Emoji (Twemoji), graphismes sous licence CC-BY 4.0.
+Une bibliothèque simple qui fournit la prise en charge standard des emoji Unicode sur toutes les plateformes.
+Twemoji v11.0 respecte la spécification Unicode 11.0 et prend en charge la spécification provisoire Emoji 11.0.
+La bibliothèque Twemoji propose 2 841 emoji, y compris les variantes de teinte de peau et de genre.</description>
+	<description xml:lang="es">Estos archivos de imagen provienen de Twitter Emoji (Twemoji), gráficos con licencia CC-BY 4.0.
+Una biblioteca sencilla que ofrece compatibilidad con emojis Unicode estándar en todas las plataformas.
+Twemoji v11.0 cumple la especificación Unicode 11.0 y admite el borrador de la especificación Emoji 11.0.
+La biblioteca Twemoji admite 2.841 emojis, incluidos modificadores de tono de piel y de género.</description>
+	<description xml:lang="de">Diese Bilddateien stammen von Twitter Emoji (Twemoji), Grafiken lizenziert unter CC-BY 4.0.
+Eine einfache Bibliothek, die plattformübergreifend standardisierte Unicode-Emoji-Unterstützung bietet.
+Twemoji v11.0 entspricht der Unicode-11.0-Spezifikation und unterstützt den Entwurf der Emoji-11.0-Spezifikation.
+Die Twemoji-Bibliothek umfasst 2.841 Emojis, einschließlich Hautton- und Geschlechtsmodifikatoren.</description>
+	<description xml:lang="zh-TW">這些圖片檔案來自 Twitter Emoji（Twemoji），圖形以 CC-BY 4.0 授權釋出。
+這是一套在各平台提供標準 Unicode emoji 支援的簡易函式庫。
+Twemoji v11.0 遵循 Unicode 11.0 規範，並支援 Emoji 11.0 草案規範。
+Twemoji 函式庫支援 2,841 個 emoji，包含膚色與性別修飾符。</description>
+	<description xml:lang="zh-CN">这些图片文件来自 Twitter Emoji (Twemoji)，图形素材基于 CC-BY 4.0 许可发布。
+一个为各类平台提供标准 Unicode 表情支持的简易库。
+Twemoji v11.0 遵循 Unicode 11.0 规范，并支持 Emoji 11.0 草案规范。
+Twemoji 库共支持 2,841 个表情，包括肤色和性别修饰符。</description>
+	<description xml:lang="jp">これらの画像ファイルは CC-BY 4.0 でライセンスされた Twitter Emoji (Twemoji) のものです。
+すべてのプラットフォームで標準の Unicode 絵文字をサポートするシンプルなライブラリです。
+Twemoji v11.0 は Unicode 11.0 仕様に準拠し、Emoji 11.0 ドラフト仕様に対応しています。
+Twemoji ライブラリは、肌の色や性別のバリエーションを含む 2,841 種類の絵文字をサポートします。</description>
+	<version>1.0</version>
+	<date>2018-08-20</date>
+	<author link="https://github.com/twitter/twemoji">
+		<name xml:lang="ko">Twitter</name>
+		<name xml:lang="en">Twitter</name>
+	</author>
+	<author link="https://misol.kr">
+		<name xml:lang="ko">misol</name>
+		<name xml:lang="en">misol</name>
+	</author>
+	<license link="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</license>
+</skin>

@@ -1,0 +1,108 @@
+@charset "utf-8";
+/* Element Reset */
+.xm,
+.xm table,
+.xm input,
+.xm textarea,
+.xm select,
+.xm button{font-family:Tahoma,Geneva,sans-serif;font-size:12px;color:#333}
+.xm button,
+.xm input[type=submit],
+.xm input[type=reset],
+.xm input[type=button]{cursor:pointer;overflow:visible}
+.xm img{border:0}
+.xm p{line-height:1.5}
+/* Heading */
+.xm .hx{position:relative;border-bottom:1px solid #ccc8be;padding:8px 10px;margin:0}
+.xm .hx:after{content:"";margin:0 -10px;position:relative;top:10px;display:block;clear:both;height:1px;background:#fff}
+.xm .hx.h2{background:#e5e5e5;text-shadow:1px 1px 0 #fff;position:relative;zoom:1}
+.xm .hx>h2{margin:0 10px 0 0;display:inline;font-size:16px;line-height:1.4}
+.xm .hx a{color:#000}
+/* Content */
+.xm .co{margin: 10px;line-height: 1.4;font-size: 14px;color:#333}
+/* DL */
+.xm .dl{margin:15px 0}
+.xm .dl>dt{font-weight:bold;margin-top:10px}
+.xm .dl>dt>em{font-style:normal;color:#e00}
+.xm .dl>dd{margin-left:20px}
+/* Button Area */
+.xm .ba{margin:15px 0;padding:0;list-style:none;border:1px solid #ddd;border-radius:4px}
+.xm .ba li{border-top:1px solid #ddd}
+.xm .ba li:first-child{border:0}
+.xm .ba li>a,
+.xm .ba li>button,
+.xm .ba li>input{display:block;white-space:nowrap;padding:7px 10px;text-decoration:none;color:#000;background:#f4f4f4;text-shadow:0 1px 0 #fff;overflow:hidden;text-overflow:ellipsis}
+/* List */
+.lt{margin:0;padding:0;list-style:none;background:#f8f8f8;font-size:14px}
+.lt li{border-bottom:1px solid #ccc8be;overflow:hidden}
+.lt li.has_padding { padding: 10px; position: relative; }
+.lt li button.delete_autologin { display: block; position: absolute; right: 10px; top: 10px; }
+.lt a{box-sizing: border-box;width:100%;display:inline-block;float:left;text-decoration:none;color:#000;padding:10px}
+.lt span{
+	display:inline-block;
+	padding:5px;
+}
+.lt span.before-color:after{
+	content:"→";
+	margin-left:10px;
+}
+.lt .memberInfo{float:right;}
+.lt .notice{display:inline-block;background:#a06acd;font-weight:bold;color:#fff;font-size:12px;padding:1px;border-radius:2px;-moz-border-radius:2px;-webkit-border-radius:2px}
+.lt .title{display:block;margin:0 0 5px 0}
+.lt .title strong{font-size:14px;font-weight:bold}
+.lt .title em{font-size:12px;color:#333;color:#6352d2}
+.lt .auth{display:block;font-size:12px}
+.lt .auth .time{padding:0 5px;border-left:1px solid #bfbfbf}
+/* Search */
+.search { clear: both; text-align: center; padding: 4px 0; }
+.search input[type=search] { font-size: 12px; line-height: 16px; padding: 3px; width: 160px; height: 24px; box-sizing: border-box; }
+.search select { font-size: 12px; line-height: 16px; padding: 3px; height: 24px; box-sizing: border-box; }
+.search button { font-size: 12px; line-height: 16px; padding: 3px 8px; height: 24px; box-sizing: border-box; }
+/* Pagination */
+.pn{font-size:12px;text-align:center;background:#f2f0ec;padding:15px 0;border-top:1px solid #fff}
+.pn a{color:#333;text-decoration:none}
+.pn strong{margin:0 10px}
+.pn .prev:before{content:"";display:inline-block;width:0;height:0;margin:0 4px 0 0;border:4px solid;border-color:transparent;border-right-color:#999}
+.pn .next:after{content:"";display:inline-block;width:0;height:0;margin:0 0 0 4px;border:4px solid;border-color:transparent;border-left-color:#999}
+/* MemberMenu */
+.xm div.mtab{
+	overflow: hidden;
+	width:100%;
+	height: 52px;
+	white-space: nowrap;
+	border-bottom: 1px solid #e0e0e0;
+	box-sizing: border-box;
+}
+.xm ul.mtab{
+	display: block;
+	list-style: outside none none;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	padding: 6px 0px 100px;
+	text-decoration: none;
+	margin: 0;
+}
+.xm ul.mtab>li {
+	display:inline-block;
+	height: 40px;
+	line-height: 18px;
+	position: relative;
+}
+.xm ul.mtab>li a {
+	display:inline-block;
+	color: #000;
+	font-weight: 400;
+	letter-spacing: -1px;
+	line-height: 40px;
+	text-decoration: none;
+}
+.xm ul.mtab>li a:hover, .xm ul.mtab>li.active a {
+	font-weight: 700;
+}
+.xm ul.mtab>li a span {
+	border-left: 1px solid #e0e0e0;
+	padding: 0 15px;
+}
+.xm ul.mtab>li:first-child a span {
+	border-left: 0 none;
+}

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+	<grants />
+	<actions>
+		<action name="getFileList" type="model" />
+
+		<action name="procFileUpload" type="controller" check_csrf="false" />
+		<action name="procFileIframeUpload" type="controller" />
+		<action name="procFileImageResize" type="controller" />
+		<action name="procFileDelete" type="controller" />
+		<action name="procFileSetCoverImage" type="controller" />
+		<action name="procFileDownload" type="controller" method="GET|POST" />
+		<action name="procFileOutput" type="controller" method="GET|POST" />
+		<action name="procFileGetList" type="controller" permission="root" />
+
+		<action name="dispFileAdminList" type="view" admin_index="true" menu_name="file" menu_index="true" />
+		<action name="dispFileAdminEdit" type="view" menu_name="file" />
+		<action name="dispFileAdminUploadConfig" type="view" menu_name="file" />
+		<action name="dispFileAdminDownloadConfig" type="view" menu_name="file" />
+		<action name="dispFileAdminOtherConfig" type="view" menu_name="file" />
+
+		<action name="procFileAdminAddCart" type="controller" />
+		<action name="procFileAdminEditFileName" type="controller" />
+		<action name="procFileAdminEditImage" type="controller" />
+		<action name="procFileAdminDeleteChecked" type="controller" ruleset="deleteChecked" />
+		<action name="procFileAdminInsertUploadConfig" type="controller" ruleset="insertConfig" />
+		<action name="procFileAdminInsertDownloadConfig" type="controller" />
+		<action name="procFileAdminInsertOtherConfig" type="controller" />
+		<action name="procFileAdminInsertModuleConfig" type="controller" permission="manager:config:*" check_var="target_module_srl" ruleset="fileModuleConfig" />
+	</actions>
+	<eventHandlers>
+		<eventHandler after="document.deleteDocument" class="controller" method="triggerDeleteAttached" />
+		<eventHandler after="comment.deleteComment" class="controller" method="triggerCommentDeleteAttached" />
+		<eventHandler after="editor.deleteSavedDoc" class="controller" method="triggerDeleteAttached" />
+		<eventHandler after="module.deleteModule" class="controller" method="triggerDeleteModuleFiles" />
+		<eventHandler after="module.procModuleAdminCopyModule" class="controller" method="triggerCopyModule" />
+		<eventHandler after="document.moveDocumentModule" class="controller" method="triggerMoveDocument" />
+		<eventHandler before="document.copyDocumentModule.each" class="controller" method="triggerAddCopyDocument" />
+		<eventHandler before="comment.copyCommentByDocument.each" class="controller" method="triggerAddCopyCommentByDocument" />
+		<eventHandler before="module.dispAdditionSetup" class="view" method="triggerDispFileAdditionSetup" />
+	</eventHandlers>
+	<menus>
+		<menu name="file">
+			<title xml:lang="en">File</title>
+			<title xml:lang="vi">Tệp tin</title>
+			<title xml:lang="tr">Dosya</title>
+			<title xml:lang="ru">Файлы</title>
+			<title xml:lang="mn">Файл</title>
+			<title xml:lang="fr">Fichiers</title>
+			<title xml:lang="es">Archivos</title>
+			<title xml:lang="de">Dateien</title>
+			<title xml:lang="zh-TW">檔案</title>
+			<title xml:lang="zh-CN">附件</title>
+			<title xml:lang="jp">ファイル</title>
+			<title xml:lang="ko">파일</title>
+			<title xml:lang="zh-CN">File</title>
+			<title xml:lang="jp">ファイル</title>
+			<title xml:lang="es">File</title>
+			<title xml:lang="ru">File</title>
+			<title xml:lang="fr">File</title>
+			<title xml:lang="zh-TW">附加檔案</title>
+			<title xml:lang="vi">File</title>
+			<title xml:lang="mn">File</title>
+			<title xml:lang="tr">File</title>
+			<title xml:lang="de">Dateien</title>
+			<title xml:lang="en">Files</title>
+		</menu>
+	</menus>
+</module>

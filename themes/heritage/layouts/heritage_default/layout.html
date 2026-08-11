@@ -1,0 +1,133 @@
+@version(2)
+@load('../../assets/heritage.css')
+@load('css/layout.css')
+@load('js/layout.js')
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+
+@php
+$hr = $layout_info;
+$hr_width = (int)($hr->content_width ?? 1180) ?: 1180;
+$hr_scheme = $hr->color_scheme ?? 'auto';
+$hr_point = trim((string)($hr->point_color ?? '')) ?: '#6c5ce0';
+
+$hr_menu = array_values($gnb->list ?? []);
+
+$hr_current = null;
+foreach ($hr_menu as $hr_m) {
+	if (!empty($hr_m['selected']) || !empty($hr_m['open'])) { $hr_current = $hr_m; break; }
+}
+$hr_type = $hr->layout_type ?? 'sub';
+
+$hr_class_map = ['m' => 'main', 'sl' => 'sub', 'sf' => 'sub_full'];
+$hr_selected_class = '';
+foreach ($hr_menu as $hr_m) {
+	if (empty($hr_m['selected']) && empty($hr_m['open'])) continue;
+	$hr_selected_class = (string)($hr_m['class'] ?? '');
+	foreach ((array)($hr_m['list'] ?? []) as $hr_m2) {
+		if (empty($hr_m2['selected']) && empty($hr_m2['open'])) continue;
+		$hr_selected_class = (string)($hr_m2['class'] ?? '') ?: $hr_selected_class;
+		foreach ((array)($hr_m2['list'] ?? []) as $hr_m3) {
+			if (!empty($hr_m3['selected'])) {
+				$hr_selected_class = (string)($hr_m3['class'] ?? '') ?: $hr_selected_class;
+			}
+		}
+	}
+	break;
+}
+$hr_has_class_type = false;
+foreach (preg_split('/\s+/', trim($hr_selected_class)) as $hr_token) {
+	if (isset($hr_class_map[$hr_token])) {
+		$hr_type = $hr_class_map[$hr_token];
+		$hr_has_class_type = true;
+		break;
+	}
+}
+
+$hr_module_info = \Context::get('current_module_info');
+$hr_module_now = is_object($hr_module_info) ? (string)($hr_module_info->module ?? '') : '';
+$hr_full_modules = ['member', 'communication', 'zittme_pay', 'integration_search'];
+if (!$hr_has_class_type && in_array($hr_module_now, $hr_full_modules, true)) {
+	$hr_type = 'sub_full';
+}
+$hr_lnb = ($hr_type === 'sub' && $hr_current && !empty($hr_current['list'])) ? $hr_current : null;
+
+$hr_visuals = array_values((array)($hr->visuals ?? []));
+$hr_visual_mode = $hr->show_visual ?? 'main';
+$hr_show_visual = count($hr_visuals) && $hr_visual_mode !== 'none'
+	&& ($hr_visual_mode === 'all' || $hr_type === 'main');
+$hr_interval = max(0, (int)($hr->visual_interval ?? 6));
+
+$hr_footer_info = array_values(array_filter(array_map('trim', explode("\n", (string)($hr->footer_info ?? '')))));
+@endphp
+
+<script>
+(function () {
+	var fixed = '{{ $hr_scheme }}';
+	var saved = null;
+	try { saved = localStorage.getItem('hr-theme'); } catch (e) {}
+	var theme = (fixed === 'auto')
+		? (saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'))
+		: fixed;
+	document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
+
+<div class="hr hr-layout t-{{ $hr_type }} n-{{ $hr->gnb_color ?? 'dark' }}" style="--hr-w:{{ $hr_width }}px; --hr-brand:{{ $hr_point }}">
+
+	@include('_header')
+
+	@if ($hr_show_visual)
+		@include('_visual')
+	@endif
+
+	<main id="hr_content" class="hr-body @if ($hr_lnb) has-lnb @endif">
+		<div class="hr-inner hr-body-inner">
+
+			@if ($hr_lnb)
+			<aside class="hr-lnb" aria-label="{{ $hr_lnb['text'] }} 메뉴">
+				<h2 class="hr-lnb-title">{{ $hr_lnb['text'] }}</h2>
+				<ul class="hr-lnb-list">
+					@foreach ($hr_lnb['list'] as $hr_c)
+					<li class="@if (!empty($hr_c['selected']) || !empty($hr_c['open'])) is-on @endif">
+						<a href="{{ $hr_c['href'] }}" @if (($hr_c['open_window'] ?? '') === 'Y') target="_blank" rel="noopener" @endif>{{ $hr_c['text'] }}</a>
+						@if (!empty($hr_c['list']) && (!empty($hr_c['selected']) || !empty($hr_c['open'])))
+						<ul class="hr-lnb-sub">
+							@foreach ($hr_c['list'] as $hr_g)
+							<li class="@if (!empty($hr_g['selected'])) is-on @endif"><a href="{{ $hr_g['href'] }}">{{ $hr_g['text'] }}</a></li>
+							@endforeach
+						</ul>
+						@endif
+					</li>
+					@endforeach
+				</ul>
+
+				@if ($hr->use_login_box === 'Y')
+				<div class="hr-side-login">
+					@if ($is_logged)
+					<p class="hr-side-me"><strong>{{ $logged_info->nick_name }}</strong>님, 반갑습니다.</p>
+					<div class="hr-side-links">
+						<a href="{{ getUrl('', 'act', 'dispMemberInfo') }}">내 정보</a>
+						<a href="{{ getUrl('', 'act', 'dispMemberLogout') }}">로그아웃</a>
+					</div>
+					@else
+					<p class="hr-side-me">회원 서비스를 이용하시려면 로그인해 주세요.</p>
+					<a class="hr-btn hr-btn-primary hr-btn-sm" href="{{ getUrl('', 'act', 'dispMemberLoginForm') }}">로그인</a>
+					<div class="hr-side-links">
+						<a href="{{ getUrl('', 'act', 'dispMemberSignUpForm') }}">회원가입</a>
+						<a href="{{ getUrl('', 'act', 'dispMemberFindAccount') }}">계정 찾기</a>
+					</div>
+					@endif
+				</div>
+				@endif
+			</aside>
+			@endif
+
+			<div class="hr-content rhymix_content">{!! $content !!}</div>
+
+		</div>
+	</main>
+
+	@include('_footer')
+
+</div>

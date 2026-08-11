@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+	<grants>
+		<grant name="list" default="guest">
+			<title xml:lang="ko">목록</title>
+			<title xml:lang="zh-CN">目录</title>
+			<title xml:lang="jp">リスト</title>
+			<title xml:lang="en">list</title>
+			<title xml:lang="vi">Danh sách</title>
+			<title xml:lang="es">Lista</title>
+			<title xml:lang="zh-TW">列表</title>
+			<title xml:lang="tr">Liste</title>
+			<title xml:lang="ru">Список</title>
+			<title xml:lang="mn">жагсаалт</title>
+			<title xml:lang="fr">Liste</title>
+			<title xml:lang="de">Liste</title>
+		</grant>
+		<grant name="view" default="guest">
+			<title xml:lang="ko">열람</title>
+			<title xml:lang="zh-CN">查看</title>
+			<title xml:lang="jp">閲覧</title>
+			<title xml:lang="en">view</title>
+			<title xml:lang="vi">Xem</title>
+			<title xml:lang="es">Opinión</title>
+			<title xml:lang="zh-TW">檢視</title>
+			<title xml:lang="tr">görüş</title>
+			<title xml:lang="ru">Просмотр</title>
+			<title xml:lang="mn">үзэх</title>
+			<title xml:lang="fr">Consultation</title>
+			<title xml:lang="de">Lesen</title>
+		</grant>
+		<grant name="write_document" default="guest">
+			<title xml:lang="ko">글 작성</title>
+			<title xml:lang="zh-CN">发表新主题</title>
+			<title xml:lang="jp">書き込み作成</title>
+			<title xml:lang="en">write document</title>
+			<title xml:lang="vi">Gửi bài viết</title>
+			<title xml:lang="es">Escribir el documento</title>
+			<title xml:lang="zh-TW">發表主題</title>
+			<title xml:lang="tr">belge yaz</title>
+			<title xml:lang="ru">Создание записей</title>
+			<title xml:lang="mn">бичлэг бичих</title>
+			<title xml:lang="fr">Rédiger un message</title>
+			<title xml:lang="de">Beitrag schreiben</title>
+		</grant>
+		<grant name="write_comment" default="guest">
+			<title xml:lang="ko">댓글 작성</title>
+			<title xml:lang="zh-CN">发表评论</title>
+			<title xml:lang="jp">コメント作成</title>
+			<title xml:lang="en">write comment</title>
+			<title xml:lang="vi">Gửi bình luận</title>
+			<title xml:lang="es">Escribir comentario</title>
+			<title xml:lang="zh-TW">發表評論</title>
+			<title xml:lang="es">yorum yaz</title>
+			<title xml:lang="tr">yorum yazma</title>
+			<title xml:lang="ru">Создание комментариев</title>
+			<title xml:lang="mn">сэтгэгдэл бичих</title>
+			<title xml:lang="fr">Rédiger un commentaire</title>
+			<title xml:lang="de">Kommentar schreiben</title>
+		</grant>
+		<grant name="vote_log_view" default="member">
+			<title xml:lang="ko">추천인 보기</title>
+			<title xml:lang="en">view recommender</title>
+			<title xml:lang="vi">Xem người đề xuất</title>
+			<title xml:lang="tr">önerenleri görme</title>
+			<title xml:lang="ru">Просмотр проголосовавших</title>
+			<title xml:lang="mn">санал өгсөн хүнийг харах</title>
+			<title xml:lang="fr">Voir les votants</title>
+			<title xml:lang="es">ver recomendadores</title>
+			<title xml:lang="de">Empfehlende anzeigen</title>
+			<title xml:lang="zh-TW">檢視推薦者</title>
+			<title xml:lang="zh-CN">查看推荐人</title>
+			<title xml:lang="jp">推薦者の閲覧</title>
+		</grant>
+		<grant name="update_view" default="member">
+			<title xml:lang="ko">수정 내역 보기</title>
+			<title xml:lang="en">view update history</title>
+			<title xml:lang="vi">Xem lịch sử chỉnh sửa</title>
+			<title xml:lang="tr">düzenleme geçmişini görme</title>
+			<title xml:lang="ru">Просмотр истории изменений</title>
+			<title xml:lang="mn">засварын түүх харах</title>
+			<title xml:lang="fr">Voir l'historique des modifications</title>
+			<title xml:lang="es">ver historial de cambios</title>
+			<title xml:lang="de">Änderungsverlauf anzeigen</title>
+			<title xml:lang="zh-TW">檢視修改紀錄</title>
+			<title xml:lang="zh-CN">查看修改记录</title>
+			<title xml:lang="jp">修正履歴の閲覧</title>
+		</grant>
+		<grant name="consultation_read" default="manager">
+			<title xml:lang="ko">상담글 열람</title>
+			<title xml:lang="en">view consultation document</title>
+			<title xml:lang="jp">相談文照会</title>
+			<title xml:lang="vi">Xem bài tư vấn</title>
+			<title xml:lang="tr">danışma yazısını görme</title>
+			<title xml:lang="ru">Просмотр обращений</title>
+			<title xml:lang="mn">зөвлөгөө бичлэг харах</title>
+			<title xml:lang="fr">Consulter les messages de consultation</title>
+			<title xml:lang="es">ver consultas</title>
+			<title xml:lang="de">Beratungsbeiträge lesen</title>
+			<title xml:lang="zh-TW">檢視諮詢文章</title>
+			<title xml:lang="zh-CN">查看咨询帖</title>
+		</grant>
+	</grants>
+	<actions>
+		<action name="dispBoardContent" type="view" permission="list" standalone="false" index="true">
+			<route route="$document_srl:int" priority="100" />
+			<route route="$document_srl:int/" priority="100" />
+			<route route="$document_srl:int/comment/$comment_srl:int" priority="100" />
+			<route route="category/$category:int" priority="40" />
+			<route route="category/$category:int/page/$page:int" priority="40" />
+			<route route="page/$page:int" priority="10" />
+		</action>
+		<action name="dispBoardWrite" type="view" permission="write_document" standalone="false" meta-noindex="true">
+			<route route="write" />
+			<route route="$document_srl/edit" />
+		</action>
+		<action name="dispBoardDelete" type="view" permission="write_document" standalone="false" meta-noindex="true" route="$document_srl/delete" />
+		<action name="dispBoardWriteComment" type="view" permission="write_comment" standalone="false" meta-noindex="true" route="$document_srl/comment" />
+		<action name="dispBoardReplyComment" type="view" permission="write_comment" standalone="false" meta-noindex="true">
+			<route route="comment/$comment_srl/reply" />
+			<route route="comment/$comment_srl/reply$document_srl:delete" />
+		</action>
+		<action name="dispBoardModifyComment" type="view" permission="write_comment" standalone="false" meta-noindex="true">
+			<route route="comment/$comment_srl/edit" />
+			<route route="comment/$comment_srl/edit$document_srl:delete" />
+		</action>
+		<action name="dispBoardDeleteComment" type="view" permission="write_comment" standalone="false" meta-noindex="true">
+			<route route="comment/$comment_srl/delete" />
+			<route route="comment/$comment_srl/delete$document_srl:delete" />
+		</action>
+		<action name="dispBoardDeleteTrackback" type="view" permission="list,view" standalone="false" meta-noindex="true" />
+		<action name="dispBoardContentList" type="view" permission="list" standalone="false" />
+		<action name="dispBoardContentView" type="view" permission="view" standalone="false" />
+		<action name="dispBoardUpdateLog" type="view" permission="update_view" standalone="false" />
+		<action name="dispBoardUpdateLogView" type="view" permission="update_view" standalone="false" />
+		<action name="dispBoardVoteLog" type="view" permission="vote_log_view" standalone="false" />
+		<action name="dispBoardNotFound" type="view" standalone="false" error-handlers="404" />
+
+		<action name="dispBoardNoticeList" type="view" permission="list" standalone="false" />
+		<action name="dispBoardCategoryList" type="view" permission="list" standalone="false" />
+		<action name="dispBoardContentCommentList" type="view" permission="view" standalone="false" />
+		<action name="dispBoardContentFileList" type="view" permission="view" standalone="false" />
+		<action name="dispBoardTagList" type="view" permission="list" standalone="false" />
+		<action name="dispBoardCategory" type="view" permission="list" standalone="false" />
+		<action name="dispBoardCommentPage" type="view" permission="view" standalone="false" />
+		<action name="getBoardCommentPage" type="mobile" permission="view" standalone="false" />
+
+		<action name="procBoardInsertDocument" type="controller" permission="write_document" standalone="false" ruleset="insertDocument" />
+		<action name="procBoardDeleteDocument" type="controller" permission="write_document" standalone="false" />
+		<action name="procBoardRevertDocument" type="controller" permission="update_view" standalone="false" />
+		<action name="procBoardInsertComment" type="controller" permission="write_comment" standalone="false" />
+		<action name="procBoardDeleteComment" type="controller" permission="write_comment" standalone="false" />
+		<action name="procBoardDeleteTrackback" type="controller" permission="list,view" standalone="false" />
+		<action name="procBoardVerificationPassword" type="controller" permission="view" standalone="false" />
+		<action name="procBoardVoteDocument" type="controller" permission="view" standalone="false" />
+
+		<action name="dispBoardAdminContent" type="view" admin_index="true" menu_name="board" menu_index="true" />
+		<action name="dispBoardAdminInsertBoard" type="view" setup_index="true" menu_name="board" />
+		<action name="dispBoardAdminDeleteBoard" type="view" menu_name="board" />
+		<action name="dispBoardAdminBoardInfo" type="view" permission="manager:config:*" menu_name="board" />
+		<action name="dispBoardAdminCategoryInfo" type="view" permission="manager:config:*" menu_name="board" />
+		<action name="dispBoardAdminExtraVars" type="view" permission="manager:config:*" menu_name="board" />
+		<action name="dispBoardAdminGrantInfo" type="view" permission="manager:config:*" menu_name="board" />
+		<action name="dispBoardAdminBoardAdditionSetup" type="view" permission="manager:config:*" menu_name="board" />
+		<action name="dispBoardAdminSkinInfo" type="view" permission="manager:config:*" menu_name="board" />
+		<action name="dispBoardAdminMobileSkinInfo" type="view" permission="manager:config:*" menu_name="board" />
+
+		<action name="getBoardAdminSimpleSetup" type="model" simple_setup_index="true" />
+
+		<action name="procBoardAdminInsertBoard" type="controller" permission="manager:config:*" check_var="module_srl" ruleset="insertBoard" />
+		<action name="procBoardAdminDeleteBoard" type="controller" permission="manager:config:*" check_var="module_srl" />
+		<action name="procBoardAdminUpdateBoard" type="controller" ruleset="insertBoardForBasic" />
+		<action name="procBoardAdminInsertCombinedConfig" type="controller" />
+		<action name="procBoardAdminSaveCategorySettings" type="controller" permission="manager:config:*" check_var="module_srl" ruleset="saveCategorySettings" />
+	</actions>
+	<eventHandlers>
+		<eventHandler after="member.getMemberMenu" class="controller" method="triggerMemberMenu" />
+		<eventHandler after="menu.getModuleListInSitemap" class="model" method="triggerModuleListInSitemap" />
+		<eventHandler after="module.procModuleAdminCopyModule" class="controller" method="triggerCopyModule" />
+	</eventHandlers>
+	<menus>
+		<menu name="board" type="all">
+			<title xml:lang="en">Board</title>
+			<title xml:lang="vi">Bảng tin</title>
+			<title xml:lang="tr">Forum</title>
+			<title xml:lang="ru">Форум</title>
+			<title xml:lang="mn">Самбар</title>
+			<title xml:lang="fr">Forum</title>
+			<title xml:lang="es">Foro</title>
+			<title xml:lang="de">Forum</title>
+			<title xml:lang="zh-TW">討論板</title>
+			<title xml:lang="zh-CN">论坛</title>
+			<title xml:lang="jp">掲示板</title>
+			<title xml:lang="ko">게시판</title>
+			<title xml:lang="zh-CN">Board</title>
+			<title xml:lang="jp">Board</title>
+			<title xml:lang="es">Board</title>
+			<title xml:lang="ru">Board</title>
+			<title xml:lang="fr">Board</title>
+			<title xml:lang="zh-TW">Board</title>
+			<title xml:lang="vi">Board</title>
+			<title xml:lang="mn">Board</title>
+			<title xml:lang="tr">Board</title>
+			<title xml:lang="de">Forum</title>
+			<title xml:lang="en">Board</title>
+		</menu>
+	</menus>
+</module>

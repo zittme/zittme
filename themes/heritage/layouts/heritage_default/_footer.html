@@ -1,0 +1,36 @@
+@version(2)
+<footer class="hr-footer">
+	<div class="hr-inner">
+		<div class="hr-footer-top">
+			<div>
+				<div class="hr-footer-brand">{{ $hr->logo_text ?: ($site_title ?? '') }}</div>
+				@if (!empty($hr->footer_about))
+				<p class="hr-footer-about">{!! nl2br(escape($hr->footer_about)) !!}</p>
+				@endif
+			</div>
+
+			@if (!empty($footer_menu->list))
+			<nav class="hr-footer-menu" aria-label="푸터 메뉴">
+				@foreach ($footer_menu->list as $hr_f)
+				<a href="{{ $hr_f['href'] }}" @if (($hr_f['open_window'] ?? '') === 'Y') target="_blank" rel="noopener" @endif>{{ $hr_f['text'] }}</a>
+				@endforeach
+			</nav>
+			@endif
+		</div>
+
+		@if (count($hr_footer_info))
+		<div class="hr-footer-info">
+			@foreach ($hr_footer_info as $hr_line)
+			<span>{{ $hr_line }}</span>
+			@endforeach
+		</div>
+		@endif
+
+		<div class="hr-footer-bottom">
+			<span>{{ $hr->copyright ?: ('© ' . ($site_title ?? '')) }}</span>
+			<a class="hr-top-btn" href="#hr_header">
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 8 7 7H5z"/></svg> 맨 위로
+			</a>
+		</div>
+	</div>
+</footer>

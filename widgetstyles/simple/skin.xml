@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgetstyle>
+    <title xml:lang="ko">심플 스트롱</title>
+    <title xml:lang="zh-CN">简易细线控件样式</title>
+    <title xml:lang="en">Simple line</title>
+    <title xml:lang="vi">Dòng đơn giản</title>
+    <title xml:lang="zh-TW">簡單樣式</title>
+    <title xml:lang="jp">シンプルストロング</title>
+    <title xml:lang="tr">Basit Sıra</title>
+    <title xml:lang="ru">Простая линия</title>
+    <title xml:lang="mn">Энгийн шугам</title>
+    <title xml:lang="fr">Ligne simple</title>
+    <title xml:lang="es">Línea simple</title>
+    <title xml:lang="de">Einfache Linie</title>
+    <description xml:lang="ko">선 하나만으로 꾸며진 위젯스타일 입니다.</description>
+    <description xml:lang="zh-CN">简易细线控件样式。</description>
+    <description xml:lang="en">A widget style decorated with one simple line.</description>
+    <description xml:lang="vi">Widget được trang trí với một dòng đơn giản.</description>
+    <description xml:lang="zh-TW">簡單的 Widget 線條樣式。</description>
+    <description xml:lang="jp">線一つだけのウィジェットスタイルです。</description>
+    <description xml:lang="tr">Tek bir basit sırayla düzenlenmiş görsel bileşen şekli.</description>
+    <description xml:lang="ru">Стиль виджета, оформленный одной простой линией.</description>
+    <description xml:lang="mn">Ганц энгийн шугамаар чимэглэсэн виджет загвар.</description>
+    <description xml:lang="fr">Un style de widget décoré d'une seule ligne simple.</description>
+    <description xml:lang="es">Estilo de widget decorado con una sola línea simple.</description>
+    <description xml:lang="de">Ein Widget-Stil, der nur mit einer einfachen Linie gestaltet ist.</description>
+    <version>RX_VERSION</version>
+    <date>RX_CORE</date>
+    <preview>preview.gif</preview>
+
+    <author email_address="developers@xpressengine.com" link="http://xpressengine.com/">
+        <name xml:lang="ko">NAVER</name>
+        <name xml:lang="en">NAVER</name>
+		<name xml:lang="vi">NAVER</name>
+        <name xml:lang="zh-CN">NAVER</name>
+        <name xml:lang="zh-TW">NAVER</name>
+        <name xml:lang="jp">NAVER</name>
+        <name xml:lang="tr">NAVER</name>
+    </author>
+
+    <extra_vars>
+        <var name="ws_colorset" type="select">
+            <title xml:lang="ko">컬러셋</title>
+            <title xml:lang="en">Colorset</title>
+	    <title xml:lang="vi">Tạo màu</title>
+            <title xml:lang="zh-CN">颜色</title>
+            <title xml:lang="zh-TW">顏色</title>
+            <title xml:lang="jp">カラーセット</title>
+            <title xml:lang="tr">Renk ayarı</title>
+            <title xml:lang="ru">Цветовая схема</title>
+            <title xml:lang="mn">Өнгөний багц</title>
+            <title xml:lang="fr">Jeu de couleurs</title>
+            <title xml:lang="es">Conjunto de colores</title>
+            <title xml:lang="de">Farbschema</title>
+            <description xml:lang="ko">컬러셋을 지정해주세요</description>
+            <description xml:lang="en">Choose colorset</description>
+	    <description xml:lang="vi">Lựa chọn màu sắc</description>
+            <description xml:lang="zh-CN">请指定适当的颜色。</description>
+            <description xml:lang="zh-TW">請選擇顏色。</description>
+            <description xml:lang="jp">カラーセットを指定して下さい。</description>
+            <description xml:lang="tr">Renk ayarını seç.</description>
+            <description xml:lang="ru">Выберите цветовую схему</description>
+            <description xml:lang="mn">Өнгөний багцаа сонгоно уу</description>
+            <description xml:lang="fr">Choisissez un jeu de couleurs</description>
+            <description xml:lang="es">Elija un conjunto de colores</description>
+            <description xml:lang="de">Farbschema auswählen</description>
+            <options>
+                <name xml:lang="ko">하얀색</name>
+                <name xml:lang="en">White</name>
+		<name xml:lang="vi">White</name>
+                <name xml:lang="zh-CN">白色</name>
+                <name xml:lang="zh-TW">白色</name>
+                <name xml:lang="jp">白</name>
+                <name xml:lang="tr">Beyaz</name>
+                <name xml:lang="ru">Белый</name>
+                <name xml:lang="mn">Цагаан</name>
+                <name xml:lang="fr">Blanc</name>
+                <name xml:lang="es">Blanco</name>
+                <name xml:lang="de">Weiß</name>
+                <value>white</value>
+            </options>
+            <options>
+                <name xml:lang="ko">검은색</name>
+                <name xml:lang="en">Black</name>
+		<name xml:lang="vi">Black</name>
+                <name xml:lang="zh-CN">黑色</name>
+                <name xml:lang="zh-TW">黑色</name>
+                <name xml:lang="jp">黒</name>
+                <name xml:lang="tr">Siyah</name>
+                <name xml:lang="ru">Чёрный</name>
+                <name xml:lang="mn">Хар</name>
+                <name xml:lang="fr">Noir</name>
+                <name xml:lang="es">Negro</name>
+                <name xml:lang="de">Schwarz</name>
+                <value>black</value>
+            </options>
+        </var>
+        <var name="ws_title" type="text">
+            <name xml:lang="ko">제목</name>
+            <name xml:lang="en">Title</name>
+	    <name xml:lang="vi">Tiêu đề</name>
+            <name xml:lang="zh-CN">栏目名</name>
+            <name xml:lang="zh-TW">標題</name>
+            <name xml:lang="jp">タイトル</name>
+            <name xml:lang="tr">Başlık</name>
+            <name xml:lang="ru">Заголовок</name>
+            <name xml:lang="mn">Гарчиг</name>
+            <name xml:lang="fr">Titre</name>
+            <name xml:lang="es">Título</name>
+            <name xml:lang="de">Titel</name>
+            <description xml:lang="ko">제목 텍스트</description>
+            <description xml:lang="en">Title text</description>
+	    <description xml:lang="vi">Chữ của tiêu đề</description>
+            <description xml:lang="zh-CN">请输入栏目名。</description>
+            <description xml:lang="zh-TW">請輸入標題。</description>
+            <description xml:lang="jp">「タイトル」のテキスト</description>
+            <description xml:lang="tr">Başlık Metni</description>
+            <description xml:lang="ru">Текст заголовка</description>
+            <description xml:lang="mn">Гарчгийн текст</description>
+            <description xml:lang="fr">Texte du titre</description>
+            <description xml:lang="es">Texto del título</description>
+            <description xml:lang="de">Titeltext</description>
+        </var>
+        <var name="ws_more_url" type="text">
+            <name xml:lang="ko">더보기 URL</name>
+            <name xml:lang="en">more URL</name>
+	    <name xml:lang="vi">URL của Xem thêm</name>
+            <name xml:lang="zh-CN">查看更多(链接)</name>
+            <name xml:lang="zh-TW">more URL</name>
+            <name xml:lang="jp">「もっと見る」URL</name>
+            <name xml:lang="tr">Daha fazla URL</name>
+            <name xml:lang="ru">URL ссылки «Подробнее»</name>
+            <name xml:lang="mn">Дэлгэрэнгүй URL</name>
+            <name xml:lang="fr">URL du lien Plus</name>
+            <name xml:lang="es">URL de «ver más»</name>
+            <name xml:lang="de">URL für "Mehr"</name>
+            <description xml:lang="ko">http:// 포함한 URL를 등록합니다.</description>
+	    <description xml:lang="zh-CN">请输入包含http://的URL地址。</description>
+	    <description xml:lang="zh-TW">請輸入http://以外的URL網址。</description>
+            <description xml:lang="en">Destination of a 'more' link. Register a URL including http://</description>
+	    <description xml:lang="vi">Địa chỉ trang sẽ chuyển đến khi bấm vào Xem thêm (Bao gồm cả http://)</description>
+            <description xml:lang="jp">「http://」を含んだURLを登録します。</description>
+            <description xml:lang="tr">Bağlantı hedefi 'daha fazlası'.  http:// içeren bir URL girişi yapınız.</description>
+            <description xml:lang="ru">Адрес ссылки «Подробнее». Укажите URL вместе с http://</description>
+            <description xml:lang="mn">"Дэлгэрэнгүй" холбоосын очих хаяг. http:// орсон URL-ыг оруулна уу.</description>
+            <description xml:lang="fr">Destination du lien Plus. Saisissez une URL incluant http://</description>
+            <description xml:lang="es">Destino del enlace «ver más». Introduzca una URL incluyendo http://</description>
+            <description xml:lang="de">Ziel des "Mehr"-Links. Geben Sie eine URL inklusive http:// an.</description>
+        </var>
+        <var name="ws_more_text" type="text">
+            <name xml:lang="ko">더보기 텍스트</name>
+            <name xml:lang="en">more Text</name>
+	    	<name xml:lang="vi">Chữ của Xem thêm</name>
+            <name xml:lang="zh-CN">查看更多(文本)</name>
+            <name xml:lang="zh-TW">more TEXT</name>
+            <name xml:lang="jp">「もっと見る」テキスト</name>
+            <name xml:lang="tr">Daha fazla metin</name>
+            <name xml:lang="ru">Текст ссылки «Подробнее»</name>
+            <name xml:lang="mn">Дэлгэрэнгүй текст</name>
+            <name xml:lang="fr">Texte du lien Plus</name>
+            <name xml:lang="es">Texto de «ver más»</name>
+            <name xml:lang="de">Text für "Mehr"</name>
+            <description xml:lang="ko">더보기 텍스트</description>
+            <description xml:lang="en">Text for a 'more' link</description>
+            <description xml:lang="zh-CN">文本格式的"查看更多"。</description>
+		    <description xml:lang="vi">Có thể dùng những từ khác thay cho từ Xem thêm</description>
+            <description xml:lang="zh-TW">純文字格式。</description>
+            <description xml:lang="jp">「もっと見る」テキスト</description>
+            <description xml:lang="tr">Bağlantı için metin 'daha fazlası'</description>
+            <description xml:lang="ru">Текст ссылки «Подробнее»</description>
+            <description xml:lang="mn">"Дэлгэрэнгүй" холбоосын текст</description>
+            <description xml:lang="fr">Texte du lien Plus</description>
+            <description xml:lang="es">Texto del enlace «ver más»</description>
+            <description xml:lang="de">Text für den "Mehr"-Link</description>
+       </var>
+    </extra_vars>
+</widgetstyle>

@@ -1,0 +1,13 @@
+<query id="getNewMessageCount" action="select">
+	<tables>
+		<table name="member_message" alias="message" />
+	</tables>
+	<columns>
+		<column name="count(*)" alias="count" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="message.receiver_srl" var="receiver_srl" notnull="notnull" />
+		<condition operation="equal" column="message.readed" var="readed" default="N" notnull="notnull" pipe="and" />
+		<condition operation="equal" column="message.message_type" var="message_type" default="R" pipe="and" />
+	</conditions>
+</query>

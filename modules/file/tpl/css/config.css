@@ -1,0 +1,31 @@
+/* "기본 설정을 따릅니다" 토글 행 — 아래 상세 설정 묶음의 머리글 역할.
+ * 하드코딩 회색/음수 마진 대신 디자인 토큰 기반 카드 헤더로 (다크모드 대응) */
+.x .use_default_file_config {
+	margin: 18px 0 0;
+	padding: 12px 14px;
+	background: var(--zm-surface-2);
+	border: 1px solid var(--zm-line);
+	border-radius: var(--zm-radius-sm);
+}
+.x .use_default_file_config + div { padding-top: 4px; }
+.x .use_default_file_config .x_control-label { padding-top: 0; }
+.x .use_default_file_config label.x_inline { margin: 0; font-weight: 500; }
+
+.image_autoconv_types {
+	margin-bottom: 5px;
+}
+.image_autoconv_types:last-of-type {
+	margin-bottom: 10px;
+}
+.image_autoconv_types .x_inline {
+	display: inline-block;
+	min-width: 40px;
+}
+.image_autoconv_types select {
+	min-width: 0 !important;
+	margin-left: 16px;
+}
+
+.x_help-block .preset_size {
+	font-size: 12px;
+}

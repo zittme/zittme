@@ -1,0 +1,22 @@
+<?php
+$lang->feed = 'RSS фийд нийтлэх';
+$lang->total_feed = 'Нэгдсэн фийд';
+$lang->rss_disable = 'RSS фийд идэвхгүй болгох';
+$lang->feed_copyright = 'Зохиогчийн эрх';
+$lang->feed_document_count = 'Хуудсанд харуулах бичлэгийн тоо';
+$lang->feed_image = 'Фийдийн зураг';
+$lang->rss_type = 'RSS фийдийн төрөл';
+$lang->module_feed_management = 'Модуль тус бүрийн фийд';
+$lang->open_rss = 'RSS нээх';
+$lang->open_rss_types['Y'] = 'Бүтэн';
+$lang->open_rss_types['H'] = 'Хураангуй';
+$lang->open_rss_types['N'] = 'Нээхгүй';
+$lang->open_feed_to_total = 'Нэгдсэн фийдэд оруулах';
+$lang->about_rss_disable = 'Тэмдэглэсэн бол RSS идэвхгүй болно.';
+$lang->about_rss_type = 'RSS фийдийн төрлийг сонгож болно.';
+$lang->about_open_rss = 'Одоогийн хуудасны RSS-ийг нийтэд нээлттэй болгохыг сонгож болно.\\nИдэвхжүүлсэн тохиолдолд харах эрхээс үл хамааран бичлэг нийтэд нээлттэй болно.';
+$lang->about_feed_description = 'Нийтлэгдэх RSS фийдийн тайлбарыг оруулж болно. Оруулаагүй бол модуль тус бүрийн тайлбар өгөгдмөлөөр харагдана.';
+$lang->about_feed_copyright = 'RSS фийдийн зохиогчийн эрхийн мэдээллийг оруулж болно. Оруулаагүй бол бүх RSS фийдэд тохируулсан зохиогчийн эрх хэрэглэгдэнэ.';
+$lang->about_feed_document_count = 'Фийдийн нэг хуудсанд харуулах бичлэгийн тоо (өгөгдмөл: 15)';
+$lang->msg_rss_is_disabled = 'RSS үйлдэл идэвхгүй байна.';
+$lang->msg_rss_invalid_image_format = 'Зургийн формат буруу байна. Зөвхөн JPG, JPEG, GIF, PNG файл дэмжигдэнэ.';

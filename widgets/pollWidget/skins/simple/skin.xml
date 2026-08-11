@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">선과 그림자</title>
+	<title xml:lang="en">Lines and Shadow</title>
+	<title xml:lang="vi">Đường kẻ và đổ bóng</title>
+	<title xml:lang="tr">Çizgiler ve Gölge</title>
+	<title xml:lang="ru">Линии и тень</title>
+	<title xml:lang="mn">Шугам ба сүүдэр</title>
+	<title xml:lang="fr">Lignes et ombre</title>
+	<title xml:lang="es">Líneas y sombra</title>
+	<title xml:lang="de">Linien und Schatten</title>
+	<title xml:lang="zh-TW">線條與陰影</title>
+	<title xml:lang="zh-CN">线条与阴影</title>
+	<title xml:lang="jp">線と影</title>
+	<description xml:lang="ko">선과 그림자가 있는 스킨입니다.</description>
+	<description xml:lang="en">This skin has lines and shadows.</description>
+	<description xml:lang="vi">Giao diện có đường kẻ và đổ bóng.</description>
+	<description xml:lang="tr">Çizgiler ve gölgeler içeren tema.</description>
+	<description xml:lang="ru">Скин с линиями и тенями.</description>
+	<description xml:lang="mn">Шугам болон сүүдэртэй скин.</description>
+	<description xml:lang="fr">Ce skin comporte des lignes et des ombres.</description>
+	<description xml:lang="es">Esta piel tiene líneas y sombras.</description>
+	<description xml:lang="de">Dieser Skin verwendet Linien und Schatten.</description>
+	<description xml:lang="zh-TW">具有線條與陰影效果的面板。</description>
+	<description xml:lang="zh-CN">带有线条和阴影效果的皮肤。</description>
+	<description xml:lang="jp">線と影を用いたスキンです。</description>
+	<version>2.0.2</version>
+	<date>2016-01-26</date>
+	<author email_address="misol.kr@gmail.com" link="https://github.com/misol">
+		<name xml:lang="ko">misol</name>
+		<name xml:lang="en">misol</name>
+	</author>
+	<author email_address="developers@xpressengine.com" link="http://xpressengine.com/">
+		<name xml:lang="ko">NAVER</name>
+		<name xml:lang="en">NAVER</name>
+	</author>
+	<colorset>
+		<color name="normal">
+			<title xml:lang="ko">기본</title>
+			<title xml:lang="en">Default</title>
+			<title xml:lang="vi">Mặc định</title>
+			<title xml:lang="tr">Varsayılan</title>
+			<title xml:lang="ru">По умолчанию</title>
+			<title xml:lang="mn">Үндсэн</title>
+			<title xml:lang="fr">Par défaut</title>
+			<title xml:lang="es">Predeterminado</title>
+			<title xml:lang="de">Standard</title>
+			<title xml:lang="zh-TW">預設</title>
+			<title xml:lang="zh-CN">默认</title>
+			<title xml:lang="jp">標準</title>
+		</color>
+	</colorset>
+</skin>

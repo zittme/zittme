@@ -1,0 +1,20 @@
+<?php
+$lang->krzip = '韩国邮政编码';
+$lang->cmd_krzip_api_type = '选择 API 提供商';
+$lang->cmd_krzip_daumapi = 'Kakao API';
+$lang->cmd_krzip_epostapi = '韩国邮政 API';
+$lang->cmd_krzip_postcodify = 'Postcodify';
+$lang->cmd_krzip_regkey = '注册密钥';
+$lang->cmd_krzip_postcode = '邮政编码';
+$lang->cmd_krzip_address = '通信地址';
+$lang->cmd_krzip_detail_address = '详细地址';
+$lang->about_krzip = '使用公开 API 提供韩国邮政编码查询服务。';
+$lang->about_krzip_api_handler = '指定使用哪个 API 查询邮政编码。';
+$lang->about_krzip_epostapi_regkey = '输入从韩国邮政获取的注册密钥以使用其 API。';
+$lang->msg_krzip_road_address_expectation = '道路名地址：%s';
+$lang->msg_krzip_jibun_address_expectation = '地段号地址：%s';
+$lang->msg_krzip_no_query = '请输入搜索关键词。';
+$lang->msg_krzip_is_maintenance = '系统维护中。';
+$lang->msg_krzip_wrong_regkey = '注册密钥无效。';
+$lang->msg_krzip_no_result = '未找到匹配的地址。';
+$lang->msg_krzip_riddling_wrong = '邮政编码模块发生未知错误。';

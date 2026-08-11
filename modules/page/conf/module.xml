@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<grants>
+		<grant name="modify" default="manager">
+			<title xml:lang="ko">페이지 수정</title>
+			<title xml:lang="en">Edit Page</title>
+			<title xml:lang="vi">Sửa trang</title>
+			<title xml:lang="tr">Sayfa düzenleme</title>
+			<title xml:lang="ru">Редактирование страницы</title>
+			<title xml:lang="mn">Хуудас засах</title>
+			<title xml:lang="fr">Modifier la page</title>
+			<title xml:lang="es">Editar página</title>
+			<title xml:lang="de">Seite bearbeiten</title>
+			<title xml:lang="zh-TW">編輯頁面</title>
+			<title xml:lang="zh-CN">编辑页面</title>
+			<title xml:lang="jp">ページ編集</title>
+		</grant>
+	</grants>
+	<actions>
+		<action name="dispPageIndex" type="view" standalone="false" index="true">
+			<route route="$document_srl:int" priority="100" />
+		</action>
+		<action name="dispPageNotFound" type="view" standalone="false" error-handlers="404" />
+
+		<action name="dispPageAdminContent" type="view" admin_index="true" menu_name="page" menu_index="true" />
+		<action name="dispPageAdminDelete" type="view" menu_name="page" />
+		<action name="dispPageAdminInfo" type="view" permission="manager" check_var="module_srl" setup_index="true" menu_name="page" />
+		<action name="dispPageAdminPageAdditionSetup" type="view" permission="manager" check_var="module_srl" menu_name="page" />
+		<action name="dispPageAdminGrantInfo" type="view" permission="manager" check_var="module_srl" menu_name="page" />
+		<action name="dispPageAdminSkinInfo" type="view" permission="manager" check_var="module_srl" menu_name="page" />
+		<action name="dispPageAdminMobileSkinInfo" type="view" permission="manager" check_var="module_srl" menu_name="page" />
+		<action name="dispPageAdminContentModify" type="view" permission="modify" standalone="false" />
+		<action name="dispPageAdminMobileContent" type="view" permission="modify" standalone="false" />
+		<action name="dispPageAdminMobileContentModify" type="view" permission="modify" standalone="false" />
+
+		<action name="procPageAdminInsert" type="controller" ruleset="insertPage" />
+		<action name="procPageAdminUpdate" type="controller" permission="manager" check_var="module_srl" ruleset="updatePage" />
+		<action name="procPageAdminDelete" type="controller" ruleset="deletePage" />
+		<action name="procPageAdminInsertConfig" type="controller" />
+		<action name="procPageAdminInsertContent" type="controller" permission="modify" check_var="module_srl" standalone="false" />
+		<action name="procPageAdminArticleDocumentInsert" type="controller" permission="modify" standalone="false" />
+		<action name="procPageAdminRemoveWidgetCache" type="controller" permission="modify" check_var="module_srl" />
+	</actions>
+	<menus>
+		<menu name="page" type="all">
+			<title xml:lang="en">Page</title>
+			<title xml:lang="vi">Trang</title>
+			<title xml:lang="tr">Sayfa</title>
+			<title xml:lang="ru">Страница</title>
+			<title xml:lang="mn">Хуудас</title>
+			<title xml:lang="fr">Page</title>
+			<title xml:lang="es">Página</title>
+			<title xml:lang="de">Seite</title>
+			<title xml:lang="zh-TW">頁面</title>
+			<title xml:lang="zh-CN">页面</title>
+			<title xml:lang="jp">ページ</title>
+			<title xml:lang="ko">페이지</title>
+			<title xml:lang="zh-CN">Page</title>
+			<title xml:lang="jp">ページ</title>
+			<title xml:lang="es">Page</title>
+			<title xml:lang="ru">Page</title>
+			<title xml:lang="fr">Page</title>
+			<title xml:lang="zh-TW">頁面</title>
+			<title xml:lang="vi">Page</title>
+			<title xml:lang="mn">Page</title>
+			<title xml:lang="tr">Page</title>
+			<title xml:lang="de">Seite</title>
+			<title xml:lang="en">Pages</title>
+		</menu>
+	</menus>
+</module>

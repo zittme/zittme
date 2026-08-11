@@ -1,0 +1,157 @@
+@version(2)
+@load('css/shop.css')
+
+<div class="shp shp-narrow">
+	<div class="shp-top"><h2 class="shp-title">{{ $lang->shop_order_detail }}</h2></div>
+
+	@php $shp_unrv = Context::get('unreviewed_items') ?: []; @endphp
+	@if (count($shp_unrv))
+	<div class="shp-review-invite {{ Context::get('review') ? 'is-hot' : '' }}">
+		<div class="shp-review-invite-msg">
+			<strong>{{ Context::get('review') ? '구매확정 완료! 리뷰를 작성해보세요' : '아직 리뷰를 작성하지 않은 상품이 있어요' }}</strong>
+			<span>리뷰를 남기면 다른 구매자에게 큰 도움이 됩니다.</span>
+		</div>
+		<div class="shp-review-invite-items">
+			@foreach ($shp_unrv as $shp_unrv_srl => $shp_unrv_name)
+			<a class="shp-btn shp-btn-primary shp-btn-sm" href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceItem', 'item_srl', $shp_unrv_srl, 'review', '1') }}">{{ $shp_unrv_name }} 리뷰 작성</a>
+			@endforeach
+		</div>
+	</div>
+	@endif
+
+	@php
+	$shp_ds_pre = Context::get('display_status') ?: $order->status;
+	$shp_step_keys = ['paid', 'preparing', 'shipping', 'delivered', 'confirmed'];
+	$shp_step_idx = array_search($shp_ds_pre, $shp_step_keys);
+	@endphp
+	@if ($shp_step_idx !== false)
+	<div class="shp-steps">
+		@foreach (['결제 완료', '배송 준비', '배송 중', '배송 완료', '구매확정'] as $shp_si => $shp_sl)
+		<div class="shp-step {{ $shp_si < $shp_step_idx ? 'is-done' : '' }} {{ $shp_si === $shp_step_idx ? 'is-now' : '' }}">
+			<span class="shp-step-dot">
+				@if ($shp_si < $shp_step_idx)
+				<svg width="11" height="11" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12.5l5 5L19 7.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+				@endif
+			</span>
+			<span class="shp-step-label">{{ $shp_sl }}</span>
+		</div>
+		@endforeach
+	</div>
+	@endif
+
+	<dl class="shp-detail-list">
+		<dt>{{ $lang->shop_order_code }}</dt>
+		<dd><strong>{{ $order->order_code }}</strong></dd>
+		<dt>{{ $lang->reservation_status ?? '상태' }}</dt>
+		@php $shp_ds = Context::get('display_status') ?: $order->status; @endphp
+		<dd><span class="shp-st shp-st-{{ $shp_ds }}">{{ $lang->{'shop_status_' . $shp_ds} ?? $shp_ds }}</span></dd>
+		<dt>{{ $lang->shop_orderer }}</dt>
+		<dd>{{ $order->orderer_name }}</dd>
+		<dt>{{ $lang->shop_item_total }}</dt>
+		<dd>{{ number_format($order->item_total) }}원</dd>
+		@if ($order->discount_total > 0)
+		<dt>{{ $lang->shop_discount }}</dt>
+		<dd>-{{ number_format($order->discount_total) }}원</dd>
+		@endif
+		@if (!empty($order->credit_used) && $order->credit_used > 0)
+		<dt>{{ $lang->shop_credit }}</dt>
+		<dd>-{{ number_format($order->credit_used) }}원</dd>
+		@endif
+		<dt>{{ $lang->shop_ship_fee }}</dt>
+		<dd>{{ $order->delivery_fee_total > 0 ? number_format($order->delivery_fee_total) . '원' : $lang->shop_ship_free }}</dd>
+		<dt>{{ $lang->shop_total }}</dt>
+		<dd><strong>{{ number_format($order->payment_price) }}원</strong></dd>
+	</dl>
+
+	<table class="shp-table">
+		<thead><tr><th>{{ $lang->shop_item }}</th><th>{{ $lang->shop_qty }}</th><th>{{ $lang->shop_subtotal }}</th></tr></thead>
+		<tbody>
+			@foreach ($order_items as $oi)
+			<tr>
+				<td>{{ $oi->item_name }}@if (!empty($oi->option_name))<br /><small style="color:#6b7684">{{ $oi->option_name }}</small>@endif</td>
+				<td>{{ $oi->qty }}</td>
+				<td>{{ number_format($oi->subtotal) }}원</td>
+			</tr>
+			@endforeach
+		</tbody>
+	</table>
+
+	@foreach ($order_sellers as $os)
+	@if (!empty($os->shipping_invoice))
+	@php
+	$shp_tk = Context::get('tracking_info');
+	$shp_tk_details = ($shp_tk && is_array($shp_tk->details ?? null)) ? array_reverse($shp_tk->details) : [];
+	@endphp
+	<div class="shp-track">
+		@if ($shp_tk)
+		<div class="shp-track-head">
+			<strong class="{{ $shp_tk->complete === 'Y' ? 'is-done' : '' }}">{{ $shp_tk->complete === 'Y' ? '배송이 완료되었어요' : $shp_tk->status_name }}</strong>
+			@if (count($shp_tk_details))<span>{{ $shp_tk_details[0]['time'] ?? '' }}</span>@endif
+		</div>
+		@endif
+		<div class="shp-summary-row"><span>{{ $lang->shop_shipping_info }}</span><span>{{ $os->shipping_company }} <strong>{{ $os->shipping_invoice }}</strong></span></div>
+		@if (count($shp_tk_details))
+		<ol class="shp-track-list">
+			@foreach ($shp_tk_details as $shp_ti => $shp_td)
+			<li class="{{ $shp_ti === 0 ? 'is-now' : '' }}">
+				<span class="shp-track-dot"></span>
+				<span class="shp-track-body">
+					<strong>{{ $shp_td['where'] ?: '-' }}</strong> <em>{{ $shp_td['kind'] }}</em>
+					<small>{{ $shp_td['time'] }}</small>
+				</span>
+			</li>
+			@endforeach
+		</ol>
+		@if (count($shp_tk_details) > 4)
+		<button type="button" class="shp-btn shp-btn-ghost" style="width:100%;margin-top:10px;padding:9px 0;font-size:13.5px" onclick="this.closest('.shp-track').classList.toggle('is-open');this.textContent=this.closest('.shp-track').classList.contains('is-open')?'접기':'전체 배송 이력 보기';">전체 배송 이력 보기</button>
+		@endif
+		@endif
+	</div>
+	@endif
+	@endforeach
+
+	@php
+	$shp_can_confirm = false;
+	foreach ($order_sellers as $shp_os_c) { if (($shp_os_c->status ?? '') === 'delivered') { $shp_can_confirm = true; } }
+	@endphp
+	@if ($order->status === 'paid' && $shp_can_confirm)
+	<form action="{{ getUrl('') }}" method="post" style="margin-top:8px" onsubmit="return confirm('{{ $lang->shop_confirm_ask ?? '구매확정 후에는 취소·반품 신청을 할 수 없습니다. 구매확정할까요?' }}')">
+		<input type="hidden" name="act" value="procCommerceConfirmPurchase" />
+		<input type="hidden" name="mid" value="{{ $mid }}" />
+		<input type="hidden" name="order_code" value="{{ $order->order_code }}" />
+		@if ($order->member_srl == 0)
+		<input type="hidden" name="guest_password" value="{{ escape(Context::get('gp')) }}" />
+		@endif
+		<button type="submit" class="shp-btn shp-btn-primary" style="width:100%">{{ $lang->shop_confirm_purchase ?? '구매확정' }}</button>
+	</form>
+	@endif
+
+	@php
+	$shp_claim_type = '';
+	$shp_claim_label = '';
+	if ($order->status === 'pending' || $shp_ds === 'paid') { $shp_claim_type = 'cancel'; $shp_claim_label = $lang->shop_cancel_order; }
+	elseif ($shp_ds === 'preparing') { $shp_claim_type = 'cancel'; $shp_claim_label = $lang->shop_request_cancel ?? '취소 신청'; }
+	elseif ($shp_ds === 'shipping' || $shp_ds === 'delivered') { $shp_claim_type = 'return'; $shp_claim_label = $lang->shop_request_return ?? '반품·교환 신청'; }
+	@endphp
+	@if ($shp_claim_type !== '')
+	<form action="{{ getUrl('') }}" method="post" style="margin-top:8px" onsubmit="return confirm('{{ $lang->shop_claim_confirm }}')">
+		<input type="hidden" name="act" value="procCommerceClaim" />
+		<input type="hidden" name="mid" value="{{ $mid }}" />
+		<input type="hidden" name="order_code" value="{{ $order->order_code }}" />
+		<input type="hidden" name="claim_type" value="{{ $shp_claim_type }}" />
+		@if ($order->member_srl == 0)
+		<input type="hidden" name="guest_password" value="{{ escape(Context::get('gp')) }}" />
+		@endif
+		<div class="shp-row">
+			<label>{{ $lang->shop_claim_reason }}</label>
+			<input type="text" name="reason" placeholder="{{ $lang->shop_claim_reason_ph }}" />
+		</div>
+		<button type="submit" class="shp-btn shp-btn-ghost" style="width:100%">{{ $shp_claim_label }}</button>
+	</form>
+	@endif
+
+	<p class="shp-foot-links">
+		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceList') }}">{{ $lang->shop_back_list }}</a>
+		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceMyOrders') }}">{{ $lang->shop_my_orders }}</a>
+	</p>
+</div>

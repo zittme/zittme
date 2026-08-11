@@ -1,0 +1,83 @@
+@version(2)
+@load('css/shop.css')
+
+<div class="shp">
+	<div class="shp-top">
+		<div class="shp-title-wrap">
+			<h2 class="shp-title">{{ $promo->title }}</h2>
+			<nav class="shp-breadcrumb">
+				<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceList') }}">홈</a>
+				<span>&rsaquo;</span><em>{{ $promo->title }}</em>
+			</nav>
+		</div>
+		<a class="shp-cart-link" href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceCart') }}">
+			<svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 3h2l2.4 12.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 2-1.6L21 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="20.5" r="1.5" fill="currentColor"/><circle cx="17.5" cy="20.5" r="1.5" fill="currentColor"/></svg>
+			{{ $lang->shop_cart }}
+			@if ($cart_count > 0)<span class="shp-cart-count">{{ $cart_count }}</span>@endif
+		</a>
+	</div>
+
+	<div class="shp-home-banner">
+		<div class="shp-home-banner-track">
+			<span class="shp-home-banner-item is-on" style="{{ $promo_banner['bg_style'] ?? '' }}">
+				<span class="shp-home-banner-copy {{ ($promo_banner['shadow'] ?? 'Y') === 'N' ? 'no-shadow' : '' }}" style="color:{{ $promo_banner['text_color'] ?? '#ffffff' }}">
+					<strong>{!! $promo_banner['title_html'] ?? escape($promo->title) !!}</strong>
+					@if (!empty($promo_banner['text']))<span>{!! $promo_banner['text_html'] ?? escape($promo_banner['text']) !!}</span>@endif
+					@if (!empty($promo->start_date) || !empty($promo->end_date))
+					<span class="shp-promo-period">{{ $promo->start_date ? zdate($promo->start_date, 'Y.m.d') : '' }} ~ {{ $promo->end_date ? zdate($promo->end_date, 'Y.m.d') : '' }}</span>
+					@endif
+				</span>
+				@if (!empty($promo_banner['point_image']))
+				<span class="shp-home-banner-point" style="background-image:url('{{ escape($promo_banner['point_image']) }}')"></span>
+				@endif
+			</span>
+		</div>
+	</div>
+
+	@if (!empty($promo->description))
+	<p class="shp-promo-desc">{{ $promo->description }}</p>
+	@endif
+
+	@if ($promo_state === 'upcoming')
+	<p class="shp-empty">아직 오픈 전인 기획전입니다. {{ $promo->start_date ? zdate($promo->start_date, 'Y.m.d') . '에 만나요!' : '곧 만나요!' }}</p>
+	@elseif ($promo_state === 'ended')
+	<p class="shp-promo-ended">종료된 기획전입니다. 아래 상품은 계속 구매하실 수 있어요.</p>
+	@endif
+
+	@if ($promo_state !== 'upcoming')
+	@if (empty($items))
+	<p class="shp-empty">{{ $lang->shop_no_items }}</p>
+	@else
+	<div class="shp-grid">
+		@foreach ($items as $it)
+		<a class="shp-card" href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceItem', 'item_srl', $it->item_srl) }}">
+			<span class="shp-card-thumb" @if (!empty($it->thumb)) style="background-image:url('{{ escape($it->thumb) }}')" @endif>
+				@if (empty($it->thumb))<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 11l2.5 3 3.5-4.5L19 16H5z"/></svg>@endif
+			</span>
+			@if ($it->status === 'soldout')<span class="shp-soldout-cover">{{ $lang->shop_soldout }}</span>@endif
+			<span class="shp-card-body">
+				<span class="shp-card-name">{{ $it->item_name }}</span>
+				@if (!empty($it->review_count))
+				<span class="shp-card-rating">
+					<svg width="12" height="12" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21.1 7 14.2 2 9.3l6.9-1L12 2z"/></svg>
+					{{ $it->rating_avg }} <em>({{ number_format($it->review_count) }})</em>
+				</span>
+				@endif
+				<span class="shp-price">
+					@if ($it->sale_price > 0 && $it->sale_price < $it->price)
+					<s>{{ number_format($it->price) }}</s> <strong>{{ number_format($it->sale_price) }}원</strong>
+					@else
+					<strong>{{ number_format($it->price) }}원</strong>
+					@endif
+				</span>
+			</span>
+		</a>
+		@endforeach
+	</div>
+	@endif
+	@endif
+
+	<p class="shp-foot-links">
+		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceList') }}">{{ $lang->shop_back_list }}</a>
+	</p>
+</div>

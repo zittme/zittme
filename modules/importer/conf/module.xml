@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+	<grants />
+	<actions>
+		<action name="dispImporterAdminImportForm" type="view" admin_index="true" menu_name="importer" menu_index="true" />
+		
+		<action name="procImporterAdminImport" type="controller" />
+		<action name="procImporterAdminPreProcessing" type="controller" />
+		<action name="procImporterAdminSync" type="controller" />
+		<action name="procImporterAdminCheckXmlFile" type="controller" />
+	</actions>
+	<menus>
+		<menu name="importer">
+			<title xml:lang="en">Data Migration</title>
+			<title xml:lang="vi">Chuyển dữ liệu</title>
+			<title xml:lang="tr">Veri Taşıma</title>
+			<title xml:lang="ru">Перенос данных</title>
+			<title xml:lang="mn">Өгөгдөл шилжүүлэх</title>
+			<title xml:lang="fr">Migration de données</title>
+			<title xml:lang="es">Migración de datos</title>
+			<title xml:lang="de">Datenmigration</title>
+			<title xml:lang="zh-TW">資料轉移</title>
+			<title xml:lang="zh-CN">数据迁移</title>
+			<title xml:lang="jp">データ移行</title>
+			<title xml:lang="ko">데이터 들여오기</title>
+			<title xml:lang="zh-CN">Data Migration</title>
+			<title xml:lang="jp">データマイグレーション</title>
+			<title xml:lang="es">Data Migration</title>
+			<title xml:lang="ru">Data Migration</title>
+			<title xml:lang="fr">Data Migration</title>
+			<title xml:lang="zh-TW">Data Migration</title>
+			<title xml:lang="vi">Data Migration</title>
+			<title xml:lang="mn">Data Migration</title>
+			<title xml:lang="tr">Data Migration</title>
+			<title xml:lang="de">Datenimport</title>
+			<title xml:lang="en">Import Data</title>
+		</menu>
+	</menus>
+</module>

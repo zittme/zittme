@@ -1,0 +1,16 @@
+@version(2)
+<ul class="hrb-notices">
+	@foreach ($notice_list as $document)
+	<li>
+		<a href="{{ getUrl('document_srl', $document->document_srl) }}">
+			<span class="hr-badge">{{ $lang->notice ?? '공지' }}</span>
+			<span class="hrb-notices-title">{{ $document->getTitleText() }}</span>
+			@if ($document->getCommentCount())<em class="hrb-cmt">{{ $document->getCommentCount() }}</em>@endif
+			<span class="hrb-notices-meta">
+				@if ($hrb_author){{ $document->getNickName() }}@endif
+				<span>{{ hrb_relative_time($document->get("regdate")) }}</span>
+			</span>
+		</a>
+	</li>
+	@endforeach
+</ul>

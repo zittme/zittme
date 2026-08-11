@@ -1,0 +1,16 @@
+<table name="member_identity">
+	<column name="identity_srl" type="number" size="11" notnull="notnull" primary_key="primary_key" auto_increment="auto_increment" />
+	<column name="member_srl" type="number" size="11" notnull="notnull" />
+	<column name="provider" type="varchar" size="20" notnull="notnull" index="idx_provider" />
+	<column name="ci" type="varchar" size="100" notnull="notnull" />
+	<column name="di" type="varchar" size="100" index="idx_di" />
+	<column name="name" type="varchar" size="80" />
+	<column name="birthday" type="varchar" size="8" />
+	<column name="sex" type="char" size="1" />
+	<column name="phone" type="varchar" size="20" index="idx_phone" />
+	<column name="telecom" type="varchar" size="20" />
+	<column name="tid" type="varchar" size="60" />
+	<column name="regdate" type="date" index="idx_regdate" />
+	<index name="idx_member_identity" columns="member_srl" type="unique" />
+	<index name="idx_identity_ci" columns="ci" type="unique" />
+</table>

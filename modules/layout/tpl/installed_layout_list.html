@@ -1,0 +1,88 @@
+<include target="header.html" />
+<include target="sub_tab.html" />
+
+<style>
+.rx_responsive_badge { display: inline-block; margin-left: 8px; padding: 2px 8px; font-size: 11px; font-weight: 700; vertical-align: middle; color: #1d8a5c; background: rgba(34,160,107,.12); border-radius: 999px; }
+</style>
+
+<table class="x_table x_table-striped x_table-hover dsTg">
+	<caption>
+		<div class="x_pull-right x_btn-group">
+			<button class="x_btn x_active __simple">{$lang->simple_view}</button>
+			<button class="x_btn __detail">{$lang->detail_view}</button>
+		</div>
+	</caption>
+	<thead>
+		<tr>
+			<th scope="col" class="nowr">{$lang->layout_name}</th>
+			<th scope="col" class="nowr">{$lang->version}</th>
+			<th scope="col" class="nowr">{$lang->author}</th>
+			<th scope="col" class="nowr rx_detail_marks">{$lang->path}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<!--@foreach($layout_list as $layout)-->
+		<tr>
+			<!--@if($layout->title)-->
+				<td class="title">
+					<p><a href="{getUrl('act', 'dispLayoutAdminInstanceList', 'type', $type ?? null, 'layout', $layout->layout)}" style="font-weight:bold;color:#000">{$layout->title}</a><span cond="!empty($layout->responsive)" class="rx_responsive_badge">{$lang->responsive_badge}</span></p>
+					<p>{$layout->description}</p>
+					<p cond="isset($layout->need_update) && $layout->need_update == 'Y'" class="update">
+						{$lang->msg_avail_easy_update} <a href="{$layout->update_url}&amp;return_url={urlencode(getRequestUriByServerEnviroment())}">{$lang->msg_do_you_like_update}</a>
+					</p>
+				</td>
+				<td>
+					<!--@if(Context::isDefaultPlugin($layout->layout, 'layout'))-->
+						<img src="{\RX_BASEURL}common/img/icon.png" class="core_symbol" alt="Zittme Core" title="Zittme Core" />
+					<!--@else-->
+						{$layout->version}
+					<!--@endif-->
+				</td>
+				<td>
+					<block loop="$layout->author => $author">
+						<a cond="$author->homepage" href="{$author->homepage}" target="_blank">{$author->name}</a>
+						<block cond="!$author->homepage">{$author->name}</block>
+					</block>
+				</td>
+				<td class="rx_detail_marks">{$layout->path}</td>
+				<td class="nowr rx_detail_marks">
+					<a cond="$layout->remove_url" class="x_btn x_btn-link" href="{$layout->remove_url}&amp;return_url={urlencode(getRequestUriByServerEnviroment())}">{$lang->cmd_delete}</a>
+				</td>
+			<!--@else-->
+				<td class="title">
+					<p><a href="{getUrl('act', 'dispLayoutAdminInstanceList', 'type', $type, 'layout', $layout->layout)}">{$layout->layout}</a></p>
+					<p cond="$layout->need_update == 'Y'" class="update">
+						{$lang->msg_avail_easy_update} <a href="{$layout->update_url}&amp;return_url={urlencode(getRequestUriByServerEnviroment())}">{$lang->msg_do_you_like_update}</a>
+					</p>
+				</td>
+				<td>-</td>
+				<td>-</td>
+				<td class="rx_detail_marks">{$layout->path}</td>
+				<td class="rx_detail_marks"></td>
+			<!--@endif-->
+		</tr>
+		<!--@if(isset($instance_list[$layout->layout]))-->
+			<!--@foreach($instance_list[$layout->layout] as $instance)-->
+			<tr>
+				<td colspan="2" style="padding-left:20px;">
+					<i class="xi-reply-l" style="transform:rotate(180deg);"></i> &nbsp;
+					<a href="{getUrl(['module' => 'admin', 'act' => 'dispLayoutAdminModify', 'layout_srl' => $instance->layout_srl])}">
+						{$instance->title}
+					</a>
+				</td>
+				<td>
+					<!--@if($instance->is_edited)-->
+						<a href="{getUrl(['module' => 'admin', 'act' => 'dispLayoutAdminEdit', 'layout_srl' => $instance->layout_srl])}">{$lang->cmd_edit}</a>
+					<!--@else-->
+						<span style="color:#999">편집</span>
+					<!--@endif-->
+					<a href="{getUrl(['module' => 'layout', 'act' => 'dispLayoutAdminCopyLayout', 'layout_srl' => $instance->layout_srl])}" onclick="popopen(this.href);return false;" title="{$lang->cmd_copy}">{$lang->cmd_copy}</a></td>
+				</td>
+				<td class="rx_detail_marks"></td>
+				<td class="rx_detail_marks"></td>
+			</tr>
+			<!--@endforeach-->
+		<!--@endif-->
+		<!--@endforeach-->
+	</tbody>
+</table>

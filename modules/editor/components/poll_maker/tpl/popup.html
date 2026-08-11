@@ -1,0 +1,118 @@
+<!--%import("popup.js")-->
+<!--%import("popup.css")-->
+<!--%import("filter/insert_poll.xml")-->
+<!--%import("../lang")-->
+
+<!--// datepicker javascript plugin load -->
+<!--%load_js_plugin("ui.datepicker")-->
+{@Context::addMetaTag('viewport', 'width=device-width', FALSE);}
+<script>
+	var msg_poll_cannot_modify = "{$lang->msg_poll_cannot_modify}";
+</script>
+<div class="x_modal-header">
+	<h1>{$component_info->title}</h1>
+	<a class="close_window" href="javascript:window.close()">&times;</a>
+</div>
+<div class="x_modal-body">
+	<form action="./" method="post" id="fo_component" onSubmit="procFilter(this, insert_poll); return false;" class="x_form-horizontal">
+		<input type="hidden" name="component" value="{$component_info->component_name}" />
+		<input type="hidden" name="method" value="insertPoll" />
+		<input type="hidden" name="poll_srl" value="" />
+		<div class="x_control-group">
+			<label for="" class="x_control-label">{$lang->poll_stop_date}</label>
+			<div class="x_controls">
+				<input type="hidden" name="stop_date" id="stop_date" value="{date('Ymd',time()+60*60*24*30)}" />
+				<input type="date" class="inputDate" min="{date('Y-m-d',time())}"  max="{date('Y-m-d',strtotime('+10 years'))}" onchange="$('#stop_date').val($.datepicker.formatDate('yymmdd', new Date(this.value)));" value="{date('Y-m-d',time()+60*60*24*30)}" />
+				<script>
+				$(function(){
+					// check if the browser support type date.
+					if ( $(".inputDate").prop('type') != 'date' ) {
+						var option = {
+							changeMonth:true
+							,changeYear:true
+							,gotoCurrent: false
+							,yearRange:'-100:+10'
+							, onSelect:function(){
+								$('#stop_date').val($.datepicker.formatDate('yymmdd', $(this).datepicker( "getDate" )));
+							}
+							,defaultDate: new Date("{date('Y-m-d',time()+60*60*24*30)}")
+							,minDate: new Date("{date('Y-m-d',time())}")
+						};
+
+						//if the browser does not support type date input, start datepicker. If it does, brower's UI will show their datepicker.
+						$(".inputDate").datepicker(option);
+					}
+					else
+					{
+					}
+				});
+				</script>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label for="skin" class="x_control-label">{$lang->skin}</label>
+			<div class="x_controls">
+				<select id="skin" name="skin">
+				<!--@foreach($skin_list as $skin=>$skin_info)-->
+				<option value="{$skin}">{$skin_info->title} (by {@ $authorname = array();}<!--@foreach($skin_info->author as $author=>$author_info)-->{@ $authorname[] = $author_info->name; }<!--@end-->{implode(",",$authorname)})</option>
+				<!--@end-->
+				</select>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->poll_display_memberinfo}</label>
+			<div class="x_controls">
+				<label class="x_inline" for="poll_display_memberinfo_yes"><input type="radio" name="show_vote" value="1" id="poll_display_memberinfo_yes" /> {$lang->poll_display_memberinfo_yes}</label>
+				<label class="x_inline" for="poll_display_memberinfo_no"><input type="radio" name="show_vote" value="0" checked="checked" id="poll_display_memberinfo_no" /> {$lang->poll_display_memberinfo_no}</label>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->poll_ableto_additems}</label>
+			<div class="x_controls">
+				<input type="radio" name="add_item" value="2" id="poll_ableto_additems_yes" /> <label class="x_inline" for="poll_ableto_additems_yes">{$lang->poll_ableto_additems_yes}</label>
+				<input type="radio" name="add_item" value="0" checked="checked" id="poll_ableto_additems_no" /> <label class="x_inline" for="poll_ableto_additems_no">{$lang->poll_ableto_additems_no}</label>
+			</div>
+		</div>
+	<div id="poll_source" style="display:none">
+		<div class="table">
+		<table class="x_table x_table-striped x_table-hover">
+			<thead>
+			<col width="100" />
+			<col />
+			</thead>
+			<tbody>
+			<tr>
+				<th scope="row"><div>{$lang->poll_chk_count}</div></th>
+				<td><input type="text" name="checkcount_tidx" value="1" size="1"  /></td>
+			</tr>
+			<tr>
+				<th scope="row"><div>{$lang->poll_title}</div></th>
+				<td><input type="text" name="title_tidx" /></td>
+			</tr>
+
+			<tr>
+				<th scope="row"><div>{$lang->poll_item} 1</div></th>
+				<td><input type="text" name="item_tidx_1" /></td>
+			</tr>
+
+			<tr>
+				<th scope="row"><div>{$lang->poll_item} 2</div></th>
+				<td><input type="text" name="item_tidx_2" /></td>
+			</tr>
+			</tbody>
+		</table>
+		</div>
+		<button type="button" class="_add_item x_btn">{$lang->cmd_add_item}</button>
+		<button type="button" class="_del_item x_btn">{$lang->cmd_del_item}</button>
+		<button type="button" class="_del_poll x_btn">{$lang->cmd_del_poll}</button>
+		</div>
+		<div class="x_clearfix btnArea">
+			<div class="x_pull-right">
+				<button type="submit" class="x_btn x_btn-primary" />{$lang->cmd_submit}</button>
+				<button type="button" id="add_poll" class="x_btn">{$lang->cmd_add_poll}</button>
+				<a class="x_btn" href="{getUrl('','module','editor','act','dispEditorComponentInfo','component_name',$component_info->component_name)}" target="_blank" onclick="window.open(this.href,'ComponentInfo','width=10,height=10');return false;">{$lang->about_component}</a>
+			</div>
+		</div>
+	</form>
+</div>

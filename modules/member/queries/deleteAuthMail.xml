@@ -1,0 +1,9 @@
+<query id="deleteAuthMail" action="delete">
+    <tables>
+        <table name="member_auth_mail" />
+    </tables>
+    <conditions>
+		<condition operation="equal" column="member_srl" var="member_srl" />
+        <condition operation="equal" column="auth_key" var="auth_key" />
+    </conditions>
+</query>

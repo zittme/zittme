@@ -1,0 +1,70 @@
+<div class="x_page-header">
+	<h1>{$theme->title}</h1>
+</div>
+
+<p class="x_alert x_alert-info">{$lang->about_apply_theme}</p>
+
+<!-- 어느 사이트에 입힐지 먼저 고른다. 한정하지 않으면 다른 사이트까지 덮는다. -->
+<form action="./" method="get" class="x_form-inline" style="margin-bottom:16px">
+	<input type="hidden" name="module" value="admin" />
+	<input type="hidden" name="act" value="dispAdminApplyTheme" />
+	<input type="hidden" name="theme_name" value="{$theme_name}" />
+	<label>{$lang->theme_site}</label>
+	<select name="domain_srl" onchange="this.form.submit()">
+		<option value="0">{$lang->theme_all_sites}</option>
+		<!--@foreach($domain_list as $domain)-->
+			<option value="{$domain->domain_srl}"|selected="$domain_srl == $domain->domain_srl">{$domain->domain}</option>
+		<!--@endforeach-->
+	</select>
+</form>
+
+<form action="./" method="post" class="x_form-horizontal">
+	<input type="hidden" name="module" value="admin" />
+	<input type="hidden" name="act" value="procAdminApplyTheme" />
+	<input type="hidden" name="theme_name" value="{$theme_name}" />
+	<input type="hidden" name="domain_srl" value="{$domain_srl}" />
+
+	<h2>{$lang->theme_changes}</h2>
+
+	<div cond="!count($changes)" class="x_alert">{$lang->msg_theme_no_change}</div>
+
+	<table cond="count($changes)" class="x_table x_table-striped">
+		<thead>
+			<tr>
+				<th style="width:40px"></th>
+				<th>{$lang->module}</th>
+				<th>{$lang->target}</th>
+				<th>{$lang->theme_before}</th>
+				<th>{$lang->theme_after}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!--@foreach($changes as $change)-->
+			<tr>
+				<!-- 일부러 다른 스킨을 쓰는 곳이 있을 수 있으므로 제외할 수 있게 한다. -->
+				<td><input type="checkbox" name="exclude[]" value="{$change->module_srl}" title="{$lang->theme_exclude}" /></td>
+				<td>{$change->module}</td>
+				<td>{$change->mid} <span class="x_help-inline">({$change->column})</span></td>
+				<td>{$change->from ?: '-'}</td>
+				<td><strong>{$change->to}</strong></td>
+			</tr>
+			<!--@endforeach-->
+		</tbody>
+	</table>
+
+	<p class="x_help-block">{$lang->about_theme_exclude}</p>
+
+	<div class="x_btn-area">
+		<button cond="count($changes)" type="submit" class="x_btn x_btn-primary">{$lang->cmd_apply_theme}</button>
+		<a class="x_btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAdminInstalledTheme')}">{$lang->cmd_cancel}</a>
+	</div>
+</form>
+
+<!--// 되돌리기는 proc 액션이므로 링크가 아니라 POST 로 보내야 한다 -->
+<form action="./" method="post" style="display:inline">
+	<input type="hidden" name="module" value="admin" />
+	<input type="hidden" name="act" value="procAdminRevertTheme" />
+	<input type="hidden" name="theme_name" value="{$theme_name}" />
+	<input type="hidden" name="domain_srl" value="{$domain_srl}" />
+	<button type="submit" class="x_btn" onclick="return confirm('{$lang->confirm_theme_revert}');">{$lang->cmd_revert_theme}</button>
+</form>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">미솔 스킨</title>
+	<title xml:lang="en">misol skin</title>
+	<title xml:lang="vi">Giao diện misol</title>
+	<title xml:lang="tr">misol teması</title>
+	<title xml:lang="ru">Скин misol</title>
+	<title xml:lang="mn">misol загвар</title>
+	<title xml:lang="fr">Skin misol</title>
+	<title xml:lang="es">Skin misol</title>
+	<title xml:lang="de">misol Skin</title>
+	<title xml:lang="zh-TW">misol 面板</title>
+	<title xml:lang="zh-CN">misol 皮肤</title>
+	<title xml:lang="jp">misol スキン</title>
+	<description xml:lang="ko">통합검색 모바일에 검색에 대응하는 미솔 스킨입니다.</description>
+	<description xml:lang="en">The skin for mobile and PC environment of Integrated Search Module</description>
+	<description xml:lang="vi">Giao diện module tìm kiếm tổng hợp dành cho cả môi trường di động và PC</description>
+	<description xml:lang="tr">Entegre Arama modülü için mobil ve masaüstü uyumlu tema.</description>
+	<description xml:lang="ru">Скин модуля общего поиска для мобильных устройств и ПК.</description>
+	<description xml:lang="mn">Нэгдсэн хайлтын модулийн гар утас болон компьютерт тохирсон загвар</description>
+	<description xml:lang="fr">Skin du module Recherche intégrée adapté aux environnements mobile et PC.</description>
+	<description xml:lang="es">Skin del módulo de búsqueda integrada para entornos móviles y de escritorio.</description>
+	<description xml:lang="de">Skin der übergreifenden Suche für mobile und Desktop-Umgebungen.</description>
+	<description xml:lang="zh-TW">適用於整合搜尋模組行動版與電腦版環境的面板。</description>
+	<description xml:lang="zh-CN">适用于综合搜索模块移动端与PC端的皮肤。</description>
+	<description xml:lang="jp">統合検索モジュール用の、モバイルとPC環境に対応したスキンです。</description>
+	<version>1.0.1</version>
+	<date>2016-01-02</date>
+	<author email_address="misol.kr@gmail.com" link="https://github.com/misol">
+		<name xml:lang="ko">김민수</name>
+		<name xml:lang="en">MinSoo Kim</name>
+	</author>
+	<license>MIT License</license>
+
+	<colorset>
+		<color name="blue">
+			<title xml:lang="ko">파랑</title>
+			<title xml:lang="en">Blue</title>
+			<title xml:lang="vi">Xanh dương</title>
+			<title xml:lang="tr">Mavi</title>
+			<title xml:lang="ru">Синий</title>
+			<title xml:lang="mn">Цэнхэр</title>
+			<title xml:lang="fr">Bleu</title>
+			<title xml:lang="es">Azul</title>
+			<title xml:lang="de">Blau</title>
+			<title xml:lang="zh-TW">藍色</title>
+			<title xml:lang="zh-CN">蓝色</title>
+			<title xml:lang="jp">ブルー</title>
+		</color>
+		<color name="crimson">
+			<title xml:lang="ko">크림슨</title>
+			<title xml:lang="en">Crimson</title>
+			<title xml:lang="vi">Đỏ thẫm</title>
+			<title xml:lang="tr">Koyu Kırmızı</title>
+			<title xml:lang="ru">Малиновый</title>
+			<title xml:lang="mn">Час улаан</title>
+			<title xml:lang="fr">Cramoisi</title>
+			<title xml:lang="es">Carmesí</title>
+			<title xml:lang="de">Karmesinrot</title>
+			<title xml:lang="zh-TW">緋紅色</title>
+			<title xml:lang="zh-CN">绯红</title>
+			<title xml:lang="jp">クリムゾン</title>
+		</color>
+	</colorset>
+</skin>

@@ -1,0 +1,22 @@
+<?php
+$lang->rss_disable = 'RSS devredışı';
+$lang->rss_type = 'RSS besleme türü';
+$lang->open_rss = 'RSS Aç';
+$lang->open_rss_types['Y'] = 'Tümünü Aç';
+$lang->open_rss_types['H'] = 'Özeti Aç';
+$lang->open_rss_types['N'] = 'Açma';
+$lang->about_rss_disable = 'İşaretlendiğinde, RSS devredışı bırakılacak.';
+$lang->about_rss_type = 'RSS besleme türünü atayabilirsiniz.';
+$lang->about_open_rss = 'Geçerli modülü herkese açmak için, modüldeki RSS\'yi seçebilirsiniz.\\nMakale gösterimi iznine bakılmaksızın , RSS bu seçenekle tüm herkese açık hale gelecektir.';
+$lang->msg_rss_is_disabled = 'RSS özelliği devredışı.';
+$lang->feed = 'RSS Beslemesi Yayınla';
+$lang->total_feed = 'Birleşik Beslemeler';
+$lang->feed_copyright = 'Telif Hakkı';
+$lang->feed_document_count = 'Sayfa Başına Yazı Sayısı';
+$lang->feed_image = 'Besleme Görseli';
+$lang->module_feed_management = 'Modül Bazında Beslemeler';
+$lang->open_feed_to_total = 'Birleşik beslemeye dahil et';
+$lang->about_feed_description = 'Yayınlanacak RSS beslemesi için bir açıklama girebilirsiniz. Girmezseniz, varsayılan olarak her modülün açıklaması gösterilir.';
+$lang->about_feed_copyright = 'RSS beslemesi için telif hakkı bilgisi girebilirsiniz. Girmezseniz, tüm RSS beslemeleri için tanımlı telif hakkı uygulanır.';
+$lang->about_feed_document_count = 'Bir besleme sayfasında gösterilecek yazı sayısı (varsayılan: 15)';
+$lang->msg_rss_invalid_image_format = 'Geçersiz görsel biçimi. Yalnızca JPG, JPEG, GIF ve PNG dosyaları desteklenir.';

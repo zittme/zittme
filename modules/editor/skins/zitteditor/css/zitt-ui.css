@@ -1,0 +1,256 @@
+/* zittEditor — CKEditor 4 UI 리스킨. 기능은 그대로, 룩만 zittme 디자인 토큰으로.
+   라이트/다크는 CSS 변수로 자동 전환 (레이아웃 data-theme 또는 브라우저 다크모드) */
+
+:root {
+	--zed-bg: #ffffff;
+	--zed-bg-soft: #fafbfd;
+	--zed-line: #e5e8eb;
+	--zed-line-soft: #eef1f5;
+	--zed-text: #1c2330;
+	--zed-text-sub: #4e5968;
+	--zed-muted: #8b95a1;
+	--zed-brand: #2677e3;
+	--zed-brand-soft: rgba(38, 119, 227, .09);
+	--zed-brand-on: rgba(38, 119, 227, .16);
+}
+[data-theme="dark"] {
+	--zed-bg: #1c1f26;
+	--zed-bg-soft: #171a20;
+	--zed-line: #2b3038;
+	--zed-line-soft: #262b33;
+	--zed-text: #e4e7ec;
+	--zed-text-sub: #b7bec8;
+	--zed-muted: #9aa1ad;
+	--zed-brand-soft: rgba(38, 119, 227, .16);
+	--zed-brand-on: rgba(38, 119, 227, .26);
+}
+@media (prefers-color-scheme: dark) {
+	html:not([data-theme]) {
+		--zed-bg: #1c1f26;
+		--zed-bg-soft: #171a20;
+		--zed-line: #2b3038;
+		--zed-line-soft: #262b33;
+		--zed-text: #e4e7ec;
+		--zed-text-sub: #b7bec8;
+		--zed-muted: #9aa1ad;
+		--zed-brand-soft: rgba(38, 119, 227, .16);
+		--zed-brand-on: rgba(38, 119, 227, .26);
+	}
+}
+
+/* ── 크롬(외곽) ── */
+.cke_chrome {
+	border: 1px solid var(--zed-line) !important;
+	border-radius: 14px !important;
+	overflow: hidden;
+	box-shadow: 0 1px 2px rgba(25, 31, 40, .04) !important;
+}
+.cke_inner { background: var(--zed-bg) !important; }
+.cke_focus .cke_chrome,
+.cke_chrome.cke_focus { border-color: rgba(38, 119, 227, .55) !important; box-shadow: 0 0 0 3px rgba(38, 119, 227, .12) !important; }
+
+/* ── 툴바 ── */
+.cke_top {
+	background: var(--zed-bg) !important;
+	border-bottom: 1px solid var(--zed-line-soft) !important;
+	padding: 8px 10px !important;
+	box-shadow: none !important;
+}
+.cke_toolgroup {
+	background: transparent !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+	margin: 0 8px 0 0 !important;
+}
+
+a.cke_button {
+	border-radius: 8px !important;
+	padding: 5px 6px !important;
+	margin: 0 1px;
+	border: 0 !important;
+	cursor: pointer !important;
+	transition: background .12s;
+}
+a.cke_button_off:hover,
+a.cke_button_off:focus,
+a.cke_button_off:active {
+	background: var(--zed-brand-soft) !important;
+	border: 0 !important;
+	box-shadow: none !important;
+	padding: 5px 6px !important;
+}
+a.cke_button_on {
+	background: var(--zed-brand-on) !important;
+	border: 0 !important;
+	box-shadow: none !important;
+	padding: 5px 6px !important;
+}
+/* 버튼·폼 사이 구분선(작대기)은 완전히 제거
+   — 버튼용 separator 와 moono 스킨이 콤보 옆에 그리는 ::after 세로선 둘 다 */
+.cke_toolbar_separator { display: none !important; }
+.cke_combo::after, .cke_combo:after { display: none !important; border: 0 !important; }
+
+/* 콤보(스타일·글꼴·크기) — 모든 상태에서 패딩·보더 동일: 롤오버 시 크기 변화 금지 */
+a.cke_combo_button,
+.cke_combo_off a.cke_combo_button:hover,
+.cke_combo_off a.cke_combo_button:focus,
+.cke_combo_off a.cke_combo_button:active,
+.cke_combo_on a.cke_combo_button {
+	border: 1px solid var(--zed-line) !important;
+	border-radius: 8px !important;
+	background: var(--zed-bg) !important;
+	margin: 0 4px 0 0 !important;
+	padding: 0 !important;
+	box-shadow: none !important;
+}
+/* 롤오버: 크기는 그대로, 테두리·배경만 반응 (grouped 규칙보다 높은 특이도로) */
+.cke_combo_off a.cke_combo_button:hover,
+.cke_combo_off a.cke_combo_button:focus,
+.cke_combo_on a.cke_combo_button,
+a.cke_combo_button:hover {
+	border-color: rgba(38, 119, 227, .6) !important;
+	background: var(--zed-brand-soft) !important;
+}
+.cke_combo_text { color: var(--zed-text-sub) !important; text-shadow: none !important; }
+.cke_combo_open { border-left: 0 !important; }
+.cke_combo_arrow { border-top-color: var(--zed-muted) !important; margin-top: 9px !important; }
+
+/* ── 하단 바 ── */
+.cke_bottom {
+	background: var(--zed-bg-soft) !important;
+	border-top: 1px solid var(--zed-line-soft) !important;
+	padding: 5px 10px !important;
+	box-shadow: none !important;
+}
+.cke_path_item, .cke_path_empty { color: var(--zed-muted) !important; text-shadow: none !important; }
+a.cke_path_item:hover { background: var(--zed-brand-soft) !important; border-radius: 5px; color: var(--zed-brand) !important; box-shadow: none !important; }
+.cke_resizer { border-color: transparent transparent var(--zed-muted) transparent !important; opacity: .6; }
+
+/* ── 드롭다운 패널 ── */
+.cke_panel {
+	border: 1px solid var(--zed-line) !important;
+	border-radius: 12px !important;
+	overflow: hidden;
+	box-shadow: 0 16px 40px -14px rgba(17, 22, 30, .28) !important;
+}
+
+/* ── 다이얼로그 ── */
+.cke_dialog_body {
+	border: 1px solid var(--zed-line) !important;
+	border-radius: 16px !important;
+	overflow: hidden;
+	box-shadow: 0 30px 70px -20px rgba(17, 22, 30, .35) !important;
+	background: var(--zed-bg) !important;
+}
+.cke_dialog_title {
+	background: var(--zed-bg) !important;
+	border-bottom: 1px solid var(--zed-line-soft) !important;
+	box-shadow: none !important;
+	color: var(--zed-text) !important;
+	font-weight: 800 !important;
+	padding: 14px 18px !important;
+}
+.cke_dialog_close_button { opacity: .55; }
+.cke_dialog_close_button:hover { opacity: 1; }
+.cke_dialog_contents_body { padding: 16px 18px !important; }
+.cke_dialog_contents { background: var(--zed-bg) !important; }
+.cke_dialog_footer {
+	background: var(--zed-bg-soft) !important;
+	border-top: 1px solid var(--zed-line-soft) !important;
+	outline: none !important;
+	padding: 4px 10px !important;
+}
+a.cke_dialog_ui_button {
+	border: 1px solid var(--zed-line) !important;
+	border-radius: 9px !important;
+	background: var(--zed-bg) !important;
+	padding: 5px 4px !important;
+	box-shadow: none !important;
+	transition: border-color .12s;
+}
+a.cke_dialog_ui_button:hover { border-color: var(--zed-brand) !important; }
+a.cke_dialog_ui_button span { color: var(--zed-text-sub) !important; text-shadow: none !important; }
+a.cke_dialog_ui_button_ok { background: var(--zed-brand) !important; border-color: var(--zed-brand) !important; }
+a.cke_dialog_ui_button_ok:hover { background: #1c5fc0 !important; border-color: #1c5fc0 !important; }
+a.cke_dialog_ui_button_ok span { color: #fff !important; }
+div.cke_dialog_ui_input_text,
+div.cke_dialog_ui_input_password,
+div.cke_dialog_ui_input_textarea {
+	border: 0 !important;
+	border-radius: 0 !important;
+	padding: 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+}
+input.cke_dialog_ui_input_text, .cke_dialog_ui_input_select select, textarea.cke_dialog_ui_input_textarea {
+	border: 1px solid var(--zed-line) !important;
+	border-radius: 8px !important;
+	padding: 6px 9px !important;
+	box-shadow: none !important;
+	background: var(--zed-bg) !important;
+	color: var(--zed-text) !important;
+}
+input.cke_dialog_ui_input_text:focus, textarea.cke_dialog_ui_input_textarea:focus { border-color: var(--zed-brand) !important; }
+div.cke_dialog_ui_input_select { border: 0 !important; }
+.cke_dialog_tabs {
+	position: static !important;
+	height: auto !important;
+	margin: 0 !important;
+	padding: 10px 14px 0 !important;
+	background: var(--zed-bg) !important;
+	border-bottom: 1px solid var(--zed-line-soft) !important;
+}
+.cke_dialog_title { border-bottom: 0 !important; }
+.cke_single_page .cke_dialog_tabs { border-bottom: 0 !important; }
+.cke_single_page .cke_dialog_title { border-bottom: 1px solid var(--zed-line-soft) !important; }
+.cke_dialog_tab {
+	border: 0 !important;
+	border-radius: 8px !important;
+	background: transparent !important;
+	color: var(--zed-muted) !important;
+	box-shadow: none !important;
+	padding: 5px 12px !important;
+	margin: 0 2px 4px 0 !important;
+}
+.cke_dialog_tab_selected { background: var(--zed-brand-on) !important; color: var(--zed-brand) !important; }
+.cke_dialog_contents { border-top: 0 !important; }
+
+/* ── 자동저장 안내 ── 회색 풀폭 바(코어 기본) 대신 에디터 톤에 맞는 작은 알림으로 */
+p.editor_autosaved_message.autosave_message {
+	background: var(--zed-brand-soft) !important;
+	color: var(--zed-text-sub) !important;
+	border: 1px solid rgba(38, 119, 227, .18);
+	border-radius: 10px;
+	padding: 8px 14px !important;
+	margin: 10px 0 0 !important;
+	font-size: 13px;
+	line-height: 1.4;
+}
+
+.cke_button_icon { opacity: .85; }
+a.cke_button_on .cke_button_icon, a.cke_button:hover .cke_button_icon { opacity: 1; }
+
+/* ── 다크 테마 가독성 보정 ──
+   기준 스킨은 항상 moono-lisa 이고 그 아이콘 스프라이트는 어두운 회색이라
+   다크 배경에서 안 보인다. invert + hue-rotate 로 밝게 뒤집되
+   컬러 아이콘(글자색 A 등)의 색상은 유지한다. 스킨이 고정이므로 항상 일관된다. */
+[data-theme="dark"] .cke_button_icon {
+	filter: invert(1) hue-rotate(180deg) brightness(1.1);
+	opacity: 1;
+}
+[data-theme="dark"] a.cke_button_disabled .cke_button_icon { opacity: .3; }
+[data-theme="dark"] .cke_combo_text { color: var(--zed-text) !important; }
+/* 색상선택 등 드롭다운 패널: 흰 모서리·흰 배경이 새어나오지 않게 다크로 */
+[data-theme="dark"] .cke_panel,
+[data-theme="dark"] .cke_panel iframe { background: var(--zed-bg) !important; }
+@media (prefers-color-scheme: dark) {
+	html:not([data-theme]) .cke_button_icon {
+		filter: invert(1) hue-rotate(180deg) brightness(1.1);
+		opacity: 1;
+	}
+	html:not([data-theme]) a.cke_button_disabled .cke_button_icon { opacity: .3; }
+	html:not([data-theme]) .cke_combo_text { color: var(--zed-text) !important; }
+	html:not([data-theme]) .cke_panel,
+	html:not([data-theme]) .cke_panel iframe { background: var(--zed-bg) !important; }
+}

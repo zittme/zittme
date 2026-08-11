@@ -1,0 +1,317 @@
+<include target="header.html" />
+
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/file/tpl/upload_config/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+
+<form ruleset="insertConfig" action="./" method="post" class="x_form-horizontal section">
+	<input type="hidden" name="module" value="file" />
+	<input type="hidden" name="act" value="procFileAdminInsertUploadConfig" />
+	<input type="hidden" name="xe_validator_id" value="modules/file/tpl/upload_config/1" />
+
+	<div class="x_control-group">
+		<label for="allowed_filesize" class="x_control-label">{$lang->allowed_filesize}</label>
+		<div class="x_controls">
+			<input type="number" min="0" name="allowed_filesize" id="allowed_filesize" value="{$config->allowed_filesize}" size="7" style="min-width:80px" /> MB
+			<p class="x_help-block">{$lang->about_allowed_filesize_global}<br />{sprintf($lang->about_allowed_size_limits, ini_get('upload_max_filesize'))}</p>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label for="allowed_attach_size" class="x_control-label">{$lang->allowed_attach_size}</label>
+		<div class="x_controls">
+			<input type="number" min="0" name="allowed_attach_size" id="allowed_attach_size" value="{$config->allowed_attach_size}" size="7" style="min-width:80px" /> MB
+			<p class="x_help-block">{$lang->about_allowed_attach_size_global}<br />{sprintf($lang->about_allowed_size_limits, ini_get('upload_max_filesize'))}</p>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label for="allowedFiletypes" class="x_control-label">{$lang->pre_conversion_filesize}</label>
+		<div class="x_controls">
+			<input type="number" min="0" name="pre_conversion_filesize" id="pre_conversion_filesize" value="{$config->pre_conversion_filesize ?? ''}" size="7" style="min-width:80px" /> MB
+			<p class="x_help-block">{$lang->about_pre_conversion_filesize}</p>
+		</div>
+	</div>
+	<div class="x_control-group">
+		<label for="allowedFiletypes" class="x_control-label">{$lang->allowed_filetypes}</label>
+		<div class="x_controls">
+			<input id="allowedFiletypes" type="text" name="allowed_filetypes" value="{implode(', ', $config->allowed_extensions)}" />
+			<p class="x_help-block">{$lang->about_allowed_filetypes}</p>
+		</div>
+	</div>
+	<section class="section">
+		<h1>{$lang->image}</h1>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->image_autoconv}</label>
+			<div class="x_controls">
+				{@ $source_types = ['bmp', 'jpg', 'png', 'webp', 'avif', 'heic']}
+				<!--@foreach($source_types as $source_type)-->
+					<div class="image_autoconv_types">
+						<label for="image_autoconv_{$source_type}" class="x_inline">
+							{strtoupper($source_type)}
+						</label> →
+						<select name="image_autoconv[{$source_type}]" id="image_autoconv_{$source_type}" disabled="disabled"|cond="!$is_magick && in_array($source_type, ['avif', 'heic'])">
+							<option value=""></option>
+							<option value="jpg" selected="selected"|cond="($config->image_autoconv[$source_type] ?? '') === 'jpg' || !empty($config->image_autoconv[$source_type . '2jpg'])">JPG</option>
+							<option value="png" selected="selected"|cond="($config->image_autoconv[$source_type] ?? '') === 'png'">PNG</option>
+							<option value="webp" selected="selected"|cond="($config->image_autoconv[$source_type] ?? '') === 'webp'">WebP</option>
+						</select>
+					</div>
+				<!--@endforeach-->
+				<p class="x_help-block">
+					{$lang->about_image_autoconv}<br />
+					{$lang->msg_need_magick}
+				</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->max_image_size}</label>
+			<div class="x_controls">
+				<input type="number" min="0" name="max_image_width" id="max_image_width" value="{$config->max_image_width}" size="7" style="min-width:80px" /> &times;
+				<input type="number" min="0" name="max_image_height" id="max_image_height" value="{$config->max_image_height}" size="7" style="min-width:80px" /> px &nbsp;
+				<select name="max_image_size_action" id="max_image_size_action">
+					<option value="">{$lang->max_image_size_action_nothing}</option>
+					<option value="block" selected="selected"|cond="$config->max_image_size_action === 'block'">{$lang->max_image_size_action_block}</option>
+					<option value="resize" selected="selected"|cond="$config->max_image_size_action === 'resize'">{$lang->max_image_size_action_resize}</option>
+				</select>
+				<p class="x_help-block">
+					{$lang->about_max_image_size}
+				</p>
+				<p class="x_help-block">
+					<label class="x_inline" for="max_image_size_same_format_Y">
+						<input type="radio" name="max_image_size_same_format" id="max_image_size_same_format_Y" value="Y" checked="checked"|cond="!isset($config->max_image_size_same_format) || $config->max_image_size_same_format === 'Y'" />
+						{$lang->max_image_size_same_format_Y}
+					</label>
+					<label class="x_inline" for="max_image_size_same_format_to_jpg">
+						<input type="radio" name="max_image_size_same_format" id="max_image_size_same_format_to_jpg" value="jpg" checked="checked"|cond="$config->max_image_size_same_format === 'jpg' || $config->max_image_size_same_format === 'N'" />
+						{$lang->max_image_size_same_format_to_jpg}
+					</label>
+					<label class="x_inline" for="max_image_size_same_format_to_webp">
+						<input type="radio" name="max_image_size_same_format" id="max_image_size_same_format_to_webp" value="webp" checked="checked"|cond="$config->max_image_size_same_format === 'webp'" />
+						{$lang->max_image_size_same_format_to_webp}
+					</label>
+					<label for="max_image_size_admin">
+						<input type="checkbox" name="max_image_size_admin" id="max_image_size_admin" value="Y" checked="checked"|cond="$config->max_image_size_admin === 'Y'" />
+						{$lang->max_image_size_admin}
+					</label>
+				</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->image_quality_adjustment}</label>
+			<div class="x_controls">
+				<select name="image_quality_adjustment" style="min-width:80px">
+					<!--@for($q = 50; $q <= 100; $q += 5)-->
+						<option value="{$q}" selected="selected"|cond="$config->image_quality_adjustment === $q">{$q}%<!--@if($q === 75)--> ({$lang->standard})<!--@end--></option>
+					<!--@endfor-->
+				</select>
+				<p class="x_help-block">{$lang->about_image_quality_adjustment}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->image_autorotate}</label>
+			<div class="x_controls">
+				<label for="image_autorotate_Y" class="x_inline">
+					<input type="radio" name="image_autorotate" id="image_autorotate_Y" value="Y" checked="checked"|cond="$config->image_autorotate === true" disabled="disabled"|cond="!function_exists('exif_read_data')" />
+					{$lang->cmd_yes}
+				</label>
+				<label for="image_autorotate_N" class="x_inline">
+					<input type="radio" name="image_autorotate" id="image_autorotate_N" value="N" checked="checked"|cond="$config->image_autorotate !== true" disabled="disabled"|cond="!function_exists('exif_read_data')" />
+					{$lang->cmd_no}
+				</label>
+				<p class="x_help-block">{$lang->about_image_autorotate}</p>
+				<p class="x_text-info" cond="!function_exists('exif_read_data')">{$lang->msg_cannot_use_exif}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->image_remove_exif_data}</label>
+			<div class="x_controls">
+				<label for="image_remove_exif_data_Y" class="x_inline">
+					<input type="radio" name="image_remove_exif_data" id="image_remove_exif_data_Y" value="Y" checked="checked"|cond="$config->image_remove_exif_data === true" disabled="disabled"|cond="!function_exists('exif_read_data')" />
+					{$lang->cmd_yes}
+				</label>
+				<label for="image_remove_exif_data_N" class="x_inline">
+					<input type="radio" name="image_remove_exif_data" id="image_remove_exif_data_N" value="N" checked="checked"|cond="$config->image_remove_exif_data !== true" disabled="disabled"|cond="!function_exists('exif_read_data')" />
+					{$lang->cmd_no}
+				</label>
+				<p class="x_help-block">{$lang->about_image_remove_exif_data}</p>
+				<p class="x_text-info" cond="!function_exists('exif_read_data')">{$lang->msg_cannot_use_exif}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->image_always_reencode}</label>
+			<div class="x_controls">
+				<label for="image_always_reencode_Y" class="x_inline">
+					<input type="radio" name="image_always_reencode" id="image_always_reencode_Y" value="Y" checked="checked"|cond="$config->image_always_reencode === true" />
+					{$lang->cmd_yes}
+				</label>
+				<label for="image_always_reencode_N" class="x_inline">
+					<input type="radio" name="image_always_reencode" id="image_always_reencode_N" value="N" checked="checked"|cond="$config->image_always_reencode !== true" />
+					{$lang->cmd_no}
+				</label>
+				<p class="x_help-block">{$lang->about_image_always_reencode}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->image_autoconv_gif2mp4}</label>
+			<div class="x_controls">
+				<label for="image_autoconv_gif2mp4_Y" class="x_inline">
+					<input type="radio" name="image_autoconv[gif2mp4]" id="image_autoconv_gif2mp4_Y" value="Y" checked="checked"|cond="$config->image_autoconv['gif2mp4'] === true" disabled="disabled"|cond="!$is_ffmpeg" />
+					{$lang->cmd_yes}
+				</label>
+				<label for="image_autoconv_gif2mp4_N" class="x_inline">
+					<input type="radio" name="image_autoconv[gif2mp4]" id="image_autoconv_gif2mp4_N" value="N" checked="checked"|cond="$config->image_autoconv['gif2mp4'] !== true" disabled="disabled"|cond="!$is_ffmpeg" />
+					{$lang->cmd_no}
+				</label>
+				<p class="x_help-block">{$lang->about_image_autoconv_gif2mp4}</p>
+				<p class="x_text-info" cond="!$is_ffmpeg">{$lang->msg_cannot_use_ffmpeg}</p>
+			</div>
+		</div>
+	</section>
+	<section class="section">
+		<h1>{$lang->video}</h1>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->max_video_size}</label>
+			<div class="x_controls">
+				<input type="number" min="0" name="max_video_width" id="max_video_width" value="{$config->max_video_width}" size="7" style="min-width:80px" /> &times;
+				<input type="number" min="0" name="max_video_height" id="max_video_height" value="{$config->max_video_height}" size="7" style="min-width:80px" /> px &nbsp;
+				<select name="max_video_size_action" id="max_video_size_action">
+					<option value="">{$lang->max_image_size_action_nothing}</option>
+					<option value="block" selected="selected"|cond="$config->max_video_size_action === 'block'">{$lang->max_image_size_action_block}</option>
+					<option value="resize" selected="selected"|cond="$config->max_video_size_action === 'resize'">{$lang->max_image_size_action_resize}</option>
+				</select>
+				<p class="x_help-block">
+					{$lang->about_max_video_size}
+					<span class="x_text-info" cond="!$is_ffmpeg"><br />{$lang->msg_cannot_use_ffmpeg}</span>
+				</p>
+				<p>
+					<label for="max_video_size_admin">
+						<input type="checkbox" name="max_video_size_admin" id="max_video_size_admin" value="Y" checked="checked"|cond="$config->max_video_size_admin === 'Y'" />
+						{$lang->max_image_size_admin}
+					</label>
+				</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->max_video_duration}</label>
+			<div class="x_controls">
+				<input type="number" min="0" name="max_video_duration" id="max_video_duration" value="{$config->max_video_duration}" size="7" style="min-width:80px" /> {$lang->unit_sec} &nbsp;
+				<select name="max_video_duration_action" id="max_video_duration_action">
+					<option value="">{$lang->max_image_size_action_nothing}</option>
+					<option value="block" selected="selected"|cond="$config->max_video_duration_action === 'block'">{$lang->max_image_size_action_block}</option>
+					<option value="cut" selected="selected"|cond="$config->max_video_duration_action === 'cut'">{$lang->max_image_size_action_cut}</option>
+				</select>
+				<p class="x_help-block">
+					{$lang->about_max_video_duration}
+					<span class="x_text-info" cond="!$is_ffmpeg"><br />{$lang->msg_cannot_use_ffmpeg}</span>
+				</p>
+				<p>
+					<label for="max_video_duration_admin">
+						<input type="checkbox" name="max_video_duration_admin" id="max_video_duration_admin" value="Y" checked="checked"|cond="$config->max_video_duration_admin === 'Y'" />
+						{$lang->max_image_size_admin}
+					</label>
+				</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->video_autoconv_any2mp4}</label>
+			<div class="x_controls">
+				<label for="video_autoconv_any2mp4_Y" class="x_inline">
+					<input type="radio" name="video_autoconv_any2mp4" id="video_autoconv_any2mp4_Y" value="Y" checked="checked"|cond="$config->video_autoconv['any2mp4'] === true" disabled="disabled"|cond="!$is_ffmpeg" />
+					{$lang->cmd_yes}
+				</label>
+				<label for="video_autoconv_any2mp4_N" class="x_inline">
+					<input type="radio" name="video_autoconv_any2mp4" id="video_autoconv_any2mp4_N" value="N" checked="checked"|cond="$config->video_autoconv['any2mp4'] !== true" disabled="disabled"|cond="!$is_ffmpeg" />
+					{$lang->cmd_no}
+				</label>
+				<p class="x_help-block">{$lang->about_video_autoconv_any2mp4}</p>
+				<p class="x_text-info" cond="!$is_ffmpeg">{$lang->msg_cannot_use_ffmpeg}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->video_always_reencode}</label>
+			<div class="x_controls">
+				<label for="video_always_reencode_Y" class="x_inline">
+					<input type="radio" name="video_always_reencode" id="video_always_reencode_Y" value="Y" checked="checked"|cond="$config->video_always_reencode === true" disabled="disabled"|cond="!$is_ffmpeg" />
+					{$lang->cmd_yes}
+				</label>
+				<label for="video_always_reencode_N" class="x_inline">
+					<input type="radio" name="video_always_reencode" id="video_always_reencode_N" value="N" checked="checked"|cond="$config->video_always_reencode !== true" disabled="disabled"|cond="!$is_ffmpeg" />
+					{$lang->cmd_no}
+				</label>
+				<p class="x_help-block">{$lang->about_video_always_reencode}</p>
+				<p class="x_text-info" cond="!$is_ffmpeg">{$lang->msg_cannot_use_ffmpeg}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->video_thumbnail}</label>
+			<div class="x_controls">
+				<label for="video_thumbnail_Y" class="x_inline">
+					<input type="radio" name="video_thumbnail" id="video_thumbnail_Y" value="Y" checked="checked"|cond="$config->video_thumbnail === true" disabled="disabled"|cond="!$is_ffmpeg" />
+					{$lang->cmd_yes}
+				</label>
+				<label for="video_thumbnail_N" class="x_inline">
+					<input type="radio" name="video_thumbnail" id="video_thumbnail_N" value="N" checked="checked"|cond="$config->video_thumbnail !== true" disabled="disabled"|cond="!$is_ffmpeg" />
+					{$lang->cmd_no}
+				</label>
+				<p class="x_help-block">{$lang->about_video_thumbnail}</p>
+				<p class="x_text-info" cond="!$is_ffmpeg">{$lang->msg_cannot_use_ffmpeg}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->video_mp4_gif_time}</label>
+			<div class="x_controls">
+				<input type="number" min="0" name="video_mp4_gif_time" value="{$config->video_mp4_gif_time}" style="min-width:80px" disabled="disabled"|cond="!$is_ffmpeg" /> {$lang->unit_sec}
+				<p class="x_help-block">{$lang->about_video_mp4_gif_time}</p>
+				<p class="x_text-info" cond="!$is_ffmpeg">{$lang->msg_cannot_use_ffmpeg}</p>
+			</div>
+		</div>
+	</section>
+	<section class="section">
+		<h1>{lang('file.external_program_paths')}</h1>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->ffmpeg_path}</label>
+			<div class="x_controls">
+				<input type="text" name="ffmpeg_command" value="{$config->ffmpeg_command}" />
+				<p class="x_help-block">{$lang->about_ffmpeg_path}</p>
+				<p class="x_text-info" cond="!$is_exec_available">{$lang->msg_cannot_use_exec}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->ffprobe_path}</label>
+			<div class="x_controls">
+				<input type="text" name="ffprobe_command" value="{$config->ffprobe_command}" />
+				<p class="x_help-block">{$lang->about_ffmpeg_path}</p>
+				<p class="x_text-info" cond="!$is_exec_available">{$lang->msg_cannot_use_exec}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->ffmpeg_timeout}</label>
+			<div class="x_controls">
+				<input type="number" min="0" name="ffmpeg_timeout" value="{$config->ffmpeg_timeout}" style="min-width:80px" /> {$lang->unit_sec}
+				<p class="x_help-block">{sprintf($lang->about_ffmpeg_timeout, ini_get('max_execution_time'))}</p>
+				<p class="x_text-info" cond="!$is_exec_available">{$lang->msg_cannot_use_exec}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->magick_path}</label>
+			<div class="x_controls">
+				<input type="text" name="magick_command" value="{$config->magick_command}" />
+				<p class="x_help-block">{$lang->about_magick_path}</p>
+				<p class="x_text-info" cond="!$is_exec_available">{$lang->msg_cannot_use_exec}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->magick_timeout}</label>
+			<div class="x_controls">
+				<input type="number" min="0" name="magick_timeout" value="{$config->magick_timeout}" style="min-width:80px" /> {$lang->unit_sec}
+				<p class="x_help-block">{sprintf($lang->about_magick_timeout, ini_get('max_execution_time'))}</p>
+				<p class="x_text-info" cond="!$is_exec_available">{$lang->msg_cannot_use_exec}</p>
+			</div>
+		</div>
+	</section>
+
+	<div class="x_clearfix btnArea">
+		<div class="x_pull-right">
+			<button type="submit" class="x_btn x_btn-primary">{$lang->cmd_save}</button>
+		</div>
+	</div>
+</form>

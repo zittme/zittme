@@ -1,0 +1,87 @@
+<!--%import("filter/insert_grant.xml")-->
+<load target="js/module_admin.js" />
+
+<script>
+    jQuery( function() { jQuery('.grant_default').change( function(event) { doShowGrantZone(); } ); doShowGrantZone() } );
+</script>
+
+<form action="./" method="post" onsubmit="return procFilter(this, insert_grant)" id="fo_obj">
+	<input type="hidden" name="module_srl" value="{$module_srl}" />
+	<input type="hidden" name="admin_member" value="<!--@foreach($admin_member as $key => $val)--><!--@if($member_config->identifier == 'email_address')-->{$val->email_address},<!--@else-->{$val->user_id},<!--@end--><!--@end-->" />
+
+	<div class="section x_form-horizontal">
+		<h1>{$lang->module_admin}</h1>
+		<div class="x_control-group">
+			<label class="x_control-label" cond="$member_config->identifier == 'email_address'">
+				{$lang->admin_email_address}
+			</label>
+			<label class="x_control-label" cond="$member_config->identifier != 'email_address'">
+				{$lang->admin_id}
+			</label>
+			<div class="x_controls">
+				<div class="x_input-append" style="margin-bottom:8px">
+					<input type="text" name="admin_id" />
+					<button class="x_btn" type="button" onclick="doInsertAdmin()">{$lang->cmd_insert}</button>
+				</div><br />
+				<div class="x_input-append" style="margin-bottom:8px">
+					<select name="_admin_member" multiple="multiple" size="{max(3, count($admin_member))}">
+						<option loop="$admin_member => $key, $val" value="{$val->email_address}"|cond="$member_config->identifier=='email_address'" value="{$val->user_id}"|cond="$member_config->identifier!='email_address'">
+							{$val->nick_name} (<block cond="$member_config->identifier=='email_address'">{$val->email_address}</block><block cond="$member_config->identifier!='email_address'">{$val->user_id}</block>)
+						</option>
+					</select>
+					<button class="x_btn" type="button" onclick="doDeleteAdmin()">{$lang->cmd_delete}</button>
+				</div><br />
+				<p id="adminListHelp" class="x_help-block">{$lang->about_admin_id}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">
+				{$lang->admin_scope}
+			</label>
+			<div class="x_controls">
+				{@ $default_scopes = array_keys($manager_scopes)}
+				{@ $admin_scopes = $admin_member ? (array_first($admin_member)->scopes ?? $default_scopes) : $default_scopes}
+				<!--@foreach($manager_scopes as $key => $val)-->
+					<label class="x_inline">
+						<input type="checkbox" name="admin_scopes[]" value="{$key}" checked="checked"|cond="in_array($key, $admin_scopes)" />
+						{$val}
+					</label>
+				<!--@endforeach-->
+			</div>
+		</div>
+	</div>
+
+	<div class="section">
+		<h1>{$lang->permission_setting}</h1>
+		<div class="x_form-horizontal">
+			<div loop="$grant_list => $grant_name, $grant_item" class="x_control-group">
+				<label for="{$grant_name}_default" class="x_control-label">{$grant_item->title}</label>
+				<div class="x_controls">
+					<select name="{$grant_name}_default" id="{$grant_name}_default" class="grant_default">
+						<!--@if($default_xml_grant[$grant_name] !== 'manager')-->
+						<option value="0" <!--@if(($default_grant[$grant_name] ?? '') == 'all')-->selected="selected"<!--@end-->>{$lang->grant_to_all}</option>
+						<option value="-1" <!--@if(($default_grant[$grant_name] ?? '') == 'member' || ($default_grant[$grant_name] ?? '') == 'site')-->selected="selected"<!--@end-->>{$lang->grant_to_login_user}</option>
+						<option value="-4" <!--@if(($default_grant[$grant_name] ?? '') == 'not_member')-->selected="selected"<!--@end-->>{$lang->grant_to_non_login_user}</option>
+						<!--@endif-->
+						<option value="-3" <!--@if(($default_grant[$grant_name] ?? '') == 'manager')-->selected="selected"<!--@end-->>{$lang->grant_to_admin}</option>
+						<option value="" <!--@if(($default_grant[$grant_name] ?? '') == 'group')-->selected="selected"<!--@end-->>{$lang->grant_to_group}</option>
+					</select>
+					<div id="zone_{$grant_name}" hidden style="margin:8px 0 0 0">
+						<!--@foreach($group_list as $group_srl => $group_item)-->
+						<label for="grant_{$grant_name}_{$group_srl}" class="x_inline">
+							<input type="checkbox" class="checkbox" name="{$grant_name}" value="{$group_item->group_srl}" id="grant_{$grant_name}_{$group_srl}" checked="checked"|cond="is_array($selected_group[$grant_name] ?? null) && in_array($group_srl, $selected_group[$grant_name])" />
+							{Context::replaceUserLang($group_item->title, true)}
+						</label>
+						<!--@end-->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="x_clearfix btnArea">
+		<div class="x_pull-right">
+			<button class="x_btn x_btn-primary" type="submit">{$lang->cmd_save}</button>
+		</div>
+	</div>
+</form>

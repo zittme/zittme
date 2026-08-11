@@ -1,0 +1,20 @@
+<?php
+$lang->krzip = 'Почтовый индекс Кореи';
+$lang->cmd_krzip_api_type = 'Выбор поставщика API';
+$lang->cmd_krzip_daumapi = 'Kakao API';
+$lang->cmd_krzip_epostapi = 'Korea Post API';
+$lang->cmd_krzip_postcodify = 'Postcodify';
+$lang->cmd_krzip_regkey = 'Регистрационный ключ';
+$lang->cmd_krzip_postcode = 'Почтовый индекс';
+$lang->cmd_krzip_address = 'Почтовый адрес';
+$lang->cmd_krzip_detail_address = 'Адрес (подробно)';
+$lang->about_krzip = 'Поиск почтовых индексов Южной Кореи с помощью публичных API.';
+$lang->about_krzip_api_handler = 'Выбор API, который будет использоваться для поиска почтовых индексов.';
+$lang->about_krzip_epostapi_regkey = 'Введите регистрационный ключ, полученный от Korea Post, для использования их API.';
+$lang->msg_krzip_road_address_expectation = 'Адрес по названию улицы: %s';
+$lang->msg_krzip_jibun_address_expectation = 'Адрес по номеру участка: %s';
+$lang->msg_krzip_no_query = 'Введите поисковый запрос.';
+$lang->msg_krzip_is_maintenance = 'Ведутся технические работы.';
+$lang->msg_krzip_wrong_regkey = 'Недействительный регистрационный ключ.';
+$lang->msg_krzip_no_result = 'Адрес не найден.';
+$lang->msg_krzip_riddling_wrong = 'Неизвестная ошибка в модуле почтовых индексов.';

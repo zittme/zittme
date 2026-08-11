@@ -1,0 +1,22 @@
+<?php
+$lang->rss_disable = 'Invalider RSS';
+$lang->rss_type = 'Le Format pour imprimer RSS';
+$lang->open_rss = 'Exposer RSS';
+$lang->open_rss_types['Y'] = 'Exposer Tout';
+$lang->open_rss_types['H'] = 'Exposer Résumé';
+$lang->open_rss_types['N'] = 'Ne pas exposer';
+$lang->about_rss_disable = 'Si vous cochez, RSS sera invalidé.';
+$lang->about_rss_type = 'Vous pouvez désignez le format pour inprimer RSS.';
+$lang->about_open_rss = 'Vous pouvez exposez au publique le RSS du module courant ou non.\\nN\'importe comment est la permission de l\'article, RSS sera exposé au publique selon son option.';
+$lang->msg_rss_is_disabled = 'La fonction RSS est invalidé.';
+$lang->feed = 'Publier le flux RSS';
+$lang->total_feed = 'Flux agrégés';
+$lang->feed_copyright = 'Droits d\'auteur';
+$lang->feed_document_count = 'Nombre d\'articles par page';
+$lang->feed_image = 'Image du flux';
+$lang->module_feed_management = 'Flux par module';
+$lang->open_feed_to_total = 'Inclure dans le flux agrégé';
+$lang->about_feed_description = 'Vous pouvez saisir la description du flux RSS à publier. Si vous ne la saisissez pas, la description de chaque module est affichée par défaut.';
+$lang->about_feed_copyright = 'Vous pouvez saisir les informations de droits d\'auteur du flux RSS. Si vous ne les saisissez pas, les droits d\'auteur de l\'ensemble des flux RSS sont appliqués.';
+$lang->about_feed_document_count = 'Nombre d\'articles affichés sur une page de flux (valeur par défaut : 15)';
+$lang->msg_rss_invalid_image_format = 'Format d\'image invalide. Seuls les fichiers JPG, JPEG, GIF et PNG sont pris en charge.';

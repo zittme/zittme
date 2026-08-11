@@ -1,0 +1,49 @@
+<include target="./header.html" />
+<!--// no use validator id. -->
+<div cond="$XE_VALIDATOR_MESSAGE" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+
+<!--@if($logged_info->is_admin === 'Y')-->
+<section class="section">
+	<h1>{$lang->cmd_board_combined_board}</h1>
+	<form action="./" method="post" class="x_form-horizontal">
+		<input type="hidden" name="module" value="document" />
+		<input type="hidden" name="act" value="procBoardAdminInsertCombinedConfig" />
+		<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
+		<input type="hidden" name="target_module_srl" value="{$module_info->module_srl}" />
+		{@ $include_modules = explode(',', $module_info->include_modules ?? '')}
+		<div class="x_control-group">
+			<label for="include_modules" class="x_control-label">{$lang->cmd_board_include_modules}</label>
+			<div class="x_controls">
+				<select name="include_modules[]" id="include_modules" size="8" multiple="multiple">
+					<option value="">{$lang->cmd_board_include_modules_none}</option>
+					<!--@foreach($board_list as $board_info)-->
+						<option value="{$board_info->module_srl}" selected="selected"|cond="in_array($board_info->module_srl, $include_modules)">{$board_info->browser_title} ({$board_info->mid})</option>
+					<!--@endforeach-->
+				</select>
+				<p class="x_help-block">{$lang->about_board_combined_board}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label for="include_days" class="x_control-label">{$lang->cmd_board_include_days}</label>
+			<div class="x_controls">
+				<input name="include_days" id="include_days" type="number" min="0" step="0.01" value="{$module_info->include_days ?? 0}" /> {$lang->unit_day}
+				<p class="x_help-block">{$lang->about_board_include_days}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->cmd_board_include_notice}</label>
+			<div class="x_controls">
+				<label class="x_inline"><input name="include_notice" type="radio" value="Y" checked="checked"|cond="!isset($module_info->include_notice) || $module_info->include_notice !== 'N'" /> {$lang->cmd_yes} </label>
+				<label class="x_inline"><input name="include_notice" type="radio" value="N" checked="checked"|cond="isset($module_info->include_notice) && $module_info->include_notice === 'N'" /> {$lang->cmd_no} </label>
+			</div>
+		</div>
+		<div class="btnArea">
+			<button type="submit" class="x_btn x_btn-primary">{$lang->cmd_save}</button>
+		</div>
+	</form>
+</section>
+<!--@endif-->
+
+{$setup_content}

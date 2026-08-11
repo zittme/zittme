@@ -1,0 +1,70 @@
+<config autoescape="on" />
+
+<include target="header.html" />
+
+<div class="zmst zmst-detail">
+	<p class="zmst-back">
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts')}">&larr; {$lang->expert_find}</a>
+	</p>
+
+	<div class="zmst-view-head">
+		<div class="zmst-thumb zmst-view-thumb">
+			<!--@if($expert->photo)-->
+				<img src="{$expert->photo}" alt="{$expert->name}" />
+			<!--@else-->
+				<span class="zmst-thumb-none">{mb_substr($expert->name, 0, 1)}</span>
+			<!--@end-->
+		</div>
+		<div class="zmst-view-info">
+			<div class="zmst-item-top">
+				<span class="zmst-badge" cond="$expert->region">{$expert->region}</span>
+				<span class="zmst-version" cond="$expert->career_years">{$expert->career_years}{$lang->unit_year}</span>
+				<span class="zmst-chip zmst-chip-installed" cond="$expert->is_business">BIZ</span>
+			</div>
+			<h2 class="zmst-view-title">{$expert->name}</h2>
+			<p class="zmst-view-desc">{$expert->intro}</p>
+			<p class="zmst-meta">
+				<span loop="$expert->fields => $f" class="zmst-badge">{$f}</span>
+			</p>
+		</div>
+		<div class="zmst-view-cta">
+			<!--// 의뢰는 zitt.me 본장에서 (계정 연결 시 자동 로그인) -->
+			<a class="zmst-btn zmst-btn-primary" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminEnterService', 'to', 'expert')}">{$lang->expert_request_work}</a>
+			<a class="zmst-link-out" href="{$expert->url}" target="_blank" rel="noopener">{$lang->expert_view_on_zittme}</a>
+		</div>
+	</div>
+
+	<!--// 상세 소개 -->
+	<div class="zmst-content" cond="trim(strip_tags($expert->content)) !== ''">
+		{$expert->content|noescape}
+	</div>
+
+	<!--// 포트폴리오 -->
+	<h3 class="zmst-section-title" cond="count($expert->portfolios)">{$lang->expert_portfolio}</h3>
+	<ul class="zmst-list" cond="count($expert->portfolios)">
+		<!--@foreach($expert->portfolios as $po)-->
+			<li class="zmst-item">
+				<a class="zmst-thumb" href="{$po->url}" target="_blank" rel="noopener">
+					<!--@if($po->thumbnail)-->
+						<img src="{$po->thumbnail}" alt="" loading="lazy" />
+					<!--@else-->
+						<span class="zmst-thumb-none">{$lang->expert_portfolio}</span>
+					<!--@end-->
+				</a>
+				<div class="zmst-item-body">
+					<a class="zmst-item-link" href="{$po->url}" target="_blank" rel="noopener">
+						<strong class="zmst-name">{$po->title}</strong>
+					</a>
+					<p class="zmst-summary">{$po->summary}</p>
+					<p class="zmst-meta">
+						<span class="zmst-like">
+							<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 14.2 2.6 9.1a3.3 3.3 0 1 1 4.7-4.7L8 5.1l.7-.7a3.3 3.3 0 1 1 4.7 4.7L8 14.2z"/></svg>
+							{number_format($po->like_count)}
+						</span>
+						<span>{number_format($po->view_count)}</span>
+					</p>
+				</div>
+			</li>
+		<!--@endforeach-->
+	</ul>
+</div>

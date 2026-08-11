@@ -1,0 +1,164 @@
+<config autoescape="on" />
+
+<load target="./js/menu_setup.js" usecdn="true" />
+<div class="x_page-header">
+	<h1>{$lang->admin_setup}</h1>
+</div>
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/admin/tpl/admin_setup/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+<section class="section">
+	<h1>{$lang->admin_logo_setup}</h1>
+	<form action="./" method="post" enctype="multipart/form-data" class="x_form-horizontal">
+		<input type="hidden" name="module" value="admin" />
+		<input type="hidden" name="act" value="procAdminInsertLogo" />
+		<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="admin_logo">{$lang->admin_logo_light}</label>
+			<div class="x_controls">
+				<p class="zm-logo-preview">
+					<img src="{$admin_logo_url ?: (\RX_BASEURL . 'common/img/logo.png')}" alt="{$lang->admin_logo_light}" />
+				</p>
+				<input type="file" name="admin_logo" id="admin_logo" accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml" />
+				<label class="x_inline" for="delete_admin_logo" cond="$admin_logo_url">
+					<input type="checkbox" name="delete_admin_logo" id="delete_admin_logo" value="Y" /> {$lang->cmd_delete}
+				</label>
+				<span class="x_help-block">{$lang->about_admin_logo}</span>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="admin_logo_dark">{$lang->admin_logo_dark}</label>
+			<div class="x_controls">
+				<p class="zm-logo-preview dark">
+					<img src="{$admin_logo_dark_url ?: ($admin_logo_url ?: (\RX_BASEURL . 'common/img/logo.png'))}" alt="{$lang->admin_logo_dark}" />
+				</p>
+				<input type="file" name="admin_logo_dark" id="admin_logo_dark" accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml" />
+				<label class="x_inline" for="delete_admin_logo_dark" cond="$admin_logo_dark_url">
+					<input type="checkbox" name="delete_admin_logo_dark" id="delete_admin_logo_dark" value="Y" /> {$lang->cmd_delete}
+				</label>
+				<span class="x_help-block">{$lang->about_admin_logo_dark}</span>
+			</div>
+		</div>
+
+		<div class="x_control-group">
+			<label class="x_control-label" for="admin_logo_text">{$lang->admin_logo_text}</label>
+			<div class="x_controls">
+				<input type="text" name="admin_logo_text" id="admin_logo_text" value="{$admin_logo_text}" maxlength="30" placeholder="{$lang->admin_logo_text_placeholder}" />
+				<span class="x_help-block">{$lang->about_admin_logo_text}</span>
+			</div>
+		</div>
+
+		<div class="x_clearfix btnArea">
+			<div class="x_pull-right">
+				<button type="submit" class="x_btn x_btn-primary">{$lang->cmd_save}</button>
+			</div>
+		</div>
+	</form>
+</section>
+
+<section class="section">
+	<h1>{$lang->admin_gnb_position_setup}</h1>
+	<form action="./" method="post" class="x_form-horizontal">
+		<input type="hidden" name="module" value="admin" />
+		<input type="hidden" name="act" value="procAdminUpdateGnbPosition" />
+		<input type="hidden" name="success_return_url" value="{getUrl('', 'module', 'admin', 'act', 'dispAdminSetup')}" />
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->admin_gnb_position}</label>
+			<div class="x_controls">
+				<label class="x_inline" loop="$lang->admin_gnb_positions => $pos_key, $pos_label">
+					<input type="radio" name="admin_gnb_position" value="{$pos_key}" checked="checked"|cond="($admin_gnb_position ?: 'top') === $pos_key" /> {$pos_label}
+				</label>
+				<span class="x_help-block">{$lang->about_admin_gnb_position}</span>
+			</div>
+		</div>
+		<div class="x_clearfix btnArea">
+			<div class="x_pull-right">
+				<button type="submit" class="x_btn x_btn-primary">{$lang->cmd_save}</button>
+			</div>
+		</div>
+	</form>
+</section>
+
+<section class="section">
+	<h1>{$lang->front_admin_bar_setup}</h1>
+	<form action="./" method="post" class="x_form-horizontal">
+		<input type="hidden" name="module" value="admin" />
+		<input type="hidden" name="act" value="procAdminUpdateFrontBar" />
+		<input type="hidden" name="success_return_url" value="{getUrl('', 'module', 'admin', 'act', 'dispAdminSetup')}" />
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->front_admin_bar}</label>
+			<div class="x_controls">
+				<label class="x_inline"><input type="checkbox" name="front_admin_bar" value="Y" checked="checked"|cond="$front_admin_bar != 'N'" /> {$lang->front_admin_bar_enable}</label>
+				<span class="x_help-block">{$lang->about_front_admin_bar}</span>
+			</div>
+		</div>
+		<div class="x_clearfix btnArea">
+			<div class="x_pull-right">
+				<button type="submit" class="x_btn x_btn-primary">{$lang->cmd_save}</button>
+			</div>
+		</div>
+	</form>
+</section>
+
+<section class="section">
+	<h1>{$lang->admin_menu_setup}</h1>
+	<form id="listForm" action="./" method="post" class="adminMap">
+		<input type="hidden" name="module" value="admin" />
+		<input type="hidden" name="act" value="procMenuAdminDeleteItem" />
+		<input type="hidden" name="menu_srl" value="{$menu_srl}" />
+		<input type="hidden" name="title" value="{$menu_title}" />
+		<input type="hidden" name="menu_item_srl" value="" />
+		<input type="hidden" name="success_return_url" value="{getUrl('', 'module', 'admin', 'act', 'dispAdminSetup')}" />
+		<ul>
+			<li class="parent" loop="$gnbUrlList=>$key,$value">
+				<input type="hidden" name="parent_key[]" value="{$value['parent_srl']}" class="_parent_key" />
+				<input type="hidden" name="item_key[]" value="{$value['node_srl']}" class="_item_key" />
+				<span>{$value['text']}</span> <span class="side"><a href="#editMenu" class="modalAnchor _add">{$lang->add}</a></span>
+				<ul cond="is_array($value['list']) && count($value['list'])>0">
+					<li loop="$value['list']=>$key2,$value2">
+					<input type="hidden" name="parent_key[]" value="{$value2['parent_srl']}" class="_parent_key" />
+					<input type="hidden" name="item_key[]" value="{$value2['node_srl']}" class="_item_key" />
+					<span>{$value2['text']}</span><span class="side"><a href="#delete" class="_child_delete">{$lang->delete}</a></span>
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<div class="x_clearfix btnArea">
+			<div class="x_pull-left">
+				<button value="procAdminMenuReset" name="act" type="submit" class="x_btn">{$lang->cmd_reset}</button>
+			</div>
+			<div class="x_pull-right">
+				<button type="submit" value="procMenuAdminArrangeItem" name="act" class="x_btn x_btn-primary">{$lang->cmd_save}</button>
+			</div>
+		</div>
+	</form>
+</section>
+<!--// Modal -->
+<section class="x_modal" id="editMenu">
+	<form id="editForm" action="./" class="x_form-horizontal" method="POST" style="margin:0">
+	<div class="x_modal-header">
+		<h1>{$lang->admin_menu_add}</h1>
+	</div>
+	<div class="x_modal-body">
+		<input type="hidden" name="module" value="menu" />
+		<input type="hidden" name="act" value="procMenuAdminInsertItemForAdminMenu" />
+		<input type="hidden" name="menu_srl" value="{$menu_srl}" />
+		<input type="hidden" name="parent_srl" value="" />
+		<div class="x_control-group">
+			<label class="x_control-label" for="menuNameList">{$lang->module}</label>
+			<div class="x_controls">
+				<select name="menu_name" id="menuNameList">
+				</select>
+			</div>
+		</div>
+	</div>
+	<div class="x_modal-footer">
+		<button type="button" class="x_btn x_pull-left" data-hide="#exModal-1">Close</button>
+		<span class="x_btn-group x_pull-right">
+			<button type="submit" class="x_btn x_btn-primary">{$lang->cmd_save}</button>
+		</span>
+	</div>
+	</form>
+</section>

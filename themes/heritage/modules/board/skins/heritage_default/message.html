@@ -1,0 +1,14 @@
+@version(2)
+<include target="_header.html" />
+
+<div class="hrb-confirm">
+	<p class="hrb-confirm-msg">{{ $message }}</p>
+	<div class="hrb-confirm-actions">
+		<button type="button" class="hr-btn" onclick="history.back()">{{ $lang->cmd_back }}</button>
+		@if (!$is_logged)
+		<a class="hr-btn hr-btn-primary" href="{{ getUrl('act', 'dispMemberLoginForm') }}">{{ $lang->cmd_login }}</a>
+		@endif
+	</div>
+</div>
+
+<include target="_footer.html" />

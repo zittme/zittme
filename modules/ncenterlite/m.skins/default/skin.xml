@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">XE 알림센터 Lite 기본스킨</title>
+	<title xml:lang="vi">Giao diện mặc định XE Notification Center Lite</title>
+	<title xml:lang="tr">XE Bildirim Merkezi Lite Varsayılan Tema</title>
+	<title xml:lang="ru">Стандартный скин XE Notification Center Lite</title>
+	<title xml:lang="mn">XE Notification Center Lite үндсэн загвар</title>
+	<title xml:lang="fr">Skin par défaut du centre de notifications XE Lite</title>
+	<title xml:lang="es">Skin predeterminada de XE Notification Center Lite</title>
+	<title xml:lang="de">XE Benachrichtigungscenter Lite Standardskin</title>
+	<title xml:lang="zh-TW">XE 通知中心 Lite 預設面板</title>
+	<title xml:lang="zh-CN">XE 通知中心 Lite 默认皮肤</title>
+	<title xml:lang="jp">XE 通知センター Lite デフォルトスキン</title>
+	<title xml:lang="en">XE Notification Center Lite Default Skin</title>
+	<version>1.1.1</version>
+	<date>2013-03-21</date>
+
+	<author email_address="info@xemagazine.com" link="http://xmz.kr/">
+		<name xml:lang="ko">XE Magazine</name>
+	</author>
+
+	<colorset>
+		<color name="black">
+			<title xml:lang="ko">검은색</title>
+			<title xml:lang="vi">Đen</title>
+			<title xml:lang="tr">Siyah</title>
+			<title xml:lang="ru">Чёрный</title>
+			<title xml:lang="mn">Хар</title>
+			<title xml:lang="fr">Noir</title>
+			<title xml:lang="es">Negro</title>
+			<title xml:lang="de">Schwarz</title>
+			<title xml:lang="zh-TW">黑色</title>
+			<title xml:lang="zh-CN">黑色</title>
+			<title xml:lang="jp">ブラック</title>
+			<title xml:lang="en">Black</title>
+		</color>
+		<color name="gray">
+			<title xml:lang="ko">회색</title>
+			<title xml:lang="vi">Xám</title>
+			<title xml:lang="tr">Gri</title>
+			<title xml:lang="ru">Серый</title>
+			<title xml:lang="mn">Саарал</title>
+			<title xml:lang="fr">Gris</title>
+			<title xml:lang="es">Gris</title>
+			<title xml:lang="de">Grau</title>
+			<title xml:lang="zh-TW">灰色</title>
+			<title xml:lang="zh-CN">灰色</title>
+			<title xml:lang="jp">グレー</title>
+			<title xml:lang="en">Gray</title>
+		</color>
+		<color name="white">
+			<title xml:lang="ko">흰색</title>
+			<title xml:lang="vi">Trắng</title>
+			<title xml:lang="tr">Beyaz</title>
+			<title xml:lang="ru">Белый</title>
+			<title xml:lang="mn">Цагаан</title>
+			<title xml:lang="fr">Blanc</title>
+			<title xml:lang="es">Blanco</title>
+			<title xml:lang="de">Weiß</title>
+			<title xml:lang="zh-TW">白色</title>
+			<title xml:lang="zh-CN">白色</title>
+			<title xml:lang="jp">ホワイト</title>
+			<title xml:lang="en">White</title>
+		</color>
+
+		<color name="blacknoprofile">
+			<title xml:lang="ko">검은색(no profile)</title>
+			<title xml:lang="vi">Đen (không ảnh đại diện)</title>
+			<title xml:lang="tr">Siyah (profilsiz)</title>
+			<title xml:lang="ru">Чёрный (без профиля)</title>
+			<title xml:lang="mn">Хар (профайлгүй)</title>
+			<title xml:lang="fr">Noir (sans profil)</title>
+			<title xml:lang="es">Negro (sin perfil)</title>
+			<title xml:lang="de">Schwarz (ohne Profilbild)</title>
+			<title xml:lang="zh-TW">黑色（無個人檔案）</title>
+			<title xml:lang="zh-CN">黑色（无头像）</title>
+			<title xml:lang="jp">ブラック（プロフィールなし）</title>
+			<title xml:lang="en">Black (no profile)</title>
+		</color>
+		<color name="graynoprofile">
+			<title xml:lang="ko">회색(no profile)</title>
+			<title xml:lang="vi">Xám (không ảnh đại diện)</title>
+			<title xml:lang="tr">Gri (profilsiz)</title>
+			<title xml:lang="ru">Серый (без профиля)</title>
+			<title xml:lang="mn">Саарал (профайлгүй)</title>
+			<title xml:lang="fr">Gris (sans profil)</title>
+			<title xml:lang="es">Gris (sin perfil)</title>
+			<title xml:lang="de">Grau (ohne Profilbild)</title>
+			<title xml:lang="zh-TW">灰色（無個人檔案）</title>
+			<title xml:lang="zh-CN">灰色（无头像）</title>
+			<title xml:lang="jp">グレー（プロフィールなし）</title>
+			<title xml:lang="en">Gray (no profile)</title>
+		</color>
+		<color name="whitenoprofile">
+			<title xml:lang="ko">흰색(no profile)</title>
+			<title xml:lang="vi">Trắng (không ảnh đại diện)</title>
+			<title xml:lang="tr">Beyaz (profilsiz)</title>
+			<title xml:lang="ru">Белый (без профиля)</title>
+			<title xml:lang="mn">Цагаан (профайлгүй)</title>
+			<title xml:lang="fr">Blanc (sans profil)</title>
+			<title xml:lang="es">Blanco (sin perfil)</title>
+			<title xml:lang="de">Weiß (ohne Profilbild)</title>
+			<title xml:lang="zh-TW">白色（無個人檔案）</title>
+			<title xml:lang="zh-CN">白色（无头像）</title>
+			<title xml:lang="jp">ホワイト（プロフィールなし）</title>
+			<title xml:lang="en">White (no profile)</title>
+		</color>
+	</colorset>
+</skin>

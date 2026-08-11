@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<grants />
+	<actions>
+		<action name="dispNcenterliteNotifyList" type="view" permission="member" route="notifications" meta-noindex="true" />
+		<action name="dispNcenterliteUserConfig" type="view" permission="member" route="notififcations/config" meta-noindex="true" />
+		<action name="dispNcenterliteUnsubscribeList" type="view" permission="member" route="notififcations/unsubscribe" meta-noindex="true" />
+		<action name="dispNcenterliteInsertUnsubscribe" type="view" permission="member" route="notififcations/unsubscribe/add" meta-noindex="true" />
+
+		<action name="getColorsetList" type="model" permission="root" />
+		<action name="getMyNotifyListTpl" type="model" permission="member" />
+
+		<action name="procNcenterliteUserConfig" type="controller" permission="member" />
+		<action name="procNcenterliteNotifyReadAll" type="controller" permission="member" />
+		<action name="procNcenterliteRedirect" type="controller" permission="member" method="GET|POST" />
+		<action name="procNcenterliteInsertUnsubscribe" type="controller" />
+
+		<action name="dispNcenterliteAdminConfig" type="view" admin_index="true" menu_name="ncenterlite" menu_index="true" />
+		<action name="dispNcenterliteAdminAdvancedconfig" type="view" menu_name="ncenterlite" />
+		<action name="dispNcenterliteAdminSeletedmid" type="view" menu_name="ncenterlite" />
+		<action name="dispNcenterliteAdminSkinsetting" type="view" menu_name="ncenterlite" />
+		<action name="dispNcenterliteAdminTest" type="view"  menu_name="ncenterlite" />
+		<action name="dispNcenterliteAdminList" type="view" menu_name="ncenterlite" />
+		<action name="dispNcenterliteAdminCustomList" type="view" menu_name="ncenterlite" />
+		<action name="dispNcenterliteAdminOtherComment" type="view" menu_name="ncenterlite" />
+
+		<action name="procNcenterliteAdminInsertConfig" type="controller" ruleset="insertConfig" />
+		<action name="procNcenterliteAdminInsertDummyData" type="controller" />
+		<action name="procNcenterliteAdminInsertPushData" type="controller" />
+		<action name="procNcenterliteAdminDeleteNofity" type="controller" />
+		<action name="procNcenterliteAdminDeleteCustom" type="controller" />
+	</actions>
+	<eventHandlers>
+		<eventHandler after="comment.insertComment" class="controller" method="triggerAfterInsertComment" />
+		<eventHandler after="comment.deleteComment" class="controller" method="triggerAfterDeleteComment" />
+		<eventHandler after="document.insertDocument" class="controller" method="triggerAfterInsertDocument" />
+		<eventHandler after="document.deleteDocument" class="controller" method="triggerAfterDeleteDocument" />
+		<eventHandler before="display" class="controller" method="triggerBeforeDisplay" />
+		<eventHandler after="moduleHandler.proc" class="controller" method="triggerAfterModuleHandlerProc" />
+		<eventHandler after="document.getComments" class="controller" method="triggerAfterGetComments" />
+		<eventHandler after="member.deleteMember" class="controller" method="triggerAfterDeleteMember" />
+		<eventHandler after="communication.sendMessage" class="controller" method="triggerAfterSendMessage" />
+		<eventHandler after="document.updateVotedCount" class="controller" method="triggerAfterDocumentVotedUpdate" />
+		<eventHandler after="document.updateVotedCountCancel" class="controller" method="triggerAfterDocumentVotedCancel" />
+		<eventHandler after="member.procMemberScrapDocument" class="controller" method="triggerAfterScrap" />
+		<eventHandler after="moduleHandler.init" class="controller" method="triggerAddMemberMenu" />
+		<eventHandler after="document.moveDocumentToTrash" class="controller" method="triggerAfterMoveToTrash" />
+		<eventHandler after="comment.moveCommentToTrash" class="controller" method="triggerAfterMoveToTrashComment" />
+		<eventHandler after="comment.updateVotedCount" class="controller" method="triggerAfterCommentVotedCount" />
+		<eventHandler after="comment.updateVotedCountCancel" class="controller" method="triggerAfterCommentVotedCancel" />
+		<eventHandler after="document.getDocumentMenu" class="controller" method="triggerGetDocumentMenu" />
+		<eventHandler after="comment.getCommentMenu" class="controller" method="triggerGetCommentMenu" />
+	</eventHandlers>
+	<menus>
+		<menu name="ncenterlite" type="all">
+			<title xml:lang="ko">알림 센터</title>
+			<title xml:lang="en">Notification Center</title>
+			<title xml:lang="jp">通知センター</title>
+			<title xml:lang="vi">Trung tâm thông báo</title>
+			<title xml:lang="tr">Bildirim Merkezi</title>
+			<title xml:lang="ru">Центр уведомлений</title>
+			<title xml:lang="mn">Мэдэгдлийн төв</title>
+			<title xml:lang="fr">Centre de notifications</title>
+			<title xml:lang="es">Centro de notificaciones</title>
+			<title xml:lang="de">Benachrichtigungscenter</title>
+			<title xml:lang="zh-TW">通知中心</title>
+			<title xml:lang="zh-CN">通知中心</title>
+		</menu>
+	</menus>
+</module>

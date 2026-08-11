@@ -1,0 +1,276 @@
+<?php
+/* Copyright (C) NAVER <http://www.navercorp.com> */
+/**
+ * Admin view of the module class file
+ * @author NAVER (developers@xpressengine.com)
+ */
+class FileAdminView extends File
+{
+	/**
+	 * Display output list (for administrator)
+	 *
+	 * @return Object
+	 */
+	public function dispFileAdminList()
+	{
+		// Options to get a list
+		$args = new stdClass();
+		$args->list_count = intval(Context::get('list_count')) ?: 30;
+		$args->page_count = 10;
+		$args->page = max(1, intval(Context::get('page')));
+		$args->sort_index = Context::get('sort_index') ?: 'regdate';
+		$args->order_type = strtolower(Context::get('order_type')) === 'asc' ? 'asc' : 'desc';
+		$args->isvalid = Context::get('isvalid');
+		$args->module_srl = Context::get('module_srl');
+
+		// Get a list
+		$oFileAdminModel = getAdminModel('file');
+		$output = $oFileAdminModel->getFileList($args);
+
+		// Get the document for looping a list
+		if($output->data)
+		{
+			$oCommentModel = getModel('comment');
+			$oDocumentModel = getModel('document');
+			$oModuleModel = getModel('module');
+
+			$file_list = array();
+			$document_list = array();
+			$comment_list = array();
+			$module_list = array();
+
+			$doc_srls = array();
+			$com_srls = array();
+			$mod_srls = array();
+
+			foreach($output->data as $file)
+			{
+				$file_srl = $file->file_srl;
+				$target_srl = $file->upload_target_srl;
+				$file_update_args = new stdClass();
+				$file_update_args->file_srl = $file_srl;
+				// Find and update if upload_target_type doesn't exist
+				if(!$file->upload_target_type)
+				{
+					// Pass if upload_target_type is already found
+					if(isset($document_list[$target_srl]))
+					{
+						$file->upload_target_type = 'doc';
+					}
+					elseif(isset($comment_list[$target_srl]))
+					{
+						$file->upload_target_type = 'com';
+					}
+					elseif(isset($module_list[$target_srl]))
+					{
+						$file->upload_target_type = 'mod';
+					}
+					else
+					{
+						// document
+						$document = $oDocumentModel->getDocument($target_srl);
+						if($document->isExists())
+						{
+							$file->upload_target_type = 'doc';
+							$file_update_args->upload_target_type = $file->upload_target_type;
+							$document_list[$target_srl] = $document;
+						}
+						// comment
+						if(!$file->upload_target_type)
+						{
+							$comment = $oCommentModel->getComment($target_srl);
+							if($comment->isExists())
+							{
+								$file->upload_target_type = 'com';
+								$file->target_document_srl = $comment->document_srl;
+								$file_update_args->upload_target_type = $file->upload_target_type;
+								$comment_list[$target_srl] = $comment;
+								$doc_srls[] = $comment->document_srl;
+							}
+						}
+						// module (for a page)
+						if(!$file->upload_target_type)
+						{
+							$module = $oModuleModel->getModulesInfo($target_srl);
+							if($module)
+							{
+								$file->upload_target_type = 'mod';
+								$file_update_args->upload_target_type = $file->upload_target_type;
+								$module_list[$module->comment_srl] = $module;
+							}
+						}
+						if(isset($file_update_args->upload_target_type) && $file_update_args->upload_target_type)
+						{
+							executeQuery('file.updateFileTargetType', $file_update_args);
+						}
+					}
+					// Check if data is already obtained
+					foreach($com_srls as $i => $com_srl)
+					{
+						if(isset($comment_list[$com_srl])) unset($com_srls[$i]);
+					}
+					foreach($doc_srls as $i => $doc_srl)
+					{
+						if(isset($document_list[$doc_srl])) unset($doc_srls[$i]);
+					}
+					foreach($mod_srls as $i => $mod_srl)
+					{
+						if(isset($module_list[$mod_srl])) unset($mod_srls[$i]);
+					}
+				}
+
+				if (in_array($file->upload_target_type, ['doc', 'com', 'ev:doc', 'ev:com']))
+				{
+					$var = str_replace('ev:', '', $file->upload_target_type) . '_srls';
+					if (!in_array($target_srl, $$var))
+					{
+						$$var[] = $target_srl;
+					}
+				}
+				if (!in_array($file->module_srl, $mod_srls))
+				{
+					$mod_srls[] = $file->module_srl;
+				}
+
+				$file_list[$file_srl] = $file;
+			}
+			// Remove duplication
+			$doc_srls = array_unique($doc_srls);
+			$com_srls = array_unique($com_srls);
+			$mod_srls = array_unique($mod_srls);
+			// Comment list
+			$com_srls_count = count($com_srls);
+			if($com_srls_count)
+			{
+				$comment_output = $oCommentModel->getComments($com_srls);
+				foreach($comment_output as $comment)
+				{
+					$comment_list[$comment->comment_srl] = $comment;
+					$doc_srls[] = $comment->document_srl;
+				}
+			}
+			// Document list
+			$doc_srls_count = count($doc_srls);
+			if($doc_srls_count)
+			{
+				$document_output = $oDocumentModel->getDocuments($doc_srls);
+				if(is_array($document_output))
+				{
+					foreach($document_output as $document)
+					{
+						$document_list[$document->document_srl] = $document;
+					}
+				}
+			}
+
+			foreach($file_list as $srl => $file)
+			{
+				if($file->upload_target_type === 'com' || $file->upload_target_type === 'ev:com')
+				{
+					$file_list[$srl]->target_document_srl = $comment_list[$file->upload_target_srl]->document_srl;
+				}
+			}
+		}
+
+		// Module list
+		$mod_output = executeQueryArray('comment.getModuleList');
+		foreach ($mod_output->data as $item)
+		{
+			$item->browser_title = Context::replaceUserLang($item->browser_title);
+			$module_list[$item->module_srl] = $item;
+		}
+		Context::set('module_list', $module_list);
+
+		Context::set('file_list', $file_list);
+		Context::set('document_list', $document_list);
+		Context::set('comment_list', $comment_list);
+		Context::set('module_list', $module_list);
+		Context::set('total_count', $output->total_count);
+		Context::set('total_page', $output->total_page);
+		Context::set('page', $output->page);
+		Context::set('page_navigation', $output->page_navigation);
+		Context::set('isvalid', $args->isvalid);
+
+		// Set a template
+		$security = new Security();
+		$security->encodeHTML('file_list..');
+		$security->encodeHTML('module_list..');
+		$security->encodeHTML('search_target', 'search_keyword');
+
+		$this->setTemplatePath($this->module_path.'tpl');
+		$this->setTemplateFile('file_list');
+	}
+
+	/**
+	 * File edit screen
+	 */
+	public function dispFileAdminEdit()
+	{
+		$file_srl = intval(Context::get('file_srl'));
+		if (!$file_srl)
+		{
+			throw new Zittme\Framework\Exceptions\InvalidRequest;
+		}
+		$file = FileModel::getFile($file_srl);
+		if (!$file)
+		{
+			throw new Zittme\Framework\Exceptions\TargetNotFound;
+		}
+
+		$config = FileModel::getFileConfig();
+		Context::set('config', $config);
+		Context::set('file', $file);
+		Context::set('is_ffmpeg', function_exists('exec') && !empty($config->ffmpeg_command) && Zittme\Framework\Storage::isExecutable($config->ffmpeg_command) && !empty($config->ffprobe_command) && Zittme\Framework\Storage::isExecutable($config->ffprobe_command));
+		Context::set('is_magick', function_exists('exec') && !empty($config->magick_command) && Zittme\Framework\Storage::isExecutable($config->magick_command));
+
+		$this->setTemplatePath($this->module_path . 'tpl');
+		$this->setTemplateFile('file_edit');
+	}
+
+	/**
+	 * Upload config screen
+	 */
+	public function dispFileAdminUploadConfig()
+	{
+		$oFileModel = getModel('file');
+		$config = $oFileModel->getFileConfig();
+		Context::set('config', $config);
+		Context::set('is_ffmpeg', function_exists('exec') && !empty($config->ffmpeg_command) && Zittme\Framework\Storage::isExecutable($config->ffmpeg_command) && !empty($config->ffprobe_command) && Zittme\Framework\Storage::isExecutable($config->ffprobe_command));
+		Context::set('is_magick', function_exists('exec') && !empty($config->magick_command) && Zittme\Framework\Storage::isExecutable($config->magick_command));
+		Context::set('is_exec_available', function_exists('exec'));
+
+		// Set a template file
+		$this->setTemplatePath($this->module_path.'tpl');
+		$this->setTemplateFile('upload_config');
+	}
+
+	/**
+	 * Download config screen
+	 */
+	public function dispFileAdminDownloadConfig()
+	{
+		$oFileModel = getModel('file');
+		$config = $oFileModel->getFileConfig();
+		Context::set('config',$config);
+
+		// Set a template file
+		$this->setTemplatePath($this->module_path.'tpl');
+		$this->setTemplateFile('download_config');
+	}
+
+	/**
+	 * Other config screen
+	 */
+	public function dispFileAdminOtherConfig()
+	{
+		$oFileModel = getModel('file');
+		$config = $oFileModel->getFileConfig();
+		Context::set('config',$config);
+
+		// Set a template file
+		$this->setTemplatePath($this->module_path.'tpl');
+		$this->setTemplateFile('other_config');
+	}
+}
+/* End of file file.admin.view.php */
+/* Location: ./modules/file/file.admin.view.php */

@@ -1,0 +1,211 @@
+<config autoescape="on" />
+
+<include target="./_admin_common.html" />
+<script>
+	// 테마 초기화: 저장된 선택이 있으면 적용, 없으면 브라우저(OS) 설정 따름
+	(function(){
+		try {
+			var t = localStorage.getItem('zm-admin-theme');
+			if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-zm-theme', t);
+		} catch(e) {}
+	})();
+</script>
+<script>
+	var admin_menu_srl = "{$admin_menu_srl}";
+	xe.lang.cmd_find = "{$lang->cmd_find}";
+	xe.lang.cmd_cancel = "{$lang->cmd_cancel}";
+	xe.lang.cmd_confirm = "{$lang->cmd_confirm}";
+	xe.lang.msg_select_menu = "{$lang->msg_select_menu}";
+	xe.lang.confirm_run = "{$lang->confirm_run}";
+	xe.lang.confirm_reset_admin_menu = "{$lang->confirm_reset_admin_menu}";
+</script>
+{@ $module_manager = $current_module_info->module !== 'admin'}
+{@ $gnb_position = \Zittme\Modules\Admin\Controllers\AdminMenu::getGnbPosition()}
+<!--// GNB 위치(상단/좌측/우측)는 클래스로만 내려 준다 — 배치는 zittme-admin.css 담당 -->
+<div class="x zm-gnb-{$gnb_position}">
+<p class="skipNav"><a href="#content">{$lang->skip_to_content}</a></p>
+	<header class="header">
+		<!--@if($module_manager)-->
+		<h1>
+			<a class="brand{($admin_logo_dark_url ?? null) ? ' has-dark-logo' : ''}{($admin_logo_url ?? null) ? ' has-custom-logo' : ''}" href="{getUrl('')}" title="{$lang->go_to_home ?? 'Home'}"><img class="zm-logo-light" src="{($admin_logo_url ?? null) ?: (\RX_BASEURL . 'common/img/logo.png')}" alt="Zittme" /><img class="zm-logo-dark" src="{($admin_logo_dark_url ?? null) ?: (($admin_logo_url ?? null) ?: (\RX_BASEURL . 'common/img/logo.png'))}" alt="" aria-hidden="true" /></a>
+		</h1>
+		<p class="site" cond="$this->user->isAdmin()" style="margin:0;">
+			<a href="{getUrl(['module' => 'admin', 'act' => $act ?? null, 'module_srl' => $module_info->module_srl])}">{lang('admin.view_in_manager_layout')}</a>
+		</p>
+		<!--@else-->
+		<!--// 로고 + GNB. 좌/우측바 설정에서는 이 블록만 세로바로 빠진다 -->
+		<div class="zm-navblock">
+		<h1>
+			<!--// 이미지 로고가 있으면 이미지, 없고 글자 로고를 정했으면 글자, 둘 다 없으면 기본 로고 -->
+			<a cond="!($admin_logo_url ?? null) && ($admin_logo_text ?? '')" class="brand is-text-logo" href="{getUrl(['module' => 'admin'])}" title="Dashboard">{$admin_logo_text}</a>
+			<a cond="($admin_logo_url ?? null) || !($admin_logo_text ?? '')" class="brand{($admin_logo_dark_url ?? null) ? ' has-dark-logo' : ''}{($admin_logo_url ?? null) ? ' has-custom-logo' : ''}" href="{getUrl(['module' => 'admin'])}" title="Dashboard"><img class="zm-logo-light" src="{($admin_logo_url ?? null) ?: (\RX_BASEURL . 'common/img/logo.png')}" alt="Zittme Admin" /><img class="zm-logo-dark" src="{($admin_logo_dark_url ?? null) ?: (($admin_logo_url ?? null) ?: (\RX_BASEURL . 'common/img/logo.png'))}" alt="" aria-hidden="true" /></a>
+		</h1>
+		<!-- 상단 GNB -->
+		<nav class="topnav" id="topnav">
+			<!--// 모바일에서는 상단 바에 자리가 없어 전문가·스토어를 이 패널 맨 위로 올린다 -->
+			<div class="zm-svc-mobile" cond="!$module_manager">
+				<a class="zm-svc-expert" href="{getUrl(['module' => 'admin', 'act' => 'dispAutoinstallAdminExperts'])}">
+					<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+						<circle cx="9" cy="7" r="4" />
+						<path d="M19 8v6M22 11h-6" />
+					</svg>
+					<span>{$lang->expert_find}</span>
+				</a>
+				<a class="zm-svc-store" href="{getUrl(['module' => 'admin', 'act' => 'dispAutoinstallAdminIndex'])}">
+					<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<path d="M3 4h2l2.4 10.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6" />
+						<circle cx="10" cy="20" r="1.2" />
+						<circle cx="18" cy="20" r="1.2" />
+					</svg>
+					<span>{$lang->store}</span>
+				</a>
+			</div>
+			<ul>
+			<!--@foreach($gnbUrlList as $key=>$value)-->
+				<!--@if(strstr($value['menu_name_key'], 'configuration'))-->
+				<li>
+					<a href="#favorite" onclick="return false;">{$lang->favorite}</a>
+					<ul class="sub" id="favorite">
+						<li loop="$favorite_list => $favorite">
+							<a cond="$favorite->title" href="{getUrl(['module' => 'admin', 'act' => $favorite->admin_index_act])}" title="{$favorite->title}">{$favorite->title}</a>
+							<a cond="!$favorite->title">{$lang->msg_not_founded}</a>
+							<form class="remove" action="./" method="post">
+								<input type="hidden" name="module" value="admin" />
+								<input type="hidden" name="act" value="procAdminToggleFavorite" />
+								<input type="hidden" name="module_name" value="{$favorite->module}" />
+								<input type="hidden" name="success_return_url" value="{getCurrentUrl()}" />
+								<button type="submit" class="x_close" title="{$lang->cmd_delete}">&times;</button>
+							</form>
+						</li>
+						<li cond="!is_array($favorite_list) || count($favorite_list) < 1"><a href="{getUrl(['module' => 'admin', 'act' => 'dispModuleAdminContent'])}">{$lang->no_data}</a></li>
+					</ul>
+				</li>
+				<!--@end-->
+				{@ $href = starts_with(\RX_BASEURL, $value['href']) ? $value['href'] : str_replace('//', '/', \RX_BASEURL . $value['href'])}
+				{@ $is_dashboard_item = ($value['href'] == 'index.php?module=admin')}
+				{@ $is_active = ($parentSrl == $key) || ($is_dashboard_item && empty($mid) && (empty($act) || $act === 'dispAdminIndex'))}
+				<li class="active"|cond="$is_active">
+					<a href="{$href}" title="{$value['text']}">{$value['text']}</a>
+					<ul class="sub" cond="count($value['list'])">
+						<!--@foreach($value['list'] as $key2 => $value2)-->
+							{@ $href2 = starts_with(\RX_BASEURL, $value2['href']) ? $value2['href'] : str_replace('//', '/', \RX_BASEURL . $value2['href'])}
+							<li cond="$value2['text']!=''" class="active_"|cond="$value2['text'] == $subMenuTitle"><a href="{$href2}">{$value2['text']}</a></li>
+						<!--@endforeach-->
+					</ul>
+				</li>
+			<!--@end-->
+			</ul>
+		</nav>
+		</div>
+		<!--@end-->
+		<!--// 검색·스토어·계정 등 상시 접근 요소는 GNB 위치와 무관하게 상단 바에 남는다 -->
+		<div class="zm-utilblock">
+		<!--// 전문가 찾기 + 스토어. 버튼 두 개를 따로 두지 않고 사선으로 나눈 한 덩어리로 -->
+		<div class="zm-svc-btn" cond="!$module_manager">
+			<!--// 계정을 연결해 두었으면 서버가 1회용 티켓을 받아 자동 로그인 상태로 보낸다 -->
+			<a class="zm-svc-expert" href="{getUrl(['module' => 'admin', 'act' => 'dispAutoinstallAdminExperts'])}">
+				<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+					<circle cx="9" cy="7" r="4" />
+					<path d="M19 8v6M22 11h-6" />
+				</svg>
+				<span>{$lang->expert_find}</span>
+			</a>
+			<a class="zm-svc-store" href="{getUrl(['module' => 'admin', 'act' => 'dispAutoinstallAdminIndex'])}">
+				<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<path d="M3 4h2l2.4 10.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6" />
+					<circle cx="10" cy="20" r="1.2" />
+					<circle cx="18" cy="20" r="1.2" />
+				</svg>
+				<span>{$lang->store}</span>
+			</a>
+		</div>
+		<div class="account">
+			<ul>
+				<!--@if($module_manager)-->
+				<li><a href="{getUrl(['mid' => $mid, 'act' => 'dispMemberInfo'])}">{$logged_info->nick_name}</a></li>
+				<li><a href="{getUrl(['mid' => $mid, 'act' => 'dispMemberLogout'])}">{$lang->cmd_logout}</a></li>
+				<!--@else-->
+				<li><a href="{getUrl(['module' => 'admin', 'act' => 'dispMemberAdminInfo', 'member_srl' => $logged_info->member_srl])}">{$logged_info->nick_name}</a></li>
+				<li><a href="{getUrl(['module' => 'admin', 'act' => 'procAdminLogout'])}">{$lang->cmd_logout}</a></li>
+				<!--@end-->
+				<li><a href="#lang" class="lang" data-toggle>{$lang_supported[$lang_type]}</a>
+					<ul id="lang" class="x_dropdown-menu">
+						<li loop="$lang_supported=>$key,$val" class="x_active"|cond="$key==$lang_type"><a href="#lang" data-langcode="{$key}" onclick="doChangeLangType('{$key}'); return false;">{$val}</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<button type="button" class="navToggle" id="navToggle" aria-label="Menu" cond="!$module_manager"><i class="xi xi-bars"></i></button>
+		</div>
+	</header>
+	<script>
+	jQuery(function($){
+		// 모바일: 햄버거로 전체 메뉴 열기/닫기
+		$('#navToggle').on('click', function(){
+			$('#topnav').toggleClass('open');
+		});
+		var isMobile = function(){ return window.matchMedia('(max-width: 960px)').matches; };
+		// 좌/우측바 GNB 는 넓은 화면에서만 세로 아코디언으로 동작한다
+		var isSideNav = function(){
+			return !isMobile() && $('.x').is('.zm-gnb-left, .zm-gnb-right');
+		};
+
+		// 세로바: 펼침 상태를 저장해 화면을 옮겨도 유지한다
+		var OPEN_KEY = 'zm-admin-gnb-open';
+		var readOpen = function(){
+			try { return JSON.parse(localStorage.getItem(OPEN_KEY) || '[]'); } catch(e) { return []; }
+		};
+		var writeOpen = function(list){
+			try { localStorage.setItem(OPEN_KEY, JSON.stringify(list)); } catch(e) {}
+		};
+		var menuKey = function($li){ return $.trim($li.children('a').first().text()); };
+
+		var $topLis = $('#topnav > ul > li');
+		$topLis.filter(function(){ return $(this).children('ul.sub').length > 0; }).addClass('has-sub');
+
+		if (isSideNav()) {
+			// 저장된 펼침 상태 복원. 처음 방문(저장값 없음)이면 현재 메뉴만 펼친다.
+			var saved = readOpen();
+			if (!saved.length) {
+				$topLis.filter('.active').addClass('open');
+				writeOpen($topLis.filter('.open').map(function(){ return menuKey($(this)); }).get());
+			} else {
+				$topLis.each(function(){
+					if ($.inArray(menuKey($(this)), saved) !== -1) $(this).addClass('open');
+				});
+			}
+		}
+
+		// 1뎁스 클릭: 모바일·세로바에서는 펼치기 토글 (링크 이동은 두 번째 클릭 또는 하위 항목에서)
+		$('#topnav > ul > li > a').on('click', function(e){
+			var $li = $(this).parent();
+			if (!$li.children('ul.sub').length) return;
+
+			if (isSideNav()) {
+				e.preventDefault();
+				$li.toggleClass('open');
+				// 세로바에서는 여러 메뉴를 동시에 펼쳐 둘 수 있다
+				writeOpen($topLis.filter('.open').map(function(){ return menuKey($(this)); }).get());
+				return;
+			}
+			if (isMobile() && !$li.hasClass('open')) {
+				e.preventDefault();
+				$li.addClass('open').siblings().removeClass('open');
+			}
+		});
+		// 데스크톱: 언어/계정 드롭다운 (data-toggle)
+		$('.header .account a[data-toggle]').on('click', function(e){
+			e.preventDefault();
+			$(this).parent().toggleClass('x_open');
+		});
+		$(document).on('click', function(e){
+			if (!$(e.target).closest('.account').length) $('.account li').removeClass('x_open');
+			// 세로바의 펼침은 사용자가 접기 전까지 유지한다 (바깥을 눌러도 닫지 않는다)
+			if (!isMobile() && !isSideNav() && !$(e.target).closest('.topnav').length) $('#topnav > ul > li').removeClass('open');
+		});
+	});
+	</script>
+	<!-- BODY -->
+	<div class="body">

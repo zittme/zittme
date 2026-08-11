@@ -1,0 +1,17 @@
+<div class="x_page-header">
+	<h1>{$lang->cmd_member_config}</h1>
+</div>
+<div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/member/tpl/1'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+<ul class="x_nav x_nav-tabs">
+	<li class="x_active"|cond="$act == 'dispMemberAdminConfig'"><a href="{getUrl('', 'module', 'admin', 'act', 'dispMemberAdminConfig')}">{$lang->member_default_config}</a></li>
+	<li class="x_active"|cond="$act == 'dispMemberAdminFeaturesConfig'"><a href="{getUrl('', 'module', 'admin', 'act', 'dispMemberAdminFeaturesConfig')}">{$lang->member_features_config}</a></li>
+	<li class="x_active"|cond="$act == 'dispMemberAdminAgreementsConfig'"><a href="{getUrl('', 'module', 'admin', 'act', 'dispMemberAdminAgreementsConfig')}">{$lang->member_agreements_config}</a></li>
+	<li class="x_active"|cond="$act == 'dispMemberAdminSignUpConfig'"><a href="{getUrl('', 'module', 'admin', 'act', 'dispMemberAdminSignUpConfig')}">{$lang->cmd_signup}</a></li>
+	<li class="x_active"|cond="$act == 'dispMemberAdminLoginConfig'"><a href="{getUrl('', 'module', 'admin', 'act', 'dispMemberAdminLoginConfig')}">{$lang->cmd_login}</a></li>
+	<li class="x_active"|cond="$act == 'dispMemberAdminSnsLoginConfig'"><a href="{getUrl('', 'module', 'admin', 'act', 'dispMemberAdminSnsLoginConfig')}">{$lang->sns_login}</a></li>
+	<li class="x_active"|cond="$act == 'dispMemberAdminIdentityConfig'"><a href="{getUrl('', 'module', 'admin', 'act', 'dispMemberAdminIdentityConfig')}">{$lang->identity_verification}</a></li>
+	<li class="x_active"|cond="$act == 'dispMemberAdminDesignConfig'"><a href="{getUrl('', 'module', 'admin', 'act', 'dispMemberAdminDesignConfig')}">{$lang->cmd_set_design_info}</a></li>
+	<li class="x_active"|cond="$act == 'dispMemberAdminNickNameLog'"><a href="{getUrl('', 'module', 'admin', 'act', 'dispMemberAdminNickNameLog')}">{$lang->cmd_modify_nickname_log}</a></li>
+</ul>

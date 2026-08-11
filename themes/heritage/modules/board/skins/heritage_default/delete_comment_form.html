@@ -1,0 +1,28 @@
+@version(2)
+<include target="_header.html" />
+
+<div class="hrb-confirm">
+	@if ($oComment->isExists())
+	<div class="hrb-confirm-target">
+		<h3>
+			@if ($oComment->get('homepage'))<a href="{{ $oComment->get('homepage') }}">{{ $oComment->getNickName() }}</a>
+			@else{{ $oComment->getNickName() }}@endif
+		</h3>
+		<div class="rhymix_content Zittme_content">{!! $oComment->getContent(false) !!}</div>
+	</div>
+	@endif
+
+	<form action="./" method="get" onsubmit="return procFilter(this, delete_comment)">
+		<input type="hidden" name="mid" value="{{ $mid }}" />
+		<input type="hidden" name="page" value="{{ $page }}" />
+		<input type="hidden" name="document_srl" value="{{ $oComment->get('document_srl') }}" />
+		<input type="hidden" name="comment_srl" value="{{ $oComment->get('comment_srl') }}" />
+		<p class="hrb-confirm-msg">{{ sprintf($lang->comfirm_act_msg, $lang->comment, $lang->cmd_delete, $lang->msg_eul) }}</p>
+		<div class="hrb-confirm-actions">
+			<button type="button" class="hr-btn" onclick="history.back()">{{ $lang->cmd_cancel }}</button>
+			<button type="submit" class="hr-btn hr-btn-primary">{{ $lang->cmd_delete }}</button>
+		</div>
+	</form>
+</div>
+
+<include target="_footer.html" />

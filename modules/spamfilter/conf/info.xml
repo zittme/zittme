@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="0.2">
+	<title xml:lang="ko">스팸필터</title>
+	<title xml:lang="zh-CN">垃圾过滤</title>
+	<title xml:lang="en">Spam Filter</title>
+	<title xml:lang="vi">Bộ lọc Spam</title>
+	<title xml:lang="es">Filtro de Spam</title>
+	<title xml:lang="jp">スパムフィルター</title>
+	<title xml:lang="ru">Фильтр спама</title>
+	<title xml:lang="tr">Spam Filtreleyici</title>
+	<title xml:lang="zh-TW">垃圾過濾</title>
+	<title xml:lang="mn">Спам шүүлтүүр</title>
+	<title xml:lang="fr">Filtre antispam</title>
+	<title xml:lang="de">Spamfilter</title>
+	<description xml:lang="ko">기본 스팸필터 모듈입니다.</description>
+	<description xml:lang="zh-CN">Zittme的基本垃圾过滤模块。</description>
+	<description xml:lang="en">The default spam filter module.</description>
+	<description xml:lang="vi">Bộ lọc Spam mặc định của Zittme.</description>
+	<description xml:lang="es">Filtro de Span predefinido de Zittme.</description>
+	<description xml:lang="jp">スパムフィルターです。</description>
+	<description xml:lang="ru">Стандартный фильтр спама Zittme.</description>
+	<description xml:lang="zh-TW">Zittme的基本垃圾過濾模組。</description>
+	<description xml:lang="tr">Zittme\'nin varsayılan spam filtreleyicisidir.</description>
+	<description xml:lang="mn">Үндсэн спам шүүлтүүрийн модуль.</description>
+	<description xml:lang="fr">Module de filtrage antispam par défaut.</description>
+	<description xml:lang="de">Das Standard-Spamfilter-Modul.</description>
+	<version>RX_VERSION</version>
+	<date>RX_CORE</date>
+	<category>accessory</category>
+
+	<author email_address="developers@xpressengine.com" link="http://xpressengine.com/">
+		<name xml:lang="ko">NAVER</name>
+		<name xml:lang="vi">NAVER</name>
+		<name xml:lang="zh-CN">NAVER</name>
+		<name xml:lang="en">NAVER</name>
+		<name xml:lang="es">NAVER</name>
+		<name xml:lang="jp">NAVER</name>
+		<name xml:lang="ru">NAVER</name>
+		<name xml:lang="zh-TW">NAVER</name>
+		<name xml:lang="tr">NAVER</name>
+	</author>
+</module>

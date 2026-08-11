@@ -1,0 +1,51 @@
+<config autoescape="on" />
+
+<div class="x_page-header">
+	<h1>{$lang->responsive_bulk_apply}</h1>
+</div>
+
+<section class="section">
+	<p class="x_help-block">{$lang->about_responsive_bulk_apply_page}</p>
+	<div class="x_help-block zm-experimental">
+		<strong>{$lang->about_responsive_view_title}</strong>
+		<p class="x_text-error">{$lang->about_responsive_bulk_caution}</p>
+	</div>
+
+	<!--@if(count($module_groups))-->
+	<form action="./" method="post" onsubmit="return confirm('{$lang->confirm_responsive_bulk_apply}');">
+		<input type="hidden" name="module" value="admin" />
+		<input type="hidden" name="act" value="procAdminApplyResponsiveView" />
+		<input type="hidden" name="success_return_url" value="{getUrl('', 'module', 'admin', 'act', 'dispAdminConfigAdvanced')}" />
+
+		<table class="x_table x_table-striped">
+			<thead>
+				<tr>
+					<th scope="col">{$lang->responsive_bulk_target}</th>
+					<th scope="col">{$lang->responsive_bulk_current}</th>
+					<th scope="col" class="nowr">{$lang->responsive_bulk_count}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr loop="$module_groups => $group">
+					<td class="nowr">
+						<label class="x_inline" for="target_{$group->mode}">
+							<input type="checkbox" name="targets[]" id="target_{$group->mode}" value="{$group->mode}" checked="checked" />
+							{$lang->cmd_select}
+						</label>
+					</td>
+					<td>{$group->label}</td>
+					<td class="nowr">{number_format($group->count)}</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<div class="x_clearfix btnArea">
+			<div class="x_pull-right">
+				<button type="submit" class="x_btn x_btn-primary">{$lang->cmd_apply_responsive}</button>
+			</div>
+		</div>
+	</form>
+	<!--@else-->
+	<p class="x_help-block">{$lang->responsive_bulk_no_target}</p>
+	<!--@end-->
+</section>

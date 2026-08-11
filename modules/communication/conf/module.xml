@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+	<grants />
+	<actions>
+		<action name="dispCommunicationMessages" type="view" permission="member" meta-noindex="true">
+			<route route="messages" />
+			<route route="messages/$message_srl:int" />
+			<route route="messages/type/$message_type:word" />
+			<route route="messages/type/$message_type:word/$message_srl:int" />
+		</action>
+		<action name="dispCommunicationSendMessage" type="view" permission="member" route="messages/send" meta-noindex="true" />
+		<action name="dispCommunicationNewMessage" type="view" permission="member" route="messages/new" meta-noindex="true" />
+		<action name="dispCommunicationFriend" type="view" permission="member" route="friends" meta-noindex="true" />
+		<action name="dispCommunicationAddFriend" type="view" permission="member" route="friends/add" meta-noindex="true" />
+		<action name="dispCommunicationAddFriendGroup" type="view" permission="member" route="friends/addGroup" meta-noindex="true" />
+		<action name="dispCommunicationMessageBoxList" type="mobile" permission="member" route="messages/boxes" meta-noindex="true" />
+
+		<action name="procCommunicationUpdateAllowMessage" type="controller" permission="member" />
+		<action name="procCommunicationSendMessage" type="controller" permission="member" ruleset="sendMessage" />
+		<action name="procCommunicationStoreMessage" type="controller" permission="member" />
+		<action name="procCommunicationRestoreMessage" type="controller" permission="member" />
+		<action name="procCommunicationDeleteMessage" type="controller" permission="member" />
+		<action name="procCommunicationDeleteMessages" type="controller" permission="member" />
+		<action name="procCommunicationAddFriend" type="controller" permission="member" ruleset="addFriend" />
+		<action name="procCommunicationAddFriendGroup" type="controller" permission="member" ruleset="addFriendGroup" />
+		<action name="procCommunicationMoveFriend" type="controller" permission="member" ruleset="deleteCheckedFriend" />
+		<action name="procCommunicationDeleteFriend" type="controller" permission="member" ruleset="deleteCheckedFriend" />
+		<action name="procCommunicationDeleteFriendGroup" type="controller" permission="member" />
+		<action name="procCommunicationRenameFriendGroup" type="controller" permission="member" />
+
+		<action name="dispCommunicationAdminConfig" type="view" admin_index="true" />
+		<action name="getCommunicationAdminColorset" type="model" />
+		<action name="procCommunicationAdminInsertConfig" type="controller" ruleset="insertConfig" />
+	</actions>
+	<eventHandlers>
+		<eventHandler before="moduleHandler.init" class="controller" method="triggerModuleHandlerBefore" />
+		<eventHandler before="member.getMemberMenu" class="controller" method="triggerMemberMenu" />
+	</eventHandlers>
+</module>

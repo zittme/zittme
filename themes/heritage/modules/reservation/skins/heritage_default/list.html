@@ -1,0 +1,34 @@
+@version(2)
+@load('css/reservation.css')
+
+<div class="rsv">
+	<h2 class="rsv-title">{{ $lang->reservation }}</h2>
+
+	@if (empty($resources))
+	<p class="rsv-empty">{{ $lang->reservation_no_resources }}</p>
+	@else
+	<div class="rsv-grid {{ $show_thumbs ? '' : 'rsv-grid-plain' }}">
+		@foreach ($resources as $r)
+		<a class="rsv-card" href="{{ getUrl('', 'mid', $mid, 'act', 'dispReservationCalendar', 'resource_srl', $r->resource_srl) }}">
+			@if ($show_thumbs)
+			<span class="rsv-card-thumb" style="background-image:url('{{ escape($r->thumb) }}')"></span>
+			@endif
+			<span class="rsv-card-body">
+				<strong class="rsv-card-title">{{ $r->title }}</strong>
+				@if (!empty($r->summary))
+				<span class="rsv-card-summary">{{ $r->summary }}</span>
+				@endif
+				<span class="rsv-card-meta">
+					<span class="rsv-price">{{ $r->price > 0 ? number_format($r->price) . '원' : $lang->reservation_free }}</span>
+					<span class="rsv-duration">{{ $r->duration }}분</span>
+				</span>
+			</span>
+		</a>
+		@endforeach
+	</div>
+	@endif
+
+	<p class="rsv-foot-links">
+		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispReservationMy') }}">{{ $lang->reservation_my }}</a>
+	</p>
+</div>

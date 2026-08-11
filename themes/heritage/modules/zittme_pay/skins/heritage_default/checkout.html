@@ -1,0 +1,97 @@
+@version(2)
+
+
+<div class="zpay" id="zpay-checkout" data-state="{{ $pay_state }}" data-order-code="{{ $order->order_code }}">
+
+	<header class="zpay-head">
+		<h1 class="zpay-title">{{ $lang->zpay_checkout_title }}</h1>
+		@php $zpay_src = Context::get('source_order_code'); @endphp
+		@if (!empty($zpay_src))
+		<p class="zpay-order-code">주문번호 <span>{{ $zpay_src }}</span></p>
+		@else
+		<p class="zpay-order-code">{{ $lang->zpay_order_code }} <span>{{ $order->order_code }}</span></p>
+		@endif
+	</header>
+
+	<section class="zpay-summary">
+		<h2 class="zpay-section-title">{{ $lang->zpay_order_summary }}</h2>
+		<dl class="zpay-summary-list">
+			<div class="zpay-summary-row">
+				<dt>{{ $lang->zpay_product }}</dt>
+				<dd>{{ $order->title }}</dd>
+			</div>
+			@if($order->payer_name)
+			<div class="zpay-summary-row">
+				<dt>{{ $lang->zpay_payer }}</dt>
+				<dd>{{ $order->payer_name }}</dd>
+			</div>
+			@endif
+			<div class="zpay-summary-row zpay-summary-total">
+				<dt>{{ $lang->zpay_amount }}</dt>
+				<dd><strong>{{ number_format($order->amount) }}</strong> {{ $order->currency }}</dd>
+			</div>
+		</dl>
+	</section>
+
+	<section class="zpay-methods">
+		<h2 class="zpay-section-title">{{ $lang->zpay_select_method }}</h2>
+
+		<div class="zpay-method-list">
+			@foreach($gateways as $gateway_name => $gateway)
+			<label class="zpay-method" for="zpay-method-{{ $gateway_name }}">
+				<input type="radio" name="zpay_gateway" id="zpay-method-{{ $gateway_name }}" value="{{ $gateway_name }}"
+					data-requires-client="{{ $gateway['requires_client'] ? 1 : 0 }}">
+				<span class="zpay-method-label">{{ $gateway['title'] }}</span>
+			</label>
+			@endforeach
+		</div>
+
+		@if(isset($gateways['banktransfer']))
+		<div class="zpay-bank" id="zpay-bank" hidden>
+			<h3 class="zpay-sub-title">{{ $lang->zpay_bank_accounts }}</h3>
+
+			<ul class="zpay-bank-list">
+				@foreach($gateways['banktransfer']['request']['accounts'] as $bank_index => $account)
+				<li class="zpay-bank-item">
+					<label>
+						<input type="radio" name="zpay_bank_index" value="{{ $bank_index }}" @if($bank_index === 0) checked @endif>
+						<span class="zpay-bank-name">{{ $account['bank'] }}</span>
+						<span class="zpay-bank-account">{{ $account['account'] }}</span>
+						@if($account['holder'])
+						<span class="zpay-bank-holder">{{ $account['holder'] }}</span>
+						@endif
+					</label>
+				</li>
+				@endforeach
+			</ul>
+
+			<p class="zpay-field">
+				<label for="zpay-depositor">{{ $lang->zpay_depositor_name }}</label>
+				<input type="text" id="zpay-depositor" name="depositor_name" value="{{ $order->payer_name }}" maxlength="80">
+			</p>
+
+			<p class="zpay-notice">
+				{{ sprintf($lang->zpay_bank_due_notice, $gateways['banktransfer']['request']['due_days']) }}
+			</p>
+		</div>
+		@endif
+	</section>
+
+	<p class="zpay-error" id="zpay-error" hidden></p>
+
+	<div class="zpay-actions">
+		<button type="button" class="zpay-btn zpay-btn-primary" id="zpay-submit" disabled>
+			{{ sprintf($lang->zpay_pay_button, number_format($order->amount)) }}
+		</button>
+	</div>
+
+	@if($pay_config->biz_notice)
+	<footer class="zpay-foot">
+		<p class="zpay-biz-notice">{!! nl2br(escape($pay_config->biz_notice)) !!}</p>
+	</footer>
+	@endif
+</div>
+
+<script>
+	window.ZPAY_BOOT = {!! $pay_boot_json !!};
+</script>

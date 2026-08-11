@@ -1,0 +1,52 @@
+<div class="x_page-header">
+	<h1>{$lang->installedTheme}</h1>
+</div>
+
+<p class="x_alert x_alert-info">{$lang->about_installed_theme}</p>
+
+<div cond="!$theme_count" class="x_alert">{$lang->no_installed_theme}</div>
+
+<table cond="$theme_count" class="x_table x_table-striped">
+	<thead>
+		<tr>
+			<th>{$lang->title}</th>
+			<th>{$lang->version}</th>
+			<th>{$lang->author}</th>
+			<th>{$lang->theme_component}</th>
+			<th>{$lang->cmd_management}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<!--@foreach($theme_list as $name => $theme)-->
+		<tr>
+			<td>
+				<strong>{$theme->title}</strong>
+				<div cond="$theme->description" class="x_help-block">{$theme->description}</div>
+				<div cond="!$theme->supported" class="x_text-error">{$lang->msg_theme_schema_too_new}</div>
+			</td>
+			<td>{$theme->version}</td>
+			<td>{$theme->author[0]->name ?? ''}</td>
+			<td>
+				<!--@foreach($theme->components as $component)-->
+					<div>{$component->type} / {$component->name}<!--@if($component->target)--> ({$component->target})<!--@endif--></div>
+				<!--@endforeach-->
+			</td>
+			<td>
+				<!-- 쓰고 있는 테마를 지우면 그 사이트가 곧바로 깨진다. 먼저 바꾸게 한다. -->
+					<a class="x_btn x_btn-primary" href="{getUrl('', 'module', 'admin', 'act', 'dispAdminApplyTheme', 'theme_name', $name)}">{$lang->cmd_apply_theme}</a>
+			<!--@if(count($theme->usage))-->
+					<span class="x_text-warning">{$lang->msg_theme_in_use}</span>
+				<!--@else-->
+					<!-- 삭제는 proc 액션이므로 링크가 아니라 POST 로 보낸다 -->
+					<form action="./" method="post" style="display:inline">
+						<input type="hidden" name="module" value="admin" />
+						<input type="hidden" name="act" value="procAdminDeleteTheme" />
+						<input type="hidden" name="theme_name" value="{$name}" />
+						<button type="submit" class="x_btn x_btn-danger" onclick="return confirm('{$lang->confirm_delete}');">{$lang->cmd_delete}</button>
+					</form>
+				<!--@endif-->
+			</td>
+		</tr>
+		<!--@endforeach-->
+	</tbody>
+</table>

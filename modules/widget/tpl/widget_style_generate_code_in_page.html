@@ -1,0 +1,133 @@
+<load target="../../admin/tpl/js/admin.js" />
+<load target="../../admin/tpl/js/jquery.tmpl.js" />
+<load target="js/generate_code.js" />
+<!--%load_js_plugin("spectrum")-->
+<script>
+	jQuery(function(){
+		getWidgetVars();
+	});
+</script>
+<style>
+	/* 위젯스타일 선택 화면. 예전 위젯 CSS 는 목록을 절대 배치로 겹쳐 그려
+	   미리보기와 제목이 서로 포개졌다. 여기서 새로 그린다 */
+	.zws-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 16px; padding: 0 0 14px; border-bottom: 1px solid var(--zm-line); }
+	.zws-head h1 { margin: 0; font-size: 18px; font-weight: 800; color: var(--zm-ink); }
+	.zws-pick { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin: 0 0 22px; }
+	.zws-item { display: flex; flex-direction: column; gap: 8px; padding: 10px; border: 1px solid var(--zm-line); border-radius: var(--zm-radius-sm); background: var(--zm-card); text-decoration: none; transition: border-color .15s, box-shadow .15s; }
+	.zws-item:hover { border-color: var(--zm-brand); box-shadow: 0 6px 16px -10px rgba(38,119,227,.45); }
+	.zws-item.is-on { border-color: var(--zm-brand); box-shadow: inset 0 0 0 1px var(--zm-brand); }
+	.zws-item img { display: block; width: 100%; height: 92px; object-fit: contain; background: var(--zm-surface, #f7f8fa); border-radius: 6px; }
+	.zws-item span { font-size: 13px; font-weight: 600; color: var(--zm-ink); text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+	.zws-info { margin: 0 0 18px; padding: 16px 18px; border: 1px solid var(--zm-line); border-radius: var(--zm-radius-sm); background: var(--zm-card); }
+	.zws-info h2 { margin: 0 0 12px; font-size: 16px; font-weight: 800; color: var(--zm-ink); }
+	.zws-meta { display: grid; grid-template-columns: 90px 1fr; gap: 6px 14px; font-size: 13.5px; }
+	.zws-meta dt { color: var(--zm-ink-soft); font-weight: 600; }
+	.zws-meta dd { margin: 0; color: var(--zm-ink); }
+	.zws-group { margin: 0 0 18px; }
+	.zws-group > h3 { margin: 0 0 10px; font-size: 14px; font-weight: 800; color: var(--zm-ink-soft); letter-spacing: .02em; }
+	.zws-fields { display: flex; flex-direction: column; gap: 14px; padding: 16px 18px; border: 1px solid var(--zm-line); border-radius: var(--zm-radius-sm); background: var(--zm-card); }
+	.zws-field { display: grid; grid-template-columns: 120px 1fr; gap: 6px 14px; align-items: start; }
+	.zws-field > label { padding-top: 8px; font-size: 13.5px; font-weight: 600; color: var(--zm-ink-soft); word-break: keep-all; }
+	.zws-ctrl { min-width: 0; }
+	.zws-ctrl input[type="text"], .zws-ctrl textarea, .zws-ctrl select { width: 100%; box-sizing: border-box; }
+	.zws-ctrl input.rx-spectrum { width: auto; }
+	.zws-ctrl label { display: inline-flex; align-items: center; gap: 5px; margin: 0 14px 4px 0; font-size: 13.5px; }
+	.zws-help { display: block; margin-top: 5px; font-size: 12.5px; color: var(--zm-ink-faint); line-height: 1.5; }
+	.zws-foot { display: flex; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--zm-line); }
+	@media (max-width: 560px) {
+		.zws-field { grid-template-columns: 1fr; }
+		.zws-field > label { padding-top: 0; }
+	}
+</style>
+<div id="content" class="x popup">
+	<form action="./" method="post" id="fo_widget">
+		<input type="hidden" name="module_srl" value="{$module_srl}" />
+		<input type="hidden" name="widget_sequence" value="" />
+		<input type="hidden" name="style" value="" />
+		<input type="hidden" name="widget_padding_left" value="" />
+		<input type="hidden" name="widget_padding_right" value="" />
+		<input type="hidden" name="widget_padding_top" value="" />
+		<input type="hidden" name="widget_padding_bottom" value="" />
+		<input type="hidden" name="module" value="widget" />
+		<input type="hidden" name="act" value="" />
+		<input type="hidden" name="widgetstyle" value="{$widgetstyle}" />
+		<input type="hidden" name="selected_widget" value="{$selected_widget}" />
+
+		<div class="zws-head">
+			<h1>{$lang->widgetstyle}</h1>
+		</div>
+
+		<!--// 스타일 고르기 -->
+		<div class="zws-pick">
+			<a href="{getUrl('widgetstyle','none')}" class="zws-item <!--@if(!($widgetstyle ?? ''))-->is-on<!--@end-->">
+				<img src="images/widgetstyle_none.gif" alt="" />
+				<span>{$lang->notuse}</span>
+			</a>
+			<a loop="$widgetStyle_list => $key, $widgetStyle" cond="$widgetStyle->preview" href="{getUrl('widgetstyle',$widgetStyle->widgetStyle)}" class="zws-item <!--@if($widgetStyle->widgetStyle == ($widgetstyle ?? ''))-->is-on<!--@end-->">
+				<img src="{getUrl()}{$widgetStyle->preview}" alt="{$widgetStyle->title}" />
+				<span>{$widgetStyle->title}</span>
+			</a>
+		</div>
+
+		<block cond="$widgetstyle_info">
+			<!--// 고른 스타일 정보 -->
+			<div class="zws-info">
+				<h2>{$widgetstyle_info->title} <small cond="$widgetstyle_info->version && $widgetstyle_info->version != 'RX_VERSION'">ver {$widgetstyle_info->version}</small></h2>
+				<dl class="zws-meta">
+					<dt>{$lang->description}</dt>
+					<dd>{$widgetstyle_info->description}</dd>
+					<dt>{$lang->author}</dt>
+					<dd><block loop="$widgetstyle_info->author => $author">{$author->name} ({$author->homepage})</block></dd>
+					<dt>{$lang->regdate}</dt>
+					<dd>{zdate($widgetstyle_info->date,'Y-m-d')}</dd>
+				</dl>
+			</div>
+
+			<!--// 스타일 설정값 -->
+			{@ $group = ''; $not_first = false; }
+			<block loop="$widgetstyle_info->extra_var => $id, $var">
+				<block cond="!$not_first && !$var->group"><div class="zws-group"><div class="zws-fields"></block>
+				<block cond="$group != $var->group">
+					<block cond="$not_first"></div></div></block>
+					<div class="zws-group">
+					<h3>{$var->group}</h3>
+					<div class="zws-fields">
+					{@ $group = $var->group; }
+				</block>
+				{@ $not_first = true; }
+				<div class="zws-field">
+					<label for="{$id}"|cond="$var->type!='text'&&$var->type!='textarea'" for="lang_{$id}"|cond="$var->type=='text'||$var->type=='textarea'">{$var->name}</label>
+					<div class="zws-ctrl extra_vars">
+						<input cond="$var->type == 'text'" type="text" name="{$id}" value="{$var->default}" class="lang_code" />
+						<input cond="$var->type == 'color'" type="text" name="{$id}" value="{$var->default}" class="rx-spectrum" />
+						<textarea cond="$var->type == 'textarea'" name="{$id}" rows="6" class="lang_code">{$var->default}</textarea>
+						<select cond="$var->type == 'select'" name="{$id}">
+							<option loop="$var->options ?? [] => $key, $val" value="{$key}" selected="selected"|cond="$var->default !== '' && $key == $var->default">{$val}</option>
+						</select>
+						<block cond="$var->type == 'filebox'">
+							<input type="hidden" name="{$id}" />
+							<a href="#modalFilebox" class="modalAnchor filebox x_btn">{$lang->cmd_select}</a>
+							{@$use_filebox = TRUE}
+						</block>
+						<label loop="$var->options ?? [] => $key, $val" cond="$var->type == 'radio'">
+							<input type="radio" name="{$id}" id="{$id}_{$key}" value="{$key}" /> {$val}
+						</label>
+						<label loop="$var->options ?? [] => $key, $val" cond="$var->type == 'checkbox'">
+							<input type="checkbox" name="{$id}" id="{$id}_{$key}" value="{$key}" /> {$val}
+						</label>
+						<span class="zws-help" cond="$var->description">{$var->description}</span>
+					</div>
+				</div>
+			</block>
+			</div></div>
+		</block>
+
+		<div class="zws-foot">
+			<input class="x_btn x_btn-primary" type="submit" value="{$lang->cmd_setup}" />
+		</div>
+	</form>
+	<script>
+		xe.current_lang = "{$lang_type}";
+	</script>
+	<include target="../../module/tpl/include.filebox.html" />
+</div>

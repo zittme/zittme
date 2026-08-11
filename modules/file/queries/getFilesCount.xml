@@ -1,0 +1,16 @@
+<query id="getFilesCount" action="select">
+    <tables>
+        <table name="files" />
+    </tables>
+    <columns>
+        <column name="count(*)" alias="count" />
+    </columns>
+    <conditions>
+        <condition operation="equal" column="upload_target_srl" var="upload_target_srl" filter="number" />
+		<group pipe="and">
+			<condition operation="equal" column="upload_target_type" var="upload_target_type" />
+			<condition operation="null" column="upload_target_type" if="include_null_target_type" pipe="or" />
+		</group>
+		<condition operation="like_prefix" column="regdate" var="regDate" pipe="and" />
+    </conditions>
+</query>

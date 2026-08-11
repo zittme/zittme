@@ -1,0 +1,60 @@
+<config autoescape="on" />
+
+<include target="header.html" />
+
+<div class="zmst zmst-detail">
+	<p class="zmst-back">
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExperts')}">&larr; {$lang->expert_find}</a>
+	</p>
+
+	<!--// 작업물 대표 이미지 -->
+	<div class="zmst-po-hero" cond="$portfolio->thumbnail">
+		<img src="{$portfolio->thumbnail}" alt="{$portfolio->title}" />
+	</div>
+
+	<div class="zmst-view-head">
+		<div class="zmst-view-info">
+			<div class="zmst-item-top">
+				<span loop="$portfolio->fields => $f" class="zmst-badge">{$f}</span>
+			</div>
+			<h2 class="zmst-view-title">{$portfolio->title}</h2>
+			<p class="zmst-meta">
+				<span class="zmst-dl">
+					<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 3C4.5 3 1.7 5.1 0 8c1.7 2.9 4.5 5 8 5s6.3-2.1 8-5c-1.7-2.9-4.5-5-8-5zm0 8.3A3.3 3.3 0 1 1 8 4.7a3.3 3.3 0 0 1 0 6.6z"/></svg>
+					{number_format($portfolio->view_count)}
+				</span>
+				<span class="zmst-like">
+					<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 14.2 2.6 9.1a3.3 3.3 0 1 1 4.7-4.7L8 5.1l.7-.7a3.3 3.3 0 1 1 4.7 4.7L8 14.2z"/></svg>
+					{number_format($portfolio->like_count)}
+				</span>
+			</p>
+		</div>
+
+		<!--// 작성한 전문가 — 프로필 바로가기 -->
+		<div class="zmst-view-cta" cond="$portfolio->expert">
+			<div class="zmst-po-author">
+				<div class="zmst-thumb zmst-po-author-thumb">
+					<!--@if($portfolio->expert->photo)-->
+						<img src="{$portfolio->expert->photo}" alt="" />
+					<!--@else-->
+						<span class="zmst-thumb-none">{mb_substr($portfolio->expert->name, 0, 1)}</span>
+					<!--@end-->
+				</div>
+				<strong>{$portfolio->expert->name}</strong>
+				<span class="zmst-chip zmst-chip-installed" cond="$portfolio->expert->is_business">BIZ</span>
+			</div>
+			<a class="zmst-btn zmst-btn-primary" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminExpertProfile', 'profile_srl', $portfolio->expert->profile_srl)}">{$lang->expert_go_profile}</a>
+			<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminEnterService', 'to', 'expert')}">{$lang->expert_request_work}</a>
+			<a class="zmst-link-out" href="{$portfolio->url}" target="_blank" rel="noopener">{$lang->expert_view_on_zittme}</a>
+		</div>
+	</div>
+
+	<!--// 작업물 소개 -->
+	<div class="zmst-content" cond="trim(strip_tags($portfolio->content)) !== ''">
+		{$portfolio->content|noescape}
+	</div>
+
+	<p class="zmst-po-link" cond="$portfolio->link_url">
+		<a href="{$portfolio->link_url}" target="_blank" rel="noopener nofollow">{$portfolio->link_url}</a>
+	</p>
+</div>

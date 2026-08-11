@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">zittEditor</title>
+	<description xml:lang="ko">CKEditor 4 기반 zittme 리디자인 에디터 — 최신 디자인 트렌드의 툴바·다이얼로그·첨부영역</description>
+	<version>1.0.0</version>
+	<date>2026-07-31</date>
+	<author email_address="zittme-contact@zzan.me" link="https://zitt.me">
+		<name xml:lang="ko">ZZAN Studio</name>
+	</author>
+	<colorset>
+		<color name="moono-lisa">
+			<title xml:lang="ko">라이트 (기본)</title>
+		</color>
+		<color name="moono-dark">
+			<title xml:lang="ko">다크</title>
+		</color>
+	</colorset>
+</skin>

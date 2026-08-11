@@ -1,0 +1,22 @@
+<div class="bd">
+<div class="hx h2"><h2>{$lang->sns_my_services}</h2></div>
+<p class="hp" style="padding:0 4px 10px;color:#888;font-size:12px;">{$lang->about_sns_my_services}</p>
+<ul class="member-sns-list" style="list-style:none;margin:0;padding:0;">
+	<li loop="$sns_supported_services => $service" style="display:flex;align-items:center;justify-content:space-between;padding:14px 6px;border-bottom:1px solid #eee;">
+		<span style="text-transform:capitalize;font-weight:bold;">{$service}</span>
+		<span>
+			<!--@if(isset($sns_linked_accounts[$service]))-->
+				<form action="./" method="post" style="display:inline;margin:0;" onsubmit="return confirm('{$lang->confirm_sns_unlink}');">
+					<input type="hidden" name="_rx_csrf_token" value="{getCsrfToken()}" />
+					<input type="hidden" name="module" value="member" />
+					<input type="hidden" name="act" value="procMemberSnsUnlink" />
+					<input type="hidden" name="sns_type" value="{$service}" />
+					<button type="submit" class="bn">{$lang->sns_unlink}</button>
+				</form>
+			<!--@else-->
+				<a href="{getUrl('', 'module', 'member', 'act', 'procMemberSnsConnect', 'service', $service)}" class="bn dark">{$lang->sns_link}</a>
+			<!--@end-->
+		</span>
+	</li>
+</ul>
+</div>

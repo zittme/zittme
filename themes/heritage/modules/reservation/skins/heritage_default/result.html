@@ -1,0 +1,56 @@
+@version(2)
+@load('css/reservation.css')
+
+<div class="rsv rsv-narrow">
+	<div class="rsv-result-head rsv-result-{{ $booking->status }}">
+		@if ($booking->status === 'confirmed')
+		<span class="rsv-result-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-1.2 13.6-3.4-3.4 1.4-1.4 2 2 4.6-4.6 1.4 1.4-6 6z"/></svg></span>
+		@elseif (in_array($booking->status, ['hold', 'pending']))
+		<span class="rsv-result-ico is-wait" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 5v5.4l4 2.4-1 1.7-5-3V7h2z"/></svg></span>
+		@else
+		<span class="rsv-result-ico is-off" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM8.4 7 12 10.6 15.6 7 17 8.4 13.4 12 17 15.6 15.6 17 12 13.4 8.4 17 7 15.6 10.6 12 7 8.4 8.4 7z"/></svg></span>
+		@endif
+		<h2>{{ $lang->{'reservation_status_' . $booking->status} ?? $booking->status }}</h2>
+	</div>
+
+	<dl class="rsv-detail">
+		<dt>{{ $lang->reservation_booking_code }}</dt>
+		<dd><strong>{{ $booking->booking_code }}</strong></dd>
+		@if ($resource)
+		<dt>{{ $lang->reservation }}</dt>
+		<dd>{{ $resource->title }}</dd>
+		@endif
+		@if ($slot)
+		<dt>{{ $lang->reservation_date }}</dt>
+		<dd>{{ substr($slot->slot_date, 0, 4) }}.{{ substr($slot->slot_date, 4, 2) }}.{{ substr($slot->slot_date, 6, 2) }} {{ $slot->start_time }} ~ {{ $slot->end_time }}</dd>
+		@endif
+		<dt>{{ $lang->reservation_booker_name }}</dt>
+		<dd>{{ $booking->booker_name }}</dd>
+		@if ($booking->person_count > 1)
+		<dt>{{ $lang->reservation_person }}</dt>
+		<dd>{{ $booking->person_count }}</dd>
+		@endif
+		@if ($booking->amount > 0)
+		<dt>{{ $lang->reservation_amount }}</dt>
+		<dd>{{ number_format($booking->amount) }}원</dd>
+		@endif
+	</dl>
+
+	@if (in_array($booking->status, ['hold', 'pending', 'confirmed']))
+	<form action="{{ getUrl('') }}" method="post" class="rsv-cancel-form rx_ajax"
+		onsubmit="return confirm('{{ $lang->cmd_reservation_cancel }}?')">
+		<input type="hidden" name="act" value="procReservationCancel" />
+		<input type="hidden" name="mid" value="{{ $mid }}" />
+		<input type="hidden" name="booking_code" value="{{ $booking->booking_code }}" />
+		@if ($booking->member_srl == 0)
+		<input type="hidden" name="guest_password" value="{{ escape(Context::get('gp')) }}" />
+		@endif
+		<button type="submit" class="rsv-btn rsv-btn-ghost">{{ $lang->cmd_reservation_cancel }}</button>
+	</form>
+	@endif
+
+	<p class="rsv-foot-links">
+		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispReservationList') }}">{{ $lang->cmd_reservation_back_list }}</a>
+		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispReservationMy') }}">{{ $lang->reservation_my }}</a>
+	</p>
+</div>

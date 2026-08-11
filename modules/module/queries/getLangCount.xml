@@ -1,0 +1,12 @@
+<query id="getLangCount" action="select">
+    <tables>
+        <table name="lang" />
+    </tables>
+    <columns>
+        <column name="COUNT(*)" alias="count" />
+    </columns>
+    <conditions>
+        <condition operation="equal" column="name" var="name" />
+        <condition operation="equal" column="lang_code" var="lang_code" pipe="and" />
+    </conditions>
+</query>

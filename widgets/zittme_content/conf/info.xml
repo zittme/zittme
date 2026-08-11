@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget version="0.2">
+	<title xml:lang="ko">통합 콘텐츠 위젯</title>
+	<title xml:lang="en">Unified Content Widget</title>
+	<description xml:lang="ko">
+		위젯 1개 = 가로 1줄. 줄을 1~4개 슬롯으로 나누고 각 슬롯에 게시판을 연결해 목록/웹진/섬네일/매거진/탭 형태로 보여줍니다.
+		100% 폭으로 넣으면 화면 크기에 맞춰 자동으로 배치가 바뀝니다. 이 위젯을 여러 개 쌓으면 메인 페이지가 완성됩니다.
+	</description>
+	<description xml:lang="en">
+		One widget renders one responsive row of 1-4 content slots (list/webzine/thumbnail/magazine/tab). Stack rows to build a front page.
+	</description>
+	<version>0.2</version>
+	<date>2026-08-07</date>
+	<author email_address="contact@zzan.me" link="https://zzan.me/">
+		<name xml:lang="ko">ZZAN Studio</name>
+		<name xml:lang="en">ZZAN Studio</name>
+	</author>
+	<extra_vars>
+		<var id="preset" type="select">
+			<name xml:lang="ko">줄 구성</name>
+			<description xml:lang="ko">이 줄의 조합을 고르세요. 숫자는 폭 비율(%)입니다. 고른 뒤 아래 슬롯에 게시판(mid)만 연결하면 완성됩니다.</description>
+			<options><value>mg_list</value><name xml:lang="ko">매거진 58 + 목록 42</name></options>
+			<options><value>list_mg</value><name xml:lang="ko">목록 42 + 매거진 58</name></options>
+			<options><value>wz_thumb</value><name xml:lang="ko">웹진 50 + 섬네일 50</name></options>
+			<options><value>list_wz</value><name xml:lang="ko">목록 38 + 웹진 62</name></options>
+			<options><value>wz_wz</value><name xml:lang="ko">웹진 50 + 웹진 50</name></options>
+			<options><value>list_list</value><name xml:lang="ko">목록 50 + 목록 50</name></options>
+			<options><value>tab_list_cmt</value><name xml:lang="ko">탭 40 + 목록 30 + 최근 댓글 30</name></options>
+			<options><value>list3</value><name xml:lang="ko">목록 + 목록 + 최근 댓글 (3등분)</name></options>
+			<options><value>mg3</value><name xml:lang="ko">매거진 3장 (3등분)</name></options>
+			<options><value>mg_thumb</value><name xml:lang="ko">매거진 55 + 섬네일 45</name></options>
+			<options><value>wz_full</value><name xml:lang="ko">웹진 한 줄 (100)</name></options>
+			<options><value>thumb_full</value><name xml:lang="ko">섬네일 그리드 한 줄 (100)</name></options>
+			<options><value>mg_full</value><name xml:lang="ko">매거진 한 줄 (100)</name></options>
+			<options><value>mixed_list</value><name xml:lang="ko">혼합(웹진+목록) 62 + 목록 38</name></options>
+			<options><value>custom</value><name xml:lang="ko">직접 구성 (아래 폭 비율/슬롯 형태 사용)</name></options>
+		</var>
+		<var id="new_hours" type="text">
+			<name xml:lang="ko">새 글(N) 표시 시간</name>
+			<description xml:lang="ko">등록 후 몇 시간까지 N 배지를 붙일지. 비우면 24시간</description>
+		</var>
+		<var id="columns" type="text">
+			<name xml:lang="ko">직접 구성 - 폭 비율</name>
+			<description xml:lang="ko">줄 구성이 "직접 구성"일 때만 사용. 콜론으로 열 폭을 나눕니다. 예: 100 / 50:50 / 62:38 / 33:33:33 / 25:25:25:25 (최대 4열)</description>
+		</var>
+		<var id="slot1_mids" type="text">
+			<name xml:lang="ko">슬롯 1 게시판</name>
+			<description xml:lang="ko">게시판 주소(mid). 예: notice. 여러 게시판을 합치려면 쉼표로: free,humor / 사이트 전체 게시판은 * 또는 all (all 이라는 게시판이 실제로 있으면 그 게시판이 우선). 탭 형태는 게시판마다 탭이 됩니다</description>
+		</var>
+		<var id="slot1_title" type="text">
+			<name xml:lang="ko">슬롯 1 제목</name>
+			<description xml:lang="ko">비우면 게시판 이름이 표시됩니다.</description>
+		</var>
+		<var id="slot1_count" type="text">
+			<name xml:lang="ko">슬롯 1 표시 개수</name>
+			<description xml:lang="ko">비우면 구성에 맞는 기본값을 사용합니다.</description>
+		</var>
+		<var id="slot1_style" type="select">
+			<name xml:lang="ko">슬롯 1 형태 (직접 구성용)</name>
+			<description xml:lang="ko">줄 구성이 "직접 구성"일 때만 적용됩니다.</description>
+			<options><value>list</value><name xml:lang="ko">목록</name></options>
+			<options><value>webzine</value><name xml:lang="ko">웹진</name></options>
+			<options><value>thumb</value><name xml:lang="ko">섬네일</name></options>
+			<options><value>magazine</value><name xml:lang="ko">매거진</name></options>
+			<options><value>mixed</value><name xml:lang="ko">혼합(웹진+목록)</name></options>
+			<options><value>tab</value><name xml:lang="ko">탭</name></options>
+			<options><value>comments</value><name xml:lang="ko">최근 댓글</name></options>
+		</var>
+		<var id="slot2_mids" type="text">
+			<name xml:lang="ko">슬롯 2 게시판</name>
+			<description xml:lang="ko">두 번째 열에 연결할 게시판 mid (1열 구성이면 비워두세요)</description>
+		</var>
+		<var id="slot2_title" type="text">
+			<name xml:lang="ko">슬롯 2 제목</name>
+		</var>
+		<var id="slot2_count" type="text">
+			<name xml:lang="ko">슬롯 2 표시 개수</name>
+		</var>
+		<var id="slot2_style" type="select">
+			<name xml:lang="ko">슬롯 2 형태 (직접 구성용)</name>
+			<options><value>list</value><name xml:lang="ko">목록</name></options>
+			<options><value>webzine</value><name xml:lang="ko">웹진</name></options>
+			<options><value>thumb</value><name xml:lang="ko">섬네일</name></options>
+			<options><value>magazine</value><name xml:lang="ko">매거진</name></options>
+			<options><value>mixed</value><name xml:lang="ko">혼합(웹진+목록)</name></options>
+			<options><value>tab</value><name xml:lang="ko">탭</name></options>
+			<options><value>comments</value><name xml:lang="ko">최근 댓글</name></options>
+		</var>
+		<var id="slot3_mids" type="text">
+			<name xml:lang="ko">슬롯 3 게시판</name>
+			<description xml:lang="ko">세 번째 열에 연결할 게시판 mid (없으면 비워두세요)</description>
+		</var>
+		<var id="slot3_title" type="text">
+			<name xml:lang="ko">슬롯 3 제목</name>
+		</var>
+		<var id="slot3_count" type="text">
+			<name xml:lang="ko">슬롯 3 표시 개수</name>
+		</var>
+		<var id="slot3_style" type="select">
+			<name xml:lang="ko">슬롯 3 형태 (직접 구성용)</name>
+			<options><value>list</value><name xml:lang="ko">목록</name></options>
+			<options><value>webzine</value><name xml:lang="ko">웹진</name></options>
+			<options><value>thumb</value><name xml:lang="ko">섬네일</name></options>
+			<options><value>magazine</value><name xml:lang="ko">매거진</name></options>
+			<options><value>mixed</value><name xml:lang="ko">혼합(웹진+목록)</name></options>
+			<options><value>tab</value><name xml:lang="ko">탭</name></options>
+			<options><value>comments</value><name xml:lang="ko">최근 댓글</name></options>
+		</var>
+		<var id="slot4_mids" type="text">
+			<name xml:lang="ko">슬롯 4 게시판</name>
+			<description xml:lang="ko">네 번째 열에 연결할 게시판 mid (없으면 비워두세요)</description>
+		</var>
+		<var id="slot4_title" type="text">
+			<name xml:lang="ko">슬롯 4 제목</name>
+		</var>
+		<var id="slot4_count" type="text">
+			<name xml:lang="ko">슬롯 4 표시 개수</name>
+		</var>
+		<var id="slot4_style" type="select">
+			<name xml:lang="ko">슬롯 4 형태 (직접 구성용)</name>
+			<options><value>list</value><name xml:lang="ko">목록</name></options>
+			<options><value>webzine</value><name xml:lang="ko">웹진</name></options>
+			<options><value>thumb</value><name xml:lang="ko">섬네일</name></options>
+			<options><value>magazine</value><name xml:lang="ko">매거진</name></options>
+			<options><value>mixed</value><name xml:lang="ko">혼합(웹진+목록)</name></options>
+			<options><value>tab</value><name xml:lang="ko">탭</name></options>
+			<options><value>comments</value><name xml:lang="ko">최근 댓글</name></options>
+		</var>
+	</extra_vars>
+</widget>

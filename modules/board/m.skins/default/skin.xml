@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+    <title xml:lang="ko">XE 게시판 기본 스킨</title>
+    <title xml:lang="en">XE Basic Board Skin</title>
+    <title xml:lang="zh-TW">XE 基本面板</title>
+    <title xml:lang="tr">XE Temel Pano Dış Görünümü</title>
+    <title xml:lang="vi">Giao diện bảng tin cơ bản XE</title>
+    <title xml:lang="ru">Базовый скин форума XE</title>
+    <title xml:lang="mn">XE самбарын үндсэн арьс</title>
+    <title xml:lang="fr">Skin de forum de base XE</title>
+    <title xml:lang="es">Skin básico de foro XE</title>
+    <title xml:lang="de">XE Standard-Forumsskin</title>
+    <title xml:lang="zh-CN">XE 论坛基本皮肤</title>
+    <title xml:lang="jp">XE 掲示板 基本スキン</title>
+    <description xml:lang="ko">
+        XE 게시판의 기본 스킨입니다.
+        NHN (developers@xpressengine.com) 
+    </description>
+    <description xml:lang="en">
+        This is the basic board skin of XE.
+        NHN (developers@xpressengine.com) 
+    </description>
+    <description xml:lang="tr">
+        XE'nin temel pano dış görünümüdür
+        NHN (developers@xpressengine.com) 
+    </description>
+    <description xml:lang="zh-TW">
+        XE 基本討論板面板。
+        NHN (developers@xpressengine.com) 
+    </description>
+    <description xml:lang="vi">Đây là giao diện bảng tin cơ bản của XE. NHN (developers@xpressengine.com)</description>
+    <description xml:lang="ru">Базовый скин форума XE. NHN (developers@xpressengine.com)</description>
+    <description xml:lang="mn">
+        Энэ бол XE-ийн үндсэн самбарын арьс юм.
+        NHN (developers@xpressengine.com) 
+    </description>
+    <description xml:lang="fr">Skin de base du forum XE.
+        NHN (developers@xpressengine.com)</description>
+    <description xml:lang="es">Este es el skin básico de foro de XE.
+NHN (developers@xpressengine.com)</description>
+    <description xml:lang="de">
+        Dies ist der Standard-Forumsskin von XE.
+        NHN (developers@xpressengine.com) 
+    </description>
+    <description xml:lang="zh-CN">XE 论坛的基本皮肤。NHN (developers@xpressengine.com)</description>
+    <description xml:lang="jp">XE 掲示板の基本スキンです。
+NHN (developers@xpressengine.com)</description>
+    <version>0.1</version>
+    <date>2010-06-10</date>
+    <author email_address="developers@xpressengine.com" link="http://www.xpressengine.com/">
+        <name xml:lang="ko">NAVER</name>
+        <name xml:lang="en">NAVER</name>
+        <name xml:lang="zh-TW">NAVER</name>
+        <name xml:lang="tr">NAVER</name>
+    </author>
+</skin>

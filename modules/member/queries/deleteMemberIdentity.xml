@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<query id="deleteMemberIdentity" action="delete">
+	<tables>
+		<table name="member_identity" />
+	</tables>
+	<conditions>
+		<condition operation="equal" column="member_srl" var="member_srl" notnull="notnull" filter="number" />
+	</conditions>
+</query>

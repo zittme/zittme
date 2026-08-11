@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">그라데이션과 둥근 모서리</title>
+	<title xml:lang="en">Gradation and Rounded edge</title>
+	<title xml:lang="vi">Chuyển sắc và bo góc</title>
+	<title xml:lang="tr">Degrade ve Yuvarlak Köşe</title>
+	<title xml:lang="ru">Градиент и скруглённые углы</title>
+	<title xml:lang="mn">Градиент ба дугуй ирмэг</title>
+	<title xml:lang="fr">Dégradé et coins arrondis</title>
+	<title xml:lang="es">Degradado y bordes redondeados</title>
+	<title xml:lang="de">Verlauf und abgerundete Ecken</title>
+	<title xml:lang="zh-TW">漸層與圓角</title>
+	<title xml:lang="zh-CN">渐变与圆角</title>
+	<title xml:lang="jp">グラデーションと角丸</title>
+	<description xml:lang="ko">그라데이션과 둥근 모서리를 가진 설문조사 기본 스킨입니다.</description>
+	<description xml:lang="en">Default Skin of the Poll. There are gradation and round edges.</description>
+	<description xml:lang="vi">Giao diện khảo sát mặc định với hiệu ứng chuyển sắc và bo góc.</description>
+	<description xml:lang="tr">Degrade ve yuvarlak köşelere sahip varsayılan anket teması.</description>
+	<description xml:lang="ru">Стандартный скин опроса с градиентом и скруглёнными углами.</description>
+	<description xml:lang="mn">Градиент болон дугуй ирмэгтэй санал асуулгын үндсэн скин.</description>
+	<description xml:lang="fr">Skin par défaut du sondage, avec dégradé et coins arrondis.</description>
+	<description xml:lang="es">Piel predeterminada de la encuesta, con degradado y bordes redondeados.</description>
+	<description xml:lang="de">Standard-Skin für Umfragen mit Farbverlauf und abgerundeten Ecken.</description>
+	<description xml:lang="zh-TW">問卷調查的預設面板，具有漸層與圓角效果。</description>
+	<description xml:lang="zh-CN">投票的默认皮肤，采用渐变效果和圆角设计。</description>
+	<description xml:lang="jp">グラデーションと角丸を備えたアンケートの標準スキンです。</description>
+	<version>2.0.2</version>
+	<date>2016-01-26</date>
+	<author email_address="misol.kr@gmail.com" link="https://github.com/misol">
+		<name xml:lang="ko">misol</name>
+		<name xml:lang="en">misol</name>
+	</author>
+	<author email_address="developers@xpressengine.com" link="https://www.xpressengine.com/">
+		<name xml:lang="ko">NAVER</name>
+		<name xml:lang="en">NAVER</name>
+	</author>
+	<colorset>
+		<color name="normal">
+			<title xml:lang="ko">기본</title>
+			<title xml:lang="en">Default</title>
+			<title xml:lang="vi">Mặc định</title>
+			<title xml:lang="tr">Varsayılan</title>
+			<title xml:lang="ru">По умолчанию</title>
+			<title xml:lang="mn">Үндсэн</title>
+			<title xml:lang="fr">Par défaut</title>
+			<title xml:lang="es">Predeterminado</title>
+			<title xml:lang="de">Standard</title>
+			<title xml:lang="zh-TW">預設</title>
+			<title xml:lang="zh-CN">默认</title>
+			<title xml:lang="jp">標準</title>
+		</color>
+	</colorset>
+</skin>

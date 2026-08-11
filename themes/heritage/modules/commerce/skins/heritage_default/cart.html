@@ -1,0 +1,79 @@
+@version(2)
+@load('css/shop.css')
+
+<div class="shp">
+	<div class="shp-top"><h2 class="shp-title">{{ $lang->shop_cart }}</h2></div>
+
+	@if (empty($cart->items))
+	<p class="shp-empty">{{ $lang->shop_cart_empty }}</p>
+	<p class="shp-foot-links"><a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceList') }}">{{ $lang->shop_back_list }}</a></p>
+	@else
+	<div class="shp-2col">
+		<div class="shp-2col-main">
+			<div class="shp-box">
+				@foreach ($cart->items as $entry)
+				@php $shp_row_thumb = !empty($entry->item->thumb) ? "background-image:url('" . $entry->item->thumb . "');" : ''; @endphp
+				<div class="shp-cart-item {{ $entry->blocked ? 'is-blocked' : '' }}">
+					<a class="shp-cart-thumb" style="{{ $shp_row_thumb }}" href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceItem', 'item_srl', $entry->item->item_srl) }}" aria-label="{{ $entry->item->item_name }}"></a>
+					<div class="shp-cart-info">
+						<a class="shp-cart-name" href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceItem', 'item_srl', $entry->item->item_srl) }}">{{ $entry->item->item_name }}</a>
+						@if ($entry->option)<div class="shp-cart-option">{{ $entry->option->option_label }}</div>@endif
+						@if ($entry->blocked)<div class="shp-cart-blocked">{{ $lang->shop_cart_blocked }}</div>@endif
+						<form action="{{ getUrl('') }}" method="post" class="shp-cart-qty">
+							<input type="hidden" name="act" value="procCommerceCartUpdate" />
+							<input type="hidden" name="mid" value="{{ $mid }}" />
+							<input type="hidden" name="cart_srl" value="{{ $entry->cart_srl }}" />
+							<div class="shp-stepper">
+								<button type="button" class="shp-step" data-step="-1" aria-label="수량 줄이기">&minus;</button>
+								<input class="shp-qty" type="number" name="qty" value="{{ $entry->qty }}" min="1" />
+								<button type="button" class="shp-step" data-step="1" aria-label="수량 늘리기">+</button>
+							</div>
+						</form>
+					</div>
+					<div class="shp-cart-right">
+						<form action="{{ getUrl('') }}" method="post" class="shp-cart-del">
+							<input type="hidden" name="act" value="procCommerceCartDelete" />
+							<input type="hidden" name="mid" value="{{ $mid }}" />
+							<input type="hidden" name="cart_srl" value="{{ $entry->cart_srl }}" />
+							<button type="submit" aria-label="{{ $lang->shop_delete }}"><svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+						</form>
+						<strong class="shp-cart-price">{{ number_format($entry->subtotal) }}원</strong>
+					</div>
+				</div>
+				@endforeach
+			</div>
+			<p class="shp-foot-links" style="text-align:left"><a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceList') }}">{{ $lang->shop_back_list }}</a></p>
+		</div>
+
+		<aside class="shp-2col-aside">
+			<div class="shp-box shp-paybox">
+				<h3>{{ $lang->shop_order_estimate ?? '주문 예상 금액' }}</h3>
+				<div class="shp-summary-row"><span>{{ $lang->shop_item_total }}</span><span>{{ number_format($cart->item_total) }}원</span></div>
+				<div class="shp-summary-row"><span>{{ $lang->shop_ship_fee }}</span><span>{{ $ship_fee > 0 ? '+' . number_format($ship_fee) . '원' : $lang->shop_ship_free }}</span></div>
+				<div class="shp-summary-row is-total"><span>{{ $lang->shop_total }}</span><span>{{ number_format($cart->item_total + $ship_fee) }}원</span></div>
+				<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceCheckout') }}" class="shp-btn shp-btn-primary" style="width:100%;margin-top:14px">{{ $lang->shop_checkout }}</a>
+			</div>
+		</aside>
+	</div>
+	@endif
+
+	<script>
+	(function () {
+		document.querySelectorAll('.shp-cart-qty').forEach(function (form) {
+			var input = form.querySelector('.shp-qty');
+			form.querySelectorAll('.shp-step').forEach(function (btn) {
+				btn.addEventListener('click', function () {
+					var q = (parseInt(input.value, 10) || 1) + parseInt(btn.getAttribute('data-step'), 10);
+					if (q < 1) q = 1;
+					input.value = q;
+					form.submit();
+				});
+			});
+			input.addEventListener('change', function () {
+				if ((parseInt(input.value, 10) || 0) < 1) input.value = 1;
+				form.submit();
+			});
+		});
+	})();
+	</script>
+</div>

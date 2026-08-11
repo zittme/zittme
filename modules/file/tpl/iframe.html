@@ -1,0 +1,34 @@
+<script>//<<![CDATA[
+
+	var uploaded_fileinfo = {};
+	<!--@if($uploaded_fileinfo && $uploaded_fileinfo->error == 0)-->
+	uploaded_fileinfo.error = 0;
+	uploaded_fileinfo.file_srl = {$uploaded_fileinfo->get('file_srl')};
+	uploaded_fileinfo.file_size = {$uploaded_fileinfo->get('file_size')};
+	uploaded_fileinfo.sid = '{$uploaded_fileinfo->get('sid')}';
+	uploaded_fileinfo.direct_download = '{$uploaded_fileinfo->get('direct_download')}';
+	uploaded_fileinfo.source_filename = '{$uploaded_fileinfo->get('source_filename')}';
+	uploaded_fileinfo.upload_target_srl = '{$uploaded_fileinfo->get('upload_target_srl')}';
+	uploaded_fileinfo.uploaded_filename = '{$uploaded_fileinfo->get('uploaded_filename')}';
+	<!--@if($uploaded_fileinfo->get('direct_download') === 'Y')-->
+	uploaded_fileinfo.download_url = '{FileModel::getDirectFileUrl($uploaded_fileinfo->get("uploaded_filename"))}';
+	<!--@else-->
+	uploaded_fileinfo.download_url = '{FileModel::getDownloadUrl($uploaded_fileinfo->get("file_srl"), $uploaded_fileinfo->get("sid"), 0, $uploaded_fileinfo->get("source_filename"))}';
+	<!--@end-->
+	uploaded_fileinfo.thumbnail_filename = '{$uploaded_fileinfo->get("thumbnail_filename")}';
+	uploaded_fileinfo.original_type = '{$uploaded_fileinfo->get("original_type")}';
+	<!--@else-->
+	uploaded_fileinfo.error = -1;
+	uploaded_fileinfo.message = '{$uploaded_fileinfo->message}';
+	<!--@end-->
+
+	<!--@if($callback)-->
+		try{
+			parent[{$callback}](uploaded_fileinfo);
+		}catch(e){
+		
+		}
+	<!--@end-->
+
+//]]>>
+</script>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="0.2">
+	<title xml:lang="ko">접속통계</title>
+	<title xml:lang="zh-CN">访问统计</title>
+	<title xml:lang="en">Counter</title>
+	<title xml:lang="vi">Counter</title>
+	<title xml:lang="es">Contador</title>
+	<title xml:lang="jp">アクセスカウンター</title>
+	<title xml:lang="ru">Базовый счетчик</title>
+	<title xml:lang="zh-TW">基本統計</title>
+	<title xml:lang="tr">Sayaç</title>
+	<title xml:lang="mn">Хандалтын статистик</title>
+	<title xml:lang="fr">Statistiques de visites</title>
+	<title xml:lang="de">Zugriffsstatistik</title>
+	<description xml:lang="ko">기본 접속 통계 프로그램입니다.</description>
+	<description xml:lang="zh-CN">默认访问统计程序。</description>
+	<description xml:lang="en">Basic connection statistics program.</description>
+	<description xml:lang="vi">Chương trình thống kê kết nối cơ bản.</description>
+	<description xml:lang="es">Programa básico para la estadística de la conección.</description>
+	<description xml:lang="jp">デフォルトアクセス統計のプログラムです。</description>
+	<description xml:lang="ru">Базовая программа статистики подключений.</description>
+	<description xml:lang="zh-TW">預設的統計程式。</description>
+	<description xml:lang="tr">Temel bağlantı istatistik programı.</description>
+	<description xml:lang="mn">Хандалтын үндсэн статистикийн хөтөлбөр.</description>
+	<description xml:lang="fr">Programme de base pour les statistiques de connexion.</description>
+	<description xml:lang="de">Einfaches Programm für Zugriffsstatistiken.</description>
+	<version>RX_VERSION</version>
+	<date>RX_CORE</date>
+	<category>statistics</category>
+
+	<author email_address="developers@xpressengine.com" link="http://xpressengine.com/">
+		<name xml:lang="ko">NAVER</name>
+		<name xml:lang="zh-CN">NAVER</name>
+		<name xml:lang="en">NAVER</name>
+		<name xml:lang="es">NAVER</name>
+		<name xml:lang="vi">NAVER</name>
+		<name xml:lang="jp">NAVER</name>
+		<name xml:lang="ru">NAVER</name>
+		<name xml:lang="zh-TW">NAVER</name>
+		<name xml:lang="tr">NAVER</name>
+	</author>
+</module>

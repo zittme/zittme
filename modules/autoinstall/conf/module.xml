@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+	<grants />
+	<actions>
+		<action name="dispAutoinstallAdminIndex" type="view" menu_name="easyInstall" menu_index="true" admin_index="true" />
+		<action name="dispAutoinstallAdminPackageDetail" type="view" menu_name="easyInstall" />
+		<action name="procAutoinstallAdminDownloadPackage" type="controller" />
+		<action name="procAutoinstallAdminInstallPackage" type="controller" />
+		<action name="procAutoinstallAdminPostInstallPackage" type="controller" />
+		<action name="procAutoinstallAdminUninstallPackage" type="controller" />
+		<!-- zitt.me 계정 연결 (스토어·전문가 공용).
+		     모두 링크(GET)로 진입하므로 view 액션이어야 한다. -->
+		<action name="dispAutoinstallAdminExperts" type="view" menu_name="easyInstall" />
+		<action name="dispAutoinstallAdminProjectWrite" type="view" menu_name="easyInstall" />
+		<action name="procAutoinstallAdminCreateProject" type="controller" />
+		<action name="dispAutoinstallAdminPortfolios" type="view" menu_name="easyInstall" />
+		<action name="dispAutoinstallAdminPortfolio" type="view" menu_name="easyInstall" />
+		<action name="dispAutoinstallAdminExpertProfile" type="view" menu_name="easyInstall" />
+		<action name="dispAutoinstallAdminConnectCallback" type="view" menu_name="easyInstall" />
+		<action name="dispAutoinstallAdminDisconnect" type="view" menu_name="easyInstall" />
+		<action name="dispAutoinstallAdminEnterService" type="view" menu_name="easyInstall" />
+		<!-- For backward compatibility only -->
+		<action name="getAutoinstallAdminMenuPackageList" type="model" />
+		<action name="getAutoinstallAdminLayoutPackageList" type="model" />
+		<action name="getAutoinstallAdminSkinPackageList" type="model" />
+		<action name="getAutoinstallAdminIsAuthed" type="model" />
+		<action name="getAutoInstallAdminInstallInfo" type="model" />
+		<action name="getAutoInstallAdminModuleConfig" type="model" />
+	</actions>
+	<menus>
+		<menu name="easyInstall">
+			<title xml:lang="ko">스토어</title>
+			<title xml:lang="en">Store</title>
+			<title xml:lang="jp">ストア</title>
+			<title xml:lang="zh-CN">商店</title>
+			<title xml:lang="zh-TW">商店</title>
+			<title xml:lang="de">Store</title>
+			<title xml:lang="es">Tienda</title>
+			<title xml:lang="fr">Boutique</title>
+			<title xml:lang="mn">Дэлгүүр</title>
+			<title xml:lang="ru">Магазин</title>
+			<title xml:lang="tr">Mağaza</title>
+			<title xml:lang="vi">Cửa hàng</title>
+		</menu>
+	</menus>
+</module>

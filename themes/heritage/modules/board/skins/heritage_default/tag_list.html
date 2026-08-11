@@ -1,0 +1,17 @@
+@version(2)
+<include target="_header.html" />
+
+<div class="hrb-tag-cloud">
+	@foreach ($tag_list as $hrb_tv)
+	@php
+	$hrb_rank = $hrb_tv->count > 5 ? 1 : ($hrb_tv->count > 3 ? 2 : ($hrb_tv->count > 2 ? 3 : ($hrb_tv->count > 1 ? 4 : 5)));
+	@endphp
+	<a class="hrb-tag r{{ $hrb_rank }}" href="{{ getUrl('', 'mid', $layout_info->mid ?: $mid, 'search_target', 'tag', 'search_keyword', $hrb_tv->tag) }}">{{ $hrb_tv->tag }}</a>
+	@endforeach
+</div>
+
+<div class="hrb-tag-foot">
+	<a class="hr-btn" href="{{ getUrl('act', '') }}">{{ $lang->cmd_back }}</a>
+</div>
+
+<include target="_footer.html" />

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ruleset version="1.5.0">
+    <fields>
+		<field name="allowed_filesize" required="true" rule="float" default="2" />
+		<field name="allowed_attach_size" required="true" rule="float" default="2" />
+    </fields>
+</ruleset>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module>
+	<actions>
+		<action name="dispExtravarAdminConfig" class="Controllers\Config" menu_name="extravar" menu_index="true" admin_index="true" />
+		<action name="procExtravarAdminInsertConfig" class="Controllers\Config" standalone="true" />
+	</actions>
+	<menus>
+		<menu name="extravar">
+			<title xml:lang="ko">확장 변수</title>
+			<title xml:lang="en">Extra Input Fields</title>
+			<title xml:lang="vi">Trường nhập mở rộng</title>
+			<title xml:lang="tr">Ek Giriş Alanları</title>
+			<title xml:lang="ru">Дополнительные поля</title>
+			<title xml:lang="mn">Нэмэлт талбарууд</title>
+			<title xml:lang="fr">Champs personnalisés</title>
+			<title xml:lang="es">Campos adicionales</title>
+			<title xml:lang="de">Zusätzliche Eingabefelder</title>
+			<title xml:lang="zh-TW">擴充輸入欄位</title>
+			<title xml:lang="zh-CN">扩展输入项</title>
+			<title xml:lang="jp">拡張入力項目</title>
+		</menu>
+	</menus>
+</module>

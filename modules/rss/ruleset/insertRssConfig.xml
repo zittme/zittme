@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset version="1.5.0">
+	<customrules>
+		<rule name="boolean" type="enum" test="Y,N" />
+	</customrules>
+	<fields>
+		<field name="module" required="true" default="rss" />
+		<field name="act" required="true" default="procRssAdminInsertConfig" />
+		<field name="use_total_feed" required="true" default="Y" rule="boolean" />
+		<field name="feed_title">
+			<title xml:lang="ko">피드(Feed) 제목</title>
+			<title xml:lang="en">Feed Title</title>
+			<title xml:lang="vi">Tiêu đề nguồn cấp (Feed)</title>
+			<title xml:lang="tr">Akis (Feed) Basligi</title>
+			<title xml:lang="ru">Заголовок ленты (Feed)</title>
+			<title xml:lang="mn">Феедийн гарчиг</title>
+			<title xml:lang="fr">Titre du flux</title>
+			<title xml:lang="es">Título del feed</title>
+			<title xml:lang="de">Feed-Titel</title>
+			<title xml:lang="zh-TW">Feed 標題</title>
+			<title xml:lang="zh-CN">订阅源标题</title>
+			<title xml:lang="jp">フィードタイトル</title>
+		</field>
+		<field name="feed_document_count" required="true" rule="number" default="15" />
+    </fields>
+</ruleset>

@@ -1,0 +1,532 @@
+@version(2)
+@load('css/shop.css')
+
+<div class="shp">
+	@php
+	$shp_images = [];
+	if (!empty($item->images))
+	{
+		$shp_decoded = json_decode($item->images, true);
+		if (is_array($shp_decoded)) { $shp_images = array_values(array_filter($shp_decoded, 'is_string')); }
+	}
+	if (!count($shp_images) && !empty($item->thumb)) { $shp_images = [$item->thumb]; }
+	$shp_main_image = $shp_images[0] ?? '';
+	$shp_thumb_style = $shp_main_image !== '' ? "background-image:url('" . $shp_main_image . "');" : '';
+	$shp_base_soldout = ($item->use_stock ?? 'Y') === 'Y' && (int)$item->stock <= 0;
+	$shp_basic_opts = [];
+	$shp_extra_opts = [];
+	foreach ($options ?? [] as $shp_o)
+	{
+		if (($shp_o->option_type ?? 'basic') === 'extra') { $shp_extra_opts[] = $shp_o; }
+		else { $shp_basic_opts[] = $shp_o; }
+	}
+	$shp_has_basic = count($shp_basic_opts) > 0;
+	@endphp
+
+	<nav class="shp-breadcrumb">
+		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceList') }}">{{ $lang->shop_all ?? '전체' }}</a>
+		@foreach ($breadcrumb ?? [] as $bc)
+		<span class="shp-bc-sep">&gt;</span>
+		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceList', 'category', $bc->category_srl) }}">{{ $bc->title }}</a>
+		@endforeach
+	</nav>
+
+	@php $shp_sticky = (($shop_config->item_sticky ?? 'N') === 'Y'); @endphp
+	<div class="shp-detail" id="shpDetailTop">
+		<div class="shp-gallery">
+			<div class="shp-detail-thumb" id="shpGalleryMain" style="{{ $shp_thumb_style }}"></div>
+			@if (count($shp_images) > 1)
+			<div class="shp-gallery-thumbs">
+				@foreach ($shp_images as $shp_gi => $shp_img)
+				<button type="button" class="shp-gallery-thumb @if ($shp_gi === 0) is-on @endif" data-image="{{ $shp_img }}" style="background-image:url('{{ $shp_img }}')" aria-label="{{ $shp_gi + 1 }}"></button>
+				@endforeach
+			</div>
+			@endif
+		</div>
+		<div class="shp-detail-info" id="shpBuyPanel">
+			@include('_buy')
+		</div>
+	</div>
+
+	<div class="shp-body @if ($shp_sticky) is-sticky @endif">
+	<div class="shp-main">
+
+	<nav class="shp-tabs">
+		<a href="#shpContent">{{ $lang->shop_detail_info ?? '상세정보' }}</a>
+		<a href="#shpReviews">{{ $lang->shop_reviews ?? '리뷰' }} <small>{{ count($reviews ?? []) }}</small></a>
+		<a href="#shpInquiries">{{ $lang->shop_inquiries ?? '문의' }} <small>{{ count($inquiries ?? []) }}</small></a>
+	</nav>
+
+	<div class="shp-content" id="shpContent">@if (!empty($item->content)){!! $item->content !!}@endif</div>
+
+	<div class="shp-section" id="shpReviews">
+		<h2>{{ $lang->shop_reviews ?? '리뷰' }} <small>{{ count($reviews ?? []) }}</small></h2>
+		@if (!count($reviews ?? []))
+		<p class="shp-empty">{{ $lang->shop_no_reviews ?? '아직 등록된 리뷰가 없습니다.' }}</p>
+		@else
+		<ul class="shp-qna-list">
+			@foreach ($reviews as $rv)
+			<li>
+				<div class="shp-qna-head">
+					<span class="shp-stars" aria-label="{{ $lang->shop_rating ?? '평점' }} {{ (int)$rv->rating }}/5">
+						@foreach ([1, 2, 3, 4, 5] as $shp_s)
+						<svg width="14" height="14" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 1.5l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.3l-3.8 2 .7-4.3-3.1-3 4.3-.6z" fill="{{ $shp_s <= (int)$rv->rating ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="1"/></svg>
+						@endforeach
+					</span>
+					<strong>{{ $rv->nick_name }}</strong>
+					<small>{{ zdate($rv->regdate, 'Y.m.d') }}</small>
+					@if (!empty($is_shop_admin) || ((!empty($is_logged)) && (int)($logged_info->member_srl ?? 0) === (int)$rv->member_srl))
+					<form action="{{ getUrl('') }}" method="post" class="shp-qna-del" onsubmit="return confirm('{{ $lang->shop_delete ?? '삭제' }}?')">
+						<input type="hidden" name="act" value="procCommerceReviewDelete" />
+						<input type="hidden" name="mid" value="{{ $mid }}" />
+						<input type="hidden" name="review_srl" value="{{ $rv->review_srl }}" />
+						<button type="submit">{{ $lang->shop_delete ?? '삭제' }}</button>
+					</form>
+					@endif
+				</div>
+				<p class="shp-qna-body">{{ $rv->content }}</p>
+				@php $shp_rv_media = json_decode((string)($rv->images ?? ''), true); @endphp
+				@if (is_array($shp_rv_media) && count($shp_rv_media))
+				<div class="shp-review-media">
+					@foreach ($shp_rv_media as $shp_rm)
+					@if (preg_match('/\.(mp4|mov|webm)$/i', $shp_rm))
+					<video src="{{ escape($shp_rm) }}" controls preload="metadata"></video>
+					@else
+					<a href="{{ escape($shp_rm) }}" target="_blank" rel="noopener"><img src="{{ escape($shp_rm) }}" alt="" loading="lazy" /></a>
+					@endif
+					@endforeach
+				</div>
+				@endif
+				@if (!empty($rv->reply))
+				<div class="shp-qna-reply">
+					<strong>{{ $lang->shop_seller_reply ?? '판매자 답변' }}</strong>
+					<p>{{ $rv->reply }}</p>
+				</div>
+				@endif
+			</li>
+			@endforeach
+		</ul>
+		@endif
+
+		@if (!empty($can_review))
+		@php
+		$shp_rc_text = (int)($shop_config->review_credit_text ?? 0);
+		$shp_rc_photo = (int)($shop_config->review_credit_photo ?? 0);
+		@endphp
+		<form action="{{ getUrl('') }}" method="post" class="shp-qna-form" id="shpReviewForm">
+			<input type="hidden" name="act" value="procCommerceReviewInsert" />
+			<input type="hidden" name="mid" value="{{ $mid }}" />
+			<input type="hidden" name="item_srl" value="{{ $item->item_srl }}" />
+			<input type="hidden" name="images" id="shpReviewImages" value="" />
+			@if ($shp_rc_text > 0 || $shp_rc_photo > 0)
+			<p class="shp-review-reward">
+				@if ($shp_rc_text > 0)리뷰 작성 시 <strong>{{ number_format($shp_rc_text) }}원</strong>@endif
+				@if ($shp_rc_photo > 0)@if ($shp_rc_text > 0), @endif사진·영상 첨부 시 <strong>{{ number_format($shp_rc_photo) }}원</strong>@endif
+				적립 (상품당 첫 리뷰 1회)
+			</p>
+			@endif
+			<div class="shp-qna-form-row">
+				<label>{{ $lang->shop_rating ?? '평점' }}</label>
+				<select name="rating">
+					<option value="5">5</option>
+					<option value="4">4</option>
+					<option value="3">3</option>
+					<option value="2">2</option>
+					<option value="1">1</option>
+				</select>
+			</div>
+			<textarea name="content" rows="3" required placeholder="{{ $lang->shop_write_review ?? '리뷰 작성' }}"></textarea>
+			<div class="shp-qna-form-row">
+				<label>사진·영상 (최대 5개)</label>
+				<input type="file" id="shpReviewFile" accept="image/*,video/mp4,video/quicktime,video/webm" multiple />
+			</div>
+			<div id="shpReviewPreview" class="shp-review-media"></div>
+			<button type="submit" class="shp-btn shp-btn-primary shp-btn-sm">{{ $lang->shop_write_review ?? '리뷰 작성' }}</button>
+		</form>
+		<script>
+		(function () {
+			var fileEl = document.getElementById('shpReviewFile');
+			var jsonEl = document.getElementById('shpReviewImages');
+			var preview = document.getElementById('shpReviewPreview');
+			if (!fileEl) return;
+			var urls = [];
+			function render() {
+				jsonEl.value = JSON.stringify(urls);
+				preview.innerHTML = '';
+				urls.forEach(function (u, i) {
+					var wrap = document.createElement('span');
+					wrap.className = 'shp-review-thumb';
+					wrap.innerHTML = (/\.(mp4|mov|webm)$/i.test(u)
+						? '<video src="' + u + '" preload="metadata"></video>'
+						: '<img src="' + u + '" alt="" />')
+						+ '<button type="button" aria-label="삭제">&times;</button>';
+					wrap.querySelector('button').addEventListener('click', function () {
+						urls.splice(i, 1);
+						render();
+					});
+					preview.appendChild(wrap);
+				});
+			}
+			fileEl.addEventListener('change', function () {
+				[].slice.call(fileEl.files).forEach(function (f) {
+					if (urls.length >= 5) return;
+					var fd = new FormData();
+					fd.append('file', f);
+					fd.append('item_srl', '{{ $item->item_srl }}');
+					fetch('./?module=commerce&act=procCommerceReviewUpload', { method: 'POST', body: fd })
+						.then(function (r) { return r.json(); })
+						.then(function (res) {
+							if (res && !res.error && res.url) { urls.push(res.url); render(); }
+							else alert(res && res.message ? res.message : '업로드에 실패했습니다.');
+						})
+						.catch(function () { alert('업로드에 실패했습니다.'); });
+				});
+				fileEl.value = '';
+			});
+		})();
+		@if (Context::get('review'))
+		(function () {
+			var form = document.getElementById('shpReviewForm');
+			if (!form) return;
+			setTimeout(function () {
+				form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+				var ta = form.querySelector('textarea');
+				if (ta) ta.focus();
+			}, 300);
+		})();
+		@endif
+		</script>
+		@else
+		<p class="shp-qna-note">{{ $lang->shop_review_buyer_note ?? '리뷰는 이 상품을 구매한 회원만 작성할 수 있습니다.' }}</p>
+		@endif
+	</div>
+
+	<div class="shp-section" id="shpInquiries">
+		<h2>{{ $lang->shop_inquiries ?? '문의' }} <small>{{ count($inquiries ?? []) }}</small></h2>
+		@if (!count($inquiries ?? []))
+		<p class="shp-empty">{{ $lang->shop_no_inquiries ?? '아직 등록된 문의가 없습니다.' }}</p>
+		@else
+		<ul class="shp-qna-list">
+			@foreach ($inquiries as $iq)
+			@php
+			$shp_iq_mine = !empty($is_shop_admin) || ((!empty($is_logged)) && (int)($logged_info->member_srl ?? 0) === (int)$iq->member_srl);
+			$shp_iq_visible = $iq->is_secret !== 'Y' || $shp_iq_mine;
+			@endphp
+			<li>
+				<div class="shp-qna-head">
+					<strong>{{ $iq->nick_name }}</strong>
+					@if ($iq->is_secret === 'Y')<small class="shp-secret">{{ $lang->shop_secret_inquiry ?? '비밀글' }}</small>@endif
+					<small>{{ zdate($iq->regdate, 'Y.m.d') }}</small>
+					@if ($shp_iq_mine)
+					<form action="{{ getUrl('') }}" method="post" class="shp-qna-del" onsubmit="return confirm('{{ $lang->shop_delete ?? '삭제' }}?')">
+						<input type="hidden" name="act" value="procCommerceInquiryDelete" />
+						<input type="hidden" name="mid" value="{{ $mid }}" />
+						<input type="hidden" name="inquiry_srl" value="{{ $iq->inquiry_srl }}" />
+						<button type="submit">{{ $lang->shop_delete ?? '삭제' }}</button>
+					</form>
+					@endif
+				</div>
+				<p class="shp-qna-body">{{ $shp_iq_visible ? $iq->content : ($lang->shop_secret_body ?? '비밀글입니다.') }}</p>
+				@if ($shp_iq_visible && !empty($iq->answer))
+				<div class="shp-qna-reply">
+					<strong>{{ $lang->shop_seller_reply ?? '판매자 답변' }}</strong>
+					<p>{{ $iq->answer }}</p>
+				</div>
+				@endif
+			</li>
+			@endforeach
+		</ul>
+		@endif
+
+		@if (!empty($is_logged))
+		<form action="{{ getUrl('') }}" method="post" class="shp-qna-form">
+			<input type="hidden" name="act" value="procCommerceInquiryInsert" />
+			<input type="hidden" name="mid" value="{{ $mid }}" />
+			<input type="hidden" name="item_srl" value="{{ $item->item_srl }}" />
+			<textarea name="content" rows="3" required placeholder="{{ $lang->shop_write_inquiry ?? '문의 작성' }}"></textarea>
+			<div class="shp-qna-form-row">
+				<label><input type="checkbox" name="is_secret" value="Y" /> {{ $lang->shop_secret_inquiry ?? '비밀글' }}</label>
+				<button type="submit" class="shp-btn shp-btn-primary shp-btn-sm">{{ $lang->shop_write_inquiry ?? '문의 작성' }}</button>
+			</div>
+		</form>
+		@else
+		<p class="shp-qna-note">{{ $lang->shop_inquiry_login_note ?? '문의는 로그인 후 작성할 수 있습니다.' }}</p>
+		@endif
+	</div>
+	</div>
+
+	@if ($shp_sticky)
+	<aside class="shp-side" id="shpSide"></aside>
+	@endif
+	</div>
+	<p class="shp-foot-links">
+		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceList') }}">{{ $lang->shop_back_list }}</a>
+		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceCart') }}">{{ $lang->shop_cart }}</a>
+	</p>
+
+	<script>
+	(function () {
+		var main = document.getElementById('shpGalleryMain');
+		var thumbs = document.querySelectorAll('.shp-gallery-thumb');
+		if (main && thumbs.length) {
+			thumbs.forEach(function (btn) {
+				btn.addEventListener('click', function () {
+					main.style.backgroundImage = "url('" + btn.getAttribute('data-image') + "')";
+					thumbs.forEach(function (b) { b.classList.remove('is-on'); });
+					btn.classList.add('is-on');
+				});
+			});
+		}
+
+		var side = document.getElementById('shpSide');
+		var topWrap = document.getElementById('shpDetailTop');
+		var buyPanel = document.getElementById('shpBuyPanel');
+		if (side && topWrap && buyPanel) {
+			var relocate = function () {
+				var passed = window.scrollY > topWrap.offsetTop + topWrap.offsetHeight - 90;
+				if (passed && buyPanel.parentNode !== side) {
+					side.appendChild(buyPanel);
+				} else if (!passed && buyPanel.parentNode !== topWrap) {
+					topWrap.appendChild(buyPanel);
+				}
+			};
+			window.addEventListener('scroll', relocate, { passive: true });
+			relocate();
+		}
+
+		var box = document.getElementById('shpSelectBox');
+		if (!box) return;
+		var basePrice = parseInt(box.getAttribute('data-base-price'), 10) || 0;
+		var itemName = box.getAttribute('data-item-name') || '';
+		var baseSoldout = box.getAttribute('data-base-soldout') === 'Y';
+		var hasBasic = box.getAttribute('data-has-basic') === 'Y';
+		var minQty = parseInt(box.getAttribute('data-min-qty'), 10) || 1;
+		var maxQty = parseInt(box.getAttribute('data-max-qty'), 10) || 0;
+		var rowsEl = document.getElementById('shpRows');
+		var totalQtyEl = document.getElementById('shpTotalQty');
+		var totalEl = document.getElementById('shpTotalPrice');
+		var optSels = document.querySelectorAll('.shp-opt-add');
+		// 조합형이면 본품 대신 고른 조합이 줄로 쌓인다
+		var comboMode = document.querySelectorAll('.shp-axis').length > 0;
+		// 조합형 옵션: 축을 모두 고르면 그 조합에 해당하는 기본 옵션이 골라진다
+		var axisSels = document.querySelectorAll('.shp-axis');
+		if (axisSels.length) {
+			var basicSel = document.querySelector('.shp-opt-add[data-opt-type="basic"]');
+			var axesWrap = document.querySelector('.shp-axes');
+			if (basicSel && axesWrap) {
+				// 축으로 고르므로 원래 셀렉트는 감춘다 (값 전달용으로만 남긴다)
+				var basicRow = basicSel.closest('.shp-row');
+				if (basicRow) basicRow.style.display = 'none';
+
+				// 조합 -> option 요소 지도
+				var comboMap = {};
+				Array.prototype.forEach.call(basicSel.options, function (op) {
+					var raw = op.getAttribute('data-combo');
+					if (!raw) return;
+					try { comboMap[comboKey(JSON.parse(raw))] = op; } catch (e) {}
+				});
+
+				function comboKey(obj) {
+					var parts = [];
+					for (var k in obj) { parts.push(k + '=' + obj[k]); }
+					return parts.join('|');
+				}
+
+				// 값 하나가 들어간 조합이 모두 품절이면 그 값은 고를 수 없다
+				function soldout(axisName, value) {
+					var any = false;
+					for (var key in comboMap) {
+						if (key.indexOf(axisName + '=' + value) < 0) continue;
+						if (!comboMap[key].disabled) return false;
+						any = true;
+					}
+					return any;
+				}
+
+				function refreshChips() {
+					axesWrap.querySelectorAll('[data-axis-row]').forEach(function (row) {
+						var name = row.getAttribute('data-axis-row');
+						var sel = row.querySelector('.shp-axis');
+						var picked = row.querySelector('[data-picked]');
+						if (picked) picked.textContent = sel && sel.value ? ' : ' + sel.value : '';
+						row.querySelectorAll('[data-chip]').forEach(function (chip) {
+							var value = chip.getAttribute('data-chip');
+							chip.classList.toggle('is-on', !!sel && sel.value === value);
+							var out = soldout(name, value);
+							chip.classList.toggle('is-soldout', out);
+							chip.disabled = out;
+						});
+					});
+				}
+
+				function reset() {
+					Array.prototype.forEach.call(axisSels, function (sel) { sel.value = ''; });
+					refreshChips();
+				}
+
+				function pick() {
+					var parts = [];
+					var done = true;
+					Array.prototype.forEach.call(axisSels, function (sel) {
+						if (!sel.value) { done = false; return; }
+						parts.push(sel.getAttribute('data-axis') + '=' + sel.value);
+					});
+					refreshChips();
+					if (!done) return;
+					var op = comboMap[parts.join('|')];
+					if (!op) { alert('고르신 조합은 준비되어 있지 않습니다.'); reset(); return; }
+					if (op.disabled) { alert('고르신 조합은 품절입니다.'); reset(); return; }
+					basicSel.value = op.value;
+					basicSel.dispatchEvent(new Event('change', { bubbles: true }));
+					reset();
+				}
+
+				Array.prototype.forEach.call(axisSels, function (sel) { sel.addEventListener('change', pick); });
+				axesWrap.querySelectorAll('[data-chip]').forEach(function (chip) {
+					chip.addEventListener('click', function () {
+						if (chip.disabled) return;
+						var sel = chip.closest('[data-axis-row]').querySelector('.shp-axis');
+						sel.value = sel.value === chip.getAttribute('data-chip') ? '' : chip.getAttribute('data-chip');
+						pick();
+					});
+				});
+				refreshChips();
+			}
+		}
+
+
+		var buyBtn = document.getElementById('shpBuyBtn');
+		var cartBtn = document.getElementById('shpCartBtn');
+
+		function fmt(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+		function clampQty(q) {
+			if (isNaN(q) || q < 1) q = 1;
+			if (maxQty > 0 && q > maxQty) q = maxQty;
+			return q;
+		}
+		function makeRow(optSrl, label, unit, qty, removable) {
+			var row = document.createElement('div');
+			row.className = 'shp-select-row';
+			row.setAttribute('data-opt', optSrl);
+			row.setAttribute('data-unit', unit);
+			row.innerHTML =
+				'<span class="shp-select-name"></span>' +
+				'<div class="shp-stepper">' +
+					'<button type="button" class="shp-step" data-step="-1" aria-label="수량 줄이기">&minus;</button>' +
+					'<input class="shp-qty" type="number" value="' + qty + '" min="1"' + (maxQty > 0 ? ' max="' + maxQty + '"' : '') + ' />' +
+					'<button type="button" class="shp-step" data-step="1" aria-label="수량 늘리기">+</button>' +
+				'</div>' +
+				'<span class="shp-select-price"></span>' +
+				(removable ? '<button type="button" class="shp-row-del" aria-label="삭제"><svg width="12" height="12" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>' : '') +
+				'<input type="hidden" name="option_srls[]" value="' + optSrl + '" />' +
+				'<input type="hidden" name="qtys[]" value="' + qty + '" />';
+			row.querySelector('.shp-select-name').textContent = label;
+			rowsEl.appendChild(row);
+			return row;
+		}
+		function render() {
+			var totalQty = 0;
+			var totalPrice = 0;
+			var rows = rowsEl.querySelectorAll('.shp-select-row');
+			rows.forEach(function (row) {
+				var qtyInput = row.querySelector('.shp-qty');
+				var q = clampQty(parseInt(qtyInput.value, 10));
+				qtyInput.value = q;
+				row.querySelector('input[name="qtys[]"]').value = q;
+				var unit = parseInt(row.getAttribute('data-unit'), 10) || 0;
+				row.querySelector('.shp-select-price').textContent = fmt(unit * q) + '원';
+				totalQty += q;
+				totalPrice += unit * q;
+			});
+			totalQtyEl.textContent = '총 ' + totalQty + '개';
+			totalEl.textContent = fmt(totalPrice) + '원';
+			var creditEl = document.getElementById('shpCreditEarn');
+			if (creditEl) {
+				var creditRate = parseFloat(creditEl.getAttribute('data-credit-rate')) || 0;
+				creditEl.textContent = creditRate > 0 && totalPrice > 0 ? '(예상 ' + fmt(Math.floor(totalPrice * creditRate / 100)) + '원)' : '';
+			}
+			var empty = rows.length === 0;
+			if (buyBtn) buyBtn.disabled = empty;
+			if (cartBtn) cartBtn.disabled = empty;
+		}
+		rowsEl.addEventListener('click', function (e) {
+			var stepBtn = e.target.closest('.shp-step');
+			if (stepBtn) {
+				var input = stepBtn.parentNode.querySelector('.shp-qty');
+				input.value = clampQty((parseInt(input.value, 10) || 1) + parseInt(stepBtn.getAttribute('data-step'), 10));
+				render();
+				return;
+			}
+			var delBtn = e.target.closest('.shp-row-del');
+			if (delBtn) {
+				delBtn.closest('.shp-select-row').remove();
+				render();
+			}
+		});
+		rowsEl.addEventListener('input', render);
+		rowsEl.addEventListener('change', render);
+
+		function setMainRow(srl, label, unit) {
+			var current = rowsEl.querySelector('.shp-select-row[data-main="1"]');
+			var keepQty = minQty;
+			if (current) {
+				keepQty = clampQty(parseInt(current.querySelector('.shp-qty').value, 10) || minQty);
+				current.remove();
+			}
+			var row = makeRow(srl, label, unit, keepQty, false);
+			row.setAttribute('data-main', '1');
+			rowsEl.insertBefore(row, rowsEl.firstChild);
+		}
+
+		optSels.forEach(function (optSel) {
+			var optType = optSel.getAttribute('data-opt-type');
+			optSel.addEventListener('change', function () {
+				var opt = optSel.options[optSel.selectedIndex];
+				if (!opt || opt.value === '') return;
+				var srl = opt.value;
+				var add = parseInt(opt.getAttribute('data-price-add') || '0', 10) || 0;
+				var label = opt.getAttribute('data-label') || '';
+				if (optType === 'extra') {
+					var exists = rowsEl.querySelector('.shp-select-row[data-opt="' + srl + '"]:not([data-main="1"])');
+					if (exists) {
+						var input = exists.querySelector('.shp-qty');
+						input.value = clampQty((parseInt(input.value, 10) || 1) + 1);
+					} else {
+						rowsEl.appendChild(makeRow(srl, label, add, 1, true));
+					}
+					optSel.selectedIndex = 0;
+				} else if (srl === '0') {
+					setMainRow('0', itemName, basePrice);
+				} else if (comboMode) {
+					// 조합형: 본품을 미리 담지 않고, 고른 조합을 한 줄씩 쌓는다
+					var already = rowsEl.querySelector('.shp-select-row[data-opt="' + srl + '"]');
+					if (already) {
+						var qtyEl = already.querySelector('.shp-qty');
+						qtyEl.value = clampQty((parseInt(qtyEl.value, 10) || 1) + 1);
+					} else {
+						rowsEl.appendChild(makeRow(srl, label, basePrice + add, minQty, true));
+					}
+					optSel.selectedIndex = 0;
+				} else {
+					setMainRow(srl, itemName + ' - ' + label, basePrice + add);
+				}
+				render();
+			});
+		});
+
+		// 조합형은 고르기 전까지 아무것도 담지 않는다
+		if (!baseSoldout && !comboMode) {
+			setMainRow('0', itemName, basePrice);
+		}
+		render();
+
+		var tipBtn = document.getElementById('shpTipBtn');
+		var tipNote = document.getElementById('shpShipNote');
+		if (tipBtn && tipNote) {
+			tipBtn.addEventListener('click', function () {
+				tipNote.hidden = !tipNote.hidden;
+			});
+		}
+	})();
+	</script>
+</div>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="0.2">
+	<title xml:lang="ko">메일, SMS 및 푸시 알림 관리</title>
+	<title xml:lang="en">Mail, SMS and Push Notification Manager</title>
+	<title xml:lang="vi">Quản lý Email, SMS và thông báo đẩy</title>
+	<title xml:lang="tr">E-posta, SMS ve Anlık Bildirim Yöneticisi</title>
+	<title xml:lang="ru">Управление почтой, SMS и push-уведомлениями</title>
+	<title xml:lang="mn">Мэйл, SMS болон Push мэдэгдлийн удирдлага</title>
+	<title xml:lang="fr">Gestion des e-mails, SMS et notifications push</title>
+	<title xml:lang="es">Gestor de correo, SMS y notificaciones push</title>
+	<title xml:lang="de">Verwaltung von E-Mail, SMS und Push-Benachrichtigungen</title>
+	<title xml:lang="zh-TW">郵件、簡訊與推播通知管理</title>
+	<title xml:lang="zh-CN">邮件、短信及推送通知管理</title>
+	<title xml:lang="jp">メール・SMS・プッシュ通知管理</title>
+	<description xml:lang="ko">
+		라이믹스에서 발송하는 메일, SMS, 푸시 알림 등을 기록하고 테스트하는 기능을 제공합니다.
+	</description>
+	<description xml:lang="en">
+		Log and test e-mails, SMS, and push notifications sent from Zittme.
+	</description>
+	<description xml:lang="vi">Ghi nhật ký và kiểm thử email, SMS, thông báo đẩy được gửi từ Zittme.</description>
+	<description xml:lang="tr">Zittme tarafından gönderilen e-postaları, SMS'leri ve anlık bildirimleri kaydedin ve test edin.</description>
+	<description xml:lang="ru">Ведение журнала и тестирование писем, SMS и push-уведомлений, отправляемых из Zittme.</description>
+	<description xml:lang="mn">
+		Zittme-ээс илгээсэн мэйл, SMS, push мэдэгдлийг бүртгэж, туршиж үзнэ.
+	</description>
+	<description xml:lang="fr">Enregistrez et testez les e-mails, SMS et notifications push envoyés par Zittme.</description>
+	<description xml:lang="es">Registra y prueba los correos electrónicos, SMS y notificaciones push enviados desde Zittme.</description>
+	<description xml:lang="de">
+		Protokolliert und testet E-Mails, SMS und Push-Benachrichtigungen, die von Zittme versendet werden.
+	</description>
+	<description xml:lang="zh-TW">記錄並測試 Zittme 寄送的郵件、簡訊與推播通知。</description>
+	<description xml:lang="zh-CN">记录并测试 Zittme 发送的邮件、短信和推送通知。</description>
+	<description xml:lang="jp">Zittme から送信されるメール、SMS、プッシュ通知の記録とテストを行います。</description>
+	<version>RX_VERSION</version>
+	<date>RX_CORE</date>
+	<author link="https://rhymix.org">
+		<name xml:lang="ko">Rhymix</name>
+		<name xml:lang="en">Rhymix</name>
+	</author>
+</module>

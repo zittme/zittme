@@ -1,0 +1,53 @@
+<include target="header.html" />
+<form action="./" class="x_form-horizontal" method="post">
+	<input type="hidden" name="module" value="member" />
+	<input type="hidden" name="act" value="procMemberAdminInsertSnsLoginConfig" />
+	<input type="hidden" name="success_return_url" value="{getUrl('', 'module', 'admin', 'act', $act)}" />
+
+	<div class="x_control-group">
+		<label class="x_control-label">{$lang->sns_login_enable}</label>
+		<div class="x_controls">
+			<label for="sns_login_enable_y" class="x_inline"><input type="radio" name="sns_login_enable" id="sns_login_enable_y" value="Y" checked="checked"|cond="$config->sns_login_enable === 'Y'" /> {$lang->cmd_yes}</label>
+			<label for="sns_login_enable_n" class="x_inline"><input type="radio" name="sns_login_enable" id="sns_login_enable_n" value="N" checked="checked"|cond="$config->sns_login_enable !== 'Y'" /> {$lang->cmd_no}</label>
+			<p class="x_help-block">{$lang->about_sns_login_enable}</p>
+		</div>
+	</div>
+
+	<hr />
+
+	<!--@foreach($sns_services as $svc)-->
+	<fieldset style="margin-bottom:24px;">
+		<legend style="text-transform:capitalize;font-weight:bold;">{$svc->name}</legend>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->sns_use_service}</label>
+			<div class="x_controls">
+				<label class="x_inline"><input type="radio" name="sns_{$svc->name}_enable" value="Y" checked="checked"|cond="$svc->enable === 'Y'" /> {$lang->cmd_yes}</label>
+				<label class="x_inline"><input type="radio" name="sns_{$svc->name}_enable" value="N" checked="checked"|cond="$svc->enable !== 'Y'" /> {$lang->cmd_no}</label>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="{$svc->name}_client_id">Client ID</label>
+			<div class="x_controls">
+				<input type="text" id="{$svc->name}_client_id" name="{$svc->name}_client_id" value="{$svc->client_id}" class="x_input-xlarge" />
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="{$svc->name}_client_secret">Client Secret</label>
+			<div class="x_controls">
+				<input type="text" id="{$svc->name}_client_secret" name="{$svc->name}_client_secret" value="{$svc->client_secret}" class="x_input-xlarge" />
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->sns_callback_url}</label>
+			<div class="x_controls">
+				<input type="text" readonly value="{$svc->callback_url}" class="x_input-xlarge" onclick="this.select();" />
+				<p class="x_help-block">{$lang->about_sns_callback_url}</p>
+			</div>
+		</div>
+	</fieldset>
+	<!--@endforeach-->
+
+	<div class="x_clearfix btnArea">
+		<span class="x_pull-right"><input class="x_btn x_btn-primary" type="submit" value="{$lang->cmd_save}" /></span>
+	</div>
+</form>
