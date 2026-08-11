@@ -31,17 +31,36 @@
 					</div>
 					@endif
 					<div class="shp-form-grid">
-						<div class="shp-row"><label>{{ $lang->shop_receiver }}</label><input type="text" name="receiver_name" placeholder="{{ $lang->shop_same_as_orderer }}" /></div>
-						<div class="shp-row"><label>{{ $lang->shop_receiver_phone }}</label><input type="tel" name="receiver_phone" placeholder="{{ $lang->shop_same_as_orderer }}" /></div>
+						@if ($shop_need_country)
 						<div class="shp-row">
+							<label>{{ $lang->shop_country }}</label>
+							<select name="country" id="shpCountry">
+								@foreach ($shop_countries as $zmc_cc => $zmc_cn)
+								<option value="{{ $zmc_cc }}" @if ($zmc_cc === $shop_default_country) selected @endif>{{ $zmc_cn }}</option>
+								@endforeach
+							</select>
+						</div>
+						@endif
+						<div class="shp-row"><label>{{ $lang->shop_receiver }}</label><input type="text" name="receiver_name" placeholder="{{ $lang->shop_same_as_orderer }}" /></div>
+						<div class="shp-row">
+							<label>{{ $lang->shop_receiver_phone }}</label>
+							<div class="shp-phone-row">
+								<input type="text" class="shp-intl-only" name="phone_cc" placeholder="{{ $lang->shop_phone_cc ?? '국가번호' }}" />
+								<input type="tel" name="receiver_phone" placeholder="{{ $lang->shop_same_as_orderer }}" />
+							</div>
+						</div>
+						<div class="shp-row shp-kr-only">
 							<label>{{ $lang->shop_zipcode }}</label>
 							<div class="shp-zip-row">
 								<input type="text" name="zipcode" readonly />
 								<button type="button" class="shp-btn shp-btn-ghost shp-btn-zip" id="shpZipSearch">{{ $lang->shop_search_address ?? '주소 검색' }}</button>
 							</div>
 						</div>
+						<div class="shp-row shp-intl-only"><label>{{ $lang->shop_postal_code ?? '우편번호' }}</label><input type="text" name="zipcode_intl" /></div>
 						<div class="shp-row" style="grid-column:1/-1"><label>{{ $lang->shop_address }} *</label><input type="text" name="address1" required /></div>
 						<div class="shp-row" style="grid-column:1/-1"><label>{{ $lang->shop_address_detail }}</label><input type="text" name="address2" /></div>
+						<div class="shp-row shp-intl-only"><label>{{ $lang->shop_city ?? '도시' }} *</label><input type="text" name="city" /></div>
+						<div class="shp-row shp-intl-only"><label>{{ $lang->shop_state ?? '주 · 도' }}</label><input type="text" name="state" /></div>
 						<div class="shp-row" style="grid-column:1/-1"><label>{{ $lang->shop_delivery_memo }}</label><input type="text" name="delivery_memo" placeholder="{{ $lang->shop_delivery_memo_ph }}" /></div>
 					</div>
 					@if ($is_member)
@@ -160,7 +179,17 @@
 				if (!opt || !opt.value) return;
 				setVal('receiver_name', opt.getAttribute('data-name'));
 				setVal('receiver_phone', opt.getAttribute('data-phone'));
+				var optCountry = opt.getAttribute('data-country') || 'KR';
+				var countrySel = document.getElementById('shpCountry');
+				if (countrySel) {
+					countrySel.value = optCountry;
+					countrySel.dispatchEvent(new Event('change'));
+				}
+				setVal('state', opt.getAttribute('data-state'));
+				setVal('city', opt.getAttribute('data-city'));
+				setVal('phone_cc', opt.getAttribute('data-phone-cc'));
 				setVal('zipcode', opt.getAttribute('data-zipcode'));
+				setVal('zipcode_intl', opt.getAttribute('data-zipcode'));
 				setVal('address1', opt.getAttribute('data-address1'));
 				setVal('address2', opt.getAttribute('data-address2'));
 			});
@@ -293,3 +322,35 @@
 	})();
 	</script>
 </div>
+
+<script>
+(function () {
+	var mode = {!! json_encode($shop_address_mode) !!};
+	var form = document.querySelector('form[action*="procCommerce"], form');
+	if (!form) return;
+	var country = document.getElementById('shpCountry');
+
+	function isOverseas() {
+		if (mode === 'intl') return true;
+		if (mode === 'kr') return false;
+		return country ? country.value.toUpperCase() !== 'KR' : false;
+	}
+
+	function apply() {
+		var overseas = isOverseas();
+		document.querySelectorAll('.shp-kr-only').forEach(function (el) { el.hidden = overseas; });
+		document.querySelectorAll('.shp-intl-only').forEach(function (el) { el.hidden = !overseas; });
+		var city = document.querySelector('[name="city"]');
+		if (city) city.required = overseas;
+		var zip = document.querySelector('[name="zipcode"], [name="zipcode_kr"]');
+		var zipIntl = document.querySelector('[name="zipcode_intl"]');
+		if (zip && zipIntl) {
+			if (overseas) { zipIntl.name = 'zipcode'; zip.name = 'zipcode_kr'; }
+			else { zip.name = 'zipcode'; zipIntl.name = 'zipcode_intl'; }
+		}
+	}
+
+	if (country) country.addEventListener('change', apply);
+	apply();
+})();
+</script>

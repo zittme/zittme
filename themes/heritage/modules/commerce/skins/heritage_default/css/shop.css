@@ -610,3 +610,8 @@ html { scroll-behavior: smooth; }
 .shp-chip.is-swatch .shp-chip-dot { display: block; width: 34px; height: 34px; border-radius: 999px; background: var(--chip, #ddd); box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
 .shp-chip.is-swatch.is-on { border-color: var(--shp-text); }
 .shp-chip.is-swatch.is-soldout { opacity: .35; }
+
+.shp-phone-row { display: flex; gap: 6px; }
+.shp-phone-row input[name="phone_cc"] { flex: 0 0 84px; }
+.shp-phone-row input[type="tel"] { flex: 1; min-width: 0; }
+.shp-intl-only[hidden], .shp-kr-only[hidden] { display: none !important; }
