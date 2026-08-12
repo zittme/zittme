@@ -1,5 +1,7 @@
 
-.rsv { --rsv-brand: #6c5ce0; --rsv-brand-dark: #5847c9; --rsv-brand-light: #9a8bf0; --rsv-brand-soft: rgba(108, 92, 224, .08); --rsv-border: #e6e9ef; --rsv-text: #10151f; --rsv-sub: #525c6b; --rsv-bg: #f7f8fb; --rsv-card: #ffffff;
+/* 레이아웃(heritage) 토큰을 따르고, 레이아웃 밖에서는 폴백을 쓴다.
+ * dark/light/soft 파생색은 color-mix 미지원 브라우저용 고정값 — 지원되면 아래 @supports 가 덮는다 */
+.rsv { --rsv-brand: var(--hr-brand, #6c5ce0); --rsv-brand-dark: #5847c9; --rsv-brand-light: #9a8bf0; --rsv-brand-soft: rgba(108, 92, 224, .08); --rsv-border: #e6e9ef; --rsv-text: #10151f; --rsv-sub: #525c6b; --rsv-bg: #f7f8fb; --rsv-card: #ffffff;
 	width: 100%; margin: 0 auto; padding: 8px 0 48px; color: var(--rsv-text);
 	font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif; word-break: keep-all; }
 .rsv-narrow { max-width: 720px; }
@@ -131,3 +133,11 @@
 	--rsv-card: #141822;
 }
 [data-theme="dark"] .rsv select, [data-theme="dark"] .rsv input, [data-theme="dark"] .rsv textarea { background: var(--rsv-card); color: var(--rsv-text); border-color: var(--rsv-border); }
+
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+	.rsv {
+		--rsv-brand-dark: color-mix(in srgb, var(--hr-brand, #6c5ce0) 80%, #000);
+		--rsv-brand-light: color-mix(in srgb, var(--hr-brand, #6c5ce0) 55%, #fff);
+		--rsv-brand-soft: color-mix(in srgb, var(--hr-brand, #6c5ce0) 8%, transparent);
+	}
+}

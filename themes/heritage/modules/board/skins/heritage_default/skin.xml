@@ -39,6 +39,14 @@
 			<options value="webzine"><title xml:lang="ko">웹진형 (썸네일 + 요약)</title><title xml:lang="en">Webzine (thumbnail + summary)</title></options>
 			<options value="faq"><title xml:lang="ko">FAQ형 (질문 클릭 시 답변 펼침)</title><title xml:lang="en">FAQ (accordion)</title></options>
 		</var>
+		<var name="hr_author_align" type="select" default="left">
+			<title xml:lang="ko">글쓴이 정렬</title>
+			<title xml:lang="en">Author alignment</title>
+			<description xml:lang="ko">목록형에서 글쓴이 열의 정렬 방식입니다.</description>
+			<description xml:lang="en">Alignment of the author column in the list style.</description>
+			<options value="left"><title xml:lang="ko">왼쪽 정렬</title><title xml:lang="en">Left</title></options>
+			<options value="center"><title xml:lang="ko">가운데 정렬</title><title xml:lang="en">Center</title></options>
+		</var>
 		<var name="hr_show_photo" type="select" default="Y">
 			<title xml:lang="ko">프로필 사진 노출</title>
 			<title xml:lang="en">Show profile photo</title>

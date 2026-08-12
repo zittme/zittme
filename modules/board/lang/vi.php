@@ -65,6 +65,7 @@ $lang->about_use_status = 'Vui lòng chọn các trạng thái có thể chọn 
 $lang->about_update_log = 'Lưu nhật ký cho mỗi phiên bản của bài viết mỗi khi được chỉnh sửa.';
 $lang->skip_bottom_list_for_olddoc = 'Không tính chính xác danh sách dưới khi xem bài viết cũ.';
 $lang->skip_bottom_list_for_robot = 'Không tính chính xác danh sách dưới khi robot truy cập.';
+$lang->cmd_write_post = 'Viết bài';
 $lang->write_comment = 'Viết bình luận';
 $lang->msg_not_allow_comment = 'Bài viết này không cho phép bình luận.';
 $lang->no_board_instance = 'Chưa có bảng tin nào được tạo.';

@@ -48,6 +48,7 @@ $lang->about_update_log = 'Сохранять журнал каждой верс
 $lang->skip_bottom_list_for_olddoc = 'Не рассчитывать нижний список точно при просмотре старых записей.';
 $lang->skip_bottom_list_for_robot = 'Не рассчитывать нижний список точно при посещении роботом.';
 $lang->msg_not_enough_point = 'У вас недостаточно баллов, чтобы создать запись на этом форуме.';
+$lang->cmd_write_post = 'Написать пост';
 $lang->write_comment = 'Написать комментарий';
 $lang->msg_not_allow_comment = 'Комментирование этой записи запрещено.';
 $lang->no_board_instance = 'Форумы не созданы.';

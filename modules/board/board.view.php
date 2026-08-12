@@ -209,6 +209,12 @@ class BoardView extends Board
 		// list
 		$this->dispBoardContentList();
 
+		// Check previous errors
+		if ($this->getHttpStatusCode() > 200)
+		{
+			return;
+		}
+
 		// Board features
 		$oDocument = Context::get('oDocument');
 		$document_module_srl = ($oDocument && $oDocument->isExists()) ? $oDocument->get('module_srl') : $this->module_srl;
@@ -548,12 +554,16 @@ class BoardView extends Board
 		// Setup basic parameters such as module and page.
 		$args = new stdClass();
 		$args->module_srl = $this->include_modules ?: $this->module_srl;
-		$args->page = intval(Context::get('page')) ?: null;
+		$args->page = (intval(Context::get('page')) ?: null);
 		$args->list_count = $this->list_count;
 		$args->page_count = $this->page_count;
 		if (isset($this->module_info->include_days) && $this->module_info->include_days > 0)
 		{
 			$args->start_regdate = date('YmdHis', time() - ($this->module_info->include_days * 86400));
+		}
+		if ($args->page !== null && $args->page < 0)
+		{
+			return $this->dispBoardMessage('msg_not_founded', 404);
 		}
 
 		// Filter by search target and keyword.
@@ -572,19 +582,32 @@ class BoardView extends Board
 		}
 
 		// Filter by category.
+		$args->category_srl = (string)Context::get('category') ?: null;
 		if ($this->module_info->use_category === 'Y')
 		{
-			$args->category_srl = (string)Context::get('category') ?: null;
-
 			// Support comma-separated categories #2519
-			if ($args->category_srl)
+			if ($args->category_srl !== null)
 			{
 				$args->category_srl = array_map('intval', explode(',', $args->category_srl));
 				if (count($args->category_srl) === 1)
 				{
 					$args->category_srl = $args->category_srl[0];
 				}
+
+				// Validate category_srl
+				$category_list = Context::get('category_list');
+				foreach (is_array($args->category_srl) ? $args->category_srl : [$args->category_srl] as $category_srl)
+				{
+					if (!isset($category_list[$category_srl]))
+					{
+						return $this->dispBoardMessage('msg_not_founded', 404);
+					}
+				}
 			}
+		}
+		elseif ($args->category_srl !== null)
+		{
+			return $this->dispBoardMessage('msg_not_founded', 404);
 		}
 
 		// Filter by consultation member_srl, or the member_srl parameter if given.

@@ -3,8 +3,8 @@
     <customrules>
     </customrules>
     <fields>
-		<field name="name" required="true" />
 		<field name="module_srl" required="true" rule="number" />
-		<field name="eid" required="true" rule="alpha_number" />
+		<field name="name" required="true" />
+		<field name="eid" required="true" />
     </fields>
 </ruleset>

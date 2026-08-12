@@ -48,6 +48,7 @@ $lang->about_update_log = 'Guardar un registro de cada versión de una publicaci
 $lang->skip_bottom_list_for_olddoc = 'No calcular exactamente la lista inferior al ver una publicación antigua.';
 $lang->skip_bottom_list_for_robot = 'No calcular exactamente la lista inferior cuando la visita es de un robot.';
 $lang->msg_not_enough_point = 'No tienes puntos suficientes para escribir en este foro.';
+$lang->cmd_write_post = 'Escribir publicación';
 $lang->write_comment = 'Escribir un comentario';
 $lang->msg_not_allow_comment = 'No se permiten comentarios en esta publicación.';
 $lang->no_board_instance = 'No se ha creado ningún foro.';

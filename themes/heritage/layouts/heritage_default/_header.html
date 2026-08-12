@@ -9,7 +9,10 @@
 		<div class="hr-inner hr-utilrow-inner">
 			<a class="hr-logo" href="{{ getUrl('') }}">
 				@if (!empty($hr->logo_image))
-				<img src="{{ $hr->logo_image }}" alt="{{ $hr->logo_text ?: ($site_title ?? '') }}" />
+				<img class="hr-logo-light" src="{{ $hr->logo_image }}" alt="{{ $hr->logo_text ?: ($site_title ?? '') }}" />
+				@if (!empty($hr->logo_image_dark))
+				<img class="hr-logo-dark" src="{{ $hr->logo_image_dark }}" alt="{{ $hr->logo_text ?: ($site_title ?? '') }}" />
+				@endif
 				@else
 				<span>{{ $hr->logo_text ?: ($site_title ?? 'HOME') }}</span>
 				@endif
@@ -94,6 +97,15 @@
 			<button type="button" class="hr-mobile-close" id="hr_mobile_close" aria-label="메뉴 닫기">
 				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7l1.4-1.4 6.3 6.3 6.3-6.3z"/></svg>
 			</button>
+		</div>
+		<div class="hr-mobile-account">
+			@if ($is_logged)
+			<a class="hr-mobile-account-btn" href="{{ getUrl('', 'act', 'dispMemberInfo') }}">{{ $logged_info->nick_name }}</a>
+			<a class="hr-mobile-account-btn" href="{{ getUrl('', 'act', 'dispMemberLogout') }}">로그아웃</a>
+			@else
+			<a class="hr-mobile-account-btn is-primary" href="{{ getUrl('', 'act', 'dispMemberLoginForm') }}">로그인</a>
+			<a class="hr-mobile-account-btn" href="{{ getUrl('', 'act', 'dispMemberSignUpForm') }}">회원가입</a>
+			@endif
 		</div>
 		<ul class="hr-mobile-list">
 			@foreach ($hr_menu as $hr_i => $hr_m)

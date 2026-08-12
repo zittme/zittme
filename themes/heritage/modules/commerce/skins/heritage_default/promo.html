@@ -65,9 +65,9 @@
 				@endif
 				<span class="shp-price">
 					@if ($it->sale_price > 0 && $it->sale_price < $it->price)
-					<s>{{ number_format($it->price) }}</s> <strong>{{ number_format($it->sale_price) }}원</strong>
+					<s>{{ shop_money($it->price) }}</s> <strong>{{ shop_money($it->sale_price) }}</strong>
 					@else
-					<strong>{{ number_format($it->price) }}원</strong>
+					<strong>{{ shop_money($it->price) }}</strong>
 					@endif
 				</span>
 			</span>

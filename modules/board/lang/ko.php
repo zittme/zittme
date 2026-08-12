@@ -48,6 +48,7 @@ $lang->about_update_log = '게시글을 수정할 경우 수정한 내역을 저
 $lang->skip_bottom_list_for_olddoc = '오래된 게시물 열람시 하단 목록을 정확하게 계산하지 않음';
 $lang->skip_bottom_list_for_robot = '로봇 방문시 하단 목록을 정확하게 계산하지 않음';
 $lang->msg_not_enough_point = '포인트가 부족합니다';
+$lang->cmd_write_post = '글쓰기';
 $lang->write_comment = '댓글 쓰기';
 $lang->msg_not_allow_comment = '해당 글의 댓글 쓰기가 잠겨있습니다.';
 $lang->no_board_instance = '생성된 게시판이 없습니다.';

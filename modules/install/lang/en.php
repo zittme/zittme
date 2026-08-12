@@ -29,6 +29,7 @@ $lang->install_checklist_title['gd'] = 'gd';
 $lang->install_checklist_title['mcrypt'] = 'mcrypt / openssl';
 $lang->install_checklist_title['session'] = 'session';
 $lang->install_checklist_title['db_support'] = 'DB support';
+$lang->install_checklist_desc['db_support'] = '[Required] Zittme requires the pdo_mysql extension to be installed.';
 $lang->install_checklist_desc['php_version'] = '[Required] Zittme supports only PHP Version %s or higher';
 $lang->install_checklist_desc['php_version_warning'] = '[Recommend] Zittme recommends only PHP Version %s or higher';
 $lang->install_checklist_desc['permission'] = '[Required] Please create a \'files\' directory under the installation path and change its permissions to 777.';

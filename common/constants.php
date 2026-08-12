@@ -3,14 +3,14 @@
 /**
  * ZITTME_VERSION is the version number of the Zittme CMS.
  */
-define('ZITTME_VERSION', '0.0.04');
+define('ZITTME_VERSION', '0.0.05');
 
 /**
  * RX_VERSION is the Rhymix engine compatibility version.
  * Third-party modules use this with version_compare() to check compatibility,
  * so it must track the upstream Rhymix version Zittme is based on.
  */
-define('RX_VERSION', '2.1.35');
+define('RX_VERSION', '2.1.36');
 
 /**
  * RX_MICROTIME is the startup time of the current script, in microseconds since the Unix epoch.

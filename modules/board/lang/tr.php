@@ -28,6 +28,7 @@ $lang->about_secret = 'Kullanıcılar gizli makaleler veya gizli yorumlar yazabi
 $lang->about_admin_mail = 'Makale ya da yorum gönderildiğinde e-posta gönderilecektir. Çoklu mailler noktalarla(,) ayrılıp gönderilecektir.';
 $lang->about_list_config = 'Eğer liste-tarzı dış görünüm kullanıyorsanız, gösterilecek parçaları düzenleyebilirsiniz. Fakat; bu özellik resmi olmayan dış görünümler için mevcut olmayabilir. Parçalara çift tıklamak ekleme/çıkarma özelliği sağlayacaktır.';
 $lang->msg_not_enough_point = 'Bu panoya makele yazmak için yeterli puanınız bulunmamaktadır.';
+$lang->cmd_write_post = 'Yazı yaz';
 $lang->write_comment = 'Yorum Yaz';
 $lang->board_special_features = 'Özellikler';
 $lang->use_bottom_list = 'Alt listeyi göster';

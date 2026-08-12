@@ -64,6 +64,9 @@
 .hrb-table tbody td.hrb-col-author, .hrb-table tbody td.hrb-col-extra { color: var(--hr-ink-sub); font-size: 12.5px; }
 
 .hrb-table th.hrb-col-title, .hrb-table td.hrb-col-title { text-align: left; }
+.hrb-table tbody td.hrb-col-title { max-width: 0; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hrb-table th.hrb-col-author, .hrb-table td.hrb-col-author { text-align: left; }
+.hrb-table.hrb-author-center th.hrb-col-author, .hrb-table.hrb-author-center td.hrb-col-author { text-align: center; }
 .hrb-table .hrb-title-link { font-size: 14px; font-weight: 400; color: var(--hr-ink); }
 .hrb-table .hrb-title-link:hover { color: var(--hr-brand); text-decoration: underline; text-underline-offset: 3px; }
 .hrb-table tr.is-notice .hrb-title-link { font-weight: 600; }
@@ -499,7 +502,7 @@
 		border-bottom: 1px solid var(--hr-line-soft);
 	}
 	.hrb-table tbody td { display: inline; width: auto; padding: 0; border: 0; text-align: left; font-size: 12.5px; }
-	.hrb-table tbody td.hrb-col-title { display: block; width: 100%; margin-bottom: 3px; padding-right: 28px; }
+	.hrb-table tbody td.hrb-col-title { display: block; width: 100%; max-width: none; margin-bottom: 3px; padding-right: 28px; }
 	.hrb-table .hrb-title-link { font-size: 15px; line-height: 1.5; }
 	.hrb-table tbody td.hrb-col-no,
 	.hrb-table tbody td.hrb-col-module { display: none; }

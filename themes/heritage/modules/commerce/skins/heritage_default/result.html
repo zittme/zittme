@@ -48,19 +48,19 @@
 		<dt>{{ $lang->shop_orderer }}</dt>
 		<dd>{{ $order->orderer_name }}</dd>
 		<dt>{{ $lang->shop_item_total }}</dt>
-		<dd>{{ number_format($order->item_total) }}원</dd>
+		<dd>{{ shop_money_in($order->item_total, $order->currency ?? 'KRW') }}</dd>
 		@if ($order->discount_total > 0)
 		<dt>{{ $lang->shop_discount }}</dt>
-		<dd>-{{ number_format($order->discount_total) }}원</dd>
+		<dd>-{{ shop_money_in($order->discount_total, $order->currency ?? 'KRW') }}</dd>
 		@endif
 		@if (!empty($order->credit_used) && $order->credit_used > 0)
 		<dt>{{ $lang->shop_credit }}</dt>
-		<dd>-{{ number_format($order->credit_used) }}원</dd>
+		<dd>-{{ shop_money_in($order->credit_used, $order->currency ?? 'KRW') }}</dd>
 		@endif
 		<dt>{{ $lang->shop_ship_fee }}</dt>
-		<dd>{{ $order->delivery_fee_total > 0 ? number_format($order->delivery_fee_total) . '원' : $lang->shop_ship_free }}</dd>
+		<dd>{{ $order->delivery_fee_total > 0 ? shop_money_in($order->delivery_fee_total, $order->currency ?? 'KRW') : $lang->shop_ship_free }}</dd>
 		<dt>{{ $lang->shop_total }}</dt>
-		<dd><strong>{{ number_format($order->payment_price) }}원</strong></dd>
+		<dd><strong>{{ shop_money_in($order->payment_price, $order->currency ?? 'KRW') }}</strong></dd>
 	</dl>
 
 	<table class="shp-table">
@@ -70,7 +70,7 @@
 			<tr>
 				<td>{{ $oi->item_name }}@if (!empty($oi->option_name))<br /><small style="color:#6b7684">{{ $oi->option_name }}</small>@endif</td>
 				<td>{{ $oi->qty }}</td>
-				<td>{{ number_format($oi->subtotal) }}원</td>
+				<td>{{ shop_money_in($oi->subtotal, $order->currency ?? 'KRW') }}</td>
 			</tr>
 			@endforeach
 		</tbody>

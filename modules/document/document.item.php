@@ -1183,7 +1183,11 @@ class DocumentItem extends BaseObject
 			$args = new stdClass();
 			$args->document_srl = $this->document_srl;
 			$output = executeQuery('document.getDocument', $args);
-			$content = $output->data->content;
+			$content = $output->data->content ?? '';
+		}
+		else
+		{
+			$content = '';
 		}
 
 		// Return false if neither attachement nor image files in the document

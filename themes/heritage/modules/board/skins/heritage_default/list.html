@@ -53,7 +53,7 @@ foreach ($document_list ?: [] as $hrb_dk => $hrb_dd) { $hrb_docs[$hrb_dk] = $hrb
 	@if (count($hrb_docs))
 
 	@if ($hrb_style === 'list')
-	<table class="hr-table hrb-table">
+	<table class="hr-table hrb-table{{ ($module_info->hr_author_align ?? 'left') === 'center' ? ' hrb-author-center' : '' }}">
 		<thead>
 			<tr>
 				@foreach ($list_config as $hrb_col)
@@ -274,7 +274,7 @@ foreach ($document_list ?: [] as $hrb_dk => $hrb_dd) { $hrb_docs[$hrb_dk] = $hrb
 			<a class="hr-btn" href="{{ getUrl('', 'mid', $mid, 'act', 'dispBoardAdminBoardInfo') }}">{{ $lang->cmd_management ?? '설정' }}</a>
 			@endif
 			@if ($grant->write_document)
-			<a class="hr-btn hr-btn-primary" href="{{ getUrl('act', 'dispBoardWrite', 'document_srl', '') }}">{{ $lang->cmd_write ?? '글쓰기' }}</a>
+			<a class="hr-btn hr-btn-primary" href="{{ getUrl('act', 'dispBoardWrite', 'document_srl', '') }}">{{ $lang->cmd_write_post ?? $lang->cmd_write ?? '글쓰기' }}</a>
 			@endif
 		</div>
 	</div>

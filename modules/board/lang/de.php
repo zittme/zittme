@@ -48,6 +48,7 @@ $lang->about_update_log = 'Bei jeder Änderung eines Beitrags eine Version im Pr
 $lang->skip_bottom_list_for_olddoc = 'Untere Liste beim Aufrufen alter Beiträge nicht exakt berechnen';
 $lang->skip_bottom_list_for_robot = 'Untere Liste bei Besuchen von Robots nicht exakt berechnen';
 $lang->msg_not_enough_point = 'Sie haben nicht genügend Punkte, um in diesem Forum einen Beitrag zu schreiben.';
+$lang->cmd_write_post = 'Beitrag schreiben';
 $lang->write_comment = 'Kommentar schreiben';
 $lang->msg_not_allow_comment = 'Für diesen Beitrag sind Kommentare nicht erlaubt.';
 $lang->no_board_instance = 'Es wurde noch kein Forum erstellt.';

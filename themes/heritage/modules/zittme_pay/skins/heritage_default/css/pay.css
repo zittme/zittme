@@ -1,14 +1,16 @@
 
 
 .zpay {
-	--zpay-point: #6c5ce0;
+	/* 레이아웃(heritage) 토큰을 따르고, 레이아웃 밖에서는 폴백을 쓴다 */
+	--zpay-point: var(--hr-brand, #6c5ce0);
+	/* color-mix 미지원 브라우저용 고정값 — 지원되면 아래 @supports 가 덮는다 */
 	--zpay-point-dark: #5847c9;
 	--zpay-point-light: #9a8bf0;
-	--zpay-border: #e6e9ef;
-	--zpay-muted: #525c6b;
-	--zpay-bg-soft: #f7f8fb;
-	--zpay-card: #ffffff;
-	--zpay-ink: #10151f;
+	--zpay-border: var(--hr-line, #e6e9ef);
+	--zpay-muted: var(--hr-muted, #525c6b);
+	--zpay-bg-soft: var(--hr-surface, #f7f8fb);
+	--zpay-card: var(--hr-bg, #ffffff);
+	--zpay-ink: var(--hr-ink, #10151f);
 	--zpay-radius: 6px;
 
 	box-sizing: border-box;
@@ -346,11 +348,11 @@ a.zpay-btn-primary:visited {
 }
 
 [data-theme="dark"] .zpay {
-	--zpay-border: #2a3040;
-	--zpay-muted: #b3bbc8;
-	--zpay-bg-soft: #1b2130;
-	--zpay-card: #141822;
-	--zpay-ink: #e7eaf0;
+	--zpay-border: var(--hr-line, #2a3040);
+	--zpay-muted: var(--hr-muted, #b3bbc8);
+	--zpay-bg-soft: var(--hr-surface, #1b2130);
+	--zpay-card: var(--hr-bg, #141822);
+	--zpay-ink: var(--hr-ink, #e7eaf0);
 }
 [data-theme="dark"] .zpay input, [data-theme="dark"] .zpay select, [data-theme="dark"] .zpay textarea {
 	background: var(--zpay-card);
@@ -358,3 +360,10 @@ a.zpay-btn-primary:visited {
 	border-color: var(--zpay-border);
 }
 [data-theme="dark"] .zpay-btn:disabled { background: #394152; }
+
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+	.zpay {
+		--zpay-point-dark: color-mix(in srgb, var(--hr-brand, #6c5ce0) 80%, #000);
+		--zpay-point-light: color-mix(in srgb, var(--hr-brand, #6c5ce0) 55%, #fff);
+	}
+}

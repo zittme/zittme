@@ -21,7 +21,7 @@
 				@foreach ($orders as $o)
 				<tr>
 					<td><strong>{{ $o->order_code }}</strong><br /><small style="color:#6b7684">{{ zdate($o->regdate, 'Y.m.d H:i') }}</small></td>
-					<td>{{ number_format($o->payment_price) }}원</td>
+					<td>{{ shop_money_in($o->payment_price, $o->currency ?? 'KRW') }}</td>
 					<td>@php $shp_ds = $o->display_status ?? $o->status; @endphp<span class="shp-st shp-st-{{ $shp_ds }}">{{ $lang->{'shop_status_' . $shp_ds} ?? $shp_ds }}</span></td>
 					<td style="white-space:nowrap"><a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceOrderResult', 'code', $o->order_code) }}" style="color:#2677e3;font-weight:600">{{ $lang->shop_view }}</a>@if ($shp_ds === 'confirmed') <a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceOrderResult', 'code', $o->order_code, 'review', '1') }}" style="color:#1d7a3d;font-weight:600;margin-left:8px">리뷰 작성</a>@endif</td>
 				</tr>

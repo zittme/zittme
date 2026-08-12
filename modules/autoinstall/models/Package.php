@@ -441,7 +441,11 @@ class Package
 
 		// Fetch the latest package information.
 		$detail_url = sprintf(self::PACKAGE_DETAIL_URL, $package_srl);
-		$request = HTTP::get($detail_url, null, [], [], ['timeout' => 10]);
+		$headers = [
+			'Accept' => 'application/json',
+			'User-Agent' => sprintf('Autoinstall Rhymix/%s PHP/%s (%s)', \RX_VERSION, \PHP_VERSION, \PHP_OS_FAMILY),
+		];
+		$request = HTTP::get($detail_url, null, $headers, [], ['timeout' => 20]);
 		if ($request->getStatusCode() !== 200)
 		{
 			return null;
@@ -485,7 +489,7 @@ class Package
 	public static function updatePackageList(): bool
 	{
 		// Fetch the latest package list.
-		$request = HTTP::get(self::PACKAGE_LIST_URL, null, [], [], ['timeout' => 10]);
+		$request = HTTP::get(self::PACKAGE_LIST_URL, null, [], [], ['timeout' => 20]);
 		if ($request->getStatusCode() !== 200)
 		{
 			return false;

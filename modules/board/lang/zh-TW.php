@@ -28,6 +28,7 @@ $lang->about_secret = '可用於討論板或回覆時選擇是否使用。';
 $lang->about_admin_mail = '有新的主題或評論時，將自動發電子郵件來通知管理員。 多數電子郵件由逗號(,)區隔。';
 $lang->about_list_config = '可以放置想要的項目種類。 當所使用的面板支援此功能時才會正常實現。 對目標項目/顯示項目中的物件按兩下可新增或移除。';
 $lang->msg_not_enough_point = '你的點數不夠在此討論板發表主題。';
+$lang->cmd_write_post = '發文';
 $lang->write_comment = '發表評論';
 $lang->board_special_features = '特殊功能';
 $lang->use_bottom_list = '顯示底部列表';

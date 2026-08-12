@@ -48,6 +48,7 @@ $lang->about_update_log = 'Conserver un historique de chaque version d\'un messa
 $lang->skip_bottom_list_for_olddoc = 'Ne pas calculer précisément la liste du bas lors de la consultation d\'un ancien message.';
 $lang->skip_bottom_list_for_robot = 'Ne pas calculer précisément la liste du bas lors de la visite d\'un robot.';
 $lang->msg_not_enough_point = 'Vos points sont insuffisants pour écrire un message dans ce forum.';
+$lang->cmd_write_post = 'Écrire un article';
 $lang->write_comment = 'Écrire un commentaire';
 $lang->msg_not_allow_comment = 'Les commentaires ne sont pas autorisés sur ce message.';
 $lang->no_board_instance = 'Aucun forum n\'a été créé.';

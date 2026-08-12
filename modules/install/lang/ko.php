@@ -29,6 +29,7 @@ $lang->install_checklist_title['gd'] = 'gd';
 $lang->install_checklist_title['mcrypt'] = 'mcrypt / openssl';
 $lang->install_checklist_title['session'] = '세션 지원';
 $lang->install_checklist_title['db_support'] = 'DB 지원';
+$lang->install_checklist_desc['db_support'] = '[필수] Zittme를 설치하려면 pdo_mysql 확장 기능이 설치되어 있어야 합니다.';
 $lang->install_checklist_desc['php_version'] = '[필수] Zittme를 설치하려면 PHP 버전이 %s 이상이어야 합니다.';
 $lang->install_checklist_desc['php_version_warning'] = '[권장] Zittme는 PHP %s 이상을 권장합니다.';
 $lang->install_checklist_desc['permission'] = '[필수] Zittme 설치 경로에 files 디렉토리를 생성하고 퍼미션을 777로 바꾸어 주십시오.';

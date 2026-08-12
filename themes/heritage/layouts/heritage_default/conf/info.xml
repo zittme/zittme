@@ -3,8 +3,8 @@
 	<responsive>true</responsive>
 	<title xml:lang="ko">헤리티지</title>
 	<title xml:lang="en">Heritage</title>
-	<description xml:lang="ko">NAVER가 만든 XE 시절 기본 레이아웃의 구성(상단 2뎁스 메뉴 · 비주얼 슬라이더 · 서브 LNB)을 물려받아, 템플릿 v2로 새로 쓰고 디자인을 현재 기준으로 다시 해석한 레이아웃입니다.</description>
-	<description xml:lang="en">Inherits the structure of the classic XE default layout by NAVER — two-depth GNB, visual slider, sub LNB — rewritten on template v2 with a contemporary design.</description>
+	<description xml:lang="ko">NAVER가 만든 XE 시절 기본 레이아웃의 구성(상단 2뎁스 메뉴 · 비주얼 슬라이더 · 서브 LNB)을 물려받아, 템플릿 v2로 새로 쓰고 디자인을 현재 기준으로 다시 해석한 레이아웃입니다. 페이지 유형은 사이트맵의 메뉴 클래스에 m(메인) / sl(서브 LNB) / sf(전체 폭)를 입력해 지정합니다. 회원·쪽지·결제 화면은 자동으로 전체 폭이 됩니다.</description>
+	<description xml:lang="en">Inherits the structure of the classic XE default layout by NAVER: two-depth GNB, visual slider, sub LNB, rewritten on template v2 with a contemporary design. Set the page type by entering m (main) / sl (sub LNB) / sf (full width) in the menu class field of the sitemap. Member, message and payment screens switch to full width automatically.</description>
 	<version>1.0.0</version>
 	<date>2026-08-04</date>
 	<author email_address="zittme-contact@zzan.me" link="https://zitt.me">
@@ -27,20 +27,16 @@
 		<group>
 			<title xml:lang="ko">기본</title>
 			<title xml:lang="en">Basic</title>
-			<!-- 원본의 LAYOUT_TYPE(MAIN_PAGE / SUB_PAGE)을 이어받아 서브를 둘로 나눴다 -->
-			<var name="layout_type" type="select" default="sub">
-				<title xml:lang="ko">레이아웃 형태</title>
-				<title xml:lang="en">Layout type</title>
-				<options value="main"><title xml:lang="ko">메인 (비주얼 슬라이더)</title><title xml:lang="en">Main (visual slider)</title></options>
-				<options value="sub"><title xml:lang="ko">서브 (좌측 메뉴 LNB)</title><title xml:lang="en">Sub (with side menu)</title></options>
-				<options value="sub_full"><title xml:lang="ko">서브 (본문 전체 폭)</title><title xml:lang="en">Sub (full width content)</title></options>
-				<description xml:lang="ko">기본 형태입니다. 페이지별로 바꾸려면 사이트맵의 메뉴 클래스에 m(메인) / sl(서브 LNB) / sf(전체 폭)를 입력하세요. 회원·쪽지·결제 화면은 자동으로 전체 폭이 됩니다.</description>
-				<description xml:lang="en">Default type. To override per page, enter m (main) / sl (sub LNB) / sf (full width) in the menu class field of the sitemap. Member, message and payment screens switch to full width automatically.</description>
-			</var>
 			<var name="logo_image" type="image">
 				<title xml:lang="ko">로고 이미지</title>
 				<title xml:lang="en">Logo image</title>
 				<description xml:lang="ko">비워두면 아래 로고 텍스트를 사용합니다. 높이 40px 기준으로 표시됩니다.</description>
+			</var>
+			<var name="logo_image_dark" type="image">
+				<title xml:lang="ko">다크모드 로고 이미지</title>
+				<title xml:lang="en">Dark mode logo image</title>
+				<description xml:lang="ko">다크모드에서 대신 표시할 로고입니다. 비워두면 기본 로고 이미지를 그대로 사용합니다.</description>
+				<description xml:lang="en">Shown instead of the default logo in dark mode. Falls back to the default logo image when empty.</description>
 			</var>
 			<var name="logo_text" type="text">
 				<title xml:lang="ko">로고 텍스트</title>

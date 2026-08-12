@@ -1,7 +1,9 @@
 @charset "utf-8";
 
 .xm {
-    --zm-brand: #6c5ce0;
+    /* 레이아웃(heritage) 토큰을 따르고, 레이아웃 밖에서는 폴백을 쓴다.
+     * hover/light/soft 파생색은 color-mix 미지원 브라우저용 고정값 — 지원되면 아래 @supports 가 덮는다 */
+    --zm-brand: var(--hr-brand, #6c5ce0);
     --zm-brand-hover: #5847c9;
     --zm-brand-light: #9a8bf0;
     --zm-brand-soft: rgba(108, 92, 224, 0.08);
@@ -356,3 +358,11 @@
 .xm .signin .control-group { margin-bottom: 14px; }
 .xm .signin .control-group:last-of-type { margin-bottom: 0; }
 .xm .signin .btnArea { padding-top: 16px; margin-top: 0; }
+
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+	.xm {
+		--zm-brand-hover: color-mix(in srgb, var(--hr-brand, #6c5ce0) 80%, #000);
+		--zm-brand-light: color-mix(in srgb, var(--hr-brand, #6c5ce0) 55%, #fff);
+		--zm-brand-soft: color-mix(in srgb, var(--hr-brand, #6c5ce0) 8%, transparent);
+	}
+}

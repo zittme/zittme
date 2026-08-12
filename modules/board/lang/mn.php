@@ -48,6 +48,7 @@ $lang->about_update_log = 'Бичлэг засварлагдах бүрд хув
 $lang->skip_bottom_list_for_olddoc = 'Хуучин бичлэг үзэхэд доод жагсаалтыг нарийн тооцоолохгүй.';
 $lang->skip_bottom_list_for_robot = 'Робот зочлоход доод жагсаалтыг нарийн тооцоолохгүй.';
 $lang->msg_not_enough_point = 'Энэ самбарт бичлэг бичихэд таны оноо хүрэлцэхгүй байна.';
+$lang->cmd_write_post = 'Нийтлэл бичих';
 $lang->write_comment = 'Сэтгэгдэл бичих';
 $lang->msg_not_allow_comment = 'Энэ бичлэгт сэтгэгдэл бичихийг зөвшөөрөөгүй байна.';
 $lang->no_board_instance = 'Үүсгэсэн самбар алга.';

@@ -63,6 +63,8 @@
 	box-shadow: 0 6px 14px -5px rgba(38, 119, 227, .55);
 }
 .xefu-act-selectfile span { color: #fff !important; }
+/* 투명 파일 input이 버튼 전체를 덮어야 하단까지 클릭이 된다 */
+.xefu-act-selectfile input[type="file"] { top: 0 !important; left: 0 !important; right: auto !important; width: 100% !important; height: 100% !important; }
 
 /* 진행 표시 */
 .xefu-progress-status { font-size: 13px; color: #2677e3; font-weight: 700; }

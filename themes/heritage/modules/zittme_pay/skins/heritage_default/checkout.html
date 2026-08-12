@@ -28,7 +28,7 @@
 			@endif
 			<div class="zpay-summary-row zpay-summary-total">
 				<dt>{{ $lang->zpay_amount }}</dt>
-				<dd><strong>{{ number_format($order->amount) }}</strong> {{ $order->currency }}</dd>
+				<dd><strong>{{ ZittmeModulesZittme_payModelsCurrency::money($order->amount, $order->currency ?? 'KRW') }}</strong></dd>
 			</div>
 		</dl>
 	</section>
@@ -81,7 +81,7 @@
 
 	<div class="zpay-actions">
 		<button type="button" class="zpay-btn zpay-btn-primary" id="zpay-submit" disabled>
-			{{ sprintf($lang->zpay_pay_button, number_format($order->amount)) }}
+			{{ sprintf($lang->zpay_pay_button, ZittmeModulesZittme_payModelsCurrency::money($order->amount, $order->currency ?? 'KRW')) }}
 		</button>
 	</div>
 

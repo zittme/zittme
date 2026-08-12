@@ -41,7 +41,7 @@ class MemberView extends Member
 		{
 			$is_valid_referer = false;
 		}
-		if (preg_match('!/(auth|login|signup)\b!', $referer_url))
+		if (preg_match('!/(auth|login|signup)\b!', $referer_url) || preg_match('!\b(javascript:|on\w+\s*=)!i', $referer_url))
 		{
 			$is_valid_referer = false;
 		}
@@ -49,7 +49,7 @@ class MemberView extends Member
 		// Store valid referer info in the session.
 		if ($is_valid_referer)
 		{
-			return $_SESSION['member_auth_referer'] = $referer_url;
+			return $_SESSION['member_auth_referer'] = escape($referer_url);
 		}
 		elseif (isset($_SESSION['member_auth_referer']))
 		{

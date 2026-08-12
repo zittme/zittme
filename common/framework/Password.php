@@ -378,7 +378,11 @@ class Password
 			$algos = self::checkAlgorithm($hash);
 			foreach ($algos as $algo)
 			{
-				if (Security::compareStrings($hash, self::hashPassword($password, $algo, $hash)))
+				if ($algo === 'argon2id' || $algo === 'bcrypt')
+				{
+					return password_verify($password, $hash);
+				}
+				elseif (Security::compareStrings($hash, self::hashPassword($password, $algo, $hash)))
 				{
 					return true;
 				}

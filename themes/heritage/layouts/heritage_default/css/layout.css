@@ -8,6 +8,9 @@ html, body { margin: 0; background: var(--hr-bg); }
 
 .hr-logo { font-size: 30px; font-weight: 900; letter-spacing: -.035em; color: var(--hr-ink); }
 .hr-logo img { display: block; height: 40px; width: auto; }
+.hr-logo .hr-logo-dark { display: none; }
+[data-theme="dark"] .hr-logo .hr-logo-dark { display: block; }
+[data-theme="dark"] .hr-logo .hr-logo-light:not(:only-child) { display: none; }
 
 .hr-utils { display: flex; align-items: center; gap: 12px; }
 .hr-utils a.hr-util-link { font-size: 13px; font-weight: 600; color: var(--hr-ink-sub); white-space: nowrap; }
@@ -185,6 +188,9 @@ html, body { margin: 0; background: var(--hr-bg); }
 .hr-mobile-close svg { width: 18px; height: 18px; fill: currentColor; }
 .hr-mobile-close:hover { color: #fff; }
 body.hr-mobile-on { overflow: hidden; }
+.hr-mobile-account { display: flex; gap: 8px; padding: 12px 16px; }
+.hr-mobile-account-btn { flex: 1; padding: 10px 8px; border: 1px solid rgba(255, 255, 255, .25); border-radius: 8px; text-align: center; font-size: 13.5px; font-weight: 700; color: var(--hr-nav-fg-on); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hr-mobile-account-btn.is-primary { background: var(--hr-brand); border-color: var(--hr-brand); color: #fff; }
 .hr-mobile-list > li { position: relative; border-top: 1px solid rgba(255, 255, 255, .08); }
 .hr-mobile-list > li > a { display: block; padding: 15px clamp(16px, 4vw, 32px); font-size: 15.5px; font-weight: 700; color: var(--hr-nav-fg-on); }
 .hr-mobile-toggle { position: absolute; top: 5px; right: 8px; width: 42px; height: 42px; border: 0; background: none; color: rgba(255, 255, 255, .6); cursor: pointer; }

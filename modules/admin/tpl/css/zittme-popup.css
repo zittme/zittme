@@ -74,6 +74,13 @@ body .x.popup {
 .x.popup .x_table select,
 .x.popup .x_table textarea { width: 100%; box-sizing: border-box; }
 
+/* 저장 확인창($.xeMsgBox)은 body 직속이라 .x.popup 밖에 있다.
+ * 팝업 창은 높이가 낮아 top:8vh 고정 배치로는 바닥에 붙으므로 세로 중앙에 둔다 */
+.x.x_modal._common { top: 50%; transform: translate(-50%, -50%); }
+.x.x_modal._common .x_modal-header:not(:has(h1:not(:empty))) { display: none; }
+.x.x_modal._common .x_modal-body { padding: 22px 20px; }
+.x.x_modal._common .x_modal-footer { display: flex; align-items: center; justify-content: space-between; }
+
 /* ── 모달 골격 ── */
 .x.popup .x_modal-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 0 14px; border-bottom: 1px solid var(--zm-line); }
 .x.popup .x_modal-header h1 { margin: 0; font-size: 18px; }

@@ -17,6 +17,14 @@
 			<a href="#shpPromos">기획전</a>
 			@endif
 		</nav>
+		@php $shp_currencies = \Zittme\Modules\Commerce\Models\Money::currencies(); @endphp
+		@if (count($shp_currencies) > 1)
+		<select class="shp-currency" aria-label="currency" onchange="document.cookie='shp_currency='+this.value+'; path=/; max-age=31536000'; location.reload();">
+			@foreach ($shp_currencies as $shp_cur)
+			<option value="{{ $shp_cur }}" @if (\Zittme\Modules\Commerce\Models\Money::current() === $shp_cur) selected @endif>{{ $shp_cur }}</option>
+			@endforeach
+		</select>
+		@endif
 		<a class="shp-cart-link" href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceMyOrders') }}">
 			<svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 6h13M8 12h13M8 18h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="3.5" cy="6" r="1.4" fill="currentColor"/><circle cx="3.5" cy="12" r="1.4" fill="currentColor"/><circle cx="3.5" cy="18" r="1.4" fill="currentColor"/></svg>
 			{{ $lang->shop_my_orders }}
@@ -173,9 +181,9 @@
 							@endif
 							<span class="shp-price">
 								@if ($it->sale_price > 0 && $it->sale_price < $it->price)
-								<s>{{ number_format($it->price) }}</s> <strong>{{ number_format($it->sale_price) }}원</strong>
+								<s>{{ shop_money($it->price) }}</s> <strong>{{ shop_money($it->sale_price) }}</strong>
 								@else
-								<strong>{{ number_format($it->price) }}원</strong>
+								<strong>{{ shop_money($it->price) }}</strong>
 								@endif
 							</span>
 						</span>

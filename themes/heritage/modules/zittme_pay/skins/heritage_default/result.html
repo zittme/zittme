@@ -45,12 +45,12 @@
 			</div>
 			<div class="zpay-summary-row zpay-summary-total">
 				<dt>{{ $lang->zpay_amount }}</dt>
-				<dd><strong>{{ number_format($order->amount) }}</strong> {{ $order->currency }}</dd>
+				<dd><strong>{{ ZittmeModulesZittme_payModelsCurrency::money($order->amount, $order->currency ?? 'KRW') }}</strong></dd>
 			</div>
 			@if($order->cancelled_amount > 0)
 			<div class="zpay-summary-row">
 				<dt>{{ $lang->zpay_cancelled_amount }}</dt>
-				<dd>{{ number_format($order->cancelled_amount) }} {{ $order->currency }}</dd>
+				<dd>{{ ZittmeModulesZittme_payModelsCurrency::money($order->cancelled_amount, $order->currency ?? 'KRW') }}</dd>
 			</div>
 			@endif
 		</dl>

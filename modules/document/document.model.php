@@ -637,26 +637,49 @@ class DocumentModel extends Document
 	 */
 	public static function getDocumentCount($module_srl, $search_obj = NULL)
 	{
-		if(is_null($search_obj)) $search_obj = new stdClass();
+		$search_obj = $search_obj ?? new stdClass();
 		$search_obj->module_srl = $module_srl;
 
+		// Backward compatibility for LIKE search keywords
+		if (isset($search_obj->s_content) && preg_match('/^%[^%]+%[^%]+%$/', $search_obj->s_content))
+		{
+			$search_obj->s_content = trim(str_replace('%', ' ', $search_obj->s_content));
+		}
+		if (isset($search_obj->s_title) && preg_match('/^%[^%]+%[^%]+%$/', $search_obj->s_title))
+		{
+			$search_obj->s_title = trim(str_replace('%', ' ', $search_obj->s_title));
+		}
+
 		$output = executeQuery('document.getDocumentCount', $search_obj);
-		// Return total number of
-		$total_count = $output->data->count;
-		return (int)$total_count;
+		return intval($output->data->count ?? 0);
 	}
 
 	/**
 	 * the total number of documents that are bringing
 	 * @param object $search_obj
-	 * @return array
+	 * @return object|array
 	 */
 	public static function getDocumentCountByGroupStatus($search_obj = NULL)
 	{
-		$output = executeQuery('document.getDocumentCountByGroupStatus', $search_obj);
-		if(!$output->toBool()) return array();
+		$search_obj = $search_obj ?? new stdClass();
 
-		return $output->data;
+		// Backward compatibility for LIKE search keywords
+		if (isset($search_obj->s_content) && preg_match('/^%[^%]+%[^%]+%$/', $search_obj->s_content))
+		{
+			$search_obj->s_content = trim(str_replace('%', ' ', $search_obj->s_content));
+		}
+		if (isset($search_obj->s_title) && preg_match('/^%[^%]+%[^%]+%$/', $search_obj->s_title))
+		{
+			$search_obj->s_title = trim(str_replace('%', ' ', $search_obj->s_title));
+		}
+
+		$output = executeQuery('document.getDocumentCountByGroupStatus', $search_obj);
+		if (!$output->toBool())
+		{
+			return [];
+		}
+
+		return $output->data ?? [];
 	}
 
 	public static function getDocumentExtraVarsCount($module_srl, $search_obj = NULL)

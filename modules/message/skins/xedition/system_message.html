@@ -28,7 +28,7 @@
 				<div class="control-group">
 					<input type="text" name="user_id" id="uid" title="{$lang->user_id}" placeholder="{$lang->user_id}" required autofocus cond="$member_config->identifier != 'email_address'" />
 					<input type="email" name="user_id" id="uid" title="{$lang->email_address}" placeholder="{$lang->email_address}" required autofocus cond="$member_config->identifier == 'email_address'" />
-					<input type="password" name="password" id="upw" title="{$lang->password}" placeholder="{$lang->password}" required />
+					<input type="password" name="password" id="upw" title="{$lang->password}" placeholder="{$lang->password}" required autocomplete="off" />
 					<!--@if(SpamfilterModel::isCaptchaEnabled('login'))-->
 						<div class="control-group captcha">
 							{SpamfilterModel::getCaptcha('login')|noescape}

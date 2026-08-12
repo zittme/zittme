@@ -48,6 +48,7 @@ $lang->about_update_log = 'Store a log of every version of a post every time it 
 $lang->skip_bottom_list_for_olddoc = 'Do not calculate the bottom list exactly when viewing an old post.';
 $lang->skip_bottom_list_for_robot = 'Do not calculate the bottom list exactly when a robot is visiting.';
 $lang->msg_not_enough_point = 'Your point is not enough to write a post in this board.';
+$lang->cmd_write_post = 'Write a post';
 $lang->write_comment = 'Write a comment';
 $lang->msg_not_allow_comment = 'This post is not allowed to write comment.';
 $lang->no_board_instance = 'There is no board created.';

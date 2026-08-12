@@ -45,6 +45,7 @@ $lang->about_update_log = '修改帖子的时候 保存修改历史。';
 $lang->skip_bottom_list_for_olddoc = '访问发布很长时间的内容时不计算全部列表';
 $lang->skip_bottom_list_for_robot = '蜘蛛来访时候不计算全部列表';
 $lang->msg_not_enough_point = '很遗憾！您的积分不够。';
+$lang->cmd_write_post = '发帖';
 $lang->write_comment = '回复';
 $lang->msg_not_allow_comment = '本帖禁止回复';
 $lang->no_board_instance = '没有生成的板块。';

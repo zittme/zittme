@@ -559,6 +559,20 @@ html, body, * { scrollbar-width: thin; scrollbar-color: var(--zm-input-border) t
 .x .x_btn-group > .x_btn,
 .x .x_btn-group > .x_btn:first-child,
 .x .x_btn-group > .x_btn:last-child { border-radius: var(--zm-radius-sm); margin-left: 0; }
+/* 하단 버튼 바 — 플로트(.x_pull-right) 조합이 컨테이너 밖으로 밀려나던 것을
+ * 플렉스 정렬로 대체한다. 좌측(.etc 등)과 우측 버튼 묶음이 한 줄에 수납된다 */
+.x .btnArea {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 10px;
+	max-width: 100%;
+	box-sizing: border-box;
+}
+.x .btnArea::before, .x .btnArea::after { content: none; }
+.x .btnArea .x_pull-left, .x .btnArea .x_pull-right { float: none; }
+.x .btnArea > :only-child { margin-left: auto; }
 .x .x_close {
 	border: 0; background: none;
 	font-size: 18px; line-height: 1;

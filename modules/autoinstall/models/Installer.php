@@ -33,7 +33,11 @@ class Installer
 		}
 
 		// Make the download request.
-		$request = HTTP::download($download_url, $temp_filename, 'GET', null, [], [], ['timeout' => 30]);
+		$headers = [
+			'Accept' => 'application/json',
+			'User-Agent' => sprintf('Autoinstall Rhymix/%s PHP/%s (%s)', \RX_VERSION, \PHP_VERSION, \PHP_OS_FAMILY),
+		];
+		$request = HTTP::download($download_url, $temp_filename, 'GET', null, $headers, [], ['timeout' => 20]);
 		if ($request->getStatusCode() !== 200)
 		{
 			return new BaseObject(-1, 'msg_autoinstall_download_failed');

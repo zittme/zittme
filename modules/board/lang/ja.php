@@ -33,6 +33,7 @@ $lang->about_admin_mail = '書き込みやコメントが登録される時、�
 $lang->about_list_config = '掲示板スタイルが「リスト型」の場合、好きな項目の配置・表示ができます。 ただし、スキンによってはサポートしない場合もあります。 ターゲットアイテム／表示アイテムをダブルクリックすると追加・削除ができます。';
 $lang->about_use_status = '書き込みを登録する際に選択できる状態を指定してください。';
 $lang->msg_not_enough_point = '書き込みするためのポイントが足りません。';
+$lang->cmd_write_post = '投稿する';
 $lang->write_comment = 'コメントする';
 $lang->msg_not_allow_comment = 'この書き込みにコメントすることは禁じられています。';
 $lang->no_board_instance = '作られた掲示板がありません。';

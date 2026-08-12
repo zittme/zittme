@@ -91,7 +91,7 @@
 					<label>{{ $lang->shop_option ?? '옵션' }}<button type="button" class="shp-opt-tip" data-tip="{{ $lang->shop_option_help }}" aria-label="옵션 안내"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.4"/><rect x="7.3" y="7" width="1.4" height="4.4" rx="0.7" fill="currentColor"/><rect x="7.3" y="4.2" width="1.4" height="1.6" rx="0.7" fill="currentColor"/></svg></button></label>
 					<select class="shp-opt-add" data-opt-type="basic">
 						<option value="0" data-price-add="0" data-label="" @if ($shp_base_soldout) disabled @endif>
-							{{ $lang->shop_option_base ?? '선택 안 함' }}
+							{{ $lang->shop_option_base ?? '옵션을 선택해주세요.' }}
 							@if ($shp_base_soldout)- {{ $lang->shop_soldout }}@endif
 						</option>
 						@foreach ($shp_basic_opts as $opt)

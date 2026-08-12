@@ -171,8 +171,8 @@ class DocumentAdminController extends Document
 	function procDocumentAdminInsertExtraVar()
 	{
 		$module_srl = Context::get('module_srl');
-		$var_idx = Context::get('var_idx');
-		$name = Context::get('name');
+		$var_idx = intval(Context::get('var_idx'));
+		$name = escape(Context::get('name') ?? '', true, true);
 		$type = Context::get('type');
 		$is_required = Context::get('is_required') === 'Y' ? 'Y' : 'N';
 		$is_strict = Context::get('is_strict') === 'Y' ? 'Y' : 'N';
@@ -188,7 +188,20 @@ class DocumentAdminController extends Document
 		$eid = Context::get('eid');
 		$obj = new stdClass();
 
-		if(!$module_srl || !$name || !$eid) throw new Zittme\Framework\Exceptions\InvalidRequest;
+		// Validate key fields
+		if (!$module_srl || $name === '' || $eid === '')
+		{
+			throw new Zittme\Framework\Exceptions\InvalidRequest;
+		}
+		if (!preg_match('/^[a-zA-Z][a-zA-Z0-9_]*$/', $eid))
+		{
+			throw new Zittme\Framework\Exception('msg_extra_name_invalid');
+		}
+		$valid_types = lang('column_type_list');
+		if (!isset($valid_types[$type]))
+		{
+			throw new Zittme\Framework\Exception('msg_extra_type_invalid');
+		}
 		// set the max value if idx is not specified
 		if(!$var_idx)
 		{

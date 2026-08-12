@@ -23,7 +23,8 @@
 							@foreach ($my_addresses as $addr)
 							<option value="{{ $addr->address_srl }}"
 								data-name="{{ $addr->receiver_name }}" data-phone="{{ $addr->receiver_phone }}"
-								data-zipcode="{{ $addr->zipcode }}" data-address1="{{ $addr->address1 }}" data-address2="{{ $addr->address2 }}">
+								data-zipcode="{{ $addr->zipcode }}" data-address1="{{ $addr->address1 }}" data-address2="{{ $addr->address2 }}"
+								data-country="{{ $addr->country ?? 'KR' }}" data-state="{{ $addr->state ?? '' }}" data-city="{{ $addr->city ?? '' }}" data-phone-cc="{{ $addr->phone_cc ?? '' }}">
 								{{ $addr->title !== '' && $addr->title !== null ? $addr->title : $addr->address1 }} ({{ $addr->receiver_name }})
 							</option>
 							@endforeach
@@ -98,13 +99,14 @@
 							@if ($entry->option)<div class="shp-cart-option">{{ $entry->option->option_label }}</div>@endif
 							<div class="shp-cart-option">{{ $lang->shop_qty }} {{ $entry->qty }}개</div>
 						</div>
-						<div class="shp-cart-right"><strong class="shp-cart-price">{{ number_format($entry->subtotal) }}원</strong></div>
+						<div class="shp-cart-right"><strong class="shp-cart-price">{{ shop_money_in($entry->subtotal, $shp_currency) }}</strong></div>
 					</div>
 					@endif
 					@endforeach
 				</div>
 
-				@if ($is_member)
+				@if ($is_member && $shp_currency === 'KRW')
+				{{-- 쿠폰·적립금 — KRW 원장 전용이라 외화 주문서에서는 숨긴다 --}}
 				<div class="shp-box">
 					<h3>{{ $lang->shop_coupon }} · {{ $lang->shop_credit }}</h3>
 					<div class="shp-form-grid">
@@ -138,12 +140,12 @@
 			</div>
 
 			<aside class="shp-2col-aside">
-				<div class="shp-box shp-paybox" data-item-total="{{ (int)$cart->item_total }}" data-ship-fee="{{ (int)$ship_fee }}" data-extra-zones="{{ escape($shop_config->ship_extra_zones ?? '[]') }}">
+				<div class="shp-box shp-paybox" data-item-total="{{ (int)$cart->item_total }}" data-ship-fee="{{ (int)$ship_fee }}" data-currency="{{ $shp_currency }}" data-rate="{{ $shp_fx_rate }}" data-zero="{{ $shp_fx_zero_decimal ? 1 : 0 }}" data-extra-zones="{{ escape($shop_config->ship_extra_zones ?? '[]') }}">
 					<h3>{{ $lang->shop_pay_summary ?? '결제 금액' }}</h3>
-					<div class="shp-summary-row"><span>{{ $lang->shop_item_total }}</span><span>{{ number_format($cart->item_total) }}원</span></div>
+					<div class="shp-summary-row"><span>{{ $lang->shop_item_total }}</span><span>{{ shop_money_in($cart->item_total, $shp_currency) }}</span></div>
 					<div class="shp-summary-row" id="shpSumDiscount" hidden><span>{{ $lang->shop_discount }}</span><span class="shp-minus">-<em>0</em>원</span></div>
-					<div class="shp-summary-row"><span>{{ $lang->shop_ship_fee }}</span><span>{{ $ship_fee > 0 ? '+' . number_format($ship_fee) . '원' : $lang->shop_ship_free }}</span></div>
-					<div class="shp-summary-row is-total"><span>{{ $lang->shop_total }}</span><span id="shpSumTotal">{{ number_format($payment_price) }}원</span></div>
+					<div class="shp-summary-row"><span>{{ $lang->shop_ship_fee }}</span><span>{{ $ship_fee > 0 ? '+' . shop_money_in($ship_fee, $shp_currency) : $lang->shop_ship_free }}</span></div>
+					<div class="shp-summary-row is-total"><span>{{ $lang->shop_total }}</span><span id="shpSumTotal">{{ shop_money_in($payment_price, $shp_currency) }}</span></div>
 
 					<label class="shp-check" style="margin-top:14px">
 						<input type="checkbox" name="agree_privacy" value="Y" required />
@@ -154,7 +156,7 @@
 					@endif
 
 					<button type="submit" class="shp-btn shp-btn-primary" id="shpPayBtn" style="width:100%;margin-top:12px">
-						{{ $payment_price > 0 ? sprintf($lang->shop_pay_amount, number_format($payment_price)) : $lang->shop_order_free }}
+						{{ $payment_price > 0 ? sprintf($lang->shop_pay_amount, shop_money_in($payment_price, $shp_currency)) : $lang->shop_order_free }}
 					</button>
 				</div>
 			</aside>
@@ -192,6 +194,9 @@
 				setVal('zipcode_intl', opt.getAttribute('data-zipcode'));
 				setVal('address1', opt.getAttribute('data-address1'));
 				setVal('address2', opt.getAttribute('data-address2'));
+				// 채워 넣은 값으로 배송비를 다시 계산하게 한다
+				var a1 = document.querySelector('[name="address1"]');
+				if (a1) a1.dispatchEvent(new Event('change', { bubbles: true }));
 			});
 		}
 
@@ -199,15 +204,68 @@
 		var couponSel = document.getElementById('shpCouponSelect');
 		var creditInput = document.getElementById('shpUseCredit');
 		function fmt(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+		// 통화 인지 금액 표기 — 외화 주문서는 금액이 통화 최소단위 정수다
+		var shpCur = paybox ? (paybox.getAttribute('data-currency') || 'KRW') : 'KRW';
+		var shpZero = paybox ? paybox.getAttribute('data-zero') === '1' : true;
+		var shpRate = paybox ? (parseFloat(paybox.getAttribute('data-rate')) || 1) : 1;
+		var shpSym = { KRW: '', USD: '$', EUR: '\u20AC', JPY: '\u00A5', GBP: '\u00A3', CNY: '\u00A5', TWD: 'NT$', HKD: 'HK$', AUD: 'A$', CAD: 'C$', SGD: 'S$' }[shpCur];
+		if (shpSym === undefined) shpSym = shpCur + ' ';
+		function money(minor) {
+			if (shpCur === 'KRW') return fmt(minor) + '\uC6D0';
+			return shpSym + (shpZero ? fmt(minor) : fmt(Math.floor(minor / 100)) + '.' + ('0' + (minor % 100)).slice(-2));
+		}
+		// 지역 추가 배송비는 KRW 로 정의돼 있어 외화 주문서에서는 환율로 되돌린다
+		function toOrderMinor(krw) {
+			if (shpCur === 'KRW') return krw;
+			return Math.round((krw / shpRate) * (shpZero ? 1 : 100));
+		}
 		var extraZones = [];
 		try { extraZones = JSON.parse(paybox ? paybox.getAttribute('data-extra-zones') : '[]') || []; } catch (e) {}
+		// 서버(Cart::extraShipFee)와 같은 순서로 본다: 국가 → 시·도(해외는 주/도·도시) → 우편번호
+		var regionAliases = { '충청북도': '충북', '충청남도': '충남', '전라북도': '전북', '전라남도': '전남', '경상북도': '경북', '경상남도': '경남', '강원도': '강원', '제주도': '제주' };
+		var regionNames = ['서울', '경기', '인천', '부산', '대구', '광주', '대전', '울산', '세종', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주'];
+		function normRegion(name) {
+			name = String(name || '').trim();
+			if (!name) return '';
+			if (regionAliases[name]) return regionAliases[name];
+			for (var i = 0; i < regionNames.length; i++) {
+				if (name.indexOf(regionNames[i]) === 0) return regionNames[i];
+			}
+			for (var k in regionAliases) {
+				if (name.indexOf(k) === 0) return regionAliases[k];
+			}
+			return name;
+		}
 		function zipExtra() {
 			var zipEl = document.querySelector('input[name="zipcode"]');
 			var zip = zipEl ? zipEl.value.replace(/[^0-9]/g, '') : '';
-			if (!zip) return 0;
+			var addrEl = document.querySelector('input[name="address1"]');
+			var region = addrEl ? normRegion(addrEl.value.trim().split(' ')[0]) : '';
+			var countryEl = document.querySelector('[name="country"]');
+			var country = (countryEl ? countryEl.value : 'KR').toUpperCase() || 'KR';
+			var stateEl = document.querySelector('input[name="state"]');
+			var cityEl = document.querySelector('input[name="city"]');
+			var intlRegions = [];
+			if (stateEl && stateEl.value.trim()) intlRegions.push(stateEl.value.trim().toLowerCase());
+			if (cityEl && cityEl.value.trim()) intlRegions.push(cityEl.value.trim().toLowerCase());
+
 			for (var i = 0; i < extraZones.length; i++) {
 				var fee = parseInt(extraZones[i].fee, 10) || 0;
 				if (fee <= 0) continue;
+
+				var zoneCountry = String(extraZones[i].country || '').toUpperCase() || 'KR';
+				if (zoneCountry !== country) continue;
+
+				var regions = String(extraZones[i].regions || '').split(',');
+				for (var r = 0; r < regions.length; r++) {
+					var zoneName = regions[r].trim();
+					if (!zoneName) continue;
+					if (region && normRegion(zoneName) === region) return fee;
+					if (intlRegions.indexOf(zoneName.toLowerCase()) !== -1) return fee;
+				}
+				if (country !== 'KR' && !String(extraZones[i].regions || '').trim() && !String(extraZones[i].zips || '').trim()) return fee;
+				if (!zip) continue;
+
 				var patterns = String(extraZones[i].zips || '').split(',');
 				for (var j = 0; j < patterns.length; j++) {
 					var p = patterns[j].trim();
@@ -227,7 +285,7 @@
 		function recalc() {
 			if (!paybox) return;
 			var itemTotal = parseInt(paybox.getAttribute('data-item-total'), 10) || 0;
-			var shipFee = (parseInt(paybox.getAttribute('data-ship-fee'), 10) || 0) + zipExtra();
+			var shipFee = (parseInt(paybox.getAttribute('data-ship-fee'), 10) || 0) + toOrderMinor(zipExtra());
 			var discount = 0;
 			if (couponSel && couponSel.selectedIndex >= 0) {
 				discount += parseInt(couponSel.options[couponSel.selectedIndex].getAttribute('data-discount') || '0', 10) || 0;
@@ -244,16 +302,22 @@
 			var row = document.getElementById('shpSumDiscount');
 			if (row) {
 				row.hidden = discount <= 0;
-				row.querySelector('em').textContent = fmt(discount);
+				row.querySelector('em').textContent = money(discount);
 			}
 			var total = itemTotal - discount + shipFee;
 			var totalEl = document.getElementById('shpSumTotal');
-			if (totalEl) totalEl.textContent = fmt(total) + '원';
+			if (totalEl) totalEl.textContent = money(total);
 			var btn = document.getElementById('shpPayBtn');
-			if (btn) btn.textContent = total > 0 ? fmt(total) + '원 결제하기' : btn.textContent;
+			if (btn) btn.textContent = total > 0 ? money(total) + ' \uACB0\uC81C\uD558\uAE30' : btn.textContent;
 		}
 		if (couponSel) couponSel.addEventListener('change', recalc);
 		if (creditInput) { creditInput.addEventListener('input', recalc); creditInput.addEventListener('change', recalc); }
+		['address1', 'zipcode', 'country', 'state', 'city'].forEach(function (name) {
+			var el = document.querySelector('[name="' + name + '"]');
+			if (!el) return;
+			el.addEventListener('input', recalc);
+			el.addEventListener('change', recalc);
+		});
 
 		var checkoutForm = document.querySelector('form.shp-form');
 		if (checkoutForm) {

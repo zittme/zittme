@@ -41,10 +41,12 @@ class FileContentFilter
 		$fp = fopen($file, 'rb');
 		$first4kb = fread($fp, 4096);
 		$is_xml = preg_match('/<(?:\?xml|!DOCTYPE|html|head|body|meta|script|svg)\b/i', $first4kb);
-		$skip_xml = preg_match('/^(hwpx)$/', $ext);
+
+		// Exclude HWPX and PNG files from XML checks, because they often trigger false positives.
+		$skip_xml = preg_match('/^(hwpx)$/', $ext) || strtoupper(bin2hex(substr($first4kb, 0, 8))) === '89504E470D0A1A0A';
 
 		// Check SVG files.
-		if (($ext === 'svg' || $is_xml) && !self::_checkSVG($fp, 0, $filesize, $ext))
+		if (($ext === 'svg' || $is_xml) && !$skip_xml && !self::_checkSVG($fp, 0, $filesize, $ext))
 		{
 			fclose($fp);
 			return false;

@@ -1,5 +1,7 @@
 
-.shp { --shp-brand: #6c5ce0; --shp-brand-dark: #5847c9; --shp-brand-light: #9a8bf0; --shp-brand-soft: rgba(108, 92, 224, .08); --shp-border: #e6e9ef; --shp-text: #10151f; --shp-sub: #525c6b; --shp-bg: #f7f8fb; --shp-card: #ffffff;
+/* 레이아웃(heritage) 토큰을 따르고, 레이아웃 밖에서는 폴백을 쓴다.
+ * dark/light/soft 파생색은 color-mix 미지원 브라우저용 고정값 — 지원되면 아래 @supports 가 덮는다 */
+.shp { --shp-brand: var(--hr-brand, #6c5ce0); --shp-brand-dark: #5847c9; --shp-brand-light: #9a8bf0; --shp-brand-soft: rgba(108, 92, 224, .08); --shp-border: #e6e9ef; --shp-text: #10151f; --shp-sub: #525c6b; --shp-bg: #f7f8fb; --shp-card: #ffffff;
 	width: 100%; margin: 0 auto; padding: 8px 0 48px; color: var(--shp-text);
 	font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif; word-break: keep-all; }
 .shp * { box-sizing: border-box; }
@@ -615,3 +617,14 @@ html { scroll-behavior: smooth; }
 .shp-phone-row input[name="phone_cc"] { flex: 0 0 84px; }
 .shp-phone-row input[type="tel"] { flex: 1; min-width: 0; }
 .shp-intl-only[hidden], .shp-kr-only[hidden] { display: none !important; }
+
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+	.shp {
+		--shp-brand-dark: color-mix(in srgb, var(--hr-brand, #6c5ce0) 80%, #000);
+		--shp-brand-light: color-mix(in srgb, var(--hr-brand, #6c5ce0) 55%, #fff);
+		--shp-brand-soft: color-mix(in srgb, var(--hr-brand, #6c5ce0) 8%, transparent);
+	}
+}
+
+.shp-currency { margin-left: auto; padding: 7px 10px; border: 1px solid var(--shp-border); border-radius: 9px; background: var(--shp-card); color: var(--shp-text); font-size: 13px; font-family: inherit; }
+.shp-currency + .shp-cart-link { margin-left: 0; }

@@ -11,7 +11,7 @@
 		<action name="getDocumentMenu" type="model" />
 		<action name="getDocumentCategories" type="model" permission="all-managers" />
 		<action name="getDocumentCategoryTree" type="model" permission="all-managers" />
-		<action name="getDocumentCategoryTplInfo" type="model" permission="manager" check_var="module_srl" />
+		<action name="getDocumentCategoryTplInfo" type="model" permission="manager:config:*" check_var="module_srl" />
 		<action name="getDocumentVotedMemberList" type="model" permission="root" />
 
 		<action name="procDocumentVoteUp" type="controller" />

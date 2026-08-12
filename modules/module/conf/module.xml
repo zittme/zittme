@@ -44,9 +44,9 @@
 		<action name="procModuleAdminModuleSetup" type="controller" ruleset="insertModuleSetup" />
 		<action name="procModuleAdminModuleGrantSetup" type="controller" ruleset="insertModulesGrant" />
 		<action name="procModuleAdminCopyModule" type="controller" ruleset="copyModule" />
-		<action name="procModuleAdminInsertGrant" type="controller" permission="manager" check_var="module_srl" />
-		<action name="procModuleAdminUpdateSkinInfo" type="controller" permission="manager" check_var="module_srl" />
-		<action name="procModuleAdminInsertLang" type="controller" permission="manager" />
+		<action name="procModuleAdminInsertGrant" type="controller" permission="manager:config:*" check_var="module_srl" />
+		<action name="procModuleAdminUpdateSkinInfo" type="controller" permission="manager:config:*" check_var="module_srl" />
+		<action name="procModuleAdminInsertLang" type="controller" permission="manager:config:*" />
 		<action name="procModuleAdminDeleteLang" type="controller" />
 		<action name="procModuleAdminGetList" type="controller" />
 		<action name="procModuleAdminSetDesignInfo" type="controller" />
