@@ -59,7 +59,7 @@ Zittme는 [GNU GPL v2](http://korea.gnu.org/documents/copyleft/gpl.ko.html)
 누구나 무료로 사용할 수 있고 개발에 참여할 수도 있습니다.
 
 Zittme는 [Rhymix](https://rhymix.org)의 소스코드에 바탕을 두고 있으며,
-Rhymix는 [NAVER](https://www.navercorp.com/)가 일부 저작권을 가진
+Rhymix는 [XEHub](https://www.xehub.io)(구 NAVER XE 개발팀)가 일부 저작권을 가진
 [XpressEngine](https://xe1.xpressengine.com)의 소스코드에 바탕을 두고 있습니다.
 Zittme 개발자들이 추가 및 변경한 부분의 저작권은 해당 개발자들에게 있습니다.
 
@@ -78,7 +78,7 @@ Zittme의 소스코드를 수정하거나 확장 기능을 직접 개발하여 �
 
 ### 저작권 표기
 
-- XpressEngine : Copyright (C) [NAVER Corp.](https://www.navercorp.com/) 및 XpressEngine 기여자
+- XpressEngine : Copyright (C) [XEHub](https://www.xehub.io) 및 XpressEngine 기여자 (초기 개발: NAVER)
 - Rhymix : Copyright (C) [Rhymix 개발팀 (Poesis)](https://rhymix.org) 및 Rhymix 기여자
 - Zittme : Copyright (C) [ZZAN Studio](https://zitt.me) 및 Zittme 기여자
 
@@ -132,7 +132,7 @@ If you have found a security vulnerability, please let us know at zittme@zzan.me
 Zittme is a free software licensed under the [GNU GPL v2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html) or later.
 Free software is a program that emphasizes the rights and responsibilities of developers and users to participate or use in freedom.
 
-Zittme is based on the source code of [Rhymix](https://github.com/rhymix/rhymix), which is in turn based on [XpressEngine](https://xe1.xpressengine.com) ([Github](https://github.com/xpressengine/xe-core/)), free software partly owned by [NAVER](https://www.navercorp.com/).
+Zittme is based on the source code of [Rhymix](https://github.com/rhymix/rhymix), which is in turn based on [XpressEngine](https://xe1.xpressengine.com) ([Github](https://github.com/xpressengine/xe-core/)), free software partly owned by [XEHub](https://www.xehub.io) (formerly the NAVER XE team).
 Zittme developers have copyrights on the added and modified code.
 
 XpressEngine has been licensed under the GPL in its early days and switched to LGPL from version 1.4.0, but Rhymix has reverted its licenses to the GPL for further protection of the rights and spirit of free software. Zittme retains the GPL v2 or later.
@@ -145,7 +145,7 @@ However, distributing and/or selling the source code or extension according to t
 
 ### Copyright Notices
 
-- XpressEngine : Copyright (C) [NAVER Corp.](https://www.navercorp.com/) and XpressEngine contributors
+- XpressEngine : Copyright (C) [XEHub](https://www.xehub.io) and XpressEngine contributors (originally developed by NAVER)
 - Rhymix : Copyright (C) [Rhymix Developers (Poesis)](https://rhymix.org) and Rhymix contributors
 - Zittme : Copyright (C) [ZZAN Studio](https://zitt.me) and Zittme contributors
 
