@@ -7,7 +7,7 @@ Only the latest version is actively supported.
 
 ## Reporting a Vulnerability
 
-Please report possible vulnerabilities by email to support@zitt.me.
+Please report possible vulnerabilities by email to zittme@zzan.me.
 Please DO NOT use GitHub issues or pull requests for this purpose.
 
 We do not consider it a vulnerability if the superuser (is_admin=Y) account

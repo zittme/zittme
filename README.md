@@ -44,7 +44,7 @@ Zittme는 개발자, 디자이너, 번역가 등의 도움과 일반 사용자�
 [코딩 규칙](https://zitt.me/manual/contrib/coding-standards)을 먼저 읽어 주시기 바랍니다.
 
 보안 취약점을 발견하셨다면 해커들에게 알려지기 전에 먼저 패치를 작성할 수 있도록
-support@zitt.me으로 알려 주시면 감사하겠습니다.
+zittme@zzan.me으로 알려 주시면 감사하겠습니다.
 
 ### 공식 홈페이지
 
@@ -121,7 +121,7 @@ Zittme welcomes developers, designers, translators, and bugs to the public.
 If you would like to participate, please read [Issue and PR Submission Guide](https://zitt.me/manual/contrib/github)
 and [Coding Standards](https://zitt.me/manual/contrib/coding-standards) first to ensure efficient and orderly project management.
 
-If you have found a security vulnerability, please let us know at support@zitt.me so that we can make a patch before it is exploited.
+If you have found a security vulnerability, please let us know at zittme@zzan.me so that we can make a patch before it is exploited.
 
 ### Official Website
 
