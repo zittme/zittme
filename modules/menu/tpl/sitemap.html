@@ -3432,7 +3432,10 @@ jQuery(function($){
 
 		$ChkBox = $('#layout ._chkUseDefaultLayout');
 		if($ChkBox.prop('checked')){
-			$('#layout .list').addClass('disabled').find(':radio').attr('disabled','disabled');
+			// 목록을 잠그지 않는다. 레이아웃을 고르러 들어온 사람에게
+			// 체크부터 풀라고 요구할 이유가 없다. 고르면 아래 click 에서 체크가 풀린다.
+			$('#layout .list').addClass('disabled').find(':radio').removeAttr('disabled');
+			$('#layout').find('li.selected').removeClass('selected').find('input[name="layout_item"]').removeAttr('checked');
 			htDesign.sLayoutSrl = -1;
 
 			updateSelectedDesign(htDesign);
@@ -3610,6 +3613,14 @@ jQuery(function($){
 	});
 	$('#layout').on('click', 'input[name=layout_item]', function(){
 		$('#layout').nextAll().hide();
+
+		// 사이트 디자인 사용이 켜진 채로 레이아웃을 고르면 그 체크를 풀어 준다.
+		// 고른다는 것 자체가 사이트 기본값을 쓰지 않겠다는 뜻이다.
+		var $useDefault = $('#layout ._chkUseDefaultLayout');
+		if($useDefault.prop('checked')){
+			$useDefault.prop('checked', false).removeAttr('checked').parent().css('fontWeight','normal');
+			$('#layout .list').removeClass('disabled');
+		}
 
 		$('#layout').find('li.selected').removeClass('selected').find('input[name="layout_item"]').removeAttr('checked');
 		$(this).attr('checked','checked').closest('li').addClass('selected');
@@ -3901,6 +3912,13 @@ jQuery(function($){
 		$(ev.target).find('input[name=skin_item]').click();
 	});
 	$('#skin').on('click', 'input[name=skin_item]', function(){
+		// 레이아웃과 같은 규칙. 스킨을 고르면 사이트 디자인 사용 체크를 풀어 준다
+		var $useDefaultSkin = $('#skin ._chkUseDefault');
+		if($useDefaultSkin.prop('checked')){
+			$useDefaultSkin.prop('checked', false).removeAttr('checked').parent().css('fontWeight','normal');
+			$('#skin .list').removeClass('disabled');
+		}
+
 		$('#skin').find('li.selected').removeClass('selected');
 
 		var sMode = $._xeAdminVar.htPrevSetting.bMobilePreviewTabOpen?"M":"P";
