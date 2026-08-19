@@ -159,4 +159,4 @@ $lang->confirm_apply_theme = 'Applying the selected theme will change the curren
 $lang->cmd_apply_theme = 'Appliquer le thème';
 $lang->msg_theme_not_selected = 'Please select a theme to apply.';
 $lang->about_responsive_preview = 'A responsive view covers narrow screens with a single skin. Zoom in to see the wide layout; view it narrow to see the mobile layout.';
-$lang->home_sitemap_hint = 'Ce plan de site contient la page d'accueil.';
+$lang->home_sitemap_hint = 'Ce plan de site contient la page d\'accueil.';
