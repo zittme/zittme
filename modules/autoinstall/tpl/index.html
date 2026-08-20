@@ -10,6 +10,7 @@
 		</div>
 		<!--// zitt.me 계정 연결 자리. 연결 전에는 로그인 버튼, 연결 후에는 계정과 해제 버튼 -->
 		<div class="zmst-account" id="zmstAccount">
+			<!--@if($store_last_update_check)--><span class="zmst-last-check">{sprintf($lang->store_last_checked, zdate(date('YmdHis', $store_last_update_check), 'm.d H:i'))}</span><!--@end-->
 			<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminIndex', 'refresh', 'Y')}">{$lang->store_refresh_list}</a>
 			<!--@if($zittme_account)-->
 				<span class="zmst-account-name">

@@ -11,6 +11,7 @@ $lang->featured_packages = 'Featured Packages';
 $lang->autoinstallable = 'One-click install';
 $lang->store_purchase_required = 'Purchase required';
 $lang->store_refresh_list = 'Refresh list';
+$lang->store_last_checked = 'Last checked %s';
 $lang->store_connect_account = 'Connect zitt.me account';
 $lang->store_disconnect_account = 'Disconnect';
 $lang->msg_autoinstall_connect_failed = 'Failed to connect the zitt.me account. Please try again.';

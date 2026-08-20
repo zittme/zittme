@@ -15,9 +15,12 @@ class AutoinstallAdminView extends Autoinstall
 
 		// Update the package list.
 		// Refreshed every 4 hours; ?refresh=Y forces an immediate refetch.
+		// The updates tab always refetches: a stale list hides updates that the detail page already shows.
 		$package_count = Zittme\Modules\Autoinstall\Models\Package::getPackageCount();
-		$force_refresh = Context::get('refresh') === 'Y';
-		if ($force_refresh || !$package_count || !isset($config->last_update_check) || ($config->last_update_check < time() - 14400))
+		$force_refresh = Context::get('refresh') === 'Y'
+			|| (Context::get('act') === 'dispAutoinstallAdminIndex' && Context::get('type') === 'updates');
+		$interval = 14400;
+		if ($force_refresh || !$package_count || !isset($config->last_update_check) || ($config->last_update_check < time() - $interval))
 		{
 			$success = Zittme\Modules\Autoinstall\Models\Package::updatePackageList();
 			if ($success)
@@ -26,6 +29,8 @@ class AutoinstallAdminView extends Autoinstall
 				ModuleController::getInstance()->insertModuleConfig('autoinstall', $config);
 			}
 		}
+
+		Context::set('store_last_update_check', $config->last_update_check ?? 0);
 
 		// zitt.me account link status (shared by store and expert screens)
 		Context::set('zittme_account', Zittme\Modules\Autoinstall\Models\Account::get());

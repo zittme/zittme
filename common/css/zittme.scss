@@ -158,6 +158,18 @@ a img {
 		background: rgba(61, 68, 81, 0.10);
 	}
 }
+
+/* 좁은 화면 */
+@media screen and (max-width: 640px) {
+	#Zittme_popup_menu, #popup_menu_area {
+		min-width: 140px;
+		max-width: 76vw;
+		padding: 4px;
+		border-radius: 10px;
+		font-size: 13px;
+		a { padding: 8px 11px; }
+	}
+}
 @keyframes zm-popup-in {
 	from { opacity: 0; transform: translateY(-4px); }
 	to   { opacity: 1; transform: translateY(0); }

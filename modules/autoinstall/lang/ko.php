@@ -11,6 +11,7 @@ $lang->featured_packages = '추천 자료';
 $lang->autoinstallable = '바로 설치 지원';
 $lang->store_purchase_required = '구매 필요';
 $lang->store_refresh_list = '목록 갱신';
+$lang->store_last_checked = '마지막 갱신 %s';
 $lang->store_connect_account = 'zitt.me 계정 연결';
 $lang->store_disconnect_account = '연결 해제';
 $lang->msg_autoinstall_connect_failed = 'zitt.me 계정 연결에 실패했습니다. 다시 시도해 주세요.';
