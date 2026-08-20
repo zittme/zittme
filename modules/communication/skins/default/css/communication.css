@@ -86,6 +86,16 @@
 .xc .table th { padding: 12px 10px; font-size: 13px; font-weight: 700; color: var(--zm-text-sub); border-bottom: 1px solid var(--zm-border); background: transparent; }
 .xc .table td { padding: 12px 10px; border-bottom: 1px solid var(--zm-border); border-top: 0; color: var(--zm-text-sub); text-align: center; }
 .xc .table td.title, .xc .table th.title { text-align: left; }
+/* 목록의 보낸이·날짜 칸은 한 줄로 (제목과 쪽지 본문은 그대로 접힌다) */
+@media (min-width: 641px) {
+	.xc .table:not(.xc-message-read) td:not(.title),
+	.xc .table:not(.xc-message-read) th:not(.title) { white-space: nowrap; }
+}
+
+/* 쪽지 읽기 — 가운데 정렬은 목록 표에만 쓴다 */
+.xc .xc-message-read th, .xc .xc-message-read td { text-align: left; }
+.xc .xc-message-read th { font-size: 15px; color: var(--zm-text); }
+.xc .xc-message-read td.Zittme_content { padding: 16px 10px; color: var(--zm-text); line-height: 1.7; }
 .xc .table td.title a { color: var(--zm-text); text-decoration: none; }
 .xc .table td.title a:hover { color: var(--zm-brand); text-decoration: underline; }
 .xc .table-striped tbody tr:nth-child(odd) td { background: color-mix(in srgb, var(--zm-surface) 60%, transparent); }

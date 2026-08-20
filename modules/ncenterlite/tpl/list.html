@@ -22,11 +22,11 @@
 		<table class="x_table x_table-striped x_table-hover" style="margin-top:20px;">
 			<thead>
 				<tr>
-					<th scope="col" class="nowr" style="width:100px;">{$lang->ncenterlite_sender}</th>
-					<th scope="col" style="width:100px;">{$lang->ncenterlite_addressee}</th>
-					<th scope="col" style="width:500px;">{$lang->ncenterlite_noti_contents}</th>
-					<th scope="col" style="width:50px;">{$lang->ncenterlite_read}</th>
-					<th scope="col" style="width:100px;">{$lang->date}</th>
+					<th scope="col" class="nowr" style="width:110px;">{$lang->ncenterlite_sender}</th>
+					<th scope="col" class="nowr" style="width:110px;">{$lang->ncenterlite_addressee}</th>
+					<th scope="col" style="width:auto;">{$lang->ncenterlite_noti_contents}</th>
+					<th scope="col" class="nowr" style="width:80px;">{$lang->ncenterlite_read}</th>
+					<th scope="col" class="nowr" style="width:150px;">{$lang->date}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -35,14 +35,12 @@
 					<td>{$val->target_nick_name}</td>
 					<td cond="$val->member_srl">{$val->nick_name}</td>
 					<td><a href="{$val->target_url}">{$val->text}</a></td>
-					<td>
+					<td class="nowr">
 						<span cond="$val->readed == 'Y'" style="color:#8582E6">{$lang->ncenterlite_read_y}</span>
 						<span cond="$val->readed != 'Y'" style="color:#FF2828">{$lang->ncenterlite_read_n}</span>
 					</td>
-					<td>
-						{zdate($val->regdate,"Y-m-d")}
-						</br>
-						{zdate($val->regdate,"H:i:s")}
+					<td class="nowr">
+						{zdate($val->regdate,"Y-m-d H:i:s")}
 					</td>
 				</tr>
 				<!--@endforeach-->
