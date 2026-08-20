@@ -969,12 +969,21 @@ html, body, * { scrollbar-width: thin; scrollbar-color: var(--zm-input-border) t
 .x .x_modal-body { padding: 18px; }
 .x.x_modal .x_modal-footer,
 .x .x_modal-footer {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 8px;
 	padding: 12px 18px;
 	border-top: 1px solid var(--zm-line);
 	text-align: right;
 	background: var(--zm-surface-2);
 	border-radius: 0 0 var(--zm-radius) var(--zm-radius);
 }
+/* 확인창 버튼은 float 로 놓인다. 그대로 두면 바닥 영역이 높이를 잃어 버튼이 밖으로 밀린다 */
+.x .x_modal-footer .x_pull-left { float: none; margin-right: auto; }
+.x .x_modal-footer .x_pull-right { float: none; }
+/* 제목이 없는 확인창은 머리줄을 접는다. 빈 줄만 남고 닫기 버튼이 어중간한 자리에 놓인다 */
+.x.x_modal .x_modal-header:has(h1:empty) { display: none; }
 /* 백드롭은 JS가 body 직속에 생성 (.x 밖) — 전역 선택자 필수.
  * JS가 백드롭 height()로 모달 본문 높이를 계산하므로 반드시 전체 화면이어야 함 */
 .x_modal-backdrop {
