@@ -7,7 +7,9 @@
 	} @else {
 		background-color: #fff;
 		color: #000;
-		&.color_scheme_dark.cke_auto_dark_mode {
+		// 코어(color_scheme)와 레이아웃(data-theme) 어느 쪽이 정해도 따라간다
+		&.color_scheme_dark.cke_auto_dark_mode,
+		:root[data-theme="dark"] & {
 			background-color: #333;
 			color: #fff;
 		}
@@ -26,7 +28,8 @@
 			}
 		}
 	} @else {
-		.color_scheme_dark.cke_auto_dark_mode & {
+		.color_scheme_dark.cke_auto_dark_mode &,
+		:root[data-theme="dark"] & {
 			background: #333;
 			border-color: #555;
 			.cke_button_on {
@@ -107,7 +110,8 @@ textarea.cke_source.cke_editable {
 	box-sizing: border-box;
 	padding: 10px;
 }
-body.color_scheme_dark.cke_auto_dark_mode .cke_wysiwyg_div {
+body.color_scheme_dark.cke_auto_dark_mode .cke_wysiwyg_div,
+:root[data-theme="dark"] .cke_wysiwyg_div {
 	background-color: #333;
 	color: #fff;
 }
@@ -119,7 +123,8 @@ p.editor_autosaved_message.autosave_message {
 	padding: 10px;
 	margin:0;
 	line-height:1.2;
-	.color_scheme_dark & {
+	.color_scheme_dark &,
+	:root[data-theme="dark"] & {
 		background: #222;
 		color: #fff;
 	}

@@ -137,6 +137,8 @@
 .xm .table td a:hover { color: var(--zm-brand); text-decoration: underline; }
 .xm .table-striped tbody tr:nth-child(odd) td { background: color-mix(in srgb, var(--zm-surface) 60%, transparent); }
 .xm .table-hover tbody tr:hover td { background: var(--zm-brand-soft); }
+/* 보낸이·읽음·날짜처럼 짧은 칸은 한 줄로 (알림 내역 등) */
+@media (min-width: 641px) { .xm .table .ncl-nowrap { white-space: nowrap; } }
 
 /* 페이지네이션 */
 .xm .pagination { margin: 24px 0; }

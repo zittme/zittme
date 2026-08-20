@@ -1,5 +1,6 @@
 /* zittEditor — CKEditor 4 UI 리스킨. 기능은 그대로, 룩만 zittme 디자인 토큰으로.
-   라이트/다크는 CSS 변수로 자동 전환 (레이아웃 data-theme 또는 브라우저 다크모드) */
+   밝기는 레이아웃(data-theme)과 코어(body.color_scheme_dark)가 정한다. 기기 설정은 코어가 읽어 옮겨 준다.
+   포인트 색은 레이아웃이 찍는 값을 물려받고, 레이아웃 밖에서 쓰일 때만 아래 폴백을 쓴다 */
 
 :root {
 	--zed-bg: #ffffff;
@@ -9,11 +10,11 @@
 	--zed-text: #1c2330;
 	--zed-text-sub: #4e5968;
 	--zed-muted: #8b95a1;
-	--zed-brand: #2677e3;
+	--zed-brand: var(--hr-brand, #2677e3);
 	--zed-brand-soft: rgba(38, 119, 227, .09);
 	--zed-brand-on: rgba(38, 119, 227, .16);
 }
-[data-theme="dark"] {
+:is([data-theme="dark"], body.color_scheme_dark) {
 	--zed-bg: #1c1f26;
 	--zed-bg-soft: #171a20;
 	--zed-line: #2b3038;
@@ -23,19 +24,6 @@
 	--zed-muted: #9aa1ad;
 	--zed-brand-soft: rgba(38, 119, 227, .16);
 	--zed-brand-on: rgba(38, 119, 227, .26);
-}
-@media (prefers-color-scheme: dark) {
-	html:not([data-theme]) {
-		--zed-bg: #1c1f26;
-		--zed-bg-soft: #171a20;
-		--zed-line: #2b3038;
-		--zed-line-soft: #262b33;
-		--zed-text: #e4e7ec;
-		--zed-text-sub: #b7bec8;
-		--zed-muted: #9aa1ad;
-		--zed-brand-soft: rgba(38, 119, 227, .16);
-		--zed-brand-on: rgba(38, 119, 227, .26);
-	}
 }
 
 /* ── 크롬(외곽) ── */
@@ -235,22 +223,12 @@ a.cke_button_on .cke_button_icon, a.cke_button:hover .cke_button_icon { opacity:
    기준 스킨은 항상 moono-lisa 이고 그 아이콘 스프라이트는 어두운 회색이라
    다크 배경에서 안 보인다. invert + hue-rotate 로 밝게 뒤집되
    컬러 아이콘(글자색 A 등)의 색상은 유지한다. 스킨이 고정이므로 항상 일관된다. */
-[data-theme="dark"] .cke_button_icon {
+:is([data-theme="dark"], body.color_scheme_dark) .cke_button_icon {
 	filter: invert(1) hue-rotate(180deg) brightness(1.1);
 	opacity: 1;
 }
-[data-theme="dark"] a.cke_button_disabled .cke_button_icon { opacity: .3; }
-[data-theme="dark"] .cke_combo_text { color: var(--zed-text) !important; }
+:is([data-theme="dark"], body.color_scheme_dark) a.cke_button_disabled .cke_button_icon { opacity: .3; }
+:is([data-theme="dark"], body.color_scheme_dark) .cke_combo_text { color: var(--zed-text) !important; }
 /* 색상선택 등 드롭다운 패널: 흰 모서리·흰 배경이 새어나오지 않게 다크로 */
-[data-theme="dark"] .cke_panel,
-[data-theme="dark"] .cke_panel iframe { background: var(--zed-bg) !important; }
-@media (prefers-color-scheme: dark) {
-	html:not([data-theme]) .cke_button_icon {
-		filter: invert(1) hue-rotate(180deg) brightness(1.1);
-		opacity: 1;
-	}
-	html:not([data-theme]) a.cke_button_disabled .cke_button_icon { opacity: .3; }
-	html:not([data-theme]) .cke_combo_text { color: var(--zed-text) !important; }
-	html:not([data-theme]) .cke_panel,
-	html:not([data-theme]) .cke_panel iframe { background: var(--zed-bg) !important; }
-}
+:is([data-theme="dark"], body.color_scheme_dark) .cke_panel,
+:is([data-theme="dark"], body.color_scheme_dark) .cke_panel iframe { background: var(--zed-bg) !important; }

@@ -10,32 +10,18 @@
 		background: #fff;
 		padding: 10px;
 	}
-	/* 레이아웃이 밝기를 정해 두면 그것을 따르고, 정해 두지 않았을 때만 기기 설정을 본다.
-	   color_scheme_dark 는 예전 규약이라 붙는 곳이 없다 */
+	/* 밝기는 레이아웃(data-theme)과 코어(color_scheme)가 정한다 */
 	&.dark,
-	.color_scheme_dark &,
-	:root[data-theme="dark"] & {
+	:is(:root[data-theme="dark"], body.color_scheme_dark) & {
 		border-color: #111;
 		background: #333;
 		color: #fff;
 		caret-color: #fff;
 	}
-	:root[data-theme="dark"] & a { color: #6ea8ef; }
-	:root[data-theme="dark"] & table,
-	:root[data-theme="dark"] & th,
-	:root[data-theme="dark"] & td { border-color: #4a4a4a; }
-	@media (prefers-color-scheme: dark) {
-		:root:not([data-theme]) & {
-			border-color: #111;
-			background: #333;
-			color: #fff;
-			caret-color: #fff;
-		}
-		:root:not([data-theme]) & a { color: #6ea8ef; }
-		:root:not([data-theme]) & table,
-		:root:not([data-theme]) & th,
-		:root:not([data-theme]) & td { border-color: #4a4a4a; }
-	}
+	:is(:root[data-theme="dark"], body.color_scheme_dark) & a { color: #6ea8ef; }
+	:is(:root[data-theme="dark"], body.color_scheme_dark) & table,
+	:is(:root[data-theme="dark"], body.color_scheme_dark) & th,
+	:is(:root[data-theme="dark"], body.color_scheme_dark) & td { border-color: #4a4a4a; }
 	iframe {
 		max-width: 100%;
 		padding: 5px 0;

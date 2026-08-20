@@ -29,10 +29,11 @@ $(function() {
 			if (attr) {
 				return attr === 'dark';
 			}
-			if (typeof getColorScheme === 'function') {
-				return getColorScheme() === 'dark';
+			// 기기 설정은 코어가 읽어 body 클래스로 옮겨 준다
+			if (document.body && document.body.classList.contains('color_scheme_dark')) {
+				return true;
 			}
-			return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+			return typeof getColorScheme === 'function' && getColorScheme() === 'dark';
 		};
 
 		// 드롭다운 패널(색상선택·스타일 목록 등)은 별도 iframe 문서라 페이지 CSS가 닿지 않는다.
@@ -89,9 +90,7 @@ $(function() {
 		}).observe(document.body, { childList: true, subtree: true });
 		CKEDITOR.on('instanceReady', function (ev) {
 			const attr = document.documentElement.getAttribute('data-theme');
-			const dark = attr ? attr === 'dark'
-				: (typeof getColorScheme === 'function' ? getColorScheme() === 'dark'
-				: !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches));
+			const dark = attr ? attr === 'dark' : zittDarkNow();
 			if (!dark) {
 				return;
 			}
@@ -121,10 +120,11 @@ $(function() {
 			if (attr) {
 				return attr === 'dark';
 			}
-			if (typeof getColorScheme === 'function') {
-				return getColorScheme() === 'dark';
+			// 기기 설정은 코어가 읽어 body 클래스로 옮겨 준다
+			if (document.body && document.body.classList.contains('color_scheme_dark')) {
+				return true;
 			}
-			return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+			return typeof getColorScheme === 'function' && getColorScheme() === 'dark';
 		};
 		// 스킨은 항상 moono-lisa 고정. CKEditor 4 는 페이지당 스킨 CSS 를 한 번만 로드하므로
 		// 테마에 따라 스킨을 바꾸면(다크 접속 = moono-dark 기준) 토글 시 스킨이 못 따라와 깨진다.
@@ -276,8 +276,9 @@ $(function() {
 			}
 		};
 		new MutationObserver(zittApplyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-		if (window.matchMedia) {
-			try { window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', zittApplyTheme); } catch (e) {}
+		// 코어가 기기 설정 변화에 맞춰 body 클래스를 갈아 끼운다
+		if (document.body) {
+			new MutationObserver(zittApplyTheme).observe(document.body, { attributes: true, attributeFilter: ['class'] });
 		}
 
 		// 반응형 뷰: 창 폭이 브레이크포인트를 넘으면 툴바와 높이를 그 자리에서 바꾼다.
