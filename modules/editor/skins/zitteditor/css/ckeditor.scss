@@ -12,6 +12,7 @@
 		:root[data-theme="dark"] & {
 			background-color: #333;
 			color: #fff;
+			color-scheme: dark;
 		}
 	}
 }
@@ -36,8 +37,36 @@
 				background: #000;
 				border-color: #555;
 			}
-			.cke_button_icon, .cke_combo_button, .cke_button_arrow, .cke_button_label {
+			.cke_button_icon, .cke_button_arrow, .cke_combo_arrow {
 				filter: invert(1);
+			}
+			.cke_button_label, .cke_combo_label {
+				color: #ddd;
+			}
+			.cke_combo_button {
+				background: #3d3d3d;
+				border-color: #555;
+				&:hover {
+					background: #4a4a4a;
+				}
+			}
+			.cke_combo_text {
+				color: #eee;
+			}
+			.cke_combo_off .cke_combo_button:hover .cke_combo_text,
+			.cke_combo_on .cke_combo_button .cke_combo_text {
+				color: #fff;
+			}
+			.cke_toolbox_collapser {
+				background: #3d3d3d;
+				border-color: #555;
+				.cke_arrow {
+					border-bottom-color: #ddd;
+				}
+				&.cke_toolbox_collapser_min .cke_arrow {
+					border-top-color: #ddd;
+					border-bottom-color: transparent;
+				}
 			}
 			&.cke_dialog_body {
 				background: #555;
@@ -114,6 +143,13 @@ body.color_scheme_dark.cke_auto_dark_mode .cke_wysiwyg_div,
 :root[data-theme="dark"] .cke_wysiwyg_div {
 	background-color: #333;
 	color: #fff;
+	color-scheme: dark;
+}
+body.color_scheme_dark.cke_auto_dark_mode .cke_contents,
+:root[data-theme="dark"] .cke_contents,
+body.color_scheme_dark.cke_auto_dark_mode textarea.cke_source,
+:root[data-theme="dark"] textarea.cke_source {
+	color-scheme: dark;
 }
 
 p.editor_autosaved_message.autosave_message {
