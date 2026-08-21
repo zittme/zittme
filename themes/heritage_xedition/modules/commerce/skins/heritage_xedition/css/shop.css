@@ -31,8 +31,8 @@
 .shp-card-thumb svg { width: 44px; height: 44px; fill: var(--shp-sub); opacity: .35; }
 .shp-card-body { display: flex; flex-direction: column; gap: 4px; padding: 13px 15px 15px; }
 .shp-card-name { font-size: 15px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-.shp-price { font-size: 16px; font-weight: 800; }
-.shp-price s { margin-right: 6px; font-size: 13px; font-weight: 500; color: #9aa1ab; }
+.shp-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 6px; font-size: 16px; font-weight: 800; white-space: nowrap; }
+.shp-price s { font-size: 13px; font-weight: 500; color: #9aa1ab; }
 .shp-badges { display: flex; gap: 4px; flex-wrap: wrap; }
 .shp-badge { padding: 2px 7px; border-radius: 0; font-size: 11px; font-weight: 700; background: var(--shp-brand-soft); color: var(--shp-brand); }
 .shp-badge.is-soldout { background: #f2f3f5; color: var(--shp-sub); }
@@ -622,7 +622,7 @@ html { scroll-behavior: smooth; }
 .shp-chip { min-width: 54px; padding: 10px 14px; border: 1px solid var(--shp-border); border-radius: 0; background: var(--shp-card, #fff); font-size: 14px; font-family: inherit; color: var(--shp-text); cursor: pointer; }
 .shp-chip:hover:not(:disabled) { border-color: var(--shp-brand); }
 .shp-chip.is-on { border-color: var(--shp-text); border-width: 2px; font-weight: 700; }
-.shp-chip.is-soldout { color: #b6bcc6; background: #f7f8fa; cursor: default; text-decoration: line-through; }
+.shp-chip.is-soldout { color: #b6bcc6; background: #f7f8fa; border-style: dashed; cursor: default; }
 .shp-chips.is-color .shp-chip { min-width: 0; padding: 4px; border-radius: 0; }
 .shp-chip.is-swatch .shp-chip-dot { display: block; width: 34px; height: 34px; border-radius: 0; background: var(--chip, #ddd); box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
 .shp-chip.is-swatch.is-on { border-color: var(--shp-text); }
