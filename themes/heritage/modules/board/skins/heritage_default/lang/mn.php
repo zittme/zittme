@@ -1,0 +1,32 @@
+<?php
+
+$lang->hrb_just_now = 'саяхан';
+$lang->hrb_minutes_ago = '%d минутын өмнө';
+$lang->hrb_hours_ago = '%d цагийн өмнө';
+$lang->hrb_days_ago = '%d хоногийн өмнө';
+$lang->hrb_secret = 'Нууц бичлэг';
+$lang->hrb_attached = 'Хавсралт';
+$lang->hrb_new_post = 'Шинэ';
+$lang->hrb_select_post = 'Энэ бичлэгийг сонгох';
+$lang->hrb_all = 'Бүгд';
+$lang->hrb_check_all = 'Бүгдийг сонгох';
+$lang->hrb_search_ph = 'Түлхүүр үг оруулна уу';
+$lang->hrb_notice = 'Мэдэгдэл';
+$lang->hrb_read_count = 'Үзсэн';
+$lang->hrb_vote = 'Таалагдсан';
+$lang->hrb_unvote = 'Таалагдаагүй';
+$lang->hrb_attach = 'Хавсралт';
+$lang->hrb_write = 'Бичих';
+$lang->hrb_list = 'Жагсаалт';
+$lang->hrb_modify = 'Засах';
+$lang->hrb_delete = 'Устгах';
+$lang->hrb_doc_menu = 'Баримтын цэс';
+$lang->hrb_manage = 'Бичлэг удирдах';
+$lang->hrb_settings = 'Тохиргоо';
+$lang->hrb_empty = 'Одоогоор бичлэг алга.';
+$lang->hrb_search_next = 'Дараагийн үр дүн';
+$lang->hrb_cancel = 'Цуцлах';
+$lang->hrb_pagination = 'Хуудаслалт';
+$lang->hrb_first_page = 'Эхний хуудас';
+$lang->hrb_last_page = 'Сүүлийн хуудас';
+$lang->hrb_comment_pagination = 'Сэтгэгдлийн хуудаслалт';

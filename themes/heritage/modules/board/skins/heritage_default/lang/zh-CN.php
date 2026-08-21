@@ -1,0 +1,32 @@
+<?php
+
+$lang->hrb_just_now = '刚刚';
+$lang->hrb_minutes_ago = '%d 分钟前';
+$lang->hrb_hours_ago = '%d 小时前';
+$lang->hrb_days_ago = '%d 天前';
+$lang->hrb_secret = '私密文章';
+$lang->hrb_attached = '附件';
+$lang->hrb_new_post = '新帖';
+$lang->hrb_select_post = '选择此帖';
+$lang->hrb_all = '全部';
+$lang->hrb_check_all = '全选';
+$lang->hrb_search_ph = '请输入关键词';
+$lang->hrb_notice = '公告';
+$lang->hrb_read_count = '浏览';
+$lang->hrb_vote = '推荐';
+$lang->hrb_unvote = '不推荐';
+$lang->hrb_attach = '附件';
+$lang->hrb_write = '写文章';
+$lang->hrb_list = '列表';
+$lang->hrb_modify = '修改';
+$lang->hrb_delete = '删除';
+$lang->hrb_doc_menu = '文档菜单';
+$lang->hrb_manage = '文章管理';
+$lang->hrb_settings = '设置';
+$lang->hrb_empty = '暂无文章。';
+$lang->hrb_search_next = '查看下一批结果';
+$lang->hrb_cancel = '取消';
+$lang->hrb_pagination = '分页';
+$lang->hrb_first_page = '首页';
+$lang->hrb_last_page = '末页';
+$lang->hrb_comment_pagination = '评论分页';

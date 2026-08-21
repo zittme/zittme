@@ -1,0 +1,332 @@
+@version(2)
+@load('css/skin.css')
+
+<div class="zmk">
+	<article class="zmk-view">
+		<header class="zmk-view-head">
+			<div class="zmk-view-top">
+				@if (($kin_question->status ?? 'open') === 'accepted')
+				<em class="zmk-badge zmk-badge-accepted">{{ $lang->kin_status_accepted }}</em>
+				@else
+				<em class="zmk-badge zmk-badge-open">{{ $lang->kin_status_open }}</em>
+				@endif
+
+				@if (trim((string)$kin_category_title) !== '')
+				<em class="zmk-category-tag">{{ $kin_category_title }}</em>
+				@endif
+
+				@if ($kin_use_point && (int)($kin_question->point ?? 0) > 0)
+				<em class="zmk-point-tag">{{ $lang->kin_point }} {{ number_format($kin_question->point) }}</em>
+				@endif
+			</div>
+
+			<h1 class="zmk-view-title">{{ $oDocument->getTitle() }}</h1>
+
+			@php $zmk_q_author_srl = abs((int)$oDocument->get('member_srl')); @endphp
+			@php $zmk_q_stats = $kin_author_stats[$zmk_q_author_srl] ?? null; @endphp
+			<div class="zmk-profile-card">
+				@if ($zmk_q_author_srl)
+				<a class="zmk-profile" href="{{ getUrl('', 'mid', $mid, 'act', 'dispKinUser', 'member_srl', $zmk_q_author_srl) }}">
+					@if ($zmk_q_stats && $zmk_q_stats['profile_image'])
+					<img class="zmk-avatar" src="{{ $zmk_q_stats['profile_image']->src }}" alt="" />
+					@else
+					<span class="zmk-avatar zmk-avatar-text">{{ mb_substr($oDocument->getNickName(), 0, 1) }}</span>
+					@endif
+					<span class="zmk-profile-info">
+						<b class="zmk-author">{{ $oDocument->getNickName() }}</b>
+						@if ($zmk_q_stats)
+						<span class="zmk-profile-stats">{{ $lang->kin_answers }} <b>{{ number_format($zmk_q_stats['total']) }}</b> · {{ $lang->kin_status_accepted }} <b>{{ number_format($zmk_q_stats['accepted']) }}</b>@if ($zmk_q_stats['total'] > 0) · {{ $lang->kin_accept_rate }} <b>{{ round($zmk_q_stats['accepted'] / $zmk_q_stats['total'] * 100) }}%</b>@endif</span>
+						@endif
+					</span>
+				</a>
+				<a class="zmk-btn zmk-btn-sm zmk-profile-more" href="{{ getUrl('', 'mid', $mid, 'act', 'dispKinUser', 'member_srl', $zmk_q_author_srl) }}">{{ $lang->kin_activity }}</a>
+				@else
+				<span class="zmk-profile">
+					<span class="zmk-avatar zmk-avatar-text">{{ mb_substr($oDocument->getNickName(), 0, 1) }}</span>
+					<span class="zmk-profile-info"><b class="zmk-author">{{ $oDocument->getNickName() }}</b></span>
+				</span>
+				@endif
+			</div>
+
+			<div class="zmk-view-meta">
+				<time datetime="{{ $oDocument->getRegdate('Y-m-d') }}">{{ $oDocument->getRegdate('Y.m.d H:i') }}</time>
+				<span>{{ $lang->readed_count }} {{ number_format($oDocument->get('readed_count')) }}</span>
+				@if (trim((string)($kin_question->deadline ?? '')) !== '' && ($kin_question->status ?? 'open') === 'open')
+				<span class="zmk-deadline">{{ $lang->kin_deadline }} {{ zdate($kin_question->deadline, 'Y.m.d') }}</span>
+				@endif
+			</div>
+		</header>
+
+		{{-- getContent(false) 로 코어가 붙이는 문서 기능 링크를 끈다 --}}
+		<div class="zmk-view-body">{!! $oDocument->getContent(false) !!}</div>
+
+		@if ($oDocument->hasUploadedFiles())
+		<div class="zmk-files">
+			<strong>{{ $lang->kin_files }} <b>{{ count($oDocument->getUploadedFiles()) }}</b></strong>
+			<ul>
+				@foreach ($oDocument->getUploadedFiles() as $file)
+				<li><a href="{{ $file->download_url }}">{{ $file->source_filename }}</a> <span>{{ FileHandler::filesize($file->file_size) }}</span></li>
+				@endforeach
+			</ul>
+		</div>
+		@endif
+
+		<div class="zmk-vote">
+			<span class="zmk-inline-form">
+				@if ($kin_use_vote_up)
+				<button type="button" class="zmk-btn" onclick="zmkVote({{ $oDocument->document_srl }}, 'up')">{{ $lang->kin_vote_up }} <b>{{ number_format($oDocument->get('voted_count')) }}</b></button>
+				@endif
+				@if ($kin_use_vote_down)
+				<button type="button" class="zmk-btn" onclick="zmkVote({{ $oDocument->document_srl }}, 'down')">{{ $lang->kin_vote_down }} <b>{{ number_format(abs($oDocument->get('blamed_count'))) }}</b></button>
+				@endif
+			</span>
+
+			<span class="zmk-view-nav-right">
+				<a href="{{ $kin_list_url }}" class="zmk-btn">{{ $lang->kin_list }}</a>
+				@if ($oDocument->isEditable())
+				<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispKinWrite', 'document_srl', $oDocument->document_srl) }}" class="zmk-btn">{{ $lang->cmd_modify }}</a>
+				@endif
+				@if ($oDocument->isGranted())
+				<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispKinDelete', 'document_srl', $oDocument->document_srl) }}" class="zmk-btn zmk-btn-danger">{{ $lang->cmd_delete }}</a>
+				@endif
+			</span>
+		</div>
+
+		{{-- 질문에 단 댓글 --}}
+		<section class="zmk-qcmt">
+			<div class="zmk-qcmt-head">
+				<h3 class="zmk-section-title">{{ $lang->kin_question_comments }} <b>{{ count($oDocument->getComments() ?: []) }}</b></h3>
+				<button type="button" class="zmk-btn zmk-btn-sm" onclick="zmkToggleForm('zmk_cmts_q')">{{ $lang->kin_toggle_comments }}</button>
+			</div>
+
+			<div class="zmk-cmt-fold is-folded" id="zmk_cmts_q">
+
+			@foreach ($oDocument->getComments() ?: [] as $comment)
+			<div class="zmk-cmt @if ($comment->get('parent_srl')) zmk-cmt-reply @endif" id="comment_{{ $comment->comment_srl }}">
+				<div class="zmk-cmt-head">
+					<span class="zmk-author">{{ $comment->getNickName() }}</span>
+					<time>{{ $comment->getRegdate('Y.m.d H:i') }}</time>
+					<span class="zmk-cmt-tools">
+						@if ($comment->isEditable())
+						<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispKinModifyComment', 'comment_srl', $comment->comment_srl) }}">{{ $lang->cmd_modify }}</a>
+						@endif
+						@if ($comment->isGranted())
+						<form action="./" method="post" class="zmk-inline-form" onsubmit="return confirm('{{ $lang->kin_confirm_delete }}')">
+							@csrf
+							<input type="hidden" name="module" value="kin" />
+							<input type="hidden" name="mid" value="{{ $mid }}" />
+							<input type="hidden" name="act" value="procKinDeleteComment" />
+							<input type="hidden" name="comment_srl" value="{{ $comment->comment_srl }}" />
+							<button type="submit" class="zmk-link-btn">{{ $lang->cmd_delete }}</button>
+						</form>
+						@endif
+					</span>
+				</div>
+				<div class="zmk-cmt-body">{!! $comment->getContent(false) !!}</div>
+			</div>
+			@endforeach
+
+			@if ($grant->write_comment)
+			<form action="./" method="post" class="zmk-cmt-form">
+				@csrf
+				<input type="hidden" name="module" value="kin" />
+				<input type="hidden" name="mid" value="{{ $mid }}" />
+				<input type="hidden" name="act" value="procKinInsertComment" />
+				<input type="hidden" name="document_srl" value="{{ $oDocument->document_srl }}" />
+				<textarea name="kin_comment" rows="2" placeholder="{{ $lang->kin_comment_placeholder }}" required></textarea>
+				<button type="submit" class="zmk-btn">{{ $lang->kin_write_comment }}</button>
+			</form>
+			@endif
+			</div>
+		</section>
+	</article>
+
+	{{-- 답변 --}}
+	<section class="zmk-answers">
+		<div class="zmk-answers-head">
+			<h2 class="zmk-section-title">{{ $lang->kin_answers }} <b>{{ count($kin_answers) }}</b></h2>
+
+			@if ($kin_can_answer)
+			<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispKinAnswerWrite', 'question_srl', $oDocument->document_srl) }}" class="zmk-btn zmk-btn-primary">{{ $lang->kin_write_answer }}</a>
+			@elseif ($grant->write_answer && !$is_logged)
+			<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispMemberLoginForm') }}" class="zmk-btn">{{ $lang->cmd_login }}</a>
+			@endif
+		</div>
+
+		@if (!count($kin_answers))
+		<p class="zmk-empty">{{ $lang->kin_no_answers }}</p>
+		@endif
+
+		@foreach ($kin_answers as $answer)
+		<article class="zmk-answer @if (($answer->kin_answer->is_accepted ?? 'N') === 'Y') is-accepted @endif" id="answer_{{ $answer->document_srl }}">
+			@if (($answer->kin_answer->is_accepted ?? 'N') === 'Y')
+			<div class="zmk-accepted-banner">{{ $lang->kin_accepted_answer }}</div>
+			@endif
+
+			<div class="zmk-profile-card">
+				@php $zmk_author_srl = abs((int)$answer->get('member_srl')); @endphp
+				@php $zmk_stats = $kin_author_stats[$zmk_author_srl] ?? null; @endphp
+
+				@if ($zmk_author_srl)
+				<a class="zmk-profile" href="{{ getUrl('', 'mid', $mid, 'act', 'dispKinUser', 'member_srl', $zmk_author_srl) }}">
+					@if ($zmk_stats && $zmk_stats['profile_image'])
+					<img class="zmk-avatar" src="{{ $zmk_stats['profile_image']->src }}" alt="" />
+					@else
+					<span class="zmk-avatar zmk-avatar-text">{{ mb_substr($answer->getNickName(), 0, 1) }}</span>
+					@endif
+					<span class="zmk-profile-info">
+						<b class="zmk-author">{{ $answer->getNickName() }}</b>
+						@if ($zmk_stats)
+						<span class="zmk-profile-stats">{{ $lang->kin_answers }} <b>{{ number_format($zmk_stats['total']) }}</b> · {{ $lang->kin_status_accepted }} <b>{{ number_format($zmk_stats['accepted']) }}</b>@if ($zmk_stats['total'] > 0) · {{ $lang->kin_accept_rate }} <b>{{ round($zmk_stats['accepted'] / $zmk_stats['total'] * 100) }}%</b>@endif</span>
+						@endif
+					</span>
+				</a>
+				@if ($zmk_stats)
+				<a class="zmk-btn zmk-btn-sm zmk-profile-more" href="{{ getUrl('', 'mid', $mid, 'act', 'dispKinUser', 'member_srl', $zmk_author_srl) }}">{{ $lang->kin_activity }}</a>
+				@endif
+				@else
+				<span class="zmk-profile">
+					<span class="zmk-avatar zmk-avatar-text">{{ mb_substr($answer->getNickName(), 0, 1) }}</span>
+					<span class="zmk-profile-info"><b class="zmk-author">{{ $answer->getNickName() }}</b></span>
+				</span>
+				@endif
+			</div>
+
+			<div class="zmk-answer-head">
+				<time>{{ $answer->getRegdate('Y.m.d H:i') }}</time>
+
+				<span class="zmk-cmt-tools">
+					@if ($answer->isEditable())
+					<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispKinAnswerWrite', 'document_srl', $answer->document_srl) }}">{{ $lang->cmd_modify }}</a>
+					@endif
+					@if (($answer->isGranted() || $grant->manager) && ($answer->kin_answer->is_accepted ?? 'N') !== 'Y')
+					<form action="./" method="post" class="zmk-inline-form" onsubmit="return confirm('{{ $lang->kin_confirm_delete }}')">
+						@csrf
+						<input type="hidden" name="module" value="kin" />
+						<input type="hidden" name="mid" value="{{ $mid }}" />
+						<input type="hidden" name="act" value="procKinDeleteAnswer" />
+						<input type="hidden" name="document_srl" value="{{ $answer->document_srl }}" />
+						<button type="submit" class="zmk-link-btn">{{ $lang->cmd_delete }}</button>
+					</form>
+					@endif
+				</span>
+			</div>
+
+			<div class="zmk-answer-body">{!! $answer->getContent(false) !!}</div>
+
+			@if ($answer->hasUploadedFiles())
+			<div class="zmk-files">
+				<strong>{{ $lang->kin_files }} <b>{{ count($answer->getUploadedFiles()) }}</b></strong>
+				<ul>
+					@foreach ($answer->getUploadedFiles() as $file)
+					<li><a href="{{ $file->download_url }}">{{ $file->source_filename }}</a> <span>{{ FileHandler::filesize($file->file_size) }}</span></li>
+					@endforeach
+				</ul>
+			</div>
+			@endif
+
+			<div class="zmk-answer-foot">
+				<span class="zmk-inline-form">
+					@if ($kin_use_vote_up)
+					<button type="button" class="zmk-btn zmk-btn-sm" onclick="zmkVote({{ $answer->document_srl }}, 'up')">{{ $lang->kin_vote_up }} <b>{{ number_format($answer->get('voted_count')) }}</b></button>
+					@endif
+					@if ($kin_use_vote_down)
+					<button type="button" class="zmk-btn zmk-btn-sm" onclick="zmkVote({{ $answer->document_srl }}, 'down')">{{ $lang->kin_vote_down }} <b>{{ number_format(abs($answer->get('blamed_count'))) }}</b></button>
+					@endif
+				</span>
+
+				@if ($kin_can_accept)
+				<button type="button" class="zmk-btn zmk-btn-accept" onclick="zmkAccept({{ $answer->document_srl }})">{{ $lang->kin_accept }}</button>
+				@endif
+			</div>
+
+			{{-- 답변에 단 댓글. 접어 두었다가 펼친다 --}}
+			<div class="zmk-answer-cmts">
+				<button type="button" class="zmk-link-btn zmk-cmt-toggle" onclick="zmkToggleForm('zmk_cmts_{{ $answer->document_srl }}')">{{ $lang->kin_toggle_comments }} <b>{{ count($answer->getComments() ?: []) }}</b></button>
+
+				<div class="zmk-cmt-fold is-folded" id="zmk_cmts_{{ $answer->document_srl }}">
+				@foreach ($answer->getComments() ?: [] as $comment)
+				<div class="zmk-cmt @if ($comment->get('parent_srl')) zmk-cmt-reply @endif" id="comment_{{ $comment->comment_srl }}">
+					<div class="zmk-cmt-head">
+						<span class="zmk-author">{{ $comment->getNickName() }}</span>
+						<time>{{ $comment->getRegdate('Y.m.d H:i') }}</time>
+						<span class="zmk-cmt-tools">
+							@if ($comment->isEditable())
+							<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispKinModifyComment', 'comment_srl', $comment->comment_srl) }}">{{ $lang->cmd_modify }}</a>
+							@endif
+							@if ($comment->isGranted())
+							<form action="./" method="post" class="zmk-inline-form" onsubmit="return confirm('{{ $lang->kin_confirm_delete }}')">
+								@csrf
+								<input type="hidden" name="module" value="kin" />
+								<input type="hidden" name="mid" value="{{ $mid }}" />
+								<input type="hidden" name="act" value="procKinDeleteComment" />
+								<input type="hidden" name="comment_srl" value="{{ $comment->comment_srl }}" />
+								<button type="submit" class="zmk-link-btn">{{ $lang->cmd_delete }}</button>
+							</form>
+							@endif
+						</span>
+					</div>
+					<div class="zmk-cmt-body">{!! $comment->getContent(false) !!}</div>
+				</div>
+				@endforeach
+
+				@if ($grant->write_comment)
+				<form action="./" method="post" class="zmk-cmt-form">
+					@csrf
+					<input type="hidden" name="module" value="kin" />
+					<input type="hidden" name="mid" value="{{ $mid }}" />
+					<input type="hidden" name="act" value="procKinInsertComment" />
+					<input type="hidden" name="document_srl" value="{{ $answer->document_srl }}" />
+					<textarea name="kin_comment" rows="2" placeholder="{{ $lang->kin_comment_placeholder }}" required></textarea>
+					<button type="submit" class="zmk-btn">{{ $lang->kin_write_comment }}</button>
+				</form>
+				@endif
+				</div>
+			</div>
+		</article>
+		@endforeach
+	</section>
+</div>
+
+<script>
+// 의견 영역은 접어 두었다가 버튼으로 펼친다. 펼치면 바로 쓸 수 있게 포커스를 준다.
+function zmkToggleForm(id) {
+	var form = document.getElementById(id);
+	if (!form) return;
+
+	form.classList.toggle('is-folded');
+	if (!form.classList.contains('is-folded')) {
+		var field = form.querySelector('textarea');
+		if (field) field.focus();
+	}
+}
+
+// 추천·비추천. exec_json 이라 실패(자기 글, 중복 추천 등)는 코어가 알림 팝업으로 보여 준다.
+function zmkVote(documentSrl, cmd) {
+	exec_json('kin.procKinVoteDocument', { mid: '{{ $mid }}', document_srl: documentSrl, cmd: cmd }, function () {
+		location.reload();
+	});
+}
+
+// 답변 채택. 실패(이미 채택 등)는 코어 알림 팝업으로 보여 준다.
+function zmkAccept(answerSrl) {
+	if (!confirm('{{ $kin_use_point ? $lang->kin_confirm_accept : $lang->kin_confirm_accept_plain }}')) return;
+
+	exec_json('kin.procKinAccept', { mid: '{{ $mid }}', answer_srl: answerSrl }, function () {
+		location.reload();
+	});
+}
+
+// 의견을 쓰고 돌아오면 주소의 앵커(#zmk_cmts_*)가 그 의견 영역을 가리킨다.
+// 접힌 채로 두면 방금 쓴 의견이 안 보이므로 펼쳐서 보여 준다.
+(function () {
+	var hash = String(location.hash || '');
+	if (hash.indexOf('#zmk_cmts_') !== 0) return;
+
+	var fold = document.getElementById(hash.substring(1));
+	if (!fold) return;
+
+	fold.classList.remove('is-folded');
+	fold.scrollIntoView({ block: 'center' });
+})();
+</script>

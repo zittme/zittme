@@ -1,5 +1,7 @@
 [![Zittme](./common/img/logo.png)](https://zitt.me)
 
+![PHP Lint & Codeception](https://github.com/zittme/zittme/workflows/PHP%20Lint%20&%20Codeception/badge.svg)
+
 # 한국어
 
 Zittme는 누구든지 쉽고 자유롭게 독립적인 홈페이지를 만들어
@@ -50,6 +52,10 @@ zittme@zzan.me으로 알려 주시면 감사하겠습니다.
 
 - Zittme : https://zitt.me
 
+### 커뮤니티
+
+- XETOWN : https://xetown.com
+
 ### 저작권 및 라이선스
 
 Zittme는 [GNU GPL v2](http://korea.gnu.org/documents/copyleft/gpl.ko.html)
@@ -75,16 +81,6 @@ GPL은 WordPress, Drupal, Joomla 등 세계적인 CMS들이 공통으로 채택�
 Zittme의 소스코드를 수정하거나 확장 기능을 직접 개발하여 사용하더라도 마찬가지입니다.
 그러나 직접 개발한 확장 기능을 제3자에게 배포 또는 판매할 경우에는 반드시 소스코드를 제공해야 하며,
 이러한 소스코드는 모두 GPL 라이선스의 적용을 받습니다.
-
-### 저작권 표기
-
-- XpressEngine : Copyright (C) [XEHub](https://www.xehub.io) 및 XpressEngine 기여자 (초기 개발: NAVER)
-- Rhymix : Copyright (C) [Rhymix 개발팀 (Poesis)](https://rhymix.org) 및 Rhymix 기여자
-- Zittme : Copyright (C) [ZZAN Studio](https://zitt.me) 및 Zittme 기여자
-
-소스코드는 위와 같이 GPL v2 이상을 따르는 자유 소프트웨어이지만,
-"Zittme(짓미)" 이름과 로고 등 브랜드 자산은 ZZAN Studio의 소유이며 GPL 라이선스의 적용 대상이 아닙니다.
-포크 또는 재배포 시에는 별도의 이름과 로고를 사용해 주시기 바랍니다.
 
 # English
 
@@ -127,6 +123,10 @@ If you have found a security vulnerability, please let us know at zittme@zzan.me
 
 - Zittme : https://zitt.me
 
+### Community
+
+- XETOWN (Korean) : https://xetown.com
+
 ### Copyright and License
 
 Zittme is a free software licensed under the [GNU GPL v2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html) or later.
@@ -142,14 +142,4 @@ The GPL is commonly adopted by global CMSes such as WordPress, Drupal, and Jooml
 
 The use of Zittme on homepage does not impose a duty on you to release the source code, even if you modify the source code or develop the extension yourself.
 However, distributing and/or selling the source code or extension according to the GPL license, you have to provide the source code.
-
-### Copyright Notices
-
-- XpressEngine : Copyright (C) [XEHub](https://www.xehub.io) and XpressEngine contributors (originally developed by NAVER)
-- Rhymix : Copyright (C) [Rhymix Developers (Poesis)](https://rhymix.org) and Rhymix contributors
-- Zittme : Copyright (C) [ZZAN Studio](https://zitt.me) and Zittme contributors
-
-While the source code is free software under the GPL v2 or later,
-the "Zittme" name and logo are brand assets owned by ZZAN Studio and are not covered by the GPL.
-Please use your own name and logo when forking or redistributing this project.
 

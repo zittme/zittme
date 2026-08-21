@@ -1,0 +1,24 @@
+@version(2)
+@load('css/skin.css')
+
+<div class="zmk">
+	<header class="zmk-page-head">
+		<h2 class="zmk-page-title">{{ $lang->kin_modify_comment }}</h2>
+	</header>
+
+	<form action="./" method="post" class="zmk-cmt-form">
+		@csrf
+		<input type="hidden" name="module" value="kin" />
+		<input type="hidden" name="mid" value="{{ $mid }}" />
+		<input type="hidden" name="act" value="procKinInsertComment" />
+		<input type="hidden" name="document_srl" value="{{ $oComment->get('document_srl') }}" />
+		<input type="hidden" name="comment_srl" value="{{ $oComment->comment_srl }}" />
+
+		<textarea name="kin_comment" rows="4" required>{{ $kin_comment_plain }}</textarea>
+
+		<div class="zmk-form-foot">
+			<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispKinView', 'document_srl', $kin_return_srl) }}" class="zmk-btn">{{ $lang->cmd_cancel }}</a>
+			<button type="submit" class="zmk-btn zmk-btn-primary">{{ $lang->cmd_modify }}</button>
+		</div>
+	</form>
+</div>

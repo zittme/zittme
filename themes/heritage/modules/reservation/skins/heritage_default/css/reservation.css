@@ -1,9 +1,10 @@
 
 /* 레이아웃(heritage) 토큰을 따르고, 레이아웃 밖에서는 폴백을 쓴다.
  * dark/light/soft 파생색은 color-mix 미지원 브라우저용 고정값 — 지원되면 아래 @supports 가 덮는다 */
-.rsv { --rsv-brand: var(--hr-brand, #6c5ce0); --rsv-brand-dark: #5847c9; --rsv-brand-light: #9a8bf0; --rsv-brand-soft: rgba(108, 92, 224, .08); --rsv-border: #e6e9ef; --rsv-text: #10151f; --rsv-sub: #525c6b; --rsv-bg: #f7f8fb; --rsv-card: #ffffff;
+.rsv { --rsv-brand: var(--hr-brand, #6c5ce0); --rsv-brand-dark: #5847c9; --rsv-brand-light: #9a8bf0; --rsv-brand-soft: var(--hr-brand-soft, rgba(108, 92, 224, .08));
+	--rsv-border: var(--hr-line, #e6e9ef); --rsv-text: var(--hr-ink, #10151f); --rsv-sub: var(--hr-ink-sub, #525c6b); --rsv-bg: var(--hr-surface, #f7f8fb); --rsv-card: var(--hr-bg, #ffffff);
 	width: 100%; margin: 0 auto; padding: 8px 0 48px; color: var(--rsv-text);
-	font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif; word-break: keep-all; }
+	font-family: var(--hr-font, 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif); word-break: keep-all; }
 .rsv-narrow { max-width: 720px; }
 .rsv * { box-sizing: border-box; }
 .rsv a { text-decoration: none; color: inherit; }
@@ -113,8 +114,8 @@
 	.rsv-times-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
-.rsv [class*="rsv-"] { --rsv-r-lg: 6px; }
-.rsv-btn { border-radius: 4px; }
+.rsv [class*="rsv-"] { --rsv-r-lg: var(--hr-radius-sm, 6px); }
+.rsv-btn { border-radius: var(--hr-radius-btn, 4px); }
 .rsv-btn-primary {
 	background: linear-gradient(var(--rsv-brand-light), var(--rsv-brand));
 	border-color: var(--rsv-brand-dark);
@@ -122,15 +123,16 @@
 }
 .rsv-btn-primary:hover { filter: none; background: linear-gradient(var(--rsv-brand), var(--rsv-brand-dark)); }
 .rsv div[class*="-card"], .rsv fieldset, .rsv table { border-radius: 6px; }
-.rsv select, .rsv input, .rsv textarea, .rsv button { border-radius: 4px; }
+.rsv select, .rsv input, .rsv textarea, .rsv button { border-radius: var(--hr-radius-btn, 4px); }
 
+/* 어두운 판의 색은 위에서 물려받은 hr 토큰이 알아서 바뀐다. 레이아웃 밖에서 쓰일 때만 여기 값이 쓰인다 */
 [data-theme="dark"] .rsv {
-	--rsv-brand-soft: rgba(154, 139, 240, .16);
-	--rsv-border: #2a3040;
-	--rsv-text: #e7eaf0;
-	--rsv-sub: #b3bbc8;
-	--rsv-bg: #1b2130;
-	--rsv-card: #141822;
+	--rsv-brand-soft: var(--hr-brand-soft, rgba(154, 139, 240, .16));
+	--rsv-border: var(--hr-line, #2a3040);
+	--rsv-text: var(--hr-ink, #e7eaf0);
+	--rsv-sub: var(--hr-ink-sub, #b3bbc8);
+	--rsv-bg: var(--hr-surface, #1b2130);
+	--rsv-card: var(--hr-bg, #141822);
 }
 [data-theme="dark"] .rsv select, [data-theme="dark"] .rsv input, [data-theme="dark"] .rsv textarea { background: var(--rsv-card); color: var(--rsv-text); border-color: var(--rsv-border); }
 

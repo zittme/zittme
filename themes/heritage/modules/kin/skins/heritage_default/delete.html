@@ -1,0 +1,33 @@
+@version(2)
+@load('css/skin.css')
+
+<div class="zmk">
+	<header class="zmk-page-head">
+		<h2 class="zmk-page-title">{{ $lang->kin_delete_question }}</h2>
+	</header>
+
+	<div class="zmk-delete-box">
+		<p class="zmk-delete-title">{{ $oDocument->getTitleText() }}</p>
+
+		@if ((int)($kin_answer_count ?? 0) > 0)
+		<p class="zmk-help">{{ sprintf($lang->kin_delete_answers_notice, number_format($kin_answer_count)) }}</p>
+		@endif
+
+		@if ($kin_use_point && ($kin_question->status ?? '') === 'open' && (int)($kin_question->point ?? 0) > 0)
+		<p class="zmk-help">{{ sprintf($lang->kin_delete_refund_notice, number_format($kin_question->point)) }}</p>
+		@elseif ($kin_use_point && ($kin_question->status ?? '') === 'accepted')
+		<p class="zmk-help">{{ $lang->kin_delete_no_refund_notice }}</p>
+		@endif
+
+		<form action="./" method="post">
+			@csrf
+			<input type="hidden" name="module" value="kin" />
+			<input type="hidden" name="mid" value="{{ $mid }}" />
+			<input type="hidden" name="act" value="procKinDeleteQuestion" />
+			<input type="hidden" name="document_srl" value="{{ $oDocument->document_srl }}" />
+
+			<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispKinView', 'document_srl', $oDocument->document_srl) }}" class="zmk-btn">{{ $lang->cmd_cancel }}</a>
+			<button type="submit" class="zmk-btn zmk-btn-danger">{{ $lang->cmd_delete }}</button>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,30 @@
+<?php
+
+$lang->hr_login = 'Нэвтрэх';
+$lang->hr_signup = 'Бүртгүүлэх';
+$lang->hr_logout = 'Гарах';
+$lang->hr_my_info = 'Миний мэдээлэл';
+$lang->hr_find_account = 'Бүртгэл хайх';
+$lang->hr_welcome = '%s, тавтай морил.';
+$lang->hr_login_notice = 'Гишүүний үйлчилгээг ашиглахын тулд нэвтэрнэ үү.';
+$lang->hr_admin = 'Удирдлага';
+$lang->hr_admin_page = 'Удирдлагын хуудас';
+$lang->hr_search = 'Хайх';
+$lang->hr_search_all = 'Сайтаас хайх';
+$lang->hr_menu = 'Цэс';
+$lang->hr_menu_open = 'Цэс нээх';
+$lang->hr_menu_close = 'Цэс хаах';
+$lang->hr_main_menu = 'Үндсэн цэс';
+$lang->hr_sub_menu = 'Дэд цэс';
+$lang->hr_footer_menu = 'Хөлийн цэс';
+$lang->hr_to_top = 'Дээш';
+$lang->hr_notify = 'Мэдэгдэл';
+$lang->hr_notify_read_all = 'Бүгдийг уншсан';
+$lang->hr_notify_empty = 'Шинэ мэдэгдэл алга.';
+$lang->hr_notify_all = 'Бүгдийг харах';
+$lang->hr_theme_toggle = 'Өнгөний горим солих';
+$lang->hr_lang_select = 'Хэл сонгох';
+$lang->hr_visual_label = 'Онцлох мэдээлэл';
+$lang->hr_visual_prev = 'Өмнөх слайд';
+$lang->hr_visual_next = 'Дараагийн слайд';
+$lang->hr_visual_slide = '%d дэх слайд';

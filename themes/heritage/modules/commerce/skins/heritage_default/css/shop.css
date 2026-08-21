@@ -1,9 +1,10 @@
 
 /* 레이아웃(heritage) 토큰을 따르고, 레이아웃 밖에서는 폴백을 쓴다.
  * dark/light/soft 파생색은 color-mix 미지원 브라우저용 고정값 — 지원되면 아래 @supports 가 덮는다 */
-.shp { --shp-brand: var(--hr-brand, #6c5ce0); --shp-brand-dark: #5847c9; --shp-brand-light: #9a8bf0; --shp-brand-soft: rgba(108, 92, 224, .08); --shp-border: #e6e9ef; --shp-text: #10151f; --shp-sub: #525c6b; --shp-bg: #f7f8fb; --shp-card: #ffffff;
+.shp { --shp-brand: var(--hr-brand, #6c5ce0); --shp-brand-dark: #5847c9; --shp-brand-light: #9a8bf0; --shp-brand-soft: var(--hr-brand-soft, rgba(108, 92, 224, .08));
+	--shp-border: var(--hr-line, #e6e9ef); --shp-text: var(--hr-ink, #10151f); --shp-sub: var(--hr-ink-sub, #525c6b); --shp-bg: var(--hr-surface, #f7f8fb); --shp-card: var(--hr-bg, #ffffff);
 	width: 100%; margin: 0 auto; padding: 8px 0 48px; color: var(--shp-text);
-	font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif; word-break: keep-all; }
+	font-family: var(--hr-font, 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif); word-break: keep-all; }
 .shp * { box-sizing: border-box; }
 .shp a { text-decoration: none; color: inherit; }
 .shp-narrow { max-width: 760px; }
@@ -95,6 +96,19 @@
 	.shp-form-grid { grid-template-columns: 1fr; }
 	.shp-table { display: block; overflow-x: auto; }
 	.shp-title { font-size: 21px; }
+
+	/* 분류와 정렬은 언어에 따라 문구가 길어진다. 접어 내리지 말고 옆으로 넘겨 본다 */
+	.shp-cats, .shp-sort {
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+		-webkit-overflow-scrolling: touch;
+		scrollbar-width: none;
+		padding-bottom: 2px;
+	}
+	.shp-cats::-webkit-scrollbar, .shp-sort::-webkit-scrollbar { display: none; }
+	.shp-cats > *, .shp-sort > * { flex: 0 0 auto; white-space: nowrap; }
+	.shp-sort { margin-left: 0; width: 100%; }
 }
 
 .shp-card, .shp-detail-thumb, .shp-table, .shp-summary, .shp-form fieldset, .shp-detail-list { border-radius: 6px; }
@@ -114,22 +128,23 @@
 .shp-card, .shp-table, .shp-summary, .shp-form fieldset, .shp-detail-list, .shp-btn-ghost,
 .shp-filter select, .shp-filter input, .shp-filter button { background-color: var(--shp-card); }
 
-[data-theme="dark"] .shp {
-	--shp-brand-soft: rgba(154, 139, 240, .16);
-	--shp-border: #2a3040;
-	--shp-text: #e7eaf0;
-	--shp-sub: #b3bbc8;
-	--shp-bg: #1b2130;
-	--shp-card: #141822;
+/* 어두운 판의 색은 위에서 물려받은 hr 토큰이 알아서 바뀐다. 레이아웃 밖에서 쓰일 때만 여기 값이 쓰인다 */
+:is([data-theme="dark"], body.color_scheme_dark) .shp {
+	--shp-brand-soft: var(--hr-brand-soft, rgba(154, 139, 240, .16));
+	--shp-border: var(--hr-line, #2a3040);
+	--shp-text: var(--hr-ink, #e7eaf0);
+	--shp-sub: var(--hr-ink-sub, #b3bbc8);
+	--shp-bg: var(--hr-surface, #1b2130);
+	--shp-card: var(--hr-bg, #141822);
 }
-[data-theme="dark"] .shp-row select, [data-theme="dark"] .shp-row input { background: var(--shp-card); color: var(--shp-text); }
-[data-theme="dark"] .shp-btn-ghost { color: var(--shp-text); }
-[data-theme="dark"] .shp-soldout-cover { background: rgba(0, 0, 0, .55); }
-[data-theme="dark"] .shp-warn { background: rgba(240, 195, 109, .12); border-color: rgba(240, 195, 109, .4); color: #e8c987; }
-[data-theme="dark"] .shp-st { background: #232936; }
-[data-theme="dark"] .shp-st-pending { background: rgba(185, 122, 23, .18); }
-[data-theme="dark"] .shp-st-cancelled, [data-theme="dark"] .shp-st-expired { background: rgba(192, 57, 43, .18); }
-[data-theme="dark"] .shp-table td { border-bottom-color: #232936; }
+:is([data-theme="dark"], body.color_scheme_dark) .shp-row select, :is([data-theme="dark"], body.color_scheme_dark) .shp-row input { background: var(--shp-card); color: var(--shp-text); }
+:is([data-theme="dark"], body.color_scheme_dark) .shp-btn-ghost { color: var(--shp-text); }
+:is([data-theme="dark"], body.color_scheme_dark) .shp-soldout-cover { background: rgba(0, 0, 0, .55); }
+:is([data-theme="dark"], body.color_scheme_dark) .shp-warn { background: rgba(240, 195, 109, .12); border-color: rgba(240, 195, 109, .4); color: #e8c987; }
+:is([data-theme="dark"], body.color_scheme_dark) .shp-st { background: #232936; }
+:is([data-theme="dark"], body.color_scheme_dark) .shp-st-pending { background: rgba(185, 122, 23, .18); }
+:is([data-theme="dark"], body.color_scheme_dark) .shp-st-cancelled, :is([data-theme="dark"], body.color_scheme_dark) .shp-st-expired { background: rgba(192, 57, 43, .18); }
+:is([data-theme="dark"], body.color_scheme_dark) .shp-table td { border-bottom-color: #232936; }
 
 .shp-gallery { min-width: 0; }
 .shp-gallery-thumbs { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
@@ -628,3 +643,76 @@ html { scroll-behavior: smooth; }
 
 .shp-currency { margin-left: auto; padding: 7px 10px; border: 1px solid var(--shp-border); border-radius: 9px; background: var(--shp-card); color: var(--shp-text); font-size: 13px; font-family: inherit; }
 .shp-currency + .shp-cart-link { margin-left: 0; }
+
+.shp-top .shp-currency-bar { margin-left: auto !important; }
+.shp-starpick { display: inline-flex; flex-direction: row-reverse; gap: 2px; }
+.shp-starpick input { display: none; }
+.shp-starpick label { cursor: pointer; color: #c9d1dc; }
+.shp-starpick label svg { display: block; }
+.shp-starpick input:checked ~ label, .shp-starpick label:hover, .shp-starpick label:hover ~ label { color: #f5a623; }
+.shp-currency-bar ~ .shp-cart-link:first-of-type { margin-left: 0; }
+.shpRvFile::file-selector-button { padding: 7px 14px; margin-right: 8px; border: 1px solid #d5dae1; border-radius: 8px; background: #fff; color: #333d4b; font-size: 12.5px; font-weight: 700; cursor: pointer; }
+
+/* 등급 할인으로 낮아진 값임을 알리는 표시 */
+.shp-grade-tag { display: inline-block; margin-left: 6px; padding: 2px 7px; border-radius: 999px; background: var(--shp-brand-soft); color: var(--shp-brand); font-size: 11.5px; font-weight: 700; font-style: normal; vertical-align: middle; }
+
+/*
+ * 상태 배지·안내 박스처럼 색을 직접 박은 곳은 토큰으로 안 덮인다.
+ * 어두운 화면에서 흰 상자가 남지 않도록 여기서 한 번에 되돌린다.
+ */
+:is(:root[data-theme="dark"], body.color_scheme_dark) .shp .shp-badge.is-soldout,
+:is(:root[data-theme="dark"], body.color_scheme_dark) .shp .shp-st,
+:is(:root[data-theme="dark"], body.color_scheme_dark) .shp .shp-chip.is-soldout { background: rgba(255, 255, 255, .08); color: var(--shp-sub); }
+:is(:root[data-theme="dark"], body.color_scheme_dark) .shp .shp-badge.is-adult,
+:is(:root[data-theme="dark"], body.color_scheme_dark) .shp .shp-st-cancelled,
+:is(:root[data-theme="dark"], body.color_scheme_dark) .shp .shp-st-expired { background: rgba(192, 57, 43, .18); color: #ff9b8f; }
+:is(:root[data-theme="dark"], body.color_scheme_dark) .shp .shp-st-pending,
+:is(:root[data-theme="dark"], body.color_scheme_dark) .shp .shp-st-preparing,
+:is(:root[data-theme="dark"], body.color_scheme_dark) .shp .shp-promo-ended { background: rgba(234, 152, 8, .16); color: #f0b34d; }
+:is(:root[data-theme="dark"], body.color_scheme_dark) .shp .shp-st-shipping { background: rgba(38, 119, 227, .18); color: #7db1f5; }
+:is(:root[data-theme="dark"], body.color_scheme_dark) .shp .shp-st-confirmed { background: rgba(29, 122, 61, .18); color: #6fce93; }
+:is(:root[data-theme="dark"], body.color_scheme_dark) .shp .shp-warn { border-color: rgba(234, 152, 8, .45); background: rgba(234, 152, 8, .12); color: var(--shp-text); }
+:is(:root[data-theme="dark"], body.color_scheme_dark) .shp .shp-review-reward,
+:is(:root[data-theme="dark"], body.color_scheme_dark) .shp .shp-review-invite { border-color: rgba(38, 119, 227, .38); background: rgba(38, 119, 227, .12); }
+:is(:root[data-theme="dark"], body.color_scheme_dark) .shp .shp-review-reward { color: #7db1f5; }
+:is(:root[data-theme="dark"], body.color_scheme_dark) .shp .shp-review-invite-msg strong { color: var(--shp-text); }
+:is(:root[data-theme="dark"], body.color_scheme_dark) .shp .shp-btn-ghost:hover { background: rgba(255, 255, 255, .06); }
+:is(:root[data-theme="dark"], body.color_scheme_dark) .shp .shp-track-list li::before,
+:is(:root[data-theme="dark"], body.color_scheme_dark) .shp .shp-shortcuts::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .12); }
+:is(:root[data-theme="dark"], body.color_scheme_dark) .shp .shpRvFile::file-selector-button { border-color: var(--shp-border); color: var(--shp-text); }
+
+.shp-hint { display: block; margin-top: 4px; font-size: 12px; color: var(--shp-sub); }
+.shp-hint-wide { margin-top: 6px; }
+.shp-sub-text { color: var(--shp-sub); }
+.shp-accent { color: var(--shp-brand); font-weight: 600; }
+.shp-amt-plus { color: var(--shp-brand); font-weight: 600; }
+.shp-amt-minus { color: var(--hr-danger, #c0392b); font-weight: 600; }
+.shp-ok-link { color: var(--hr-success, #1d7a3d); font-weight: 600; margin-left: 8px; }
+.shp-rv-file { display: flex; gap: 8px; align-items: center; font-size: 12.5px; color: var(--shp-sub); }
+
+.shp-modal { display: none; position: fixed; inset: 0; z-index: 9990; align-items: center; justify-content: center; }
+.shp-modal-dim { position: absolute; inset: 0; background: rgba(20, 23, 28, .55); }
+.shp-modal-box { position: relative; background: var(--shp-card); border-radius: 16px; padding: 26px 24px; width: min(92vw, 360px); box-shadow: 0 20px 60px rgba(0, 0, 0, .25); }
+.shp-modal-box h3 { margin: 0 0 6px; font-size: 17px; color: var(--shp-text); }
+.shp-modal-box p { margin: 0 0 16px; font-size: 13px; color: var(--shp-sub); }
+/* 테마의 .hr select 가 폭 100% 를 걸어 둔다. 한 겹으로는 눌리므로 .shp 를 앞에 둔다 */
+.shp .shp-cur-select {
+	appearance: none; -webkit-appearance: none;
+	width: auto; min-width: 0;
+	padding: 7px 30px 7px 14px;
+	border: 1px solid var(--shp-border);
+	border-radius: 999px;
+	font-size: 13px; font-weight: 600; font-family: inherit;
+	background: var(--shp-card) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6"><path d="M1 1l4 4 4-4" stroke="%236b7684" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>') no-repeat right 12px center;
+	color: var(--shp-text);
+	cursor: pointer;
+}
+
+/* 결제가 끝나지 않은 주문 안내 */
+.shp-pending-box { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 16px; padding: 14px 16px; border: 1px solid #f0c36d; border-radius: 6px; background: #fdf6e6; }
+.shp-pending-msg { flex: 1 1 260px; margin: 0; font-size: 13.5px; line-height: 1.6; color: #8a6100; }
+.shp-pending-row td { background: #fdf6e6; }
+.shp-pending-row .shp-pending-msg { display: block; margin-bottom: 8px; }
+:is([data-theme="dark"], body.color_scheme_dark) .shp-pending-box { border-color: rgba(240, 195, 109, .4); background: rgba(240, 195, 109, .12); }
+:is([data-theme="dark"], body.color_scheme_dark) .shp-pending-msg { color: #e8c987; }
+:is([data-theme="dark"], body.color_scheme_dark) .shp-pending-row td { background: rgba(240, 195, 109, .1); }

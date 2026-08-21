@@ -1,0 +1,32 @@
+<?php
+
+$lang->hrb_just_now = '방금 전';
+$lang->hrb_minutes_ago = '%d분 전';
+$lang->hrb_hours_ago = '%d시간 전';
+$lang->hrb_days_ago = '%d일 전';
+$lang->hrb_secret = '비밀글';
+$lang->hrb_attached = '첨부';
+$lang->hrb_new_post = '새 글';
+$lang->hrb_select_post = '이 글 선택';
+$lang->hrb_all = '전체';
+$lang->hrb_check_all = '전체 선택';
+$lang->hrb_search_ph = '검색어를 입력하세요';
+$lang->hrb_notice = '공지';
+$lang->hrb_read_count = '조회';
+$lang->hrb_vote = '추천';
+$lang->hrb_unvote = '비추천';
+$lang->hrb_attach = '첨부';
+$lang->hrb_write = '글쓰기';
+$lang->hrb_list = '목록';
+$lang->hrb_modify = '수정';
+$lang->hrb_delete = '삭제';
+$lang->hrb_doc_menu = '문서 기능';
+$lang->hrb_manage = '게시글 관리';
+$lang->hrb_settings = '설정';
+$lang->hrb_empty = '등록된 글이 없습니다.';
+$lang->hrb_search_next = '다음 검색 결과 보기';
+$lang->hrb_cancel = '취소';
+$lang->hrb_pagination = '페이지 이동';
+$lang->hrb_first_page = '첫 페이지';
+$lang->hrb_last_page = '마지막 페이지';
+$lang->hrb_comment_pagination = '댓글 페이지 이동';

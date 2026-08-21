@@ -1,0 +1,32 @@
+<?php
+
+$lang->hrb_just_now = 'только что';
+$lang->hrb_minutes_ago = '%d мин назад';
+$lang->hrb_hours_ago = '%d ч назад';
+$lang->hrb_days_ago = '%d дн назад';
+$lang->hrb_secret = 'Приватная запись';
+$lang->hrb_attached = 'Вложение';
+$lang->hrb_new_post = 'Новое';
+$lang->hrb_select_post = 'Выбрать запись';
+$lang->hrb_all = 'Все';
+$lang->hrb_check_all = 'Выбрать все';
+$lang->hrb_search_ph = 'Введите запрос';
+$lang->hrb_notice = 'Объявление';
+$lang->hrb_read_count = 'Просмотры';
+$lang->hrb_vote = 'Нравится';
+$lang->hrb_unvote = 'Не нравится';
+$lang->hrb_attach = 'Файлы';
+$lang->hrb_write = 'Написать';
+$lang->hrb_list = 'Список';
+$lang->hrb_modify = 'Изменить';
+$lang->hrb_delete = 'Удалить';
+$lang->hrb_doc_menu = 'Меню документа';
+$lang->hrb_manage = 'Управление записями';
+$lang->hrb_settings = 'Настройки';
+$lang->hrb_empty = 'Записей пока нет.';
+$lang->hrb_search_next = 'Показать ещё';
+$lang->hrb_cancel = 'Отмена';
+$lang->hrb_pagination = 'Страницы';
+$lang->hrb_first_page = 'Первая страница';
+$lang->hrb_last_page = 'Последняя страница';
+$lang->hrb_comment_pagination = 'Страницы комментариев';

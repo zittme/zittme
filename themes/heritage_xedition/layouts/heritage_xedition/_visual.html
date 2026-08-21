@@ -1,0 +1,43 @@
+@version(2)
+@php
+$hr_visuals = array_map(function($hr_nv) { return is_array($hr_nv) ? $hr_nv : (array)$hr_nv; }, is_array($hr_visuals ?? null) ? $hr_visuals : []);
+if (!function_exists('hr_visual_text'))
+{
+	function hr_visual_text($hr_t)
+	{
+		return nl2br(escape(preg_replace('/<br\s*\/?\s*>/i', "\n", (string)$hr_t)));
+	}
+}
+@endphp
+{{-- XEDITION: 비주얼 슬라이더는 항상 화면 전체 폭을 쓴다 --}}
+<section class="hr-visual" data-interval="{{ $hr_interval }}" aria-roledescription="carousel" aria-label="{{ $lang->hr_visual_label }}">
+	<div class="hr-visual-track">
+		@foreach ($hr_visuals as $hr_vi => $hr_v)
+		<div class="hr-visual-item @if ($hr_vi === 0) is-on @endif align-{{ $hr_v['align'] ?? 'left' }}"
+			@if (!empty($hr_v['image'])) style="background-image:url('{{ $hr_v['image'] }}')" @endif
+			aria-hidden="{{ $hr_vi === 0 ? 'false' : 'true' }}">
+			<div class="hr-inner hr-visual-copy">
+				@if (!empty($hr_v['title']))<h2>{!! hr_visual_text($hr_v['title']) !!}</h2>@endif
+				@if (!empty($hr_v['text']))<p>{!! hr_visual_text($hr_v['text']) !!}</p>@endif
+				@if (!empty($hr_v['link_url']) && !empty($hr_v['link_text']))
+				<a class="hr-btn hr-btn-primary hr-btn-lg" href="{{ $hr_v['link_url'] }}">{{ $hr_v['link_text'] }}</a>
+				@endif
+			</div>
+		</div>
+		@endforeach
+	</div>
+
+	@if (count($hr_visuals) > 1)
+	<button type="button" class="hr-visual-nav prev" aria-label="{{ $lang->hr_visual_prev }}">
+		<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7z"/></svg>
+	</button>
+	<button type="button" class="hr-visual-nav next" aria-label="{{ $lang->hr_visual_next }}">
+		<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7z"/></svg>
+	</button>
+	<div class="hr-visual-dots" role="tablist">
+		@foreach ($hr_visuals as $hr_di => $hr_dv)
+		<button type="button" class="@if ($hr_di === 0) is-on @endif" data-go="{{ $hr_di }}" role="tab" aria-label="{{ sprintf($lang->hr_visual_slide, $hr_di + 1) }}"></button>
+		@endforeach
+	</div>
+	@endif
+</section>

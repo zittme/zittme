@@ -1,0 +1,32 @@
+<?php
+
+$lang->hrb_just_now = 'ahora mismo';
+$lang->hrb_minutes_ago = 'hace %d min';
+$lang->hrb_hours_ago = 'hace %d h';
+$lang->hrb_days_ago = 'hace %d dias';
+$lang->hrb_secret = 'Privado';
+$lang->hrb_attached = 'Adjunto';
+$lang->hrb_new_post = 'Nuevo';
+$lang->hrb_select_post = 'Seleccionar esta entrada';
+$lang->hrb_all = 'Todo';
+$lang->hrb_check_all = 'Seleccionar todo';
+$lang->hrb_search_ph = 'Escribe una palabra clave';
+$lang->hrb_notice = 'Aviso';
+$lang->hrb_read_count = 'Vistas';
+$lang->hrb_vote = 'Me gusta';
+$lang->hrb_unvote = 'No me gusta';
+$lang->hrb_attach = 'Archivos';
+$lang->hrb_write = 'Escribir';
+$lang->hrb_list = 'Lista';
+$lang->hrb_modify = 'Editar';
+$lang->hrb_delete = 'Eliminar';
+$lang->hrb_doc_menu = 'Menu del documento';
+$lang->hrb_manage = 'Gestionar entradas';
+$lang->hrb_settings = 'Ajustes';
+$lang->hrb_empty = 'Aun no hay entradas.';
+$lang->hrb_search_next = 'Ver mas resultados';
+$lang->hrb_cancel = 'Cancelar';
+$lang->hrb_pagination = 'Paginacion';
+$lang->hrb_first_page = 'Primera pagina';
+$lang->hrb_last_page = 'Ultima pagina';
+$lang->hrb_comment_pagination = 'Paginacion de comentarios';

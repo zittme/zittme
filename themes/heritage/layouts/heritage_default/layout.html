@@ -1,4 +1,5 @@
 @version(2)
+@load('./lang')
 @load('../../assets/heritage.css')
 @load('css/layout.css')
 @load('js/layout.js')
@@ -46,6 +47,16 @@ foreach (preg_split('/\s+/', trim($hr_selected_class)) as $hr_token) {
 
 $hr_module_info = \Context::get('current_module_info');
 $hr_module_now = is_object($hr_module_info) ? (string)($hr_module_info->module ?? '') : '';
+
+// 사이트 대문은 메뉴 클래스 지정이 없으면 메인(비주얼)으로 본다.
+// 대문에 sl/sf 클래스를 넣으면 그 지정이 우선한다.
+$hr_site_info = \Context::get('site_module_info');
+$hr_home_mid = is_object($hr_site_info) ? (string)($hr_site_info->mid ?? '') : '';
+$hr_now_mid = is_object($hr_module_info) ? (string)($hr_module_info->mid ?? '') : '';
+if (!$hr_has_class_type && $hr_home_mid !== '' && $hr_now_mid === $hr_home_mid)
+{
+	$hr_type = 'main';
+}
 $hr_full_modules = ['member', 'communication', 'zittme_pay', 'integration_search'];
 if (!$hr_has_class_type && in_array($hr_module_now, $hr_full_modules, true)) {
 	$hr_type = 'sub_full';
@@ -70,10 +81,22 @@ $hr_footer_info = array_values(array_filter(array_map('trim', explode("\n", (str
 		? (saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'))
 		: fixed;
 	document.documentElement.setAttribute('data-theme', theme);
+	// 코어(detectColorScheme)와 코어 스킨들은 body 클래스를 본다. 여기서 알려 주지 않으면
+	// 코어가 기기 설정을 따로 읽어, 레이아웃은 밝은데 그 조각만 어두워진다
+	var mark = function () {
+		if (!document.body) { return; }
+		document.body.classList.remove('color_scheme_light', 'color_scheme_dark');
+		document.body.classList.add('color_scheme_' + theme);
+	};
+	if (document.body) { mark(); }
+	else { document.addEventListener('DOMContentLoaded', mark); }
 })();
 </script>
 
-<div class="hr hr-layout t-{{ $hr_type }} n-{{ $hr->gnb_color ?? 'dark' }}" style="--hr-w:{{ $hr_width }}px; --hr-brand:{{ $hr_point }}">
+{{-- 창 스크롤바는 html 이 그린다. 점 색이 감싸는 요소에만 있으면 거기까지 닿지 않는다 --}}
+<style>:root { --hr-brand: {{ $hr_point }}; }</style>
+
+<div class="hr hr-layout t-{{ $hr_type }} n-{{ $hr->gnb_color ?? 'dark' }} mtp-{{ $hr->mobile_theme_pos ?? 'drawer' }} mlp-{{ $hr->mobile_lang_pos ?? 'drawer' }}" style="--hr-w:{{ $hr_width }}px; --hr-brand:{{ $hr_point }}">
 
 	@include('_header')
 
@@ -85,7 +108,7 @@ $hr_footer_info = array_values(array_filter(array_map('trim', explode("\n", (str
 		<div class="hr-inner hr-body-inner">
 
 			@if ($hr_lnb)
-			<aside class="hr-lnb" aria-label="{{ $hr_lnb['text'] }} 메뉴">
+			<aside class="hr-lnb" aria-label="{{ $hr_lnb['text'] }} {{ $lang->hr_menu }}">
 				<h2 class="hr-lnb-title">{{ $hr_lnb['text'] }}</h2>
 				<ul class="hr-lnb-list">
 					@foreach ($hr_lnb['list'] as $hr_c)
@@ -105,17 +128,17 @@ $hr_footer_info = array_values(array_filter(array_map('trim', explode("\n", (str
 				@if ($hr->use_login_box === 'Y')
 				<div class="hr-side-login">
 					@if ($is_logged)
-					<p class="hr-side-me"><strong>{{ $logged_info->nick_name }}</strong>님, 반갑습니다.</p>
+					<p class="hr-side-me">{!! sprintf(escape($lang->hr_welcome), '<strong>' . escape($logged_info->nick_name) . '</strong>') !!}</p>
 					<div class="hr-side-links">
-						<a href="{{ getUrl('', 'act', 'dispMemberInfo') }}">내 정보</a>
-						<a href="{{ getUrl('', 'act', 'dispMemberLogout') }}">로그아웃</a>
+						<a href="{{ getUrl('', 'act', 'dispMemberInfo') }}">{{ $lang->hr_my_info }}</a>
+						<a href="{{ getUrl('', 'act', 'dispMemberLogout') }}">{{ $lang->hr_logout }}</a>
 					</div>
 					@else
-					<p class="hr-side-me">회원 서비스를 이용하시려면 로그인해 주세요.</p>
-					<a class="hr-btn hr-btn-primary hr-btn-sm" href="{{ getUrl('', 'act', 'dispMemberLoginForm') }}">로그인</a>
+					<p class="hr-side-me">{{ $lang->hr_login_notice }}</p>
+					<a class="hr-btn hr-btn-primary hr-btn-sm" href="{{ getUrl('', 'act', 'dispMemberLoginForm') }}">{{ $lang->hr_login }}</a>
 					<div class="hr-side-links">
-						<a href="{{ getUrl('', 'act', 'dispMemberSignUpForm') }}">회원가입</a>
-						<a href="{{ getUrl('', 'act', 'dispMemberFindAccount') }}">계정 찾기</a>
+						<a href="{{ getUrl('', 'act', 'dispMemberSignUpForm') }}">{{ $lang->hr_signup }}</a>
+						<a href="{{ getUrl('', 'act', 'dispMemberFindAccount') }}">{{ $lang->hr_find_account }}</a>
 					</div>
 					@endif
 				</div>

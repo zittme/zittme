@@ -1,0 +1,66 @@
+@version(2)
+@load('css/contact.css')
+
+<div class="ctc">
+	<div class="ctc-head">
+		<h2 class="ctc-title">{{ $lang->my_list }}</h2>
+	</div>
+
+	@if($need_auth)
+	<form class="ctc-form" action="{{ getUrl() }}" method="post">
+		<input type="hidden" name="module" value="contact" />
+		<input type="hidden" name="act" value="procContactMyAuth" />
+		<input type="hidden" name="mid" value="{{ $module_info->mid }}" />
+
+		<p class="ctc-desc" style="margin-bottom:20px">{{ $lang->lookup_auth_guide }}</p>
+
+		<div class="ctc-row">
+			<label class="ctc-label" for="ctc_lookup_email">{{ $lang->lookup_email }}</label>
+			<div class="ctc-input"><input type="email" id="ctc_lookup_email" name="lookup_email" required /></div>
+		</div>
+		<div class="ctc-row">
+			<label class="ctc-label" for="ctc_lookup_pw">{{ $lang->lookup_password }}</label>
+			<div class="ctc-input"><input type="password" id="ctc_lookup_pw" name="lookup_password" required autocomplete="off" /></div>
+		</div>
+
+		<div class="ctc-actions">
+			<button type="submit" class="ctc-submit">{{ $lang->lookup_auth }}</button>
+			<a class="ctc-link" href="{{ getUrl('', 'mid', $module_info->mid, 'act', 'dispContactForm') }}">{{ $lang->go_list }}</a>
+		</div>
+	</form>
+
+	@else
+
+	<table class="ctc-table">
+		<thead>
+			<tr>
+				<th scope="col">{{ $lang->title }}</th>
+				<th scope="col" class="ctc-nowrap">{{ $lang->status }}</th>
+				<th scope="col" class="ctc-nowrap">{{ $lang->regdate }}</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach($entry_list as $entry)
+			<tr>
+				<td><a href="{{ getUrl('', 'mid', $module_info->mid, 'act', 'dispContactMyView', 'entry_srl', $entry->entry_srl) }}">{{ $entry->title ?: $lang->entry }}</a></td>
+				<td class="ctc-nowrap"><span class="ctc-status ctc-status-{{ $entry->status }}">{{ $lang->{'status_' . $entry->status} }}</span></td>
+				<td class="ctc-nowrap">{{ zdate($entry->regdate, 'Y.m.d') }}</td>
+			</tr>
+			@endforeach
+			@if(!count($entry_list))
+			<tr><td colspan="3" class="ctc-empty">{{ $lang->no_entry }}</td></tr>
+			@endif
+		</tbody>
+	</table>
+
+	<div class="ctc-actions">
+		<a class="ctc-submit" href="{{ getUrl('', 'mid', $module_info->mid, 'act', 'dispContactForm') }}">{{ $lang->go_list }}</a>
+		<form class="ctc-inline-form" action="{{ getUrl() }}" method="post">
+			<input type="hidden" name="module" value="contact" />
+			<input type="hidden" name="act" value="procContactMyLogout" />
+			<input type="hidden" name="mid" value="{{ $module_info->mid }}" />
+			<button type="submit" class="ctc-link">{{ $lang->lookup_logout }}</button>
+		</form>
+	</div>
+	@endif
+</div>

@@ -33,23 +33,6 @@ $sitemap = array(
 			),
 		),
 	),
-	'UNB' => array(
-		'title' => 'Utility Menu',
-		'list' => array(
-			array(
-				'menu_name' => 'Zittme Official Site',
-				'is_shortcut' => 'Y',
-				'open_window' => 'Y',
-				'shortcut_target' => 'https://zitt.me/',
-			),
-			array(
-				'menu_name' => 'Zittme GitHub',
-				'is_shortcut' => 'Y',
-				'open_window' => 'Y',
-				'shortcut_target' => 'https://github.com/zittme',
-			),
-		),
-	),
 	'FNB' => array(
 		'title' => 'Footer Menu',
 		'list' => array(
@@ -115,21 +98,28 @@ foreach($sitemap as $id => &$val)
 	$oMenuAdminController->makeHomemenuCacheFile($val['menu_srl']);
 }
 
-// create Layout
+// create Layout (responsive theme layout, no mobile layout)
 //extra_vars init
 $extra_vars = new stdClass();
-$extra_vars->use_demo = 'Y';
-$extra_vars->use_ncenter_widget = 'Y';
-$extra_vars->content_fixed_width = 'Y';
-$extra_vars->GNB = $sitemap['GNB']['menu_srl'];
-$extra_vars->UNB = $sitemap['UNB']['menu_srl'];
-$extra_vars->FNB = $sitemap['FNB']['menu_srl'];
+$extra_vars->gnb = $sitemap['GNB']['menu_srl'];
+$extra_vars->footer_menu = $sitemap['FNB']['menu_srl'];
+// default visual slide
+$extra_vars->visuals = array(
+	array(
+		'image' => '',
+		'title' => "짓미에 오신 것을 환영합니다",
+		'text' => "사이트가 준비되었습니다. 관리자 페이지에서 나만의 사이트를 만들어 보세요.",
+		'link_url' => '',
+		'link_text' => '',
+		'align' => 'left',
+	),
+);
 
 $args = new stdClass();
 $layout_srl = $args->layout_srl = getNextSequence();
 $args->site_srl = 0;
-$args->layout = 'xedition';
-$args->title = 'XEDITION';
+$args->layout = 'heritage_xedition|@|heritage_xedition';
+$args->title = 'Heritage XEDITION';
 $args->layout_type = 'P';
 $oLayoutAdminController = getAdminController('layout');
 $output = $oLayoutAdminController->insertLayout($args);
@@ -140,20 +130,10 @@ $args->extra_vars = serialize($extra_vars);
 $output = $oLayoutAdminController->updateLayout($args);
 if(!$output->toBool()) return $output;
 
-//create mobile layout
-$mlayout_srl = $args->layout_srl = getNextSequence();
-$args->layout = 'default';
-$args->title = 'welcome_mobile_layout';
-$args->layout_type = 'M';
-$extra_vars->main_menu = $sitemap['GNB']['menu_srl'];
-
-$output = $oLayoutAdminController->insertLayout($args);
-if(!$output->toBool()) return $output;
-
-// update mobile Layout
-$args->extra_vars = serialize($extra_vars);
-$output = $oLayoutAdminController->updateLayout($args);
-if(!$output->toBool()) return $output;
+// responsive view by default
+Zittme\Framework\Config::set('mobile.responsive', true);
+Zittme\Framework\Config::save();
+$mlayout_srl = $layout_srl;
 
 $siteDesignPath = RX_BASEDIR.'files/site_design/';
 FileHandler::makeDir($siteDesignPath);
@@ -183,8 +163,13 @@ foreach($skinTypes as $key => $dir)
 		$designInfo->module->{$moduleName}->{$key} = $oModuleModel->getModuleDefaultSkin($moduleName, $skinType, 0, false);
 	}
 }
-$designInfo->module->board->skin = 'xedition';
+$designInfo->module->board->skin = 'heritage_xedition|@|heritage_xedition';
 $designInfo->module->editor->skin = 'zitteditor';
+// member / communication skins
+$designInfo->module->member = new stdClass();
+$designInfo->module->member->skin = 'heritage_xedition|@|heritage_xedition';
+$designInfo->module->communication = new stdClass();
+$designInfo->module->communication->skin = 'heritage_xedition|@|heritage_xedition';
 
 $oAdminController = getAdminController('admin'); /* @var $oAdminController adminAdminController */
 $oAdminController->makeDefaultDesignFile($designInfo, 0);
@@ -218,17 +203,10 @@ if(!$output->toBool()) return $output;
 
 $document_srl = $output->get('document_srl');
 
-unset($obj->document_srl);
-$obj->title = 'Welcome to Mobile Zittme';
-$output = $oDocumentController->insertDocument($obj, true);
-if(!$output->toBool()) return $output;
-
 // save PageWidget
 $oModuleController = getController('module'); /* @var $oModuleController moduleController */
-$mdocument_srl = $output->get('document_srl');
 $module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
 $module_info->content = '<img hasContent="true" class="zbxe_widget_output" widget="widgetContent" style="width: 100%; float: left;" body="" document_srl="'.$document_srl.'" widget_padding_left="0" widget_padding_right="0" widget_padding_top="0" widget_padding_bottom="0"  />';
-$module_info->mcontent = '<img hasContent="true" class="zbxe_widget_output" widget="widgetContent" style="width: 100%; float: left;" body="" document_srl="'.$mdocument_srl.'" widget_padding_left="0" widget_padding_right="0" widget_padding_top="0" widget_padding_bottom="0"  />';
 $output = $oModuleController->updateModule($module_info);
 if(!$output->toBool()) return $output;
 
@@ -245,6 +223,9 @@ foreach(['advanced_mailer', 'ncenterlite'] as $module_name)
 }
 
 // create menu cache
-$oMenuAdminController->makeXmlFile($menuSrl);
+foreach($sitemap as $val)
+{
+	$oMenuAdminController->makeXmlFile($val['menu_srl']);
+}
 
 /* End of file ko.install.php */

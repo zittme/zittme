@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">헤리티지 XEDITION</title>
+	<title xml:lang="en">Heritage XEDITION</title>
+	<description xml:lang="ko">헤리티지 테마의 커머스 스킨입니다. 보라 포인트와 각진 모서리로 테마와 한 벌로 맞췄습니다.</description>
+	<description xml:lang="en">Commerce skin of the Heritage theme.</description>
+	<version>1.0</version>
+	<date>2026-07-30</date>
+	<author email_address="zittme-contact@zzan.me" link="https://zitt.me">
+		<name xml:lang="ko">ZZAN Studio</name>
+		<name xml:lang="en">ZZAN Studio</name>
+	</author>
+	<responsive>true</responsive>
+</skin>

@@ -6,32 +6,33 @@
     --zm-brand: var(--hr-brand, #6c5ce0);
     --zm-brand-hover: #5847c9;
     --zm-brand-light: #9a8bf0;
-    --zm-brand-soft: rgba(108, 92, 224, 0.08);
-    --zm-bg: #ffffff;
-    --zm-surface: #f7f8fb;
-    --zm-text: #10151f;
-    --zm-text-sub: #525c6b;
-    --zm-border: #e6e9ef;
-    --zm-line-strong: #10151f;
-    --zm-danger: #e5484d;
-    --zm-radius: 8px;
-    --zm-btn-face: #fbfbfc;
-    --zm-btn-line: #ccd1d9;
-    font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --zm-brand-soft: var(--hr-brand-soft, rgba(108, 92, 224, 0.08));
+    --zm-bg: var(--hr-bg, #ffffff);
+    --zm-surface: var(--hr-surface, #f7f8fb);
+    --zm-text: var(--hr-ink, #10151f);
+    --zm-text-sub: var(--hr-ink-sub, #525c6b);
+    --zm-border: var(--hr-line, #e6e9ef);
+    --zm-line-strong: var(--hr-ink, #10151f);
+    --zm-danger: var(--hr-danger, #e5484d);
+    --zm-radius: var(--hr-radius, 8px);
+    --zm-btn-face: var(--hr-btn-face, #fbfbfc);
+    --zm-btn-line: var(--hr-btn-line, #ccd1d9);
+    font-family: var(--hr-font, 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     color: var(--zm-text);
     word-break: keep-all;
     overflow-wrap: break-word;
 }
+/* 어두운 판의 색은 위에서 물려받은 hr 토큰이 알아서 바뀐다. 레이아웃 밖에서 쓰일 때만 여기 값이 쓰인다 */
 [data-theme="dark"] .xm {
-    --zm-brand-soft: rgba(154, 139, 240, 0.16);
-    --zm-bg: #141822;
-    --zm-surface: #1b2130;
-    --zm-text: #e7eaf0;
-    --zm-text-sub: #b3bbc8;
-    --zm-border: #2a3040;
-    --zm-line-strong: #3d4557;
-    --zm-btn-face: #232a38;
-    --zm-btn-line: #394152;
+    --zm-brand-soft: var(--hr-brand-soft, rgba(154, 139, 240, 0.16));
+    --zm-bg: var(--hr-bg, #141822);
+    --zm-surface: var(--hr-surface, #1b2130);
+    --zm-text: var(--hr-ink, #e7eaf0);
+    --zm-text-sub: var(--hr-ink-sub, #b3bbc8);
+    --zm-border: var(--hr-line, #2a3040);
+    --zm-line-strong: var(--hr-btn-line, #3d4557);
+    --zm-btn-face: var(--hr-btn-face, #232a38);
+    --zm-btn-line: var(--hr-btn-line, #394152);
 }
 
 .xm .pull-right { float: right; }
@@ -366,3 +367,47 @@
 		--zm-brand-soft: color-mix(in srgb, var(--hr-brand, #6c5ce0) 8%, transparent);
 	}
 }
+
+/* 메일 본문(_mail.html)은 메일 프로그램이 CSS 파일을 읽지 못해 인라인으로 둔다.
+ * 그쪽 색을 여기로 옮기면 메일에서 무색으로 나간다 */
+.xm .xm-hl { color: var(--zm-brand); font-weight: 700; }
+.xm .xm-err { color: var(--zm-danger); }
+.xm .xm-req { color: var(--zm-danger); font-style: normal; }
+.xm .xm-empty { color: var(--zm-text-sub); }
+.xm .xm-notice {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin: 0 0 14px;
+    padding: 11px 14px;
+    border-radius: var(--zm-radius);
+    background: var(--zm-brand-soft);
+    color: var(--zm-brand);
+    font-size: 13px;
+    line-height: 1.6;
+}
+.xm .xm-btnarea { border-top: 1px solid var(--zm-border); padding-top: 10px; }
+
+.xm .signin .login-body input[type="submit"].submit { display: block; width: 100%; box-sizing: border-box; padding: 11px; border-radius: var(--zm-radius); font-weight: 700; font-size: 14px; }
+.xm .signin .login-footer { text-align: center; }
+.xm .member-sns-login { margin-top: 18px; }
+.xm .member-sns-login-sep { display: flex; align-items: center; gap: 12px; margin: 14px 0; }
+.xm .member-sns-login-sep:before, .xm .member-sns-login-sep:after { content: ""; flex: 1; height: 1px; background: var(--zm-border); }
+.xm .member-sns-login-sep span { color: var(--zm-text-sub); font-size: 12px; white-space: nowrap; }
+.xm .member-sns-btn { display: block; padding: 11px; margin: 8px 0; text-align: center; text-decoration: none; border-radius: var(--zm-radius); font-weight: 700; font-size: 14px; text-transform: capitalize; }
+/* 각 서비스의 상징색이라 테마를 따르지 않는다 */
+.xm a.member-sns-btn.member-sns-kakao { background: #FEE500 !important; color: #3C1E1E !important; }
+.xm a.member-sns-btn.member-sns-naver { background: #03C75A !important; color: #fff !important; }
+.xm a.member-sns-btn.member-sns-google { background: #fff !important; color: #757575 !important; border: 1px solid #ddd; }
+
+.xm .zm-signup-steps { display: flex; gap: 6px; margin: 8px 0 18px; }
+.xm .zm-signup-steps span { flex: 1; text-align: center; padding: 9px 4px; font-size: 12.5px; border-radius: var(--zm-radius); background: var(--zm-surface); color: var(--zm-text-sub); }
+.xm .zm-signup-steps span.on { background: var(--zm-brand); color: #fff; font-weight: 700; }
+.xm .xpress-editor > #smart_content,
+.xm .xpress-editor > #smart_content > .tool { clear: none; }
+.xm .zm-signup-steps span.done { background: var(--zm-brand-soft); color: var(--zm-brand); }
+/* 인증 후에는 약관을 접어서 표시 (체크 상태는 유지) */
+.xm .zm-agreements-collapsed .agreement .text { display: none; }
+.xm .zm-agreements-collapsed .agreement { margin-bottom: 8px; }
+/* 본인인증으로 잠긴 입력 */
+.xm .zm-identity-locked { opacity: .75; pointer-events: none; background: var(--zm-surface) !important; }

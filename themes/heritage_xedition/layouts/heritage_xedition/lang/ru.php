@@ -1,0 +1,30 @@
+<?php
+
+$lang->hr_login = 'Войти';
+$lang->hr_signup = 'Регистрация';
+$lang->hr_logout = 'Выйти';
+$lang->hr_my_info = 'Мой профиль';
+$lang->hr_find_account = 'Восстановить доступ';
+$lang->hr_welcome = '%s, здравствуйте.';
+$lang->hr_login_notice = 'Войдите, чтобы пользоваться сервисами для участников.';
+$lang->hr_admin = 'Администрирование';
+$lang->hr_admin_page = 'Страница администрирования';
+$lang->hr_search = 'Поиск';
+$lang->hr_search_all = 'Поиск по сайту';
+$lang->hr_menu = 'Меню';
+$lang->hr_menu_open = 'Открыть меню';
+$lang->hr_menu_close = 'Закрыть меню';
+$lang->hr_main_menu = 'Главное меню';
+$lang->hr_sub_menu = 'Подменю';
+$lang->hr_footer_menu = 'Меню в подвале';
+$lang->hr_to_top = 'Наверх';
+$lang->hr_notify = 'Уведомления';
+$lang->hr_notify_read_all = 'Прочитать все';
+$lang->hr_notify_empty = 'Новых уведомлений нет.';
+$lang->hr_notify_all = 'Показать все';
+$lang->hr_theme_toggle = 'Сменить цветовой режим';
+$lang->hr_lang_select = 'Выбрать язык';
+$lang->hr_visual_label = 'Главное';
+$lang->hr_visual_prev = 'Предыдущий слайд';
+$lang->hr_visual_next = 'Следующий слайд';
+$lang->hr_visual_slide = 'Слайд %d';

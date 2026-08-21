@@ -804,3 +804,9 @@
 	border: 5px solid transparent;
 	border-top-color: rgba(30,37,48,.94);
 }
+
+/* 리프 노드도 폴더 아이콘 폭을 비워 형제 항목과 정렬한다 */
+.mapi li.jstree-leaf > ins.jstree-icon { width: 17px; }
+
+/* 스킨 목록은 레이아웃 목록과 같이 비활성 덮개를 쓰지 않는다 */
+#skin .mask, #skin .disabled > .mask { display: none !important; }

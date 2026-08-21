@@ -1,0 +1,82 @@
+@version(2)
+@load('css/skin.css')
+
+@php $zmk_editing = isset($oDocument) && $oDocument; @endphp
+
+<div class="zmk">
+	<header class="zmk-page-head">
+		<h2 class="zmk-page-title">@if ($zmk_editing){{ $lang->kin_modify_question }}@else{{ $lang->kin_write_question }}@endif</h2>
+	</header>
+
+	<form action="./" method="post" class="zmk-write-form" data-empty-content="{{ $lang->kin_content_required }}" onsubmit="return zmkSyncEditor(this);">
+		@csrf
+		<input type="hidden" name="module" value="kin" />
+		<input type="hidden" name="mid" value="{{ $mid }}" />
+		<input type="hidden" name="act" value="procKinInsertQuestion" />
+		{{-- 에디터는 이 필드의 값을 초기 본문으로 읽는다. 수정일 때 기존 본문을 실어야 한다 --}}
+		<input type="hidden" name="content" value="{{ $zmk_editing ? $oDocument->getContentText() : '' }}" />
+		@if ($zmk_editing)
+		<input type="hidden" name="document_srl" value="{{ $oDocument->document_srl }}" />
+		@endif
+
+		@if (count($kin_category_list ?? []))
+		<div class="zmk-field">
+			<label>{{ $lang->kin_category }}</label>
+			<select name="category_srl">
+				<option value="0">{{ $lang->kin_category_none }}</option>
+				@foreach ($kin_category_list as $category)
+				<option value="{{ $category->category_srl }}" @if ($zmk_editing && (int)$oDocument->get('category_srl') === (int)$category->category_srl) selected @endif>@if ((int)$category->depth > 0)&nbsp;&nbsp;- @endif{{ $category->title }}</option>
+				@endforeach
+			</select>
+		</div>
+		@endif
+
+		<div class="zmk-field">
+			<label>{{ $lang->title }}</label>
+			<input type="text" name="title" value="@if ($zmk_editing){{ $oDocument->getTitleText() }}@endif" required class="zmk-title-input" />
+		</div>
+
+		<div class="zmk-field">
+			<label>{{ $lang->content }}</label>
+			<div class="zmk-editor">{!! $kin_editor !!}</div>
+		</div>
+
+		@if ($kin_use_point)
+			@if (!$zmk_editing)
+			<div class="zmk-field">
+				<label>{{ $lang->kin_point_stake }}</label>
+				<input type="number" name="kin_point" value="0" min="{{ $kin_point_min }}" max="{{ $kin_point_max }}" class="zmk-point-input" />
+				<p class="zmk-help">{{ sprintf($lang->kin_point_stake_help, number_format($kin_point_min), number_format($kin_point_max), number_format($kin_point_balance)) }}</p>
+			</div>
+			@else
+			<p class="zmk-help">{{ $lang->kin_point_locked }}</p>
+			@endif
+		@endif
+
+		<div class="zmk-form-foot">
+			<a href="{{ getUrl('', 'mid', $mid, 'act', '') }}" class="zmk-btn">{{ $lang->cmd_cancel }}</a>
+			<button type="submit" class="zmk-btn zmk-btn-primary">@if ($zmk_editing){{ $lang->cmd_modify }}@else{{ $lang->kin_submit_question }}@endif</button>
+		</div>
+	</form>
+</div>
+
+<script>
+// 코어 에디터는 폼의 editor_sequence 속성으로 자기 내용을 찾는다.
+// 제출 직전에 그 내용을 content 필드로 옮겨야 서버가 본문을 받는다.
+function zmkSyncEditor(form) {
+	var seq = form.getAttribute('editor_sequence');
+	if (!seq) return true;
+
+	try {
+		var content = editorGetContent(seq);
+		if (form.content) form.content.value = content;
+
+		if (!String(content).replace(/<[^>]*>/g, '').trim()) {
+			alert(form.getAttribute('data-empty-content'));
+			return false;
+		}
+	} catch (e) {}
+
+	return true;
+}
+</script>

@@ -1,0 +1,30 @@
+<?php
+
+$lang->hr_login = 'Log in';
+$lang->hr_signup = 'Sign up';
+$lang->hr_logout = 'Log out';
+$lang->hr_my_info = 'My account';
+$lang->hr_find_account = 'Find account';
+$lang->hr_welcome = 'Welcome, %s.';
+$lang->hr_login_notice = 'Please sign in to use member services.';
+$lang->hr_admin = 'Admin';
+$lang->hr_admin_page = 'Admin page';
+$lang->hr_search = 'Search';
+$lang->hr_search_all = 'Search the site';
+$lang->hr_menu = 'Menu';
+$lang->hr_menu_open = 'Open menu';
+$lang->hr_menu_close = 'Close menu';
+$lang->hr_main_menu = 'Main menu';
+$lang->hr_sub_menu = 'Submenu';
+$lang->hr_footer_menu = 'Footer menu';
+$lang->hr_to_top = 'Back to top';
+$lang->hr_notify = 'Notifications';
+$lang->hr_notify_read_all = 'Mark all read';
+$lang->hr_notify_empty = 'No new notifications.';
+$lang->hr_notify_all = 'View all';
+$lang->hr_theme_toggle = 'Switch colour mode';
+$lang->hr_lang_select = 'Choose language';
+$lang->hr_visual_label = 'Highlights';
+$lang->hr_visual_prev = 'Previous slide';
+$lang->hr_visual_next = 'Next slide';
+$lang->hr_visual_slide = 'Slide %d';

@@ -1,0 +1,25 @@
+@version(2)
+@load('./lang')
+@load('css/skin.css')
+<div class="hr hrb" id="hrb_board">
+{{-- 글읽기 화면에서는 게시판 타이틀 헤더를 감춘다. 글 제목이 그 자리를 맡는다 --}}
+{{-- CSS 로드와 래퍼 div 는 화면과 무관하게 항상 이 파일이 담당한다 --}}
+@if (trim($module_info->hr_board_title ?? '') !== '' && (empty($oDocument) || !$oDocument->isExists()))
+<header class="hrb-board-head">
+	<div class="hrb-board-head-text">
+		<h2 class="hrb-board-title"><a href="{{ getUrl('', 'mid', $mid) }}">{{ $module_info->hr_board_title }}</a></h2>
+		@if (trim($module_info->hr_board_desc ?? '') !== '')
+		<p class="hrb-board-desc">{{ $module_info->hr_board_desc }}</p>
+		@endif
+	</div>
+	{{-- 헤더를 쓰는 게시판은 상단 글쓰기 버튼이 헤더 오른쪽에 선다 --}}
+	@if (!empty($grant) && $grant->write_document)
+	<a class="hr-btn hr-btn-primary hrb-write-top" href="{{ getUrl('act', 'dispBoardWrite', 'document_srl', '') }}">{{ $lang->cmd_write_post ?? $lang->cmd_write ?? $lang->hrb_write }}</a>
+	@endif
+</header>
+@endif
+@if (!empty($m) && !empty($module_info->mobile_header_text))
+<div class="hrb-notice-text">{!! $module_info->mobile_header_text !!}</div>
+@elseif (!empty($module_info->header_text))
+<div class="hrb-notice-text">{!! $module_info->header_text !!}</div>
+@endif

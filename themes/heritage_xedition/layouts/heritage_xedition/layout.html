@@ -1,0 +1,185 @@
+@version(2)
+@load('./lang')
+@load('../../assets/heritage.css')
+@load('css/layout.css')
+@load('js/layout.js')
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+{{-- XEDITION 계보: 영문 제목용 Raleway (한글은 Pretendard 로 폴백) --}}
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@500;600;700;800&display=swap" />
+
+@php
+$hr = $layout_info;
+$hr_width = (int)($hr->content_width ?? 1440) ?: 1440;
+$hr_scheme = $hr->color_scheme ?? 'auto';
+$hr_point = trim((string)($hr->point_color ?? '')) ?: '#cda25a';
+
+$hr_menu = array_values($gnb->list ?? []);
+
+$hr_current = null;
+foreach ($hr_menu as $hr_m) {
+	if (!empty($hr_m['selected']) || !empty($hr_m['open'])) { $hr_current = $hr_m; break; }
+}
+$hr_type = $hr->layout_type ?? 'sub';
+
+// 뒤에 x 가 붙은 토큰(slx/sfx)은 같은 유형에서 서브 타이틀 밴드만 뺀다
+$hr_class_map = ['m' => 'main', 'sl' => 'sub', 'sf' => 'sub_full', 'slx' => 'sub', 'sfx' => 'sub_full'];
+$hr_no_subhead = false;
+$hr_selected_class = '';
+foreach ($hr_menu as $hr_m) {
+	if (empty($hr_m['selected']) && empty($hr_m['open'])) continue;
+	$hr_selected_class = (string)($hr_m['class'] ?? '');
+	foreach ((array)($hr_m['list'] ?? []) as $hr_m2) {
+		if (empty($hr_m2['selected']) && empty($hr_m2['open'])) continue;
+		$hr_selected_class = (string)($hr_m2['class'] ?? '') ?: $hr_selected_class;
+		foreach ((array)($hr_m2['list'] ?? []) as $hr_m3) {
+			if (!empty($hr_m3['selected'])) {
+				$hr_selected_class = (string)($hr_m3['class'] ?? '') ?: $hr_selected_class;
+			}
+		}
+	}
+	break;
+}
+$hr_has_class_type = false;
+foreach (preg_split('/\s+/', trim($hr_selected_class)) as $hr_token) {
+	if (isset($hr_class_map[$hr_token])) {
+		$hr_type = $hr_class_map[$hr_token];
+		$hr_has_class_type = true;
+		$hr_no_subhead = substr($hr_token, -1) === 'x';
+		break;
+	}
+}
+
+$hr_module_info = \Context::get('current_module_info');
+$hr_module_now = is_object($hr_module_info) ? (string)($hr_module_info->module ?? '') : '';
+
+// 사이트 대문은 메뉴 클래스 지정이 없으면 메인(비주얼)으로 본다.
+// 대문에 sl/sf 클래스를 넣으면 그 지정이 우선한다.
+$hr_site_info = \Context::get('site_module_info');
+$hr_home_mid = is_object($hr_site_info) ? (string)($hr_site_info->mid ?? '') : '';
+$hr_now_mid = is_object($hr_module_info) ? (string)($hr_module_info->mid ?? '') : '';
+if (!$hr_has_class_type && $hr_home_mid !== '' && $hr_now_mid === $hr_home_mid)
+{
+	$hr_type = 'main';
+}
+$hr_full_modules = ['member', 'communication', 'zittme_pay', 'integration_search'];
+if (!$hr_has_class_type && in_array($hr_module_now, $hr_full_modules, true)) {
+	$hr_type = 'sub_full';
+}
+$hr_lnb = ($hr_type === 'sub' && $hr_current && !empty($hr_current['list'])) ? $hr_current : null;
+
+$hr_visuals = array_values((array)($hr->visuals ?? []));
+$hr_visual_mode = $hr->show_visual ?? 'main';
+$hr_show_visual = count($hr_visuals) && $hr_visual_mode !== 'none'
+	&& ($hr_visual_mode === 'all' || $hr_type === 'main');
+$hr_interval = max(0, (int)($hr->visual_interval ?? 6));
+
+$hr_footer_info = array_values(array_filter(array_map('trim', explode("\n", (string)($hr->footer_info ?? '')))));
+@endphp
+
+<script>
+(function () {
+	var fixed = '{{ $hr_scheme }}';
+	var saved = null;
+	try { saved = localStorage.getItem('hr-theme'); } catch (e) {}
+	var theme = (fixed === 'auto')
+		? (saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'))
+		: fixed;
+	document.documentElement.setAttribute('data-theme', theme);
+	// 코어(detectColorScheme)와 코어 스킨들은 body 클래스를 본다. 여기서 알려 주지 않으면
+	// 코어가 기기 설정을 따로 읽어, 레이아웃은 밝은데 그 조각만 어두워진다
+	var mark = function () {
+		if (!document.body) { return; }
+		document.body.classList.remove('color_scheme_light', 'color_scheme_dark');
+		document.body.classList.add('color_scheme_' + theme);
+	};
+	if (document.body) { mark(); }
+	else { document.addEventListener('DOMContentLoaded', mark); }
+})();
+</script>
+
+{{-- 창 스크롤바는 html 이 그린다. 점 색이 감싸는 요소에만 있으면 거기까지 닿지 않는다 --}}
+<style>:root { --hr-brand: {{ $hr_point }}; }</style>
+
+<div class="hr hr-layout t-{{ $hr_type }} n-{{ $hr->gnb_color ?? 'dark' }} mtp-{{ $hr->mobile_theme_pos ?? 'drawer' }} mlp-{{ $hr->mobile_lang_pos ?? 'drawer' }}" style="--hr-w:{{ $hr_width }}px; --hr-brand:{{ $hr_point }}">
+
+	@include('_header')
+
+	@if ($hr_show_visual)
+		@include('_visual')
+	@endif
+
+	{{-- XEDITION 서브 타이틀 밴드: 회색 띠 + 제목 밑 짧은 밑줄 장식. slx/sfx 는 표시하지 않는다 --}}
+	@if (!$hr_show_visual && $hr_type !== 'main' && !$hr_no_subhead)
+	@php $hr_sub_title = trim((string)(\Context::getBrowserTitle() ?: ($hr_module_info->browser_title ?? ''))); @endphp
+	@if ($hr_sub_title !== '')
+	<div class="hr-subhead">
+		<div class="hr-inner">
+			<h1>{{ $hr_sub_title }}</h1>
+		</div>
+	</div>
+	@endif
+	@endif
+
+	<main id="hr_content" class="hr-body @if ($hr_lnb) has-lnb @endif">
+		<div class="hr-inner hr-body-inner">
+
+			@if ($hr_lnb)
+			<aside class="hr-lnb" aria-label="{{ $hr_lnb['text'] }} {{ $lang->hr_menu }}">
+				<h2 class="hr-lnb-title">{{ $hr_lnb['text'] }}</h2>
+				<ul class="hr-lnb-list">
+					@foreach ($hr_lnb['list'] as $hr_c)
+					<li class="@if (!empty($hr_c['selected']) || !empty($hr_c['open'])) is-on @endif">
+						<a href="{{ $hr_c['href'] }}" @if (($hr_c['open_window'] ?? '') === 'Y') target="_blank" rel="noopener" @endif>
+							<span>{{ $hr_c['text'] }}</span>
+							@if (!empty($hr_c['list']))
+							<svg class="hr-lnb-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.4 5.6 9l1.4-1.4 5 5 5-5L18.4 9z"/></svg>
+							@endif
+						</a>
+						@if (!empty($hr_c['list']) && (!empty($hr_c['selected']) || !empty($hr_c['open'])))
+						<ul class="hr-lnb-sub">
+							@foreach ($hr_c['list'] as $hr_g)
+							<li class="@if (!empty($hr_g['selected'])) is-on @endif">
+								<a href="{{ $hr_g['href'] }}">
+									<svg class="hr-lnb-sub-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v8.5A2.5 2.5 0 0 0 9.5 16h6.7l-3.3 3.3 1.4 1.4L20 15l-5.7-5.7-1.4 1.4 3.3 3.3H9.5a.5.5 0 0 1-.5-.5V5z"/></svg>
+									<span>{{ $hr_g['text'] }}</span>
+								</a>
+							</li>
+							@endforeach
+						</ul>
+						@endif
+					</li>
+					@endforeach
+				</ul>
+
+				@if ($hr->use_login_box === 'Y')
+				<div class="hr-side-login">
+					@if ($is_logged)
+					<p class="hr-side-me">{!! sprintf(escape($lang->hr_welcome), '<strong>' . escape($logged_info->nick_name) . '</strong>') !!}</p>
+					<div class="hr-side-links">
+						<a href="{{ getUrl('', 'act', 'dispMemberInfo') }}">{{ $lang->hr_my_info }}</a>
+						<a href="{{ getUrl('', 'act', 'dispMemberLogout') }}">{{ $lang->hr_logout }}</a>
+					</div>
+					@else
+					<p class="hr-side-me">{{ $lang->hr_login_notice }}</p>
+					<a class="hr-btn hr-btn-primary hr-btn-sm" href="{{ getUrl('', 'act', 'dispMemberLoginForm') }}">{{ $lang->hr_login }}</a>
+					<div class="hr-side-links">
+						<a href="{{ getUrl('', 'act', 'dispMemberSignUpForm') }}">{{ $lang->hr_signup }}</a>
+						<a href="{{ getUrl('', 'act', 'dispMemberFindAccount') }}">{{ $lang->hr_find_account }}</a>
+					</div>
+					@endif
+				</div>
+				@endif
+			</aside>
+			@endif
+
+			<div class="hr-content rhymix_content">{!! $content !!}</div>
+
+		</div>
+	</main>
+
+	@include('_footer')
+
+</div>

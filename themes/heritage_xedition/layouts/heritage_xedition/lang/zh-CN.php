@@ -1,0 +1,30 @@
+<?php
+
+$lang->hr_login = '登录';
+$lang->hr_signup = '注册';
+$lang->hr_logout = '退出';
+$lang->hr_my_info = '我的信息';
+$lang->hr_find_account = '找回账号';
+$lang->hr_welcome = '%s，欢迎您。';
+$lang->hr_login_notice = '请登录后使用会员服务。';
+$lang->hr_admin = '管理员';
+$lang->hr_admin_page = '管理员页面';
+$lang->hr_search = '搜索';
+$lang->hr_search_all = '全站搜索';
+$lang->hr_menu = '菜单';
+$lang->hr_menu_open = '打开菜单';
+$lang->hr_menu_close = '关闭菜单';
+$lang->hr_main_menu = '主菜单';
+$lang->hr_sub_menu = '子菜单';
+$lang->hr_footer_menu = '页脚菜单';
+$lang->hr_to_top = '回到顶部';
+$lang->hr_notify = '通知';
+$lang->hr_notify_read_all = '全部已读';
+$lang->hr_notify_empty = '暂无新通知。';
+$lang->hr_notify_all = '查看全部';
+$lang->hr_theme_toggle = '切换配色模式';
+$lang->hr_lang_select = '选择语言';
+$lang->hr_visual_label = '主要信息';
+$lang->hr_visual_prev = '上一张';
+$lang->hr_visual_next = '下一张';
+$lang->hr_visual_slide = '第 %d 张';

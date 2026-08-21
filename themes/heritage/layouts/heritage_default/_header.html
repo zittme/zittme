@@ -1,8 +1,7 @@
 @version(2)
-<!-- 원본(XE default)의 머리 구조를 그대로 따른다.
+<!-- 머리 구조 (XE default 계보)
      1행: 로고(왼쪽) + 유틸리티·검색(오른쪽)
-     2행: 화면을 가로지르는 짙은 GNB 바 — 항목은 왼쪽부터, 사이에 세로 구분선
-     달라진 건 질감(색·간격·타이포·모션)뿐이다. -->
+     2행: 화면을 가로지르는 짙은 GNB 바, 항목은 왼쪽부터, 사이에 세로 구분선 -->
 <header class="hr-header" id="hr_header">
 
 	<div class="hr-utilrow">
@@ -20,21 +19,86 @@
 
 			<div class="hr-utils">
 				@if ($is_logged)
+				@php
+				// 알림센터(ncenterlite) 헤더 연동 — 기본 플로팅 위젯은 끄고 레이아웃이 직접 그린다.
+				// 모듈이 없는 사이트에서는 벨 자체를 숨긴다
+				$hr_nc_items = [];
+				$hr_nc_unread = 0;
+				$hr_nc_on = false;
+				if (class_exists('NcenterliteModel')) {
+					$layout_info->use_ncenter_widget = 'Y';
+					$hr_nc_on = true;
+					$hr_nc_out = getModel('ncenterlite')->getMyNotifyList($logged_info->member_srl);
+					if ($hr_nc_out && !empty($hr_nc_out->data)) {
+						$hr_nc_items = array_slice(is_array($hr_nc_out->data) ? $hr_nc_out->data : [], 0, 8);
+						$hr_nc_unread = (int)($hr_nc_out->page_navigation->total_count ?? 0);
+					}
+				}
+				@endphp
+				@if ($hr_nc_on)
+				<div class="hr-nc">
+					<button type="button" class="hr-nc-btn" aria-label="{{ $lang->hr_notify }}" aria-expanded="false">
+						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22a2.3 2.3 0 0 0 2.3-2.3H9.7A2.3 2.3 0 0 0 12 22zm7.3-5.3H4.7c-.6 0-.9-.7-.5-1.1l1.5-1.6v-4a6.3 6.3 0 0 1 4.6-6.1V3.3a1.7 1.7 0 1 1 3.4 0v.6a6.3 6.3 0 0 1 4.6 6.1v4l1.5 1.6c.4.4.1 1.1-.5 1.1z"/></svg>
+						@if ($hr_nc_unread > 0)<em class="hr-nc-badge">{{ $hr_nc_unread > 99 ? '99+' : $hr_nc_unread }}</em>@endif
+					</button>
+					<div class="hr-nc-panel" hidden>
+						<div class="hr-nc-head">
+							<strong>{{ $lang->hr_notify }}</strong>
+							@if ($hr_nc_unread > 0)<button type="button" class="hr-nc-readall">{{ $lang->hr_notify_read_all }}</button>@endif
+						</div>
+						<ul class="hr-nc-list">
+							@forelse ($hr_nc_items as $hr_nc_item)
+							<li><a href="{{ $hr_nc_item->url }}"><span class="hr-nc-text">{!! $hr_nc_item->text !!}</span><span class="hr-nc-ago">{{ $hr_nc_item->ago }}</span></a></li>
+							@empty
+							<li class="hr-nc-empty">{{ $lang->hr_notify_empty }}</li>
+							@endforelse
+						</ul>
+						<a class="hr-nc-all" href="{{ Context::getRequestUri() }}member/notifications">{{ $lang->hr_notify_all }}</a>
+					</div>
+				</div>
+				@endif
 				<a class="hr-util-link" href="{{ getUrl('', 'act', 'dispMemberInfo') }}">{{ $logged_info->nick_name }}</a>
 				@if ($logged_info->is_admin == 'Y')
-				<a class="hr-util-link hr-util-admin" href="{{ getUrl('', 'module', 'admin') }}" target="_blank" title="관리자 페이지">
-					<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm-1.6-8h3.2l.4 2.3q.8.3 1.5.8l2.2-.9 1.6 2.8-1.8 1.5q.1.4.1.9t-.1.9l1.8 1.5-1.6 2.8-2.2-.9q-.7.5-1.5.8l-.4 2.3h-3.2l-.4-2.3q-.8-.3-1.5-.8l-2.2.9-1.6-2.8 1.8-1.5q-.1-.4-.1-.9t.1-.9L4.3 7l1.6-2.8 2.2.9q.7-.5 1.5-.8L10 2z"/></svg>
-					<span>관리자</span>
+				<a class="hr-util-link hr-util-admin" href="{{ getUrl('', 'module', 'admin') }}" target="_blank" title="{{ $lang->hr_admin_page }}">
+					<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.4 13a7.9 7.9 0 0 0 0-2l2.1-1.6a.5.5 0 0 0 .1-.6l-2-3.5a.5.5 0 0 0-.6-.2l-2.5 1a7.3 7.3 0 0 0-1.7-1l-.4-2.7a.5.5 0 0 0-.5-.4h-4a.5.5 0 0 0-.5.4l-.4 2.7a7.3 7.3 0 0 0-1.7 1l-2.5-1a.5.5 0 0 0-.6.2l-2 3.5a.5.5 0 0 0 .1.6L4.4 11a7.9 7.9 0 0 0 0 2l-2.1 1.6a.5.5 0 0 0-.1.6l2 3.5a.5.5 0 0 0 .6.2l2.5-1a7.3 7.3 0 0 0 1.7 1l.4 2.7a.5.5 0 0 0 .5.4h4a.5.5 0 0 0 .5-.4l.4-2.7a7.3 7.3 0 0 0 1.7-1l2.5 1a.5.5 0 0 0 .6-.2l2-3.5a.5.5 0 0 0-.1-.6zM12 15.5A3.5 3.5 0 1 1 15.5 12 3.5 3.5 0 0 1 12 15.5z"/></svg>
+					<span>{{ $lang->hr_admin }}</span>
 				</a>
 				@endif
-				<a class="hr-util-link" href="{{ getUrl('', 'act', 'dispMemberLogout') }}">로그아웃</a>
+				<a class="hr-util-link" href="{{ getUrl('', 'act', 'dispMemberLogout') }}">{{ $lang->hr_logout }}</a>
 				@else
-				<a class="hr-util-link" href="{{ getUrl('', 'act', 'dispMemberLoginForm') }}">로그인</a>
-				<a class="hr-util-link" href="{{ getUrl('', 'act', 'dispMemberSignUpForm') }}">회원가입</a>
+				<a class="hr-util-link" href="{{ getUrl('', 'act', 'dispMemberLoginForm') }}">{{ $lang->hr_login }}</a>
+				<a class="hr-util-link" href="{{ getUrl('', 'act', 'dispMemberSignUpForm') }}">{{ $lang->hr_signup }}</a>
+				@endif
+
+				{{-- 언어 전환: 코어에서 켜 둔 언어가 둘 이상일 때만 나온다 --}}
+				@php
+				$hr_langs = \Context::get('lang_supported');
+				$hr_langs = is_array($hr_langs) ? $hr_langs : [];
+				$hr_lang_now = \Context::getLangType();
+				// 보던 주소를 그대로 두고 l 값만 갈아 끼운다.
+				// getUrl() 은 재작성된 주소(/notice/123)를 복원하지 못해 대문으로 떨어진다.
+				$hr_lang_uri = (string)($_SERVER['REQUEST_URI'] ?? '/');
+				$hr_lang_uri = preg_replace('/([?&])l=[^&]*/', '$1', $hr_lang_uri);
+				$hr_lang_uri = preg_replace('/[?&]+$/', '', $hr_lang_uri);
+				$hr_lang_uri = str_replace('&&', '&', $hr_lang_uri);
+				$hr_lang_sep = strpos($hr_lang_uri, '?') === false ? '?' : '&';
+				@endphp
+				@if (count($hr_langs) > 1)
+				<div class="hr-lang" id="hr_lang">
+					<button type="button" class="hr-lang-btn" aria-haspopup="true" aria-expanded="false" aria-label="{{ $lang->hr_lang_select }}">
+						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2c1.4 0 2.8 2.4 3.4 6H8.6C9.2 6.4 10.6 4 12 4zM8.2 10h7.6a18 18 0 0 1 0 4H8.2a18 18 0 0 1 0-4zm-2 0a20 20 0 0 0 0 4H4.3a8 8 0 0 1 0-4h1.9zm11.6 0h1.9a8 8 0 0 1 0 4h-1.9a20 20 0 0 0 0-4zM8.6 16h6.8c-.6 3.6-2 6-3.4 6s-2.8-2.4-3.4-6z"/></svg>
+						<span>{{ $hr_langs[$hr_lang_now] ?? strtoupper($hr_lang_now) }}</span>
+					</button>
+					<ul class="hr-lang-list" hidden>
+						@foreach ($hr_langs as $hr_lang_code => $hr_lang_name)
+						<li><a href="{{ $hr_lang_uri }}{{ $hr_lang_sep }}l={{ $hr_lang_code }}" @if ($hr_lang_code === $hr_lang_now) class="is-on" @endif>{{ $hr_lang_name }}</a></li>
+						@endforeach
+					</ul>
+				</div>
 				@endif
 
 				@if ($hr_scheme === 'auto')
-				<button type="button" class="hr-theme" id="hr_theme_btn" aria-label="색상 모드 전환">
+				<button type="button" class="hr-theme" id="hr_theme_btn" data-hr-theme-toggle aria-label="{{ $lang->hr_theme_toggle }}">
 					<svg class="hr-ico-sun" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0-6 1 3h-2l1-3zm0 19 1 3h-2l1-3zM2 12l3-1v2l-3-1zm17-1 3 1-3 1v-2zM4.2 4.2l2.6 1.6-1 1-1.6-2.6zm13 13 2.6 1.6-1.6-2.6-1 1zm2.6-13-1.6 2.6-1-1 2.6-1.6zM4.2 19.8l1.6-2.6 1 1-2.6 1.6z"/></svg>
 					<svg class="hr-ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.3 13.8A8.5 8.5 0 0 1 10.2 3.7 8.5 8.5 0 1 0 20.3 13.8z"/></svg>
 				</button>
@@ -44,26 +108,25 @@
 				<form class="hr-search" action="{{ getUrl() }}" method="get" role="search">
 					<input type="hidden" name="act" value="IS" />
 					<input type="hidden" name="mid" value="{{ $mid ?? '' }}" />
-					<input type="search" name="is_keyword" placeholder="검색" aria-label="통합 검색" />
-					<button type="submit" aria-label="검색">
+					<input type="search" name="is_keyword" placeholder="{{ $lang->hr_search }}" aria-label="{{ $lang->hr_search_all }}" />
+					<button type="submit" aria-label="{{ $lang->hr_search }}">
 						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 3a7.5 7.5 0 1 0 4.6 13.4l4.2 4.3 1.5-1.5-4.3-4.2A7.5 7.5 0 0 0 10.5 3zm0 2a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11z"/></svg>
 					</button>
 				</form>
 				@endif
 
-				<button type="button" class="hr-burger" id="hr_burger" aria-label="메뉴 열기" aria-expanded="false">
+				<button type="button" class="hr-burger" id="hr_burger" aria-label="{{ $lang->hr_menu_open }}" aria-expanded="false">
 					<span></span><span></span><span></span>
 				</button>
 			</div>
 		</div>
 	</div>
 
-	<!-- GNB 바 — 원본의 검은 띠. 항목 사이 세로 구분선까지 그대로 두었다.
-	     원본의 가장 큰 특징은 바에 마우스를 올리면 '모든' 1차 메뉴의 하위가
-	     각자 제 자리 아래 컬럼으로 한꺼번에 펼쳐진다는 점(.gnb.open)이라
-	     그 동작을 그대로 살렸다. -->
+	<!-- GNB 바: 항목 사이 세로 구분선.
+	     바에 마우스를 올리면 모든 1차 메뉴의 하위가 각자 아래 컬럼으로
+	     한꺼번에 펼쳐진다 (.gnb.open). -->
 	<div class="hr-navbar is-{{ $hr->gnb_width ?? 'boxed' }} c-{{ $hr->gnb_color ?? 'dark' }}" id="hr_navbar">
-		<nav class="hr-inner hr-gnb" aria-label="주 메뉴">
+		<nav class="hr-inner hr-gnb" aria-label="{{ $lang->hr_main_menu }}">
 			<ul class="hr-gnb-list">
 				@foreach ($hr_menu as $hr_i => $hr_m)
 				<li class="@if (!empty($hr_m['list'])) has-sub @endif @if (!empty($hr_m['selected']) || !empty($hr_m['open'])) is-on @endif">
@@ -91,20 +154,20 @@
 	</div>
 
 	<div class="hr-mobile-dim" id="hr_mobile_dim" hidden></div>
-	<div class="hr-mobile" id="hr_mobile" role="dialog" aria-modal="true" aria-label="메뉴" hidden>
+	<div class="hr-mobile" id="hr_mobile" role="dialog" aria-modal="true" aria-label="{{ $lang->hr_menu }}" hidden>
 		<div class="hr-mobile-head">
 			<span class="hr-mobile-title">{{ $hr->logo_text ?: ($site_title ?? '') }}</span>
-			<button type="button" class="hr-mobile-close" id="hr_mobile_close" aria-label="메뉴 닫기">
+			<button type="button" class="hr-mobile-close" id="hr_mobile_close" aria-label="{{ $lang->hr_menu_close }}">
 				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7l1.4-1.4 6.3 6.3 6.3-6.3z"/></svg>
 			</button>
 		</div>
 		<div class="hr-mobile-account">
 			@if ($is_logged)
 			<a class="hr-mobile-account-btn" href="{{ getUrl('', 'act', 'dispMemberInfo') }}">{{ $logged_info->nick_name }}</a>
-			<a class="hr-mobile-account-btn" href="{{ getUrl('', 'act', 'dispMemberLogout') }}">로그아웃</a>
+			<a class="hr-mobile-account-btn" href="{{ getUrl('', 'act', 'dispMemberLogout') }}">{{ $lang->hr_logout }}</a>
 			@else
-			<a class="hr-mobile-account-btn is-primary" href="{{ getUrl('', 'act', 'dispMemberLoginForm') }}">로그인</a>
-			<a class="hr-mobile-account-btn" href="{{ getUrl('', 'act', 'dispMemberSignUpForm') }}">회원가입</a>
+			<a class="hr-mobile-account-btn is-primary" href="{{ getUrl('', 'act', 'dispMemberLoginForm') }}">{{ $lang->hr_login }}</a>
+			<a class="hr-mobile-account-btn" href="{{ getUrl('', 'act', 'dispMemberSignUpForm') }}">{{ $lang->hr_signup }}</a>
 			@endif
 		</div>
 		<ul class="hr-mobile-list">
@@ -113,7 +176,7 @@
 			<li class="@if (!empty($hr_m['list'])) has-sub @endif @if ($hr_open) is-on @endif">
 				<a href="{{ $hr_m['href'] }}">{{ $hr_m['text'] }}</a>
 				@if (!empty($hr_m['list']))
-				<button type="button" class="hr-mobile-toggle" aria-label="하위 메뉴" aria-expanded="{{ $hr_open ? 'true' : 'false' }}">
+				<button type="button" class="hr-mobile-toggle" aria-label="{{ $lang->hr_sub_menu }}" aria-expanded="{{ $hr_open ? 'true' : 'false' }}">
 					<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5z"/></svg>
 				</button>
 				<ul class="hr-mobile-sub" @if (!$hr_open) hidden @endif>
@@ -134,5 +197,34 @@
 			</li>
 			@endforeach
 		</ul>
+
+		{{-- 좁은 화면에서는 헤더에 로고가 설 자리가 없다. 관리자·언어·밝기를 여기로 모은다 --}}
+		<div class="hr-mobile-tools">
+			@if ($is_logged && $logged_info->is_admin == 'Y')
+			<a class="hr-mobile-tool" href="{{ getUrl('', 'module', 'admin') }}" target="_blank">
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.4 13a7.9 7.9 0 0 0 0-2l2.1-1.6a.5.5 0 0 0 .1-.6l-2-3.5a.5.5 0 0 0-.6-.2l-2.5 1a7.3 7.3 0 0 0-1.7-1l-.4-2.7a.5.5 0 0 0-.5-.4h-4a.5.5 0 0 0-.5.4l-.4 2.7a7.3 7.3 0 0 0-1.7 1l-2.5-1a.5.5 0 0 0-.6.2l-2 3.5a.5.5 0 0 0 .1.6L4.4 11a7.9 7.9 0 0 0 0 2l-2.1 1.6a.5.5 0 0 0-.1.6l2 3.5a.5.5 0 0 0 .6.2l2.5-1a7.3 7.3 0 0 0 1.7 1l.4 2.7a.5.5 0 0 0 .5.4h4a.5.5 0 0 0 .5-.4l.4-2.7a7.3 7.3 0 0 0 1.7-1l2.5 1a.5.5 0 0 0 .6-.2l2-3.5a.5.5 0 0 0-.1-.6zM12 15.5A3.5 3.5 0 1 1 15.5 12 3.5 3.5 0 0 1 12 15.5z"/></svg>
+				<span>{{ $lang->hr_admin }}</span>
+			</a>
+			@endif
+
+			@if ($hr_scheme === 'auto' && ($hr->mobile_theme_pos ?? 'drawer') === 'drawer')
+			<button type="button" class="hr-mobile-tool" data-hr-theme-toggle>
+				<svg class="hr-ico-sun" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0-6 1 3h-2l1-3zm0 19 1 3h-2l1-3zM2 12l3-1v2l-3-1zm17-1 3 1-3 1v-2zM4.2 4.2l2.6 1.6-1 1-1.6-2.6zm13 13 2.6 1.6-1.6-2.6-1 1zm2.6-13-1.6 2.6-1-1 2.6-1.6zM4.2 19.8l1.6-2.6 1 1-2.6 1.6z"/></svg>
+				<svg class="hr-ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.3 13.8A8.5 8.5 0 0 1 10.2 3.7 8.5 8.5 0 1 0 20.3 13.8z"/></svg>
+				<span>{{ $lang->hr_theme_toggle }}</span>
+			</button>
+			@endif
+
+			@if (count($hr_langs) > 1 && ($hr->mobile_lang_pos ?? 'drawer') === 'drawer')
+			<div class="hr-mobile-tool hr-mobile-lang">
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2c1.4 0 2.8 2.4 3.4 6H8.6C9.2 6.4 10.6 4 12 4zM8.2 10h7.6a18 18 0 0 1 0 4H8.2a18 18 0 0 1 0-4zm-2 0a20 20 0 0 0 0 4H4.3a8 8 0 0 1 0-4h1.9zm11.6 0h1.9a8 8 0 0 1 0 4h-1.9a20 20 0 0 0 0-4zM8.6 16h6.8c-.6 3.6-2 6-3.4 6s-2.8-2.4-3.4-6z"/></svg>
+				<select id="hr_mobile_lang" aria-label="{{ $lang->hr_lang_select }}">
+					@foreach ($hr_langs as $hr_lang_code => $hr_lang_name)
+					<option value="{{ $hr_lang_uri }}{{ $hr_lang_sep }}l={{ $hr_lang_code }}" @if ($hr_lang_code === $hr_lang_now) selected @endif>{{ $hr_lang_name }}</option>
+					@endforeach
+				</select>
+			</div>
+			@endif
+		</div>
 	</div>
 </header>

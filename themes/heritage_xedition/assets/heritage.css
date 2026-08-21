@@ -1,0 +1,235 @@
+@charset "utf-8";
+
+:root {
+	
+	--hr-brand: #cda25a;
+	--hr-brand-dark: #b3873f;
+	--hr-brand-light: #dcbc84;
+	--hr-brand-soft: rgba(205, 162, 90, .12);
+	--hr-ink: #10151f;
+	--hr-ink-sub: #525c6b;
+	--hr-muted: #8a94a4;
+	--hr-line: #e6e9ef;
+	--hr-line-soft: #f0f2f6;
+	--hr-bg: #ffffff;
+	--hr-surface: #f7f8fb;
+	--hr-danger: #e5484d;
+	--hr-success: #0f9d63;
+
+	--hr-btn-face: #fbfbfc;
+	--hr-btn-line: #ccd1d9;
+	--hr-btn-strong: var(--hr-brand);
+	--hr-btn-strong-hover: var(--hr-brand-dark);
+
+	/* XEDITION 무드: 라운드 없는 직사각 구획이 디자인 정체성이다 */
+	--hr-radius: 0;
+	--hr-radius-sm: 0;
+	--hr-radius-btn: 0;
+	--hr-radius-pill: 999px;
+	--hr-shadow: 0 18px 40px -24px rgba(16, 21, 31, .28);
+
+	--hr-w: 1440px;
+	--hr-font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
+		'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+	/* 제목·로고용 디스플레이 폰트. 영문만 Raleway, 한글은 본문 폰트로 폴백 (XEDITION 계보) */
+	--hr-font-display: 'Raleway', 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
+		'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+}
+
+/* 다크 팔레트: 골드 포인트에 맞춘 웜 차콜. 푸른 기 도는 남색 계열은 금색과 부딪힌다 */
+[data-theme="dark"] {
+	--hr-brand-soft: rgba(205, 162, 90, .2);
+	--hr-ink: #ece9e2;
+	--hr-ink-sub: #bab3a6;
+	--hr-muted: #948d7f;
+	--hr-line: #363229;
+	--hr-line-soft: #29261f;
+	--hr-bg: #17150f;
+	--hr-surface: #1f1c15;
+	--hr-btn-face: #262218;
+	--hr-btn-line: #443e30;
+	--hr-shadow: 0 18px 40px -24px rgba(0, 0, 0, .6);
+}
+
+.hr {
+	font-family: var(--hr-font);
+	color: var(--hr-ink);
+	font-size: 16px;
+	line-height: 1.65;
+	word-break: keep-all;
+	overflow-wrap: break-word;
+}
+
+/* 스크롤바. 파이어폭스는 두 값만 받고, 나머지는 아래 webkit 규칙이 맡는다.
+ * 점 색은 layout.html 이 :root 에 심는다. 감싸는 요소에만 있으면 창 스크롤바까지 닿지 않는다 */
+html, .hr *, .hr-mobile * {
+	scrollbar-width: thin;
+	scrollbar-color: color-mix(in srgb, var(--hr-brand) 55%, transparent) transparent;
+}
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+	border: 3px solid transparent;
+	border-radius: var(--hr-radius-pill);
+	background-clip: padding-box;
+	background-color: var(--hr-brand);
+}
+::-webkit-scrollbar-thumb:hover { border-width: 2px; }
+::-webkit-scrollbar-corner { background: transparent; }
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+	::-webkit-scrollbar-thumb { background-color: color-mix(in srgb, var(--hr-brand) 55%, transparent); }
+	::-webkit-scrollbar-thumb:hover { background-color: var(--hr-brand); }
+}
+.hr a { color: inherit; text-decoration: none; }
+.hr img { max-width: 100%; height: auto; }
+.hr ul, .hr ol { list-style: none; margin: 0; padding: 0; }
+.hr h1, .hr h2, .hr h3, .hr h4 { margin: 0; font-weight: 800; letter-spacing: -.02em; line-height: 1.35; }
+
+
+.hr-inner { width: 100%; max-width: var(--hr-w); margin: 0 auto; padding: 0; box-sizing: border-box; }
+/* 와이드 그리드: 뷰포트가 본문 폭보다 좁아지면 좌우 여백을 확보한다 */
+@media (max-width: 1600px) {
+	.hr-inner { padding: 0 clamp(14px, 3vw, 28px); }
+}
+
+.hr-btn,
+.hr a.hr-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	padding: 8px 15px;
+	border: 1px solid var(--hr-btn-line);
+	border-radius: var(--hr-radius-btn);
+	background: var(--hr-btn-face);
+	color: var(--hr-ink);
+	font: inherit;
+	font-size: 13.5px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: border-color .14s, background .14s, color .14s;
+}
+.hr-btn:hover { border-color: var(--hr-muted); background: var(--hr-surface); }
+.hr-btn-primary,
+.hr a.hr-btn-primary {
+	background: var(--hr-btn-strong);
+	border-color: var(--hr-btn-strong);
+	color: #fff;
+}
+.hr-btn-primary:hover {
+	background: var(--hr-btn-strong-hover);
+	border-color: var(--hr-btn-strong-hover);
+	color: #fff;
+}
+.hr-btn-sm { padding: 6px 12px; font-size: 12.5px; }
+.hr-btn-lg { padding: 12px 24px; font-size: 15px; }
+.hr-btn:disabled, .hr-btn.is-disabled { opacity: .55; pointer-events: none; }
+
+.hr-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 6px 12px;
+	border: 1px solid var(--hr-line);
+	border-radius: var(--hr-radius-btn);
+	background: var(--hr-bg);
+	color: var(--hr-ink-sub);
+	font-size: 13px;
+	font-weight: 600;
+}
+.hr-chip:hover { border-color: var(--hr-brand); color: var(--hr-brand); }
+.hr-chip.is-on { background: var(--hr-brand); border-color: var(--hr-brand); color: #fff; }
+.hr-badge {
+	display: inline-block;
+	padding: 3px 9px;
+	border-radius: 0;
+	background: var(--hr-brand-soft);
+	color: var(--hr-brand);
+	font-size: 11.5px;
+	font-weight: 800;
+}
+.hr-badge.is-muted { background: var(--hr-surface); color: var(--hr-muted); }
+.hr-badge.is-danger { background: rgba(229, 72, 77, .1); color: var(--hr-danger); }
+.hr-badge.is-success { background: rgba(15, 157, 99, .1); color: var(--hr-success); }
+
+.hr-card {
+	border: 1px solid var(--hr-line);
+	border-radius: var(--hr-radius);
+	background: var(--hr-bg);
+	padding: 24px;
+}
+.hr-card-hover { transition: transform .16s, border-color .16s, box-shadow .16s; }
+.hr-card-hover:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--hr-brand) 55%, transparent); box-shadow: var(--hr-shadow); }
+
+.hr-field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
+.hr-field > label { font-size: 14px; font-weight: 700; }
+.hr-field > label em { color: var(--hr-danger); font-style: normal; }
+.hr input[type="text"], .hr input[type="password"], .hr input[type="email"],
+.hr input[type="search"], .hr input[type="tel"], .hr input[type="number"],
+.hr input[type="date"], .hr select, .hr textarea {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 12px 14px;
+	border: 1px solid var(--hr-line);
+	border-radius: var(--hr-radius-sm);
+	background: var(--hr-bg);
+	color: var(--hr-ink);
+	font: inherit;
+	font-size: 15px;
+	outline: none;
+	transition: border-color .14s, box-shadow .14s;
+}
+.hr input:focus, .hr select:focus, .hr textarea:focus {
+	border-color: var(--hr-brand);
+	box-shadow: 0 0 0 3px var(--hr-brand-soft);
+}
+.hr textarea { resize: vertical; line-height: 1.7; }
+.hr-field-hint { margin: 0; font-size: 12.5px; color: var(--hr-muted); }
+.hr-check { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
+/* 체크박스·라디오·프로그레스 등 네이티브 위젯도 포인트색을 따른다 */
+.hr input[type="checkbox"], .hr input[type="radio"],
+.hr input[type="range"], .hr progress { accent-color: var(--hr-brand); }
+
+.hr-table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+.hr-table th, .hr-table td { padding: 15px 12px; text-align: left; border-bottom: 1px solid var(--hr-line-soft); }
+.hr-table thead th {
+	border-bottom: 1px solid var(--hr-line);
+	color: var(--hr-muted);
+	font-size: 13px;
+	font-weight: 700;
+	white-space: nowrap;
+}
+.hr-table tbody tr:hover { background: var(--hr-surface); }
+
+.hr-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin: 0 0 24px; }
+.hr-eyebrow { display: block; font-size: 11.5px; font-weight: 800; letter-spacing: .14em; color: var(--hr-brand); text-transform: uppercase; }
+.hr-title { margin: 6px 0 0; font-size: clamp(24px, 3.2vw, 32px); }
+.hr-desc { margin: 8px 0 0; color: var(--hr-ink-sub); font-size: 15px; }
+
+.hr-pages { display: flex; justify-content: center; align-items: center; gap: 2px; margin: 26px 0 0; }
+.hr-pages a, .hr-pages strong {
+	width: 28px;
+	height: 28px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border-radius: var(--hr-radius-btn);
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--hr-ink-sub);
+}
+.hr-pages a:hover { background: var(--hr-surface); color: var(--hr-brand); }
+.hr-pages strong { color: var(--hr-brand); font-weight: 800; }
+
+.hr-empty { padding: 70px 20px; text-align: center; color: var(--hr-muted); }
+
+.hr-notice { margin: 0 0 16px; padding: 14px 18px; border-radius: var(--hr-radius-sm); background: var(--hr-surface); color: var(--hr-ink-sub); font-size: 14px; }
+.hr-notice.is-error { background: rgba(229, 72, 77, .08); color: var(--hr-danger); }
+.hr-notice.is-success { background: rgba(15, 157, 99, .08); color: var(--hr-success); }
+
+@media (max-width: 640px) {
+	.hr { font-size: 15px; }
+	.hr-card { padding: 18px 16px; }
+	.hr-table th, .hr-table td { padding: 12px 8px; }
+}

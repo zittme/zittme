@@ -2306,3 +2306,15 @@ html[lang="mn"] .x .g11n.active > [disabled] { background-image: url(../img/flag
 .x .x_table th, .x .x_table td { border-top-color: var(--zm-line); }
 .x .x_table-hover tbody > tr:hover > td,
 .x .x_table-hover tbody > tr:hover > th { background-color: var(--zm-brand-soft); }
+
+/* 관리 홈 최상단: 새 정식 코어 릴리즈 배너 */
+.zdb-release-banner { display: flex; align-items: center; gap: 10px; margin: 0 0 18px; padding: 13px 18px; border: 1px solid #bcd3f5; border-left: 4px solid #2677e3; border-radius: 10px; background: #eef4fd; color: #1d2433; font-size: 14px; font-weight: 600; }
+.zdb-release-banner svg { flex: none; width: 20px; height: 20px; fill: #2677e3; }
+.zdb-release-banner .zdb-release-text { flex: 1; min-width: 0; }
+.zdb-release-banner .zdb-release-link { flex: none; padding: 7px 14px; border-radius: 8px; background: #2677e3; color: #fff; font-size: 13px; font-weight: 700; text-decoration: none; }
+.zdb-release-banner .zdb-release-link:hover { background: #1c5fc0; color: #fff; }
+body.color_scheme_dark .zdb-release-banner { background: rgba(38, 119, 227, .14); border-color: rgba(38, 119, 227, .35); color: #e4e7ec; }
+/* 관리자 공통 링크 색보다 우선 */
+.zdb-page .zdb-release-banner a.zdb-release-link,
+.zdb-page .zdb-release-banner a.zdb-release-link:visited { color: #fff !important; text-decoration: none !important; }
+.zdb-page .zdb-release-banner a.zdb-release-link:hover { color: #fff !important; background: #1c5fc0; }

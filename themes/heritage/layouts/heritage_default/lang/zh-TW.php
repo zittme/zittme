@@ -1,0 +1,30 @@
+<?php
+
+$lang->hr_login = '登入';
+$lang->hr_signup = '註冊';
+$lang->hr_logout = '登出';
+$lang->hr_my_info = '我的資訊';
+$lang->hr_find_account = '尋找帳號';
+$lang->hr_welcome = '%s，歡迎您。';
+$lang->hr_login_notice = '請登入後使用會員服務。';
+$lang->hr_admin = '管理員';
+$lang->hr_admin_page = '管理員頁面';
+$lang->hr_search = '搜尋';
+$lang->hr_search_all = '全站搜尋';
+$lang->hr_menu = '選單';
+$lang->hr_menu_open = '開啟選單';
+$lang->hr_menu_close = '關閉選單';
+$lang->hr_main_menu = '主選單';
+$lang->hr_sub_menu = '子選單';
+$lang->hr_footer_menu = '頁尾選單';
+$lang->hr_to_top = '回到頂部';
+$lang->hr_notify = '通知';
+$lang->hr_notify_read_all = '全部已讀';
+$lang->hr_notify_empty = '暫無新通知。';
+$lang->hr_notify_all = '查看全部';
+$lang->hr_theme_toggle = '切換配色模式';
+$lang->hr_lang_select = '選擇語言';
+$lang->hr_visual_label = '主要資訊';
+$lang->hr_visual_prev = '上一張';
+$lang->hr_visual_next = '下一張';
+$lang->hr_visual_slide = '第 %d 張';

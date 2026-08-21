@@ -1,0 +1,82 @@
+@version(2)
+
+{{-- 통화 선택 바 + 최초 1회 통화 제안 모달 --}}
+{{-- 추가 결제 통화가 있고 환율이 잡힌 통화가 2개 이상일 때만 나타난다 --}}
+{{-- 선택은 쿠키(shp_currency)로 저장되고 모든 가격·주문서가 따라간다 --}}
+
+@php
+$shp_cur_base = $shp_base_currency;
+$shp_cur_now = $shp_currency;
+$shp_cur_list = $shp_currency_choices ?? [];
+@endphp
+
+@if (count($shp_cur_list) > 1)
+<div class="shp-currency-bar" style="display:flex;justify-content:flex-end;align-items:center;margin:0 10px 6px auto">
+	<select id="shpCurrencySelect" class="shp-cur-select" aria-label="{{ $lang->shop_currency_select }}">
+		@foreach ($shp_cur_list as $shp_cc => $shp_cs)
+		<option value="{{ $shp_cc }}" @if ($shp_cc === $shp_cur_now) selected @endif>{{ $shp_cs }}</option>
+		@endforeach
+	</select>
+</div>
+
+<div id="shpCurrencyModal" class="shp-modal">
+	<div class="shp-modal-dim" data-shp-cur-close></div>
+	<div role="dialog" aria-modal="true" class="shp-modal-box">
+		<h3>Choose your currency</h3>
+		<p>We can show prices in your local currency.<br />{{ $lang->shop_currency_local }}</p>
+		<div style="display:flex;flex-direction:column;gap:8px">
+			<button type="button" id="shpCurSuggestBtn" class="shp-btn shp-btn-primary" style="width:100%"></button>
+			<button type="button" class="shp-btn" style="width:100%" data-shp-cur-close>{{ $shp_cur_list[$shp_cur_base] ?? $shp_cur_base }} ({{ $lang->shop_currency_keep }})</button>
+		</div>
+	</div>
+</div>
+
+<script>
+(function () {
+	var sel = document.getElementById('shpCurrencySelect');
+	if (!sel) return;
+	function setCurrency(code) {
+		document.cookie = 'shp_currency=' + code + '; path=/; max-age=31536000; samesite=lax';
+		window.location.reload();
+	}
+	sel.addEventListener('change', function () { setCurrency(this.value); });
+
+	// 최초 1회: 브라우저 지역의 통화가 판매 통화 중에 있으면 제안 모달을 띄운다
+	var base = '{{ $shp_cur_base }}';
+	var offered = [];
+	for (var i = 0; i < sel.options.length; i++) offered.push(sel.options[i].value);
+	var hasCookie = /(?:^|;\s*)shp_currency=/.test(document.cookie);
+	var prompted = false;
+	try { prompted = localStorage.getItem('shp_cur_prompted') === '1'; } catch (e) {}
+	if (hasCookie || prompted) return;
+
+	var byRegion = { KR:'KRW', US:'USD', JP:'JPY', CN:'CNY', TW:'TWD', HK:'HKD', GB:'GBP', AU:'AUD', CA:'CAD', CH:'CHF', SG:'SGD', TH:'THB', VN:'VND', PH:'PHP', ID:'IDR', MY:'MYR', IN:'INR', MX:'MXN', BR:'BRL', NZ:'NZD', SE:'SEK', NO:'NOK', DK:'DKK', PL:'PLN', CZ:'CZK', HU:'HUF', AE:'AED', SA:'SAR', IL:'ILS', TR:'TRY', ZA:'ZAR', DE:'EUR', FR:'EUR', ES:'EUR', IT:'EUR', NL:'EUR', PT:'EUR', AT:'EUR', BE:'EUR', FI:'EUR', IE:'EUR', GR:'EUR' };
+	var byLang = { ko:'KRW', ja:'JPY', th:'THB', vi:'VND', id:'IDR', ms:'MYR', hi:'INR', pt:'BRL', sv:'SEK', nb:'NOK', da:'DKK', pl:'PLN', cs:'CZK', hu:'HUF', ar:'SAR', he:'ILS', tr:'TRY', de:'EUR', fr:'EUR', it:'EUR', nl:'EUR', el:'EUR', es:'EUR' };
+	var tag = (navigator.language || '').split('-');
+	var guess = (tag[1] && byRegion[tag[1].toUpperCase()]) || byLang[(tag[0] || '').toLowerCase()] || '';
+	if (!guess || guess === base || offered.indexOf(guess) < 0) return;
+
+	var modal = document.getElementById('shpCurrencyModal');
+	var suggest = document.getElementById('shpCurSuggestBtn');
+	if (!modal || !suggest) return;
+	var sym = '';
+	for (var j = 0; j < sel.options.length; j++) {
+		if (sel.options[j].value === guess) sym = sel.options[j].textContent.trim();
+	}
+	suggest.textContent = {!! json_encode($lang->shop_currency_view) !!}.replace('%s', sym || guess);
+	// 통화 제안 모달은 회원·브라우저당 한 번만 띄운다
+	try { localStorage.setItem('shp_cur_prompted', '1'); } catch (e) {}
+	suggest.addEventListener('click', function () {
+		try { localStorage.setItem('shp_cur_prompted', '1'); } catch (e) {}
+		setCurrency(guess);
+	});
+	modal.querySelectorAll('[data-shp-cur-close]').forEach(function (el) {
+		el.addEventListener('click', function () {
+			try { localStorage.setItem('shp_cur_prompted', '1'); } catch (e) {}
+			modal.style.display = 'none';
+		});
+	});
+	modal.style.display = 'flex';
+})();
+</script>
+@endif

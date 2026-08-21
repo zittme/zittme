@@ -70,6 +70,24 @@
 				<options value="point"><title xml:lang="ko">포인트 색상</title><title xml:lang="en">Point color</title></options>
 				<options value="light"><title xml:lang="ko">밝게</title><title xml:lang="en">Light</title></options>
 			</var>
+			<var name="mobile_theme_pos" type="select" default="drawer">
+				<title xml:lang="ko">모바일 다크모드 버튼 위치</title>
+				<title xml:lang="en">Mobile dark mode button position</title>
+				<description xml:lang="ko">PC에서는 항상 헤더에 표시됩니다. 모바일에서 어디에 둘지 선택합니다.</description>
+				<description xml:lang="en">Always shown in the header on PC. Choose where it goes on mobile.</description>
+				<options value="drawer"><title xml:lang="ko">메뉴 서랍 안 (기본)</title><title xml:lang="en">In the menu drawer (default)</title></options>
+				<options value="header"><title xml:lang="ko">헤더</title><title xml:lang="en">Header</title></options>
+				<options value="footer"><title xml:lang="ko">푸터</title><title xml:lang="en">Footer</title></options>
+			</var>
+			<var name="mobile_lang_pos" type="select" default="drawer">
+				<title xml:lang="ko">모바일 언어 선택 위치</title>
+				<title xml:lang="en">Mobile language selector position</title>
+				<description xml:lang="ko">PC에서는 항상 헤더에 표시됩니다. 모바일에서 어디에 둘지 선택합니다.</description>
+				<description xml:lang="en">Always shown in the header on PC. Choose where it goes on mobile.</description>
+				<options value="drawer"><title xml:lang="ko">메뉴 서랍 안 (기본)</title><title xml:lang="en">In the menu drawer (default)</title></options>
+				<options value="header"><title xml:lang="ko">헤더</title><title xml:lang="en">Header</title></options>
+				<options value="footer"><title xml:lang="ko">푸터</title><title xml:lang="en">Footer</title></options>
+			</var>
 			<var name="color_scheme" type="select" default="auto">
 				<title xml:lang="ko">색상 모드</title>
 				<title xml:lang="en">Color scheme</title>

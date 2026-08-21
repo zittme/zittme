@@ -78,9 +78,20 @@ class zittme_content extends WidgetHandler
 	protected static $variant = 'default';
 	protected static $new_hours = 24;
 
+	/**
+	 * 위젯 언어팩. 위젯은 모듈처럼 자동 로드되지 않아 직접 읽어야 한다.
+	 */
+	protected static function lang(string $code): string
+	{
+		$text = \Context::getLang($code);
+		return is_string($text) && $text !== '' && $text !== $code ? $text : '';
+	}
+
 	public function proc($args)
 	{
-		self::$variant = trim((string)($args->skin ?? '')) === 'heritage_default' ? 'heritage' : 'default';
+		\Context::loadLang(__DIR__ . '/lang');
+		$skin_name = trim((string)($args->skin ?? ''));
+		self::$variant = $skin_name === 'heritage_xedition' ? 'heritage_xedition' : ($skin_name === 'heritage_default' ? 'heritage' : 'default');
 		$new_hours = (float)($args->new_hours ?? 0);
 		self::$new_hours = $new_hours > 0 ? $new_hours : 24;
 
@@ -142,7 +153,7 @@ class zittme_content extends WidgetHandler
 				$cols[$i]['source'] = 'comment';
 				if (empty($cols[$i]['title']))
 				{
-					$cols[$i]['title'] = '최근 댓글';
+					$cols[$i]['title'] = self::lang('zc_recent_comments');
 				}
 				unset($cols[$i]['more']);
 			}
@@ -177,7 +188,7 @@ class zittme_content extends WidgetHandler
 
 		if (!count($mids))
 		{
-			return '<div class="zc-block"><div class="zc-empty">게시판(mid)을 연결해주세요. 전체 게시판은 *, 여러 게시판은 쉼표로 입력합니다.</div></div>';
+			return '<div class="zc-block"><div class="zc-empty">' . escape(self::lang('zc_need_mid')) . '</div></div>';
 		}
 
 		if ($style === 'tab')
@@ -188,7 +199,7 @@ class zittme_content extends WidgetHandler
 		$module_map = self::resolveMids($mids);
 		if (!count($module_map))
 		{
-			return '<div class="zc-block"><div class="zc-empty">게시판을 찾을 수 없습니다: ' . escape(implode(', ', $mids)) . '</div></div>';
+			return '<div class="zc-block"><div class="zc-empty">' . escape(sprintf(self::lang('zc_no_module_named'), implode(', ', $mids))) . '</div></div>';
 		}
 		$items = $source === 'comment'
 			? self::fetchComments(array_keys($module_map), $count)
@@ -200,7 +211,7 @@ class zittme_content extends WidgetHandler
 		{
 			if ($is_all || count($module_map) > 1)
 			{
-				$title = $source === 'comment' ? '최근 댓글' : '최신 글';
+				$title = self::lang($source === 'comment' ? 'zc_recent_comments' : 'zc_recent_posts');
 			}
 			else
 			{
@@ -219,11 +230,12 @@ class zittme_content extends WidgetHandler
 		$module_map = self::resolveMids($mids);
 		if (!count($module_map))
 		{
-			return '<div class="zc-block"><div class="zc-empty">게시판을 찾을 수 없습니다.</div></div>';
+			return '<div class="zc-block"><div class="zc-empty">' . escape(self::lang('zc_no_module')) . '</div></div>';
 		}
 		$uid = 'zct' . substr(md5(json_encode($mids) . mt_rand()), 0, 8);
 		$tabs = '';
 		$panes = '';
+		$mores = '';
 		$module_map = array_slice($module_map, 0, 8, true);
 		$i = 0;
 		foreach ($module_map as $module_srl => $info)
@@ -233,12 +245,13 @@ class zittme_content extends WidgetHandler
 				: self::fetchDocuments([$module_srl], $count, false);
 			$on = $i === 0 ? ' is-on' : '';
 			$tabs .= '<button type="button" class="zc-tab' . $on . '" data-zct="' . $uid . '-' . $i . '">' . escape((string)$info->browser_title) . '</button>';
-			$panes .= '<div class="zc-pane' . $on . '" id="' . $uid . '-' . $i . '">' . self::renderItems('list', $items)
-				. '<a class="zc-more-inline" href="' . escape(getUrl('', 'mid', $info->mid)) . '">더보기</a></div>';
+			$panes .= '<div class="zc-pane' . $on . '" id="' . $uid . '-' . $i . '">' . self::renderItems('list', $items) . '</div>';
+			// 더보기는 판 아래가 아니라 탭 줄 오른쪽에 붙는다. 활성 탭 것만 보인다
+			$mores .= '<a class="zc-more zc-tab-more' . $on . '" data-zctm="' . $uid . '-' . $i . '" href="' . escape(getUrl('', 'mid', $info->mid)) . '">' . escape(self::lang('zc_more')) . '</a>';
 			$i++;
 		}
-		$script = '<script>(function(){var w=document.currentScript.parentNode;w.querySelectorAll(".zc-tab").forEach(function(b){b.addEventListener("click",function(){w.querySelectorAll(".zc-tab").forEach(function(x){x.classList.remove("is-on")});w.querySelectorAll(".zc-pane").forEach(function(x){x.classList.remove("is-on")});b.classList.add("is-on");var p=w.querySelector("#"+b.getAttribute("data-zct"));if(p)p.classList.add("is-on");});});})();</script>';
-		return '<div class="zc-block zc-style-tab"><div class="zc-head zc-head-tabs">' . $tabs . '</div><div class="zc-body">' . $panes . '</div>' . $script . '</div>';
+		$script = '<script>(function(){var w=document.currentScript.parentNode;w.querySelectorAll(".zc-tab").forEach(function(b){b.addEventListener("click",function(){w.querySelectorAll(".zc-tab").forEach(function(x){x.classList.remove("is-on")});w.querySelectorAll(".zc-pane").forEach(function(x){x.classList.remove("is-on")});b.classList.add("is-on");var p=w.querySelector("#"+b.getAttribute("data-zct"));if(p)p.classList.add("is-on");w.querySelectorAll(".zc-tab-more").forEach(function(m){m.classList.toggle("is-on",m.getAttribute("data-zctm")===b.getAttribute("data-zct"))});});});})();</script>';
+		return '<div class="zc-block zc-style-tab"><div class="zc-head zc-head-tabs">' . $tabs . $mores . '</div><div class="zc-body">' . $panes . '</div>' . $script . '</div>';
 	}
 
 	protected static function blockShell(string $title, string $more_url, string $body, string $style): string
@@ -246,7 +259,7 @@ class zittme_content extends WidgetHandler
 		$head = '<div class="zc-head"><h3>' . escape($title) . '</h3>';
 		if ($more_url !== '')
 		{
-			$head .= '<a class="zc-more" href="' . escape($more_url) . '">더보기'
+			$head .= '<a class="zc-more" href="' . escape($more_url) . '">' . escape(self::lang('zc_more'))
 				. '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>';
 		}
 		$head .= '</div>';
@@ -257,7 +270,7 @@ class zittme_content extends WidgetHandler
 	{
 		if (!count($items))
 		{
-			return '<div class="zc-empty">아직 게시물이 없습니다.</div>';
+			return '<div class="zc-empty">' . escape(self::lang('zc_no_items')) . '</div>';
 		}
 		switch ($style)
 		{
@@ -472,7 +485,7 @@ class zittme_content extends WidgetHandler
 		}
 		if (!empty($it['is_new']))
 		{
-			$out .= '<em class="zc-new" aria-label="새 글">N</em>';
+			$out .= '<em class="zc-new" aria-label="' . escape(self::lang('zc_new')) . '">N</em>';
 		}
 		return $out;
 	}
@@ -489,10 +502,10 @@ class zittme_content extends WidgetHandler
 	protected static function guideBox(): string
 	{
 		return self::styleTag() . '<div class="zc"><div class="zc-block"><div class="zc-empty" style="padding:40px 20px">'
-			. '<b style="display:block;margin-bottom:8px;font-size:15px">통합 콘텐츠 위젯</b>'
-			. '이 위젯 하나가 가로 1줄입니다. 설정에서 <b>줄 구성 프리셋</b>을 고르고 <b>슬롯 게시판(mid)</b>만 연결하세요.<br />'
-			. '예: 프리셋 "매거진 + 목록" + 슬롯1 = notice, 슬롯2 = free<br />'
-			. '위젯을 여러 개 쌓으면 메인 페이지가 완성됩니다.'
+			. '<b style="display:block;margin-bottom:8px;font-size:15px">' . escape(self::lang('zc_guide_title')) . '</b>'
+			. escape(self::lang('zc_guide_1')) . '<br />'
+			. escape(self::lang('zc_guide_2')) . '<br />'
+			. escape(self::lang('zc_guide_3'))
 			. '</div></div></div>';
 	}
 
@@ -516,6 +529,8 @@ class zittme_content extends WidgetHandler
 			. '.zc-head h3{margin:0;font-size:16px;font-weight:800;color:var(--zc-ink);letter-spacing:-.01em;}'
 			. '.zc-more{display:inline-flex;align-items:center;gap:3px;font-size:12.5px;font-weight:600;color:var(--zc-sub);text-decoration:none;}'
 			. '.zc-more:hover{color:var(--zc-brand);}'
+			. '.zc-tab-more{display:none;margin-left:auto;}'
+			. '.zc-tab-more.is-on{display:inline-flex;}'
 			. '.zc-body{flex:1;display:flex;flex-direction:column;min-height:0;}'
 			. '.zc-empty{padding:24px 0;text-align:center;font-size:13px;color:var(--zc-sub);}'
 			. '.zc-list{list-style:none;margin:0;padding:0;flex:1;}'
@@ -529,6 +544,18 @@ class zittme_content extends WidgetHandler
 			. '.zc-wz-body strong .zc-li-cnt,.zc-wz-body strong .zc-new{display:inline-block;vertical-align:1px;}'
 			. '.zc-sk-heritage .zc-new{background:linear-gradient(#fdb14a,#f08000);box-shadow:inset 0 1px 0 rgba(255,255,255,.45);vertical-align:1px;}'
 			. '.zc-sk-heritage .zc-li-cnt{color:var(--hr-brand,#2677e3);}'
+			// heritage_xedition: 박스를 걷어내고 타이틀만 게시판 상단 헤더처럼(구분선 + 포인트색 짧은 라인).
+			// 새 글 표시는 글자 없는 작은 사각형 하나로 줄인다
+			. '.zc-sk-heritage_xedition .zc-block{border:0;border-radius:0;background:transparent;padding:0;}'
+			// 탭형 머리에는 포인트 라인을 겹치지 않는다. 활성 탭 밑줄이 그 역할을 한다
+			. '.zc-sk-heritage_xedition .zc-head:not(.zc-head-tabs){position:relative;padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid var(--zc-line);}'
+			. '.zc-sk-heritage_xedition .zc-head:not(.zc-head-tabs)::after{content:"";position:absolute;left:0;bottom:-1px;width:46px;height:3px;background:var(--zc-brand);}'
+			. '.zc-sk-heritage_xedition .zc-head-tabs{margin-bottom:14px;}'
+			. '.zc-sk-heritage_xedition .zc-tab{border-bottom-width:3px;}'
+			. '.zc-sk-heritage_xedition .zc-new{width:7px;height:7px;border-radius:0;background:var(--zc-brand);font-size:0;line-height:0;overflow:hidden;vertical-align:5px;}'
+			. '.zc-sk-heritage_xedition .zc-li-cnt{color:var(--hr-brand,#cda25a);}'
+			// heritage_xedition 은 직사각 테마: 썸네일·매거진 타일도 각지게
+			. '.zc-sk-heritage_xedition .zc-wz-thumb,.zc-sk-heritage_xedition .zc-th-img,.zc-sk-heritage_xedition .zc-mg{border-radius:0;}'
 			. '.zc-list small{flex:0 0 auto;font-size:12px;color:var(--zc-sub);}'
 			. '.zc-webzine{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;flex:1;}'
 			. '.zc-webzine a{display:flex;gap:14px;text-decoration:none;color:var(--zc-ink);}'
@@ -566,8 +593,8 @@ class zittme_content extends WidgetHandler
 			. '@container (max-width: 340px){.zc-webzine a{flex-direction:column;}.zc-wz-thumb{width:100%;flex-basis:auto;height:140px;}.zc-thumbs{grid-template-columns:1fr;}.zc-magazine{grid-template-columns:1fr;}}'
 			. '@media (max-width: 960px){.zc-row{grid-template-columns:1fr 1fr !important;}}'
 			. '@media (max-width: 640px){.zc-row{grid-template-columns:1fr !important;}}'
-			. self::darkRules(':root[data-theme="dark"] .zc,.color_scheme_dark .zc,body.color_scheme_dark .zc')
-			. '@media (prefers-color-scheme: dark){' . self::darkRules(':root:not([data-theme="light"]) .zc') . '}'
+			// 밝기는 레이아웃(data-theme)과 코어(color_scheme)가 정한다. 기기 설정은 코어가 읽어 옮겨 준다
+			. self::darkRules(':root[data-theme="dark"] .zc,body.color_scheme_dark .zc')
 			. '</style>';
 	}
 
@@ -579,7 +606,9 @@ class zittme_content extends WidgetHandler
 	 */
 	protected static function darkRules(string $selector): string
 	{
-		return $selector . '{--zc-ink:var(--hr-ink,#e8ebf0);--zc-sub:var(--hr-muted,#9aa3b2);--zc-line:var(--hr-line,#2a3040);'
+		// 테마 변수를 끌어 쓰지 않는다. 테마가 [data-theme] 로만 색을 바꾸면
+		// 기기 설정만 어두운 화면에서 글자색이 밝은 값 그대로 남아 배경에 묻힌다
+		return $selector . '{--zc-ink:#e8ebf0;--zc-sub:#9aa3b2;--zc-line:#2a3040;'
 			. '--zc-card:#161b26;--zc-divider:#232936;--zc-fill:#232936;--zc-dim:#7b8494;--zc-icon:#4a5364;}';
 	}
 }

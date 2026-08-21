@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.2">
+	<responsive>true</responsive>
+	<title xml:lang="ko">헤리티지 XEDITION</title>
+	<title xml:lang="en">Heritage XEDITION</title>
+	<description xml:lang="ko">헤리티지 레이아웃을 기반으로 XE 시절 XEDITION 레이아웃의 디자인(골드 포인트 · 다크 그레이)을 되살린 레이아웃입니다. 페이지 유형은 사이트맵의 메뉴 클래스에 m(메인) / sl(서브 LNB) / sf(전체 폭)를 입력해 지정합니다. slx / sfx 처럼 뒤에 x를 붙이면 같은 유형에서 서브 타이틀 밴드를 표시하지 않습니다. 회원·쪽지·결제 화면은 자동으로 전체 폭이 됩니다.</description>
+	<description xml:lang="en">A Heritage-based layout that revives the design of the classic XEDITION layout: gold accent with dark gray. Set the page type by entering m (main) / sl (sub LNB) / sf (full width) in the menu class field of the sitemap; append x (slx / sfx) to hide the sub title band. Member, message and payment screens switch to full width automatically.</description>
+	<version>1.0.0</version>
+	<date>2026-08-21</date>
+	<author email_address="zittme-contact@zzan.me" link="https://zitt.me">
+		<name xml:lang="ko">ZZAN Studio</name>
+		<name xml:lang="en">ZZAN Studio</name>
+	</author>
+
+	<menus>
+		<menu name="gnb" maxdepth="3" default="true">
+			<title xml:lang="ko">상단 메뉴</title>
+			<title xml:lang="en">Main Menu</title>
+		</menu>
+		<menu name="footer_menu" maxdepth="1">
+			<title xml:lang="ko">푸터 메뉴</title>
+			<title xml:lang="en">Footer Menu</title>
+		</menu>
+	</menus>
+
+	<extra_vars>
+		<group>
+			<title xml:lang="ko">기본</title>
+			<title xml:lang="en">Basic</title>
+			<var name="logo_image" type="image">
+				<title xml:lang="ko">로고 이미지</title>
+				<title xml:lang="en">Logo image</title>
+				<description xml:lang="ko">비워두면 아래 로고 텍스트를 사용합니다. 높이 40px 기준으로 표시됩니다.</description>
+			</var>
+			<var name="logo_image_dark" type="image">
+				<title xml:lang="ko">다크모드 로고 이미지</title>
+				<title xml:lang="en">Dark mode logo image</title>
+				<description xml:lang="ko">다크모드에서 대신 표시할 로고입니다. 비워두면 기본 로고 이미지를 그대로 사용합니다.</description>
+				<description xml:lang="en">Shown instead of the default logo in dark mode. Falls back to the default logo image when empty.</description>
+			</var>
+			<var name="logo_text" type="text">
+				<title xml:lang="ko">로고 텍스트</title>
+				<title xml:lang="en">Logo text</title>
+				<description xml:lang="ko">비워두면 사이트 제목이 표시됩니다.</description>
+			</var>
+			<!-- 원본 게시판 스킨의 보라 강조색(#4736ac)을 한 단계 밝게 푼 값.
+			     이 값이 버튼·링크·활성 표시와 게시판 스킨 강조색까지 함께 결정한다 -->
+			<var name="point_color" type="colorpicker" default="#cda25a">
+				<title xml:lang="ko">포인트 색상</title>
+				<title xml:lang="en">Point color</title>
+			</var>
+			<var name="content_width" type="select" default="1440">
+				<title xml:lang="ko">본문 최대 너비</title>
+				<title xml:lang="en">Content width</title>
+				<description xml:lang="ko">와이드 테마입니다. 기본 1440px 그리드를 씁니다.</description>
+				<description xml:lang="en">This is a wide theme with a 1440px default grid.</description>
+				<options value="1320"><title xml:lang="ko">좁게 (1320px)</title><title xml:lang="en">Narrow (1320px)</title></options>
+				<options value="1440"><title xml:lang="ko">기본 (1440px)</title><title xml:lang="en">Default (1440px)</title></options>
+				<options value="1600"><title xml:lang="ko">넓게 (1600px)</title><title xml:lang="en">Wide (1600px)</title></options>
+			</var>
+			<var name="gnb_align" type="select" default="left">
+				<title xml:lang="ko">메뉴 정렬</title>
+				<title xml:lang="en">Menu alignment</title>
+				<description xml:lang="ko">헤더는 화면 전체 폭을 씁니다. 메뉴를 로고 바로 옆에 붙일지, 헤더 가운데에 둘지 선택합니다.</description>
+				<description xml:lang="en">The header spans the full screen width. Choose whether the menu sits right next to the logo or at the center.</description>
+				<options value="left"><title xml:lang="ko">로고 옆에 붙이기 (기본)</title><title xml:lang="en">Next to the logo (default)</title></options>
+				<options value="center"><title xml:lang="ko">가운데</title><title xml:lang="en">Center</title></options>
+			</var>
+			<var name="gnb_color" type="select" default="dark">
+				<title xml:lang="ko">메뉴 바 색상</title>
+				<title xml:lang="en">Menu bar color</title>
+				<options value="dark"><title xml:lang="ko">어둡게 (기본)</title><title xml:lang="en">Dark (default)</title></options>
+				<options value="point"><title xml:lang="ko">포인트 색상</title><title xml:lang="en">Point color</title></options>
+				<options value="light"><title xml:lang="ko">밝게</title><title xml:lang="en">Light</title></options>
+			</var>
+			<var name="mobile_theme_pos" type="select" default="drawer">
+				<title xml:lang="ko">모바일 다크모드 버튼 위치</title>
+				<title xml:lang="en">Mobile dark mode button position</title>
+				<description xml:lang="ko">PC에서는 항상 헤더에 표시됩니다. 모바일에서 어디에 둘지 선택합니다.</description>
+				<description xml:lang="en">Always shown in the header on PC. Choose where it goes on mobile.</description>
+				<options value="drawer"><title xml:lang="ko">메뉴 서랍 안 (기본)</title><title xml:lang="en">In the menu drawer (default)</title></options>
+				<options value="header"><title xml:lang="ko">헤더</title><title xml:lang="en">Header</title></options>
+				<options value="footer"><title xml:lang="ko">푸터</title><title xml:lang="en">Footer</title></options>
+			</var>
+			<var name="mobile_lang_pos" type="select" default="drawer">
+				<title xml:lang="ko">모바일 언어 선택 위치</title>
+				<title xml:lang="en">Mobile language selector position</title>
+				<description xml:lang="ko">PC에서는 항상 헤더에 표시됩니다. 모바일에서 어디에 둘지 선택합니다.</description>
+				<description xml:lang="en">Always shown in the header on PC. Choose where it goes on mobile.</description>
+				<options value="drawer"><title xml:lang="ko">메뉴 서랍 안 (기본)</title><title xml:lang="en">In the menu drawer (default)</title></options>
+				<options value="header"><title xml:lang="ko">헤더</title><title xml:lang="en">Header</title></options>
+				<options value="footer"><title xml:lang="ko">푸터</title><title xml:lang="en">Footer</title></options>
+			</var>
+			<var name="color_scheme" type="select" default="auto">
+				<title xml:lang="ko">색상 모드</title>
+				<title xml:lang="en">Color scheme</title>
+				<options value="auto"><title xml:lang="ko">방문자 기기 설정에 맞춤</title><title xml:lang="en">Follow device</title></options>
+				<options value="light"><title xml:lang="ko">항상 밝게</title><title xml:lang="en">Always light</title></options>
+				<options value="dark"><title xml:lang="ko">항상 어둡게</title><title xml:lang="en">Always dark</title></options>
+			</var>
+		</group>
+
+		<group>
+			<title xml:lang="ko">첫 화면</title>
+			<title xml:lang="en">Front page</title>
+			<var name="show_visual" type="select" default="main">
+				<title xml:lang="ko">비주얼 슬라이더 표시</title>
+				<title xml:lang="en">Show visual slider</title>
+				<description xml:lang="ko">원본 레이아웃의 비주얼 영역입니다. 슬라이드를 하나도 등록하지 않으면 표시되지 않습니다.</description>
+				<options value="main"><title xml:lang="ko">메인 형태일 때만</title><title xml:lang="en">Main type only</title></options>
+				<options value="all"><title xml:lang="ko">서브 페이지에도 표시</title><title xml:lang="en">Sub pages too</title></options>
+				<options value="none"><title xml:lang="ko">사용 안 함</title><title xml:lang="en">Off</title></options>
+			</var>
+			<var name="visual_interval" type="text" default="6">
+				<title xml:lang="ko">자동 넘김 간격 (초)</title>
+				<title xml:lang="en">Autoplay interval (sec)</title>
+				<description xml:lang="ko">0을 입력하면 자동으로 넘기지 않습니다.</description>
+			</var>
+			<var name="visuals" type="repeat">
+				<title xml:lang="ko">비주얼 슬라이드</title>
+				<title xml:lang="en">Visual slides</title>
+				<item>
+					<var name="image" type="image"><title xml:lang="ko">배경 이미지</title><title xml:lang="en">Background image</title></var>
+					<var name="title" type="text"><title xml:lang="ko">제목</title><title xml:lang="en">Title</title></var>
+					<var name="text" type="textarea"><title xml:lang="ko">설명</title><title xml:lang="en">Description</title></var>
+					<var name="link_text" type="text"><title xml:lang="ko">버튼 이름</title><title xml:lang="en">Button label</title></var>
+					<var name="link_url" type="text"><title xml:lang="ko">버튼 링크</title><title xml:lang="en">Button link</title></var>
+					<var name="align" type="select" default="center">
+						<title xml:lang="ko">문구 정렬</title>
+						<title xml:lang="en">Text align</title>
+						<options value="left"><title xml:lang="ko">왼쪽</title><title xml:lang="en">Left</title></options>
+						<options value="center"><title xml:lang="ko">가운데</title><title xml:lang="en">Center</title></options>
+					</var>
+				</item>
+			</var>
+		</group>
+
+		<group>
+			<title xml:lang="ko">본문·사이드</title>
+			<title xml:lang="en">Body &amp; side</title>
+			<var name="use_search" type="select" default="Y">
+				<title xml:lang="ko">통합 검색 사용</title>
+				<title xml:lang="en">Use integrated search</title>
+				<options value="Y"><title xml:lang="ko">사용</title><title xml:lang="en">On</title></options>
+				<options value="N"><title xml:lang="ko">사용 안 함</title><title xml:lang="en">Off</title></options>
+			</var>
+			<var name="use_login_box" type="select" default="N">
+				<title xml:lang="ko">사이드에 로그인 상자 표시</title>
+				<title xml:lang="en">Show login box in side area</title>
+				<options value="N"><title xml:lang="ko">표시 안 함</title><title xml:lang="en">Off</title></options>
+				<options value="Y"><title xml:lang="ko">표시</title><title xml:lang="en">On</title></options>
+				<description xml:lang="ko">원본 레이아웃의 로그인 위젯 자리입니다. 끄면 상단 메뉴의 로그인 링크만 사용합니다.</description>
+			</var>
+		</group>
+
+		<group>
+			<title xml:lang="ko">푸터</title>
+			<title xml:lang="en">Footer</title>
+			<var name="footer_about" type="textarea">
+				<title xml:lang="ko">사이트 소개 문구</title>
+				<title xml:lang="en">About text</title>
+			</var>
+			<var name="footer_info" type="textarea">
+				<title xml:lang="ko">사업자·연락처 정보</title>
+				<title xml:lang="en">Business info</title>
+				<description xml:lang="ko">줄바꿈한 각 줄이 한 항목으로 표시됩니다.</description>
+			</var>
+			<var name="copyright" type="text">
+				<title xml:lang="ko">저작권 표기</title>
+				<title xml:lang="en">Copyright</title>
+			</var>
+		</group>
+	</extra_vars>
+</layout>

@@ -11,7 +11,7 @@
 	--zpay-bg-soft: var(--hr-surface, #f7f8fb);
 	--zpay-card: var(--hr-bg, #ffffff);
 	--zpay-ink: var(--hr-ink, #10151f);
-	--zpay-radius: 6px;
+	--zpay-radius: var(--hr-radius-sm, 6px);
 
 	box-sizing: border-box;
 	max-width: 560px;
@@ -311,30 +311,10 @@ a.zpay-btn-primary:hover {
 }
 
 
-@media (prefers-color-scheme: dark) {
-	.zpay {
-		--zpay-border: #333a45;
-		--zpay-muted: #9aa3b0;
-		--zpay-bg-soft: #1c212a;
-		color: #e6e9ee;
-	}
+/* 레이아웃이 밝기를 정해 두지 않았을 때만 기기 설정을 따른다.
+ * data-theme 이 붙어 있으면 아래쪽 규칙이 맡는다 */
 
-	.zpay-field input {
-		background: #141920;
-		color: #e6e9ee;
-	}
-
-	.zpay-bank-item label {
-		background: #141920;
-	}
-
-	.zpay-error {
-		background: #3a1d1d;
-		color: #fca5a5;
-	}
-}
-
-.zpay-btn { border-radius: 4px; }
+.zpay-btn { border-radius: var(--hr-radius-btn, 4px); }
 .zpay-btn-primary,
 a.zpay-btn-primary,
 a.zpay-btn-primary:link,
@@ -347,19 +327,19 @@ a.zpay-btn-primary:visited {
 	background: linear-gradient(var(--zpay-point), var(--zpay-point-dark));
 }
 
-[data-theme="dark"] .zpay {
+:is([data-theme="dark"], body.color_scheme_dark) .zpay {
 	--zpay-border: var(--hr-line, #2a3040);
 	--zpay-muted: var(--hr-muted, #b3bbc8);
 	--zpay-bg-soft: var(--hr-surface, #1b2130);
 	--zpay-card: var(--hr-bg, #141822);
 	--zpay-ink: var(--hr-ink, #e7eaf0);
 }
-[data-theme="dark"] .zpay input, [data-theme="dark"] .zpay select, [data-theme="dark"] .zpay textarea {
+:is([data-theme="dark"], body.color_scheme_dark) .zpay input, :is([data-theme="dark"], body.color_scheme_dark) .zpay select, :is([data-theme="dark"], body.color_scheme_dark) .zpay textarea {
 	background: var(--zpay-card);
 	color: var(--zpay-ink);
 	border-color: var(--zpay-border);
 }
-[data-theme="dark"] .zpay-btn:disabled { background: #394152; }
+:is([data-theme="dark"], body.color_scheme_dark) .zpay-btn:disabled { background: #394152; }
 
 @supports (color: color-mix(in srgb, red 50%, blue)) {
 	.zpay {
@@ -367,3 +347,10 @@ a.zpay-btn-primary:visited {
 		--zpay-point-light: color-mix(in srgb, var(--hr-brand, #6c5ce0) 55%, #fff);
 	}
 }
+
+.zpay-methods { margin: 26px 0; }
+.zpay-methods .zpay-section-title { margin-bottom: 12px; }
+.zpay-summary { margin: 22px 0 26px; }
+.zpay-summary .zpay-section-title { margin-bottom: 12px; }
+
+.zpay-sub-text { color: var(--zpay-muted); }

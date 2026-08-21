@@ -1,9 +1,86 @@
-<link rel="stylesheet" href="./layouts/xedition/css/welcome.css" />
-<div class="welcomeXE">
-	<section class="intro">
-		<span class="noti">HELLO, WORLD!</span>
-		<h1 class="tit">WELCOME TO Zittme</h1>
-		<P class="cont">Zittme는 자유로운 웹 콘텐츠 발행을 돕는 CMS입니다.<br />간편한 설치와 다양한 추가 프로그램을 활용하여<br /> 자신만의 웹페이지를 쉽고 빠르게 만들 수 있습니다.</P>
-		<a href="{getUrl('', 'module', 'admin')}" target="_blank" class="btn_start">시작하기</a>
+<!--// 설치 직후 대문 환영 페이지. heritage_xedition 레이아웃의 hr 토큰을 따르고,
+     레이아웃 밖에서 열리더라도 폴백 색으로 무너지지 않게 스타일을 자체 포함한다 -->
+<style>
+.zwelcome { --zw-brand: var(--hr-brand, #cda25a); --zw-ink: var(--hr-ink, #10151f); --zw-sub: var(--hr-ink-sub, #525c6b); --zw-muted: var(--hr-muted, #8a94a4); --zw-line: var(--hr-line, #e6e9ef); --zw-surface: var(--hr-surface, #f7f8fb); color: var(--zw-ink); line-height: 1.65; }
+.zwelcome section { margin: 0 0 56px; }
+.zwelcome .zw-noti { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 800; letter-spacing: .14em; color: var(--zw-brand); }
+.zwelcome .zw-tit { position: relative; margin: 0 0 34px; padding: 0 0 18px; font-size: 26px; font-weight: 800; letter-spacing: -.01em; border-bottom: 1px solid var(--zw-line); }
+.zwelcome .zw-tit::after { content: ""; position: absolute; left: 0; bottom: -1px; width: 46px; height: 3px; background: var(--zw-brand); }
+.zwelcome .zw-intro p { margin: 0 0 24px; font-size: 16px; color: var(--zw-sub); }
+.zwelcome .zw-start { display: inline-flex; align-items: center; height: 48px; padding: 0 28px; background: var(--zw-brand); color: #fff; font-size: 15px; font-weight: 700; text-decoration: none; transition: background .15s; }
+.zwelcome .zw-start:hover { background: #1b1914; color: #fff; }
+.zwelcome .zw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+.zwelcome .zw-grid li { border: 1px solid var(--zw-line); background: var(--hr-bg, #fff); padding: 22px 20px; }
+.zwelcome .zw-grid svg { width: 26px; height: 26px; fill: var(--zw-brand); }
+.zwelcome .zw-grid h2 { margin: 12px 0 6px; font-size: 16px; font-weight: 700; }
+.zwelcome .zw-grid p { margin: 0; font-size: 13.5px; color: var(--zw-muted); }
+.zwelcome .zw-grid a { color: var(--zw-brand); text-decoration: none; }
+.zwelcome .zw-grid a:hover { text-decoration: underline; }
+</style>
+<div class="zwelcome">
+	<section class="zw-intro">
+		<span class="zw-noti">HELLO, WORLD!</span>
+		<h1 class="zw-tit">WELCOME TO Zittme</h1>
+		<p>Zittme는 자유로운 웹 콘텐츠 발행을 돕는 CMS입니다.<br />간편한 설치와 다양한 추가 프로그램을 활용하여 자신만의 웹페이지를 쉽고 빠르게 만들 수 있습니다.</p>
+		<a href="{getUrl('', 'module', 'admin')}" target="_blank" class="zw-start">시작하기</a>
+	</section>
+
+	<section class="zw-guide">
+		<span class="zw-noti">GET STARTED</span>
+		<h1 class="zw-tit">BUILD YOUR SITE</h1>
+		<ul class="zw-grid">
+			<li>
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17.2V21h3.8L17.9 9.9l-3.8-3.8L3 17.2zM20.7 7.1a1 1 0 0 0 0-1.4L18.3 3.3a1 1 0 0 0-1.4 0l-1.8 1.8 3.8 3.8 1.8-1.8z"/></svg>
+				<h2>사이트 제목 바꾸기</h2>
+				<p>사이트 제목은 <a href="{getUrl('', 'module', 'admin', 'act', 'dispAdminConfigGeneral')}" target="_blank">관리 &gt; 설정 &gt; 일반</a>에서 변경할 수 있습니다.</p>
+			</li>
+			<li>
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>
+				<h2>메뉴 구조 구성하기</h2>
+				<p>사이트 메뉴는 <a href="{getUrl('', 'module', 'admin', 'act', 'dispMenuAdminSiteMap')}" target="_blank">관리 &gt; 사이트 메뉴 편집</a>에서 만들 수 있습니다.</p>
+			</li>
+			<li>
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v4H3zM3 10h8v10H3zM13 10h8v10h-8z"/></svg>
+				<h2>레이아웃 디자인 바꾸기</h2>
+				<p>테마와 레이아웃은 <a href="{getUrl('', 'module', 'admin', 'act', 'dispMenuAdminSiteDesign')}" target="_blank">관리 &gt; 사이트 디자인 설정</a>에서 변경할 수 있습니다.</p>
+			</li>
+			<li>
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 11h3v9h6v-6h2v6h6v-9h3z"/></svg>
+				<h2>초기화면 바꾸기</h2>
+				<p><a href="{getUrl('', 'module', 'admin', 'act', 'dispMenuAdminSiteMap')}" target="_blank">사이트 메뉴 편집</a>에서 메뉴를 선택해 '홈페이지로 사용하기'로 지정하세요.</p>
+			</li>
+			<li>
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"/></svg>
+				<h2>기능과 디자인 추가하기</h2>
+				<p>모듈과 스킨은 <a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminIndex')}" target="_blank">관리 &gt; 스토어</a>에서 설치할 수 있습니다.</p>
+			</li>
+			<li>
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm9.4 5a7.9 7.9 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.3 7.3 0 0 0-1.7-1L16.9 3h-4l-.4 2.9a7.3 7.3 0 0 0-1.7 1l-2.5-1-2 3.5L8.4 11a7.9 7.9 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.3 7.3 0 0 0 1.7 1l.4 2.9h4l.4-2.9a7.3 7.3 0 0 0 1.7-1l2.5 1 2-3.5z" transform="translate(-2.4 0)"/></svg>
+				<h2>레이아웃 꾸미기</h2>
+				<p>포인트 색상·메뉴 정렬 등은 <a href="{getUrl('', 'module', 'admin', 'act', 'dispLayoutAdminInstalledList')}" target="_blank">관리 &gt; 설치된 레이아웃</a>에서 조정합니다.</p>
+			</li>
+		</ul>
+	</section>
+
+	<section class="zw-connect">
+		<span class="zw-noti">CONNECT WITH US</span>
+		<h1 class="zw-tit">GET INVOLVED</h1>
+		<ul class="zw-grid">
+			<li>
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2c1.4 0 2.8 2.4 3.4 6H8.6C9.2 6.4 10.6 4 12 4zM8.2 10h7.6a18 18 0 0 1 0 4H8.2a18 18 0 0 1 0-4zm-2 0a20 20 0 0 0 0 4H4.3a8 8 0 0 1 0-4h1.9zm11.6 0h1.9a8 8 0 0 1 0 4h-1.9a20 20 0 0 0 0-4zM8.6 16h6.8c-.6 3.6-2 6-3.4 6s-2.8-2.4-3.4-6z"/></svg>
+				<h2>OFFICIAL SITE</h2>
+				<p><a href="https://zitt.me" target="_blank">zitt.me</a>에서 공지, 매뉴얼과 스토어를 만나 보세요.</p>
+			</li>
+			<li>
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.2-3.4-1.2-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.4 1.1 3 .8.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-5A3.9 3.9 0 0 1 6.7 8.7a3.6 3.6 0 0 1 .1-2.7s.9-.3 2.8 1a9.5 9.5 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .5 1.4.2 2.4.1 2.7a3.9 3.9 0 0 1 1 2.7c0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9V21c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg>
+				<h2>GITHUB</h2>
+				<p><a href="https://github.com/zittme" target="_blank">github.com/zittme</a>에서 소스 코드와 이슈를 확인하세요.</p>
+			</li>
+			<li>
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.9-9.3-9.4C1.2 8 3.6 5 6.7 5c1.9 0 3.6 1 4.5 2.5.4.7.8.7 1.2 0C13.3 6 15 5 16.9 5c3.1 0 5.5 3 4 6.6C19.5 16.1 12 21 12 21z" transform="scale(.92) translate(1 1)"/></svg>
+				<h2>COMMUNITY</h2>
+				<p><a href="https://zitt.me/board" target="_blank">커뮤니티</a>에서 질문하고 소식을 나눠 보세요.</p>
+			</li>
+		</ul>
 	</section>
 </div>

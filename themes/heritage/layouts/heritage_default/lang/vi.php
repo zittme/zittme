@@ -1,0 +1,30 @@
+<?php
+
+$lang->hr_login = 'Đăng nhập';
+$lang->hr_signup = 'Đăng ký';
+$lang->hr_logout = 'Đăng xuất';
+$lang->hr_my_info = 'Thông tin của tôi';
+$lang->hr_find_account = 'Tìm tài khoản';
+$lang->hr_welcome = 'Chào %s.';
+$lang->hr_login_notice = 'Vui lòng đăng nhập để dùng dịch vụ thành viên.';
+$lang->hr_admin = 'Quản trị';
+$lang->hr_admin_page = 'Trang quản trị';
+$lang->hr_search = 'Tìm kiếm';
+$lang->hr_search_all = 'Tìm trong trang';
+$lang->hr_menu = 'Menu';
+$lang->hr_menu_open = 'Mở menu';
+$lang->hr_menu_close = 'Đóng menu';
+$lang->hr_main_menu = 'Menu chính';
+$lang->hr_sub_menu = 'Menu con';
+$lang->hr_footer_menu = 'Menu chân trang';
+$lang->hr_to_top = 'Len dau trang';
+$lang->hr_notify = 'Thong bao';
+$lang->hr_notify_read_all = 'Danh dau da doc';
+$lang->hr_notify_empty = 'Khong co thong bao moi.';
+$lang->hr_notify_all = 'Xem tat ca';
+$lang->hr_theme_toggle = 'Đổi chế độ màu';
+$lang->hr_lang_select = 'Chọn ngôn ngữ';
+$lang->hr_visual_label = 'Thông tin nổi bật';
+$lang->hr_visual_prev = 'Trang trước';
+$lang->hr_visual_next = 'Trang sau';
+$lang->hr_visual_slide = 'Trang %d';

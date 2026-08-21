@@ -1,0 +1,32 @@
+<?php
+
+$lang->hrb_just_now = 'gerade eben';
+$lang->hrb_minutes_ago = 'vor %d Min.';
+$lang->hrb_hours_ago = 'vor %d Std.';
+$lang->hrb_days_ago = 'vor %d Tagen';
+$lang->hrb_secret = 'Privat';
+$lang->hrb_attached = 'Anhang';
+$lang->hrb_new_post = 'Neu';
+$lang->hrb_select_post = 'Diesen Beitrag wahlen';
+$lang->hrb_all = 'Alle';
+$lang->hrb_check_all = 'Alle auswahlen';
+$lang->hrb_search_ph = 'Suchbegriff eingeben';
+$lang->hrb_notice = 'Hinweis';
+$lang->hrb_read_count = 'Aufrufe';
+$lang->hrb_vote = 'Gefallt mir';
+$lang->hrb_unvote = 'Gefallt mir nicht';
+$lang->hrb_attach = 'Dateien';
+$lang->hrb_write = 'Schreiben';
+$lang->hrb_list = 'Liste';
+$lang->hrb_modify = 'Bearbeiten';
+$lang->hrb_delete = 'Loschen';
+$lang->hrb_doc_menu = 'Dokumentmenu';
+$lang->hrb_manage = 'Beitrage verwalten';
+$lang->hrb_settings = 'Einstellungen';
+$lang->hrb_empty = 'Noch keine Beitrage.';
+$lang->hrb_search_next = 'Weitere Ergebnisse';
+$lang->hrb_cancel = 'Abbrechen';
+$lang->hrb_pagination = 'Seitennavigation';
+$lang->hrb_first_page = 'Erste Seite';
+$lang->hrb_last_page = 'Letzte Seite';
+$lang->hrb_comment_pagination = 'Kommentar-Seitennavigation';

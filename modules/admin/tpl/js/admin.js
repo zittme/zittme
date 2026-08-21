@@ -19,18 +19,34 @@ jQuery(function($) {
 		});
 		return String(version_number) + (extra_strings === '' ? 'z' : extra_strings);
 	};
-	var current_version = version_decode(core_update.data('current-version'));
+	var current_raw = String(core_update.data('current-version') || '');
+	var current_version = version_decode(current_raw);
+	// latest = newest stable. Pre-release sites (version with '-') also watch channels.beta
+	var is_prerelease = current_raw.indexOf('-') !== -1;
 	$.ajax({
 		url: 'https://api.zitt.me/version.json',
 		dataType: 'json',
 		cache: true,
 		success: function(data) {
-			var latest_version = version_decode(data.latest);
-			if (latest_version > current_version) {
-				var version_replace = core_update.find('p').first();
-				version_replace.html(version_replace.html().replace('$VERSION', data.latest));
-				core_update.show();
+			if (!data) return;
+			var candidate = null;
+			var stable = data.channels && data.channels.stable ? data.channels.stable : null;
+			if (data.latest && version_decode(data.latest) > current_version) {
+				candidate = { version: data.latest, notes_url: stable && stable.notes_url ? stable.notes_url : '' };
 			}
+			var beta = data.channels && data.channels.beta ? data.channels.beta : null;
+			if (is_prerelease && beta && beta.version && version_decode(beta.version) > current_version) {
+				if (!candidate || version_decode(beta.version) > version_decode(candidate.version)) {
+					candidate = { version: beta.version, notes_url: beta.notes_url || '' };
+				}
+			}
+			if (!candidate) return;
+			var text = core_update.find('.zdb-release-text').first();
+			text.text(text.text().replace('$VERSION', candidate.version));
+			if (candidate.notes_url) {
+				core_update.find('.zdb-release-link').attr('href', candidate.notes_url);
+			}
+			core_update.show();
 		}
 	});
 });

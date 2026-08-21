@@ -1,9 +1,10 @@
 @version(2)
+@load('./lang')
 <ul class="hrb-notices">
 	@foreach ($notice_list as $document)
 	<li>
 		<a href="{{ getUrl('document_srl', $document->document_srl) }}">
-			<span class="hr-badge">{{ $lang->notice ?? '공지' }}</span>
+			<span class="hr-badge">{{ $lang->notice ?? $lang->hrb_notice }}</span>
 			<span class="hrb-notices-title">{{ $document->getTitleText() }}</span>
 			@if ($document->getCommentCount())<em class="hrb-cmt">{{ $document->getCommentCount() }}</em>@endif
 			<span class="hrb-notices-meta">

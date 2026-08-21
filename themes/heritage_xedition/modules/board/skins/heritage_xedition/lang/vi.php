@@ -1,0 +1,32 @@
+<?php
+
+$lang->hrb_just_now = 'vua xong';
+$lang->hrb_minutes_ago = '%d phut truoc';
+$lang->hrb_hours_ago = '%d gio truoc';
+$lang->hrb_days_ago = '%d ngay truoc';
+$lang->hrb_secret = 'Rieng tu';
+$lang->hrb_attached = 'Dinh kem';
+$lang->hrb_new_post = 'Moi';
+$lang->hrb_select_post = 'Chon bai nay';
+$lang->hrb_all = 'Tat ca';
+$lang->hrb_check_all = 'Chon tat ca';
+$lang->hrb_search_ph = 'Nhap tu khoa';
+$lang->hrb_notice = 'Thong bao';
+$lang->hrb_read_count = 'Luot xem';
+$lang->hrb_vote = 'Thich';
+$lang->hrb_unvote = 'Khong thich';
+$lang->hrb_attach = 'Tep dinh kem';
+$lang->hrb_write = 'Viet bai';
+$lang->hrb_list = 'Danh sach';
+$lang->hrb_modify = 'Sua';
+$lang->hrb_delete = 'Xoa';
+$lang->hrb_doc_menu = 'Menu tai lieu';
+$lang->hrb_manage = 'Quan ly bai viet';
+$lang->hrb_settings = 'Cai dat';
+$lang->hrb_empty = 'Chua co bai viet.';
+$lang->hrb_search_next = 'Xem them ket qua';
+$lang->hrb_cancel = 'Huy';
+$lang->hrb_pagination = 'Phan trang';
+$lang->hrb_first_page = 'Trang dau';
+$lang->hrb_last_page = 'Trang cuoi';
+$lang->hrb_comment_pagination = 'Phan trang binh luan';

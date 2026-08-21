@@ -37,6 +37,8 @@
 				background: #000;
 				border-color: #555;
 			}
+			// 아이콘은 밝은 색 스프라이트가 없어 뒤집어 쓴다.
+			// 상자와 글자까지 뒤집으면 흰 알약이 되므로 색으로 따로 맞춘다.
 			.cke_button_icon, .cke_button_arrow, .cke_combo_arrow {
 				filter: invert(1);
 			}
@@ -143,6 +145,7 @@ body.color_scheme_dark.cke_auto_dark_mode .cke_wysiwyg_div,
 :root[data-theme="dark"] .cke_wysiwyg_div {
 	background-color: #333;
 	color: #fff;
+	// 스크롤바는 브라우저가 그린다. 이 값을 주지 않으면 어두운 판 위에 밝은 막대가 남는다
 	color-scheme: dark;
 }
 body.color_scheme_dark.cke_auto_dark_mode .cke_contents,

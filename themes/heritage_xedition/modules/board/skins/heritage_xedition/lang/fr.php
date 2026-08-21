@@ -1,0 +1,32 @@
+<?php
+
+$lang->hrb_just_now = 'a l instant';
+$lang->hrb_minutes_ago = 'il y a %d min';
+$lang->hrb_hours_ago = 'il y a %d h';
+$lang->hrb_days_ago = 'il y a %d j';
+$lang->hrb_secret = 'Prive';
+$lang->hrb_attached = 'Piece jointe';
+$lang->hrb_new_post = 'Nouveau';
+$lang->hrb_select_post = 'Selectionner ce message';
+$lang->hrb_all = 'Tout';
+$lang->hrb_check_all = 'Tout selectionner';
+$lang->hrb_search_ph = 'Saisissez un mot-cle';
+$lang->hrb_notice = 'Avis';
+$lang->hrb_read_count = 'Vues';
+$lang->hrb_vote = 'J aime';
+$lang->hrb_unvote = 'Je n aime pas';
+$lang->hrb_attach = 'Fichiers';
+$lang->hrb_write = 'Ecrire';
+$lang->hrb_list = 'Liste';
+$lang->hrb_modify = 'Modifier';
+$lang->hrb_delete = 'Supprimer';
+$lang->hrb_doc_menu = 'Menu du document';
+$lang->hrb_manage = 'Gerer les messages';
+$lang->hrb_settings = 'Parametres';
+$lang->hrb_empty = 'Aucun message pour le moment.';
+$lang->hrb_search_next = 'Voir plus de resultats';
+$lang->hrb_cancel = 'Annuler';
+$lang->hrb_pagination = 'Pagination';
+$lang->hrb_first_page = 'Premiere page';
+$lang->hrb_last_page = 'Derniere page';
+$lang->hrb_comment_pagination = 'Pagination des commentaires';

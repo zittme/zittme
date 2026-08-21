@@ -1,0 +1,32 @@
+<?php
+
+$lang->hrb_just_now = 'たった今';
+$lang->hrb_minutes_ago = '%d分前';
+$lang->hrb_hours_ago = '%d時間前';
+$lang->hrb_days_ago = '%d日前';
+$lang->hrb_secret = '秘密の投稿';
+$lang->hrb_attached = '添付';
+$lang->hrb_new_post = '新着';
+$lang->hrb_select_post = 'この投稿を選択';
+$lang->hrb_all = 'すべて';
+$lang->hrb_check_all = 'すべて選択';
+$lang->hrb_search_ph = 'キーワードを入力';
+$lang->hrb_notice = 'お知らせ';
+$lang->hrb_read_count = '閲覧';
+$lang->hrb_vote = 'おすすめ';
+$lang->hrb_unvote = '非推奨';
+$lang->hrb_attach = '添付';
+$lang->hrb_write = '投稿する';
+$lang->hrb_list = '一覧';
+$lang->hrb_modify = '修正';
+$lang->hrb_delete = '削除';
+$lang->hrb_doc_menu = '文書メニュー';
+$lang->hrb_manage = '投稿管理';
+$lang->hrb_settings = '設定';
+$lang->hrb_empty = '登録された投稿がありません。';
+$lang->hrb_search_next = '次の検索結果を見る';
+$lang->hrb_cancel = 'キャンセル';
+$lang->hrb_pagination = 'ページ移動';
+$lang->hrb_first_page = '最初のページ';
+$lang->hrb_last_page = '最後のページ';
+$lang->hrb_comment_pagination = 'コメントのページ移動';

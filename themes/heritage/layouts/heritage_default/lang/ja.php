@@ -1,0 +1,30 @@
+<?php
+
+$lang->hr_login = 'ログイン';
+$lang->hr_signup = '会員登録';
+$lang->hr_logout = 'ログアウト';
+$lang->hr_my_info = 'マイページ';
+$lang->hr_find_account = 'アカウント検索';
+$lang->hr_welcome = '%sさん、ようこそ。';
+$lang->hr_login_notice = '会員サービスをご利用いただくにはログインしてください。';
+$lang->hr_admin = '管理者';
+$lang->hr_admin_page = '管理者ページ';
+$lang->hr_search = '検索';
+$lang->hr_search_all = 'サイト内検索';
+$lang->hr_menu = 'メニュー';
+$lang->hr_menu_open = 'メニューを開く';
+$lang->hr_menu_close = 'メニューを閉じる';
+$lang->hr_main_menu = '主メニュー';
+$lang->hr_sub_menu = 'サブメニュー';
+$lang->hr_footer_menu = 'フッターメニュー';
+$lang->hr_to_top = 'トップへ';
+$lang->hr_notify = 'お知らせ';
+$lang->hr_notify_read_all = 'すべて既読';
+$lang->hr_notify_empty = '新しいお知らせはありません。';
+$lang->hr_notify_all = 'すべて見る';
+$lang->hr_theme_toggle = '配色モードの切り替え';
+$lang->hr_lang_select = '言語を選ぶ';
+$lang->hr_visual_label = '主なご案内';
+$lang->hr_visual_prev = '前のスライド';
+$lang->hr_visual_next = '次のスライド';
+$lang->hr_visual_slide = '%d番目のスライド';

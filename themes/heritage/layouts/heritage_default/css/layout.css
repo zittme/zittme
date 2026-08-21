@@ -47,6 +47,50 @@ html, body { margin: 0; background: var(--hr-bg); }
 .hr-search button svg { width: 17px; height: 17px; fill: currentColor; }
 .hr-search button:hover { color: var(--hr-brand); }
 
+/* 언어 전환 */
+.hr-lang { position: relative; }
+.hr-lang-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	height: 32px;
+	padding: 0 10px;
+	border: 1px solid var(--hr-line);
+	border-radius: 999px;
+	background: var(--hr-bg);
+	color: var(--hr-ink-sub);
+	font-family: inherit;
+	font-size: 12.5px;
+	font-weight: 600;
+	cursor: pointer;
+}
+.hr-lang-btn svg { width: 15px; height: 15px; fill: currentColor; }
+.hr-lang-btn:hover { border-color: var(--hr-brand); color: var(--hr-brand); }
+.hr-lang-list {
+	position: absolute;
+	top: calc(100% + 6px);
+	right: 0;
+	z-index: 60;
+	min-width: 132px;
+	margin: 0;
+	padding: 5px;
+	list-style: none;
+	border: 1px solid var(--hr-line);
+	border-radius: 10px;
+	background: var(--hr-bg);
+	box-shadow: 0 14px 32px -16px rgba(16, 24, 40, .4);
+}
+.hr-lang-list a {
+	display: block;
+	padding: 7px 10px;
+	border-radius: 7px;
+	font-size: 13px;
+	color: var(--hr-ink-sub);
+	white-space: nowrap;
+}
+.hr-lang-list a:hover { background: var(--hr-bg-soft); color: var(--hr-ink); }
+.hr-lang-list a.is-on { color: var(--hr-brand); font-weight: 700; }
+
 .hr-theme {
 	width: 32px;
 	height: 32px;
@@ -180,7 +224,13 @@ html, body { margin: 0; background: var(--hr-bg); }
 
 .hr-mobile-dim { position: fixed; inset: 0; z-index: 190; background: rgba(0, 0, 0, .45); opacity: 0; transition: opacity .22s ease; }
 .hr-mobile-dim.is-open { opacity: 1; }
-.hr-mobile { position: fixed; top: 0; right: 0; bottom: 0; z-index: 200; width: min(320px, 85vw); background: var(--hr-nav-bg); overflow-y: auto; overscroll-behavior: contain; transform: translateX(100%); transition: transform .24s ease; box-shadow: -8px 0 32px rgba(0, 0, 0, .18); }
+/* 서랍은 내비 색상 옵션(n-light 등)과 무관하게 항상 다크 톤으로 고정한다.
+ * 옵션 조합에 따라 배경과 글자색 변수가 어긋나 문구가 안 보이는 조합이 생기기 때문이다 */
+/* 메뉴가 늘어나도 아래 도구 줄은 자리를 지킨다. 가운데 목록만 굴린다 */
+.hr-mobile { position: fixed; top: 0; right: 0; bottom: 0; z-index: 200; width: min(320px, 85vw); --hr-nav-bg: #17191f; --hr-nav-fg-on: #fff; background: var(--hr-nav-bg); color: var(--hr-nav-fg-on); display: flex; flex-direction: column; overscroll-behavior: contain; transform: translateX(100%); transition: transform .24s ease; box-shadow: -8px 0 32px rgba(0, 0, 0, .18); }
+.hr-mobile[hidden] { display: none; }
+.hr-mobile .hr-mobile-head, .hr-mobile .hr-mobile-account, .hr-mobile .hr-mobile-tools { flex: none; }
+.hr-mobile .hr-mobile-list { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
 .hr-mobile.is-open { transform: translateX(0); }
 .hr-mobile-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px; border-bottom: 1px solid rgba(255, 255, 255, .1); }
 .hr-mobile-title { font-size: 15px; font-weight: 800; color: var(--hr-nav-fg-on); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -199,6 +249,39 @@ body.hr-mobile-on { overflow: hidden; }
 .hr-mobile-sub { padding: 4px 0 12px; background: rgba(255, 255, 255, .04); }
 .hr-mobile-sub a { display: block; padding: 10px clamp(28px, 6vw, 46px); font-size: 14px; color: rgba(255, 255, 255, .7); }
 .hr-mobile-sub a.is-on { color: #fff; font-weight: 700; }
+
+.hr-mobile-tools { padding: 14px clamp(16px, 4vw, 32px) 24px; border-top: 1px solid rgba(255, 255, 255, .08); }
+.hr-mobile-tool {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	padding: 11px 0;
+	border: 0;
+	background: none;
+	color: rgba(255, 255, 255, .8);
+	font-family: inherit;
+	font-size: 14.5px;
+	font-weight: 600;
+	text-align: left;
+	cursor: pointer;
+}
+.hr-mobile-tool:hover { color: #fff; }
+.hr-mobile-tool svg { flex: none; width: 18px; height: 18px; fill: currentColor; }
+.hr-mobile-lang select {
+	flex: 1;
+	min-width: 0;
+	padding: 7px 10px;
+	border: 1px solid rgba(255, 255, 255, .25);
+	border-radius: var(--hr-radius-sm);
+	background: rgba(255, 255, 255, .06);
+	color: var(--hr-nav-fg-on);
+	font-family: inherit;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+}
+.hr-mobile-lang select option { background: var(--hr-nav-bg); color: var(--hr-nav-fg-on); }
 .hr-mobile-sub2 { margin: 0; padding: 0 0 6px; list-style: none; }
 .hr-mobile-sub2 a { padding: 7px clamp(38px, 8vw, 60px); font-size: 13px; color: rgba(255, 255, 255, .55); }
 .hr-mobile-sub2 a::before { content: "- "; }
@@ -302,6 +385,12 @@ body.hr-mobile-on { overflow: hidden; }
 	.hr-navbar, .hr-search, .hr-util-link { display: none; }
 	.hr-burger { display: block; }
 
+	/* 좁은 화면에서는 알림과 햄버거만 남긴다. 나머지는 서랍 아래 도구 줄에 있다 */
+	.hr-utilrow-inner { gap: 12px; }
+	.hr-logo { min-width: 0; }
+	.hr-utils { gap: 8px; }
+	.hr-utils a.hr-util-admin, .hr-lang, .hr-theme { display: none; }
+
 	.hr-body.has-lnb .hr-body-inner { display: block; }
 	.hr-lnb { margin-bottom: 22px; }
 	.hr-lnb-title { display: none; }
@@ -350,3 +439,65 @@ body.hr-mobile-on { overflow: hidden; }
 }
 .hr .hr-visual-copy a.hr-btn:active,
 .hr-visual-copy .hr-btn:active { transform: translateY(0); }
+
+/* ── 알림센터 헤더 벨 ── */
+.hr-nc { position: relative; display: flex; align-items: center; }
+.hr-nc-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 0; border-radius: 50%; background: transparent; color: var(--hr-ink-sub); cursor: pointer; transition: background .13s, color .13s; }
+.hr-nc-btn svg { width: 19px; height: 19px; fill: currentColor; }
+.hr-nc-btn:hover { background: var(--hr-brand-soft); color: var(--hr-brand); }
+.hr-nc-badge { position: absolute; top: 0; right: -1px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; background: #e5484d; color: #fff; font-size: 10px; font-weight: 800; font-style: normal; line-height: 16px; text-align: center; box-shadow: 0 0 0 2px var(--hr-bg, #fff); }
+.hr-nc-panel { position: absolute; top: calc(100% + 10px); right: -6px; width: 330px; border-radius: 14px; background: var(--hr-surface, #fff); border: 1px solid var(--hr-line); box-shadow: 0 24px 60px -18px rgba(17, 22, 30, .25); overflow: hidden; z-index: 1200; }
+.hr-nc-head { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px 9px; }
+.hr-nc-head strong { font-size: 14.5px; font-weight: 800; }
+.hr-nc-readall { border: 0; background: transparent; color: var(--hr-brand); font-size: 12.5px; font-weight: 700; cursor: pointer; padding: 4px 6px; border-radius: 7px; }
+.hr-nc-readall:hover { background: var(--hr-brand-soft); }
+.hr-nc-list { list-style: none; margin: 0; padding: 0 8px; max-height: 340px; overflow-y: auto; }
+.hr-nc-list li { margin: 2px 0; }
+.hr-nc-list a { display: block; padding: 10px 12px; border-radius: 10px; text-decoration: none; }
+.hr-nc-list a:hover { background: var(--hr-brand-soft); }
+.hr-nc-text { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 13.5px; line-height: 1.5; color: var(--hr-ink); }
+.hr-nc-ago { display: block; margin-top: 3px; font-size: 11.5px; color: var(--hr-muted); }
+.hr-nc-empty { padding: 26px 0 30px; text-align: center; color: var(--hr-muted); font-size: 13.5px; }
+.hr-nc-all { display: block; padding: 12px; text-align: center; font-size: 13px; font-weight: 700; color: var(--hr-brand); text-decoration: none; border-top: 1px solid var(--hr-line); }
+.hr-nc-all:hover { background: var(--hr-brand-soft); }
+
+@media (max-width: 900px) {
+	.hr-nc-panel { position: fixed; top: 60px; left: 12px; right: 12px; width: auto; }
+}
+
+/* 모바일 다크모드·언어 위치 옵션 (mtp-/mlp- 클래스) */
+@media (max-width: 860px) {
+	.mtp-header .hr-theme { display: inline-flex; }
+	.mlp-header .hr-lang { display: block; }
+	/* 빵메뉴는 우측 끝에 선다 */
+	.hr-burger { order: 99; margin-left: auto; }
+	.mtp-footer .hr-foot-tools, .mlp-footer .hr-foot-tools { display: flex; }
+}
+/* 푸터 다크모드·언어 컨트롤: 모바일 + '푸터' 옵션에서만 보인다 */
+.hr-foot-tools { display: none; align-items: center; gap: 10px; }
+.hr-foot-theme {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 34px;
+	height: 34px;
+	padding: 0;
+	border: 1px solid var(--hr-line);
+	background: none;
+	color: var(--hr-muted);
+	cursor: pointer;
+	border-radius: 8px;
+}
+.hr-foot-theme svg { width: 16px; height: 16px; fill: currentColor; }
+.hr-foot-theme:hover { color: var(--hr-brand); border-color: var(--hr-brand); }
+.hr-foot-lang {
+	height: 34px;
+	padding: 0 8px;
+	border: 1px solid var(--hr-line);
+	background: transparent;
+	color: var(--hr-muted);
+	font-family: inherit;
+	font-size: 12.5px;
+	cursor: pointer;
+	border-radius: 8px;
+}

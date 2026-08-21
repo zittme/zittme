@@ -1,0 +1,101 @@
+/* 레이아웃(heritage) 토큰을 따르고, 레이아웃 밖에서는 폴백을 쓴다.
+ * dark/light/soft 파생색은 color-mix 미지원 브라우저용 고정값이다 */
+.ctc { --ctc-brand: var(--hr-brand, #cda25a); --ctc-brand-dark: #b3873f; --ctc-brand-light: #dcbc84; --ctc-brand-soft: var(--hr-brand-soft, rgba(205, 162, 90, .08));
+	--ctc-border: var(--hr-line, #e6e9ef); --ctc-text: var(--hr-ink, #10151f); --ctc-sub: var(--hr-ink-sub, #525c6b); --ctc-bg: var(--hr-surface, #f7f8fb); --ctc-card: var(--hr-bg, #ffffff);
+	width: 100%; max-width: 760px; margin: 0 auto; padding: 8px 0 48px; color: var(--ctc-text);
+	font-family: var(--hr-font, 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif); word-break: keep-all; }
+.ctc * { box-sizing: border-box; }
+.ctc a { text-decoration: none; color: inherit; }
+.ctc-wide { max-width: 960px; }
+
+.ctc-head { margin-bottom: 24px; }
+.ctc-title { margin: 0 0 8px; font-size: 24px; font-weight: 800; letter-spacing: -.02em; }
+.ctc-desc { margin: 0; font-size: 15px; line-height: 1.7; color: var(--ctc-sub); }
+.ctc-meta { margin-left: 10px; font-size: 13px; color: var(--ctc-sub); }
+.ctc-empty { padding: 48px 0; text-align: center; color: var(--ctc-sub); font-size: 14px; }
+
+.ctc-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 22px; padding: 0; list-style: none; }
+.ctc-tabs li a { display: inline-block; padding: 9px 16px; border: 1px solid var(--ctc-border); border-radius: var(--hr-radius-btn, 4px); background: var(--ctc-card); color: var(--ctc-sub); font-size: 14px; font-weight: 600; }
+.ctc-tabs li a:hover { border-color: var(--ctc-brand); color: var(--ctc-brand); }
+.ctc-tabs li.is-active a { border-color: var(--ctc-brand); background: var(--ctc-brand); color: #fff; }
+
+.ctc-form { margin: 0; }
+.ctc-row { padding: 16px 0; border-top: 1px solid var(--ctc-border); }
+.ctc-row:first-of-type { border-top: 0; padding-top: 0; }
+.ctc-label { display: block; margin-bottom: 7px; font-size: 14px; font-weight: 700; }
+.ctc-req { margin-left: 5px; color: #e5484d; font-size: 12px; font-style: normal; font-weight: 600; }
+
+.ctc-input input[type="text"], .ctc-input input[type="email"], .ctc-input input[type="tel"],
+.ctc-input input[type="number"], .ctc-input input[type="date"], .ctc-input input[type="password"],
+.ctc-input select, .ctc-input textarea {
+	width: 100%; padding: 11px 12px; border: 1px solid var(--ctc-border); border-radius: var(--hr-radius-sm, 6px);
+	background: var(--ctc-card); color: var(--ctc-text); font-size: 15px; font-family: inherit; line-height: 1.5; }
+.ctc-input textarea { resize: vertical; }
+.ctc-input input:focus, .ctc-input select:focus, .ctc-input textarea:focus { outline: none; border-color: var(--ctc-brand); box-shadow: 0 0 0 3px var(--ctc-brand-soft); }
+.ctc-input input[type="file"] { font-size: 14px; }
+
+.ctc-choice { display: inline-flex; align-items: flex-start; gap: 7px; margin: 0 16px 7px 0; font-size: 15px; line-height: 1.5; cursor: pointer; }
+.ctc-choice input { margin-top: 3px; }
+.ctc-help { display: block; margin: 6px 0 0; font-size: 12px; color: var(--ctc-sub); }
+
+.ctc-agreement { max-height: 160px; margin-bottom: 10px; padding: 12px 14px; overflow-y: auto; border: 1px solid var(--ctc-border); border-radius: var(--hr-radius-sm, 6px); background: var(--ctc-bg); font-size: 12px; line-height: 1.7; color: var(--ctc-sub); }
+
+.ctc-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+.ctc-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--ctc-border); }
+.ctc-submit { display: inline-flex; align-items: center; justify-content: center; padding: 13px 32px; border: 1px solid transparent; border-radius: var(--hr-radius-btn, 4px);
+	background: var(--ctc-brand); color: #fff; font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer; transition: filter .15s; }
+.ctc-submit:hover { filter: brightness(1.06); color: #fff; }
+.ctc-link { padding: 0; border: 0; background: none; color: var(--ctc-sub); font-size: 14px; font-family: inherit; cursor: pointer; }
+.ctc-link:hover { color: var(--ctc-brand); }
+.ctc-inline-form { display: inline; margin: 0; }
+
+.ctc-table { width: 100%; margin: 0; border-top: 2px solid var(--ctc-text); border-collapse: collapse; font-size: 14px; }
+.ctc-table th, .ctc-table td { padding: 14px 12px; border-bottom: 1px solid var(--ctc-border); text-align: left; vertical-align: top; }
+.ctc-table thead th { font-weight: 700; color: var(--ctc-sub); }
+.ctc-table tbody a:hover { color: var(--ctc-brand); }
+.ctc-table-view th { width: 150px; background: var(--ctc-bg); font-weight: 700; }
+.ctc-nowrap { white-space: nowrap; }
+
+.ctc-status { display: inline-block; padding: 3px 10px; border-radius: 0; background: var(--ctc-bg); color: var(--ctc-sub); font-size: 12px; font-weight: 600; }
+.ctc-status-new { background: var(--ctc-brand-soft); color: var(--ctc-brand); }
+.ctc-status-ing { background: #fdf3e2; color: #b97a17; }
+.ctc-status-done { background: #e7f6ec; color: #1e7a44; }
+.ctc-status-hold { background: var(--ctc-bg); color: var(--ctc-sub); }
+/* 나머지 색은 hr 토큰을 물려받아 저절로 바뀐다. 값이 박힌 이 둘만 따로 준다 */
+[data-theme="dark"] .ctc-status-ing { background: rgba(234, 152, 8, .16); color: #f0b34d; }
+[data-theme="dark"] .ctc-status-done { background: rgba(29, 122, 61, .18); color: #6fce93; }
+
+.ctc-complete { padding: 56px 0; text-align: center; }
+.ctc-complete-ico { display: grid; place-items: center; width: 56px; height: 56px; margin: 0 auto 16px; border-radius: 50%; background: var(--ctc-brand-soft); }
+.ctc-complete-ico svg { width: 30px; height: 30px; fill: var(--ctc-brand); }
+.ctc-complete .ctc-actions { justify-content: center; border-top: 0; }
+
+.ctc-foot-links { display: flex; gap: 18px; justify-content: center; margin-top: 28px; font-size: 14px; }
+.ctc-foot-links a { color: var(--ctc-sub); }
+.ctc-foot-links a:hover { color: var(--ctc-brand); }
+
+@media (min-width: 641px) {
+	.ctc-row { display: flex; gap: 16px; }
+	.ctc-label { flex: 0 0 150px; padding-top: 11px; margin-bottom: 0; }
+	.ctc-input { flex: 1 1 auto; min-width: 0; }
+	.ctc-row-agreement .ctc-label { padding-top: 0; }
+}
+@media (max-width: 640px) {
+	.ctc { padding: 16px 12px 44px; }
+	.ctc-title { font-size: 21px; }
+	.ctc-table-view th { width: 104px; }
+	.ctc-submit { width: 100%; }
+}
+
+.ctc a.ctc-submit,
+.ctc a.ctc-submit:link,
+.ctc a.ctc-submit:visited,
+.ctc a.ctc-submit:hover,
+.ctc a.ctc-submit:focus,
+.ctc a.ctc-submit:active { color: #fff; text-decoration: none; border-bottom: 0; }
+.ctc button.ctc-submit { color: #fff; text-decoration: none; }
+.ctc a.ctc-link,
+.ctc a.ctc-link:link,
+.ctc a.ctc-link:visited { text-decoration: none; border-bottom: 0; }
+.ctc a.ctc-link:hover { color: var(--ctc-brand); }

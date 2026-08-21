@@ -1,0 +1,74 @@
+@version(2)
+@load('css/skin.css')
+
+<div class="zmk">
+	<header class="zmk-page-head zmk-user-head">
+		@if ($kin_user_stats['profile_image'])
+		<img class="zmk-avatar zmk-avatar-lg" src="{{ $kin_user_stats['profile_image']->src }}" alt="" />
+		@else
+		<span class="zmk-avatar zmk-avatar-lg zmk-avatar-text">{{ mb_substr($kin_user->nick_name, 0, 1) }}</span>
+		@endif
+
+		<div class="zmk-user-head-body">
+			<h1 class="zmk-page-title">{{ $kin_user->nick_name }}</h1>
+			<p class="zmk-page-desc">{{ $lang->kin_activity }} · {{ $lang->kin_answers }} {{ number_format($kin_user_stats['total']) }} · {{ $lang->kin_status_accepted }} {{ number_format($kin_user_stats['accepted']) }}@if ($kin_user_stats['total'] > 0) ({{ $lang->kin_accept_rate }} {{ round($kin_user_stats['accepted'] / $kin_user_stats['total'] * 100) }}%)@endif</p>
+		</div>
+	</header>
+
+	<div class="zmk-toolbar">
+		<ul class="zmk-tabs">
+			<li @if ($kin_tab === 'answers') class="is-active" @endif><a href="{{ getUrl('', 'mid', $mid, 'act', 'dispKinUser', 'member_srl', $kin_user->member_srl, 'tab', 'answers', 'page', '') }}">{{ $lang->kin_answers }}</a></li>
+			<li @if ($kin_tab === 'questions') class="is-active" @endif><a href="{{ getUrl('', 'mid', $mid, 'act', 'dispKinUser', 'member_srl', $kin_user->member_srl, 'tab', 'questions', 'page', '') }}">{{ $lang->kin_question }}</a></li>
+		</ul>
+
+		<a href="{{ getUrl('', 'mid', $mid, 'act', '') }}" class="zmk-btn">{{ $lang->kin_list }}</a>
+	</div>
+
+	@if (!count($kin_items))
+	<p class="zmk-empty">{{ $lang->kin_no_activity }}</p>
+	@endif
+
+	<ul class="zmk-user-list">
+		@foreach ($kin_items as $item)
+		@if ($kin_tab === 'questions')
+		<li class="zmk-user-item">
+			<div class="zmk-user-item-top">
+				@if (($item->kin->status ?? 'open') === 'accepted')
+				<em class="zmk-badge zmk-badge-accepted">{{ $lang->kin_status_accepted }}</em>
+				@else
+				<em class="zmk-badge zmk-badge-open">{{ $lang->kin_status_open }}</em>
+				@endif
+				<a class="zmk-user-item-title" href="{{ getUrl('', 'mid', $mid, 'act', 'dispKinView', 'document_srl', $item->document_srl) }}">{{ $item->getTitleText() }}</a>
+			</div>
+			<div class="zmk-user-item-meta">
+				<time>{{ $item->getRegdate('Y.m.d') }}</time>
+				<span>{{ $lang->kin_answers }} {{ number_format($item->kin->answer_count ?? 0) }}</span>
+			</div>
+		</li>
+		@else
+		<li class="zmk-user-item">
+			<div class="zmk-user-item-top">
+				@if (($item->kin_answer->is_accepted ?? 'N') === 'Y')
+				<em class="zmk-badge zmk-badge-accepted">{{ $lang->kin_status_accepted }}</em>
+				@endif
+				@if ($item->kin_question_document)
+				<a class="zmk-user-item-title" href="{{ getUrl('', 'mid', $mid, 'act', 'dispKinView', 'document_srl', $item->kin_question_document->document_srl) }}">{{ $item->kin_question_document->getTitleText() }}</a>
+				@endif
+			</div>
+			<p class="zmk-user-item-excerpt">{{ $item->getSummary(120) }}</p>
+			<div class="zmk-user-item-meta">
+				<time>{{ $item->getRegdate('Y.m.d') }}</time>
+			</div>
+		</li>
+		@endif
+		@endforeach
+	</ul>
+
+	@if ($page_navigation && $page_navigation->total_page > 1)
+	<nav class="zmk-paging">
+		@foreach ($page_navigation as $page_no)
+		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispKinUser', 'member_srl', $kin_user->member_srl, 'tab', $kin_tab, 'page', $page_no) }}" @if ((int)$page_no === (int)$page) class="is-active" @endif>{{ $page_no }}</a>
+		@endforeach
+	</nav>
+	@endif
+</div>

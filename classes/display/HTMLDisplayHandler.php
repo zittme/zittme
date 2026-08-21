@@ -440,9 +440,11 @@ class HTMLDisplayHandler
 			. '#zab-modal .zab-close{border:0;background:#f2f4f7;color:#667085;width:28px;height:28px;border-radius:14px;font-size:18px;cursor:pointer;line-height:1}'
 			. '#zab-modal .zab-frame{flex:1;border:0;width:100%}'
 			. '</style>'
-			. '<script>(function(){var m=document.getElementById("zab-modal");if(!m)return;var f=m.querySelector(".zab-frame");'
+			. '<script>(function(){var m=document.getElementById("zab-modal");if(!m)return;var f=m.querySelector(".zab-frame");var loads=0;'
 			. 'function theme(){var d=document.documentElement;var t=d.getAttribute("data-zm-theme")||d.getAttribute("data-theme");if(t==="light"||t==="dark")return t;return window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}'
-			. 'function open(u){f.src=u+(u.indexOf("?")<0?"?":"&")+"zab_theme="+theme();m.hidden=false;requestAnimationFrame(function(){m.classList.add("zab-open");});}function close(){m.classList.remove("zab-open");setTimeout(function(){m.hidden=true;f.src="about:blank";},220);}'
+			. 'function open(u){loads=0;f.src=u+(u.indexOf("?")<0?"?":"&")+"zab_theme="+theme();m.hidden=false;requestAnimationFrame(function(){m.classList.add("zab-open");});}function close(){m.classList.remove("zab-open");setTimeout(function(){m.hidden=true;f.src="about:blank";},220);}'
+			// ruleset forms reload the iframe only on success: second load = saved
+			. 'f.addEventListener("load",function(){if(!f.src||f.src==="about:blank"||m.hidden)return;loads++;if(loads>1){close();setTimeout(function(){window.location.reload();},120);}});'
 			. 'document.querySelectorAll("#zittme-adminbar [data-zab-open]").forEach(function(b){b.addEventListener("click",function(){open(b.getAttribute("data-zab-open"));});});'
 			. 'm.querySelector(".zab-back").addEventListener("click",close);m.querySelector(".zab-close").addEventListener("click",close);})();</script>';
 

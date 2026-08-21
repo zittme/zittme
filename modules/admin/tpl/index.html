@@ -6,6 +6,13 @@
 
 <div class="content zdb-page" id="content">
 
+	<!--// New stable core release banner (filled and shown by admin.js from api.zitt.me/version.json) -->
+	<div class="zdb-release-banner core_update" data-current-version="{\ZITTME_VERSION}" style="display:none" role="status">
+		<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 6v6c0 5 3.4 9.4 8 10 4.6-.6 8-5 8-10V6l-8-4zm-1 14-3.5-3.5 1.4-1.4L11 13.2l4.6-4.6 1.4 1.4L11 16z"/></svg>
+		<span class="zdb-release-text">{$lang->core_update_available}</span>
+		<a class="zdb-release-link" href="https://zitt.me/release" target="_blank" rel="noopener">{$lang->core_update_link}</a>
+	</div>
+
 	<!--// Page Title -->
 	<div class="x_page-header">
 		<h1>{$lang->control_panel}</h1>
@@ -40,12 +47,6 @@
 				<li>{$value}</li>
 			</block>
 		</ul>
-	</div>
-
-	<!--// Notice about new Zittme core release -->
-	<div class="message update core_update" data-current-version="{\ZITTME_VERSION}">
-		<h2>{$lang->update_available}</h2>
-		<p>{$lang->core_update_available} <a href="https://zitt.me/" target="_blank">{$lang->core_update_link}</a></p>
 	</div>
 
 	<!--// Notice about cleaning up unnecessary core files -->

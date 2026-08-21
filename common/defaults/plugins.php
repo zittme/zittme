@@ -17,14 +17,8 @@ return array(
 		'point_level_icon' => true,
 	),
 
-	// Layouts
-	'layout' => array(
-		'colorCode' => true,
-		'default' => true,
-		'simpleGray' => true,
-		'user_layout' => true,
-		'xedition' => true,
-	),
+	// Layouts (provided by themes)
+	'layout' => array(),
 
 	// Modules
 	'module' => array(

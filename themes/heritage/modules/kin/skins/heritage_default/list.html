@@ -1,0 +1,146 @@
+@version(2)
+@load('css/skin.css')
+
+<div class="zmk">
+	@if (trim((string)$kin_page_title) !== '' || trim((string)$kin_page_desc) !== '')
+	<header class="zmk-page-head">
+		@if (trim((string)$kin_page_title) !== '')<h1 class="zmk-page-title">{{ $kin_page_title }}</h1>@endif
+		@if (trim((string)$kin_page_desc) !== '')<p class="zmk-page-desc">{{ $kin_page_desc }}</p>@endif
+	</header>
+	@endif
+
+	<div class="zmk-toolbar">
+		<ul class="zmk-tabs">
+			<li @if ($kin_status === '') class="is-active" @endif><a href="{{ getUrl('', 'mid', $mid, 'act', '', 'status', '', 'page', '') }}">{{ $lang->kin_tab_all }}</a></li>
+			<li @if ($kin_status === 'open') class="is-active" @endif><a href="{{ getUrl('', 'mid', $mid, 'act', '', 'status', 'open', 'page', '') }}">{{ $lang->kin_status_open }} <b>{{ number_format($kin_status_count['open'] ?? 0) }}</b></a></li>
+			<li @if ($kin_status === 'accepted') class="is-active" @endif><a href="{{ getUrl('', 'mid', $mid, 'act', '', 'status', 'accepted', 'page', '') }}">{{ $lang->kin_status_accepted }} <b>{{ number_format($kin_status_count['accepted'] ?? 0) }}</b></a></li>
+		</ul>
+
+		@if ($grant->write_question)
+		<a href="{{ $kin_write_url }}" class="zmk-btn zmk-btn-primary">{{ $lang->kin_write_question }}</a>
+		@endif
+	</div>
+
+	@php $zmk_cat_style = count($kin_category_tree ?? []) ? $kin_category_style : 'none'; @endphp
+
+	{{-- 뱃지 방식: 1차 분야를 알약으로 늘어놓고, 2차 분야는 롤오버로 펼친다 --}}
+	@if ($zmk_cat_style === 'badge')
+	<ul class="zmk-categories">
+		<li class="zmk-cat-item @if (!$kin_category_srl) is-active @endif"><a href="{{ getUrl('', 'mid', $mid, 'act', '', 'category', '', 'page', '') }}">{{ $lang->kin_category_all }}</a></li>
+		@foreach ($kin_category_tree as $zmk_node)
+		<li class="zmk-cat-item @if ((int)$kin_category_srl === (int)$zmk_node['item']->category_srl || (int)$kin_active_parent_srl === (int)$zmk_node['item']->category_srl) is-active @endif @if (count($zmk_node['children'])) has-children @endif">
+			<a href="{{ getUrl('', 'mid', $mid, 'act', '', 'category', $zmk_node['item']->category_srl, 'page', '') }}">{{ $zmk_node['item']->title }}</a>
+			@if (count($zmk_node['children']))
+			<ul class="zmk-cat-drop">
+				@foreach ($zmk_node['children'] as $zmk_child)
+				<li @if ((int)$kin_category_srl === (int)$zmk_child->category_srl) class="is-active" @endif><a href="{{ getUrl('', 'mid', $mid, 'act', '', 'category', $zmk_child->category_srl, 'page', '') }}">{{ $zmk_child->title }}</a></li>
+				@endforeach
+			</ul>
+			@endif
+		</li>
+		@endforeach
+	</ul>
+	@endif
+
+	{{-- 그리드 방식: 분야가 많을 때. 1차를 여러 열로 깔고 2차는 롤오버로 펼친다 --}}
+	@if ($zmk_cat_style === 'grid')
+	<div class="zmk-cat-grid">
+		<div class="zmk-cat-cell @if (!$kin_category_srl) is-active @endif"><a href="{{ getUrl('', 'mid', $mid, 'act', '', 'category', '', 'page', '') }}">{{ $lang->kin_category_all }}</a></div>
+		@foreach ($kin_category_tree as $zmk_node)
+		<div class="zmk-cat-cell @if ((int)$kin_category_srl === (int)$zmk_node['item']->category_srl || (int)$kin_active_parent_srl === (int)$zmk_node['item']->category_srl) is-active @endif @if (count($zmk_node['children'])) has-children @endif">
+			<a href="{{ getUrl('', 'mid', $mid, 'act', '', 'category', $zmk_node['item']->category_srl, 'page', '') }}">{{ $zmk_node['item']->title }}</a>
+			@if (count($zmk_node['children']))
+			<ul class="zmk-cat-drop">
+				@foreach ($zmk_node['children'] as $zmk_child)
+				<li @if ((int)$kin_category_srl === (int)$zmk_child->category_srl) class="is-active" @endif><a href="{{ getUrl('', 'mid', $mid, 'act', '', 'category', $zmk_child->category_srl, 'page', '') }}">{{ $zmk_child->title }}</a></li>
+				@endforeach
+			</ul>
+			@endif
+		</div>
+		@endforeach
+	</div>
+	@endif
+
+	{{-- 사이드바 방식: 왼쪽에 분야 세로 목록, 2차는 들여쓰기로 항상 보인다 --}}
+	@if ($zmk_cat_style === 'sidebar')
+	<div class="zmk-columns">
+		<aside class="zmk-side">
+			<ul class="zmk-side-list">
+				<li class="zmk-side-top @if (!$kin_category_srl) is-active @endif"><a href="{{ getUrl('', 'mid', $mid, 'act', '', 'category', '', 'page', '') }}">{{ $lang->kin_category_all }}</a></li>
+				@foreach ($kin_category_tree as $zmk_node)
+				<li class="zmk-side-top @if ((int)$kin_category_srl === (int)$zmk_node['item']->category_srl) is-active @endif"><a href="{{ getUrl('', 'mid', $mid, 'act', '', 'category', $zmk_node['item']->category_srl, 'page', '') }}">{{ $zmk_node['item']->title }}</a></li>
+				@foreach ($zmk_node['children'] as $zmk_child)
+				<li class="zmk-side-sub @if ((int)$kin_category_srl === (int)$zmk_child->category_srl) is-active @endif"><a href="{{ getUrl('', 'mid', $mid, 'act', '', 'category', $zmk_child->category_srl, 'page', '') }}">{{ $zmk_child->title }}</a></li>
+				@endforeach
+				@endforeach
+			</ul>
+		</aside>
+		<div class="zmk-main">
+	@endif
+
+	<table class="zmk-table">
+		<thead>
+			<tr>
+				<th class="zmk-col-status">{{ $lang->kin_status }}</th>
+				<th>{{ $lang->kin_question }}</th>
+				@if ($kin_use_point)<th class="zmk-col-point">{{ $lang->kin_point }}</th>@endif
+				<th class="zmk-col-count">{{ $lang->kin_answers }}</th>
+				<th class="zmk-col-author">{{ $lang->writer }}</th>
+				<th class="zmk-col-date">{{ $lang->date }}</th>
+				<th class="zmk-col-count">{{ $lang->readed_count }}</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach ($kin_list ?? [] as $document)
+			<tr>
+				<td class="zmk-col-status">
+					@if (($document->kin->status ?? 'open') === 'accepted')
+					<em class="zmk-badge zmk-badge-accepted">{{ $lang->kin_status_accepted }}</em>
+					@else
+					<em class="zmk-badge zmk-badge-open">{{ $lang->kin_status_open }}</em>
+					@endif
+				</td>
+				<td class="zmk-col-title">
+					<a href="{{ getUrl('', 'mid', $mid, 'document_srl', $document->document_srl, 'act', 'dispKinView', 'status', $kin_status, 'category', $kin_category_srl ?: '', 'page', $page > 1 ? $page : '') }}">{{ $document->getTitleText() }}</a>
+					@if ($document->getCommentCount())<span class="zmk-cmt-count">[{{ $document->getCommentCount() }}]</span>@endif
+				</td>
+				@if ($kin_use_point)<td class="zmk-col-point">@if ((int)($document->kin->point ?? 0) > 0)<b>{{ number_format($document->kin->point) }}</b>@else -@endif</td>@endif
+				<td class="zmk-col-count">{{ number_format($document->kin->answer_count ?? 0) }}</td>
+				<td class="zmk-col-author">{{ $document->getNickName() }}</td>
+				<td class="zmk-col-date">{{ $document->getRegdate('Y.m.d') }}</td>
+				<td class="zmk-col-count">{{ number_format($document->get('readed_count')) }}</td>
+			</tr>
+			@endforeach
+
+			@if (!count($kin_list ?? []))
+			<tr><td colspan="{{ $kin_use_point ? 7 : 6 }}" class="zmk-empty">{{ $lang->kin_no_questions }}</td></tr>
+			@endif
+		</tbody>
+	</table>
+
+	@if ($page_navigation && $page_navigation->total_page > 1)
+	<nav class="zmk-paging">
+		@foreach ($page_navigation as $page_no)
+		<a href="{{ getUrl('', 'mid', $mid, 'act', '', 'status', $kin_status, 'category', $kin_category_srl ?: '', 'page', $page_no) }}" @if ((int)$page_no === (int)$page) class="is-active" @endif>{{ $page_no }}</a>
+		@endforeach
+	</nav>
+	@endif
+
+	<form class="zmk-search" action="./" method="get">
+		<input type="hidden" name="mid" value="{{ $mid }}" />
+		<input type="hidden" name="status" value="{{ $kin_status }}" />
+		<select name="search_target">
+			<option value="title_content" @if ($kin_search_target === 'title_content') selected @endif>{{ $lang->kin_search_title_content }}</option>
+			<option value="title" @if ($kin_search_target === 'title') selected @endif>{{ $lang->title }}</option>
+			<option value="content" @if ($kin_search_target === 'content') selected @endif>{{ $lang->content }}</option>
+			<option value="nick_name" @if ($kin_search_target === 'nick_name') selected @endif>{{ $lang->writer }}</option>
+		</select>
+		<input type="text" name="search_keyword" value="{{ $kin_search_keyword }}" />
+		<button type="submit" class="zmk-btn">{{ $lang->cmd_search }}</button>
+	</form>
+
+	@if ($zmk_cat_style === 'sidebar')
+		</div>
+	</div>
+	@endif
+</div>

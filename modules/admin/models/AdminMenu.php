@@ -27,7 +27,6 @@ class AdminMenu
 		],
 		'content' => [
 			'board.board',
-			'pagemaker.pagemaker',
 			'page.page',
 			'document.document',
 			'comment.comment',
@@ -355,8 +354,6 @@ class AdminMenu
 	 */
 	const ADDED_MENU_ITEMS = [
 		'admin.installedTheme' => 'installedLayout',
-		// Insert pagemaker right below board (= above page).
-		'pagemaker.pagemaker' => 'page',
 	];
 
 	/**
@@ -438,10 +435,13 @@ class AdminMenu
 				continue;
 			}
 
+			// Module not installed or menu not declared: mark as handled so the
+			// update notice does not stay on forever.
 			$action_info = ModuleModel::getModuleActionXml($module_name);
 			$index_act = $action_info->menu->{$menu_name}->index ?? '';
 			if (!$index_act)
 			{
+				$added[] = $key;
 				continue;
 			}
 

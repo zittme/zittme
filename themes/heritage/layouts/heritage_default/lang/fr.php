@@ -1,0 +1,30 @@
+<?php
+
+$lang->hr_login = 'Connexion';
+$lang->hr_signup = 'Inscription';
+$lang->hr_logout = 'Déconnexion';
+$lang->hr_my_info = 'Mon compte';
+$lang->hr_find_account = 'Retrouver mon compte';
+$lang->hr_welcome = 'Bonjour %s.';
+$lang->hr_login_notice = 'Connectez-vous pour accéder aux services membres.';
+$lang->hr_admin = 'Administration';
+$lang->hr_admin_page = 'Page d\'administration';
+$lang->hr_search = 'Rechercher';
+$lang->hr_search_all = 'Rechercher sur le site';
+$lang->hr_menu = 'Menu';
+$lang->hr_menu_open = 'Ouvrir le menu';
+$lang->hr_menu_close = 'Fermer le menu';
+$lang->hr_main_menu = 'Menu principal';
+$lang->hr_sub_menu = 'Sous-menu';
+$lang->hr_footer_menu = 'Menu du pied de page';
+$lang->hr_to_top = 'Haut de page';
+$lang->hr_notify = 'Notifications';
+$lang->hr_notify_read_all = 'Tout marquer lu';
+$lang->hr_notify_empty = 'Aucune nouvelle notification.';
+$lang->hr_notify_all = 'Tout voir';
+$lang->hr_theme_toggle = 'Changer de mode de couleur';
+$lang->hr_lang_select = 'Choisir la langue';
+$lang->hr_visual_label = 'À la une';
+$lang->hr_visual_prev = 'Diapositive précédente';
+$lang->hr_visual_next = 'Diapositive suivante';
+$lang->hr_visual_slide = 'Diapositive %d';

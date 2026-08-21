@@ -1,0 +1,256 @@
+@version(2)
+<!-- 머리 구조 (XEDITION 계보)
+     한 줄 헤더: 로고(왼쪽) + GNB(오른쪽 인라인) + 유틸리티 아이콘.
+     1차 메뉴에 올리면 그 항목 아래로만 다크 드롭다운이 열린다 -->
+<header class="hr-header" id="hr_header">
+
+	<div class="hr-utilrow">
+		{{-- 재해석: 헤더는 화면 전체 폭. 로고는 왼쪽 끝, GNB 는 중앙 또는 로고 옆(gnb_align), 유틸은 오른쪽 끝 --}}
+		<div class="hr-utilrow-inner g-{{ $hr->gnb_align ?? 'left' }}">
+			<a class="hr-logo" href="{{ getUrl('') }}">
+				@if (!empty($hr->logo_image))
+				<img class="hr-logo-light" src="{{ $hr->logo_image }}" alt="{{ $hr->logo_text ?: ($site_title ?? '') }}" />
+				@if (!empty($hr->logo_image_dark))
+				<img class="hr-logo-dark" src="{{ $hr->logo_image_dark }}" alt="{{ $hr->logo_text ?: ($site_title ?? '') }}" />
+				@endif
+				@else
+				<span>{{ $hr->logo_text ?: ($site_title ?? 'HOME') }}</span>
+				@endif
+			</a>
+
+			<nav class="hr-gnb" id="hr_gnb" aria-label="{{ $lang->hr_main_menu }}">
+				<ul class="hr-gnb-list">
+					@foreach ($hr_menu as $hr_i => $hr_m)
+					<li class="@if (!empty($hr_m['list'])) has-sub @endif @if (!empty($hr_m['selected']) || !empty($hr_m['open'])) is-on @endif">
+						<a class="hr-gnb-top" href="{{ $hr_m['href'] }}" @if (($hr_m['open_window'] ?? '') === 'Y') target="_blank" rel="noopener" @endif>{{ $hr_m['text'] }}</a>
+						@if (!empty($hr_m['list']))
+						<ul class="hr-gnb-sub">
+							@foreach ($hr_m['list'] as $hr_c)
+							<li class="@if (!empty($hr_c['selected']) || !empty($hr_c['open'])) is-on @endif">
+								<a href="{{ $hr_c['href'] }}" @if (($hr_c['open_window'] ?? '') === 'Y') target="_blank" rel="noopener" @endif>{{ $hr_c['text'] }}</a>
+								@if (!empty($hr_c['list']))
+								<ul class="hr-gnb-sub2">
+									@foreach ($hr_c['list'] as $hr_g)
+									<li><a href="{{ $hr_g['href'] }}" @if (($hr_g['open_window'] ?? '') === 'Y') target="_blank" rel="noopener" @endif>{{ $hr_g['text'] }}</a></li>
+									@endforeach
+								</ul>
+								@endif
+							</li>
+							@endforeach
+						</ul>
+						@endif
+					</li>
+					@endforeach
+				</ul>
+			</nav>
+
+			{{-- 우측 유틸: 다크모드 · 검색 · 언어(축약 코드) · 프로필 영역(포인트색 박스) 순 --}}
+			<div class="hr-utils">
+				@php
+				// 알림센터(ncenterlite) 헤더 연동 — 기본 플로팅 위젯은 끄고 프로필 영역 안에 벨을 그린다
+				$hr_nc_items = [];
+				$hr_nc_unread = 0;
+				$hr_nc_on = false;
+				if ($is_logged && class_exists('NcenterliteModel')) {
+					$layout_info->use_ncenter_widget = 'Y';
+					$hr_nc_on = true;
+					$hr_nc_out = getModel('ncenterlite')->getMyNotifyList($logged_info->member_srl);
+					if ($hr_nc_out && !empty($hr_nc_out->data)) {
+						$hr_nc_items = array_slice(is_array($hr_nc_out->data) ? $hr_nc_out->data : [], 0, 8);
+						$hr_nc_unread = (int)($hr_nc_out->page_navigation->total_count ?? 0);
+					}
+				}
+				@endphp
+
+				@if ($hr_scheme === 'auto')
+				<button type="button" class="hr-theme" id="hr_theme_btn" data-hr-theme-toggle aria-label="{{ $lang->hr_theme_toggle }}">
+					<svg class="hr-ico-sun" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0-6 1 3h-2l1-3zm0 19 1 3h-2l1-3zM2 12l3-1v2l-3-1zm17-1 3 1-3 1v-2zM4.2 4.2l2.6 1.6-1 1-1.6-2.6zm13 13 2.6 1.6-1.6-2.6-1 1zm2.6-13-1.6 2.6-1-1 2.6-1.6zM4.2 19.8l1.6-2.6 1 1-2.6 1.6z"/></svg>
+					<svg class="hr-ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.3 13.8A8.5 8.5 0 0 1 10.2 3.7 8.5 8.5 0 1 0 20.3 13.8z"/></svg>
+				</button>
+				@endif
+
+				@if ($hr->use_search !== 'N')
+				<button type="button" class="hr-iconbtn hr-search-open" id="hr_search_open" aria-label="{{ $lang->hr_search }}" aria-expanded="false">
+					<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 3a7.5 7.5 0 1 0 4.6 13.4l4.2 4.3 1.5-1.5-4.3-4.2A7.5 7.5 0 0 0 10.5 3zm0 2a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11z"/></svg>
+				</button>
+				@endif
+
+				{{-- 언어 전환: 축약 코드(KR/EN)로 표시. 코어에서 켜 둔 언어가 둘 이상일 때만 나온다 --}}
+				@php
+				$hr_langs = \Context::get('lang_supported');
+				$hr_langs = is_array($hr_langs) ? $hr_langs : [];
+				$hr_lang_now = \Context::getLangType();
+				// 축약 코드 표: 템플릿에서는 배열 접근만 쓴다 (클로저 호출은 컴파일러가 메서드 호출로 바꿔 버린다)
+				$hr_lang_short = ['ko' => 'KR', 'en' => 'EN', 'ja' => 'JP', 'zh-CN' => 'CN', 'zh-TW' => 'TW', 'vi' => 'VN', 'mn' => 'MN', 'es' => 'ES', 'fr' => 'FR', 'de' => 'DE', 'ru' => 'RU', 'tr' => 'TR'];
+				foreach (array_keys($hr_langs) as $hr_lc) {
+					if (!isset($hr_lang_short[$hr_lc])) {
+						$hr_lang_short[$hr_lc] = strtoupper(substr($hr_lc, 0, 2));
+					}
+				}
+				// 보던 주소를 그대로 두고 l 값만 갈아 끼운다.
+				// getUrl() 은 재작성된 주소(/notice/123)를 복원하지 못해 대문으로 떨어진다.
+				$hr_lang_uri = (string)($_SERVER['REQUEST_URI'] ?? '/');
+				$hr_lang_uri = preg_replace('/([?&])l=[^&]*/', '$1', $hr_lang_uri);
+				$hr_lang_uri = preg_replace('/[?&]+$/', '', $hr_lang_uri);
+				$hr_lang_uri = str_replace('&&', '&', $hr_lang_uri);
+				$hr_lang_sep = strpos($hr_lang_uri, '?') === false ? '?' : '&';
+				@endphp
+				@if (count($hr_langs) > 1)
+				<div class="hr-lang" id="hr_lang">
+					<button type="button" class="hr-lang-btn" aria-haspopup="true" aria-expanded="false" aria-label="{{ $lang->hr_lang_select }}">
+						<span class="hr-lang-code">{{ $hr_lang_short[$hr_lang_now] ?? strtoupper($hr_lang_now) }}</span>
+					</button>
+					<ul class="hr-lang-list" hidden>
+						@foreach ($hr_langs as $hr_lang_code => $hr_lang_name)
+						<li><a href="{{ $hr_lang_uri }}{{ $hr_lang_sep }}l={{ $hr_lang_code }}" @if ($hr_lang_code === $hr_lang_now) class="is-on" @endif><b>{{ $hr_lang_short[$hr_lang_code] ?? strtoupper($hr_lang_code) }}</b> {{ $hr_lang_name }}</a></li>
+						@endforeach
+					</ul>
+				</div>
+				@endif
+
+				{{-- 프로필 영역: 포인트색 박스에 사진+닉네임+알림 벨. 올리면 하위 메뉴(관리자 링크 포함) --}}
+				<div class="hr-me">
+					@if ($is_logged)
+					<a class="hr-me-btn" href="{{ getUrl('', 'act', 'dispMemberInfo') }}" aria-haspopup="true">
+						@if (!empty($logged_info->profile_image->src))
+						<img class="hr-me-photo" src="{{ $logged_info->profile_image->src }}" alt="" />
+						@else
+						<svg class="hr-me-photo-fallback" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12zm0 2.2c-3.5 0-9 1.8-9 5.3V21h18v-1.5c0-3.5-5.5-5.3-9-5.3z"/></svg>
+						@endif
+						<span class="hr-me-nick">{{ $logged_info->nick_name }}</span>
+					</a>
+					@if ($hr_nc_on)
+					<div class="hr-nc">
+						<button type="button" class="hr-nc-btn" aria-label="{{ $lang->hr_notify }}" aria-expanded="false">
+							<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22a2.3 2.3 0 0 0 2.3-2.3H9.7A2.3 2.3 0 0 0 12 22zm7.3-5.3H4.7c-.6 0-.9-.7-.5-1.1l1.5-1.6v-4a6.3 6.3 0 0 1 4.6-6.1V3.3a1.7 1.7 0 1 1 3.4 0v.6a6.3 6.3 0 0 1 4.6 6.1v4l1.5 1.6c.4.4.1 1.1-.5 1.1z"/></svg>
+							@if ($hr_nc_unread > 0)<em class="hr-nc-badge">{{ $hr_nc_unread > 99 ? '99+' : $hr_nc_unread }}</em>@endif
+						</button>
+						<div class="hr-nc-panel" hidden>
+							<div class="hr-nc-head">
+								<strong>{{ $lang->hr_notify }}</strong>
+								@if ($hr_nc_unread > 0)<button type="button" class="hr-nc-readall">{{ $lang->hr_notify_read_all }}</button>@endif
+							</div>
+							<ul class="hr-nc-list">
+								@forelse ($hr_nc_items as $hr_nc_item)
+								<li><a href="{{ $hr_nc_item->url }}"><span class="hr-nc-text">{!! $hr_nc_item->text !!}</span><span class="hr-nc-ago">{{ $hr_nc_item->ago }}</span></a></li>
+								@empty
+								<li class="hr-nc-empty">{{ $lang->hr_notify_empty }}</li>
+								@endforelse
+							</ul>
+							<a class="hr-nc-all" href="{{ Context::getRequestUri() }}member/notifications">{{ $lang->hr_notify_all }}</a>
+						</div>
+					</div>
+					@endif
+					<ul class="hr-me-menu">
+						<li><a href="{{ getUrl('', 'act', 'dispMemberInfo') }}">{{ $lang->hr_my_info }}</a></li>
+						@if ($logged_info->is_admin == 'Y')
+						<li><a href="{{ getUrl('', 'module', 'admin') }}" target="_blank">{{ $lang->hr_admin_page }}</a></li>
+						@endif
+						<li><a href="{{ getUrl('', 'act', 'dispMemberLogout') }}">{{ $lang->hr_logout }}</a></li>
+					</ul>
+					@else
+					<a class="hr-me-btn" href="{{ getUrl('', 'act', 'dispMemberLoginForm') }}" aria-haspopup="true">
+						<svg class="hr-me-photo-fallback" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12zm0 2.2c-3.5 0-9 1.8-9 5.3V21h18v-1.5c0-3.5-5.5-5.3-9-5.3z"/></svg>
+						<span class="hr-me-nick">{{ $lang->hr_login }}</span>
+					</a>
+					<ul class="hr-me-menu">
+						<li><a href="{{ getUrl('', 'act', 'dispMemberLoginForm') }}">{{ $lang->hr_login }}</a></li>
+						<li><a href="{{ getUrl('', 'act', 'dispMemberSignUpForm') }}">{{ $lang->hr_signup }}</a></li>
+					</ul>
+					@endif
+				</div>
+
+				<button type="button" class="hr-burger" id="hr_burger" aria-label="{{ $lang->hr_menu_open }}" aria-expanded="false">
+					<span></span><span></span><span></span>
+				</button>
+			</div>
+
+			{{-- XEDITION 계보: 검색 아이콘을 누르면 헤더 위로 대형 검색 오버레이가 열린다 --}}
+			@if ($hr->use_search !== 'N')
+			<form class="hr-searchbar" id="hr_searchbar" action="{{ getUrl() }}" method="get" role="search" hidden>
+				<input type="hidden" name="act" value="IS" />
+				<input type="hidden" name="mid" value="{{ $mid ?? '' }}" />
+				<input type="search" name="is_keyword" placeholder="Search" aria-label="{{ $lang->hr_search_all }}" autocomplete="off" />
+				<button type="button" class="hr-iconbtn hr-search-close" id="hr_search_close" aria-label="{{ $lang->hr_menu_close }}">
+					<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7l1.4-1.4 6.3 6.3 6.3-6.3z"/></svg>
+				</button>
+			</form>
+			@endif
+		</div>
+	</div>
+
+	<div class="hr-mobile-dim" id="hr_mobile_dim" hidden></div>
+	<div class="hr-mobile" id="hr_mobile" role="dialog" aria-modal="true" aria-label="{{ $lang->hr_menu }}" hidden>
+		<div class="hr-mobile-head">
+			<span class="hr-mobile-title">{{ $hr->logo_text ?: ($site_title ?? '') }}</span>
+			<button type="button" class="hr-mobile-close" id="hr_mobile_close" aria-label="{{ $lang->hr_menu_close }}">
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7l1.4-1.4 6.3 6.3 6.3-6.3z"/></svg>
+			</button>
+		</div>
+		<div class="hr-mobile-account">
+			@if ($is_logged)
+			<a class="hr-mobile-account-btn" href="{{ getUrl('', 'act', 'dispMemberInfo') }}">{{ $logged_info->nick_name }}</a>
+			<a class="hr-mobile-account-btn" href="{{ getUrl('', 'act', 'dispMemberLogout') }}">{{ $lang->hr_logout }}</a>
+			@else
+			<a class="hr-mobile-account-btn is-primary" href="{{ getUrl('', 'act', 'dispMemberLoginForm') }}">{{ $lang->hr_login }}</a>
+			<a class="hr-mobile-account-btn" href="{{ getUrl('', 'act', 'dispMemberSignUpForm') }}">{{ $lang->hr_signup }}</a>
+			@endif
+		</div>
+		<ul class="hr-mobile-list">
+			@foreach ($hr_menu as $hr_i => $hr_m)
+			@php $hr_open = !empty($hr_m['selected']) || !empty($hr_m['open']); @endphp
+			<li class="@if (!empty($hr_m['list'])) has-sub @endif @if ($hr_open) is-on @endif">
+				<a href="{{ $hr_m['href'] }}">{{ $hr_m['text'] }}</a>
+				@if (!empty($hr_m['list']))
+				<button type="button" class="hr-mobile-toggle" aria-label="{{ $lang->hr_sub_menu }}" aria-expanded="{{ $hr_open ? 'true' : 'false' }}">
+					<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5z"/></svg>
+				</button>
+				<ul class="hr-mobile-sub" @if (!$hr_open) hidden @endif>
+					@foreach ($hr_m['list'] as $hr_c)
+					<li>
+						<a class="@if (!empty($hr_c['selected'])) is-on @endif" href="{{ $hr_c['href'] }}">{{ $hr_c['text'] }}</a>
+						@if (!empty($hr_c['list']))
+						<ul class="hr-mobile-sub2">
+							@foreach ($hr_c['list'] as $hr_g)
+							<li><a href="{{ $hr_g['href'] }}">{{ $hr_g['text'] }}</a></li>
+							@endforeach
+						</ul>
+						@endif
+					</li>
+					@endforeach
+				</ul>
+				@endif
+			</li>
+			@endforeach
+		</ul>
+
+		{{-- 좁은 화면에서는 헤더에 로고가 설 자리가 없다. 관리자·언어·밝기를 여기로 모은다 --}}
+		<div class="hr-mobile-tools">
+			@if ($is_logged && $logged_info->is_admin == 'Y')
+			<a class="hr-mobile-tool" href="{{ getUrl('', 'module', 'admin') }}" target="_blank">
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.4 13a7.9 7.9 0 0 0 0-2l2.1-1.6a.5.5 0 0 0 .1-.6l-2-3.5a.5.5 0 0 0-.6-.2l-2.5 1a7.3 7.3 0 0 0-1.7-1l-.4-2.7a.5.5 0 0 0-.5-.4h-4a.5.5 0 0 0-.5.4l-.4 2.7a7.3 7.3 0 0 0-1.7 1l-2.5-1a.5.5 0 0 0-.6.2l-2 3.5a.5.5 0 0 0 .1.6L4.4 11a7.9 7.9 0 0 0 0 2l-2.1 1.6a.5.5 0 0 0-.1.6l2 3.5a.5.5 0 0 0 .6.2l2.5-1a7.3 7.3 0 0 0 1.7 1l.4 2.7a.5.5 0 0 0 .5.4h4a.5.5 0 0 0 .5-.4l.4-2.7a7.3 7.3 0 0 0 1.7-1l2.5 1a.5.5 0 0 0 .6-.2l2-3.5a.5.5 0 0 0-.1-.6zM12 15.5A3.5 3.5 0 1 1 15.5 12 3.5 3.5 0 0 1 12 15.5z"/></svg>
+				<span>{{ $lang->hr_admin }}</span>
+			</a>
+			@endif
+
+			@if ($hr_scheme === 'auto' && ($hr->mobile_theme_pos ?? 'drawer') === 'drawer')
+			<button type="button" class="hr-mobile-tool" data-hr-theme-toggle>
+				<svg class="hr-ico-sun" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0-6 1 3h-2l1-3zm0 19 1 3h-2l1-3zM2 12l3-1v2l-3-1zm17-1 3 1-3 1v-2zM4.2 4.2l2.6 1.6-1 1-1.6-2.6zm13 13 2.6 1.6-1.6-2.6-1 1zm2.6-13-1.6 2.6-1-1 2.6-1.6zM4.2 19.8l1.6-2.6 1 1-2.6 1.6z"/></svg>
+				<svg class="hr-ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.3 13.8A8.5 8.5 0 0 1 10.2 3.7 8.5 8.5 0 1 0 20.3 13.8z"/></svg>
+				<span>{{ $lang->hr_theme_toggle }}</span>
+			</button>
+			@endif
+
+			@if (count($hr_langs) > 1 && ($hr->mobile_lang_pos ?? 'drawer') === 'drawer')
+			<div class="hr-mobile-tool hr-mobile-lang">
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2c1.4 0 2.8 2.4 3.4 6H8.6C9.2 6.4 10.6 4 12 4zM8.2 10h7.6a18 18 0 0 1 0 4H8.2a18 18 0 0 1 0-4zm-2 0a20 20 0 0 0 0 4H4.3a8 8 0 0 1 0-4h1.9zm11.6 0h1.9a8 8 0 0 1 0 4h-1.9a20 20 0 0 0 0-4zM8.6 16h6.8c-.6 3.6-2 6-3.4 6s-2.8-2.4-3.4-6z"/></svg>
+				<select id="hr_mobile_lang" aria-label="{{ $lang->hr_lang_select }}">
+					@foreach ($hr_langs as $hr_lang_code => $hr_lang_name)
+					<option value="{{ $hr_lang_uri }}{{ $hr_lang_sep }}l={{ $hr_lang_code }}" @if ($hr_lang_code === $hr_lang_now) selected @endif>{{ $hr_lang_name }}</option>
+					@endforeach
+				</select>
+			</div>
+			@endif
+		</div>
+	</div>
+</header>

@@ -1,0 +1,32 @@
+<?php
+
+$lang->hrb_just_now = 'just now';
+$lang->hrb_minutes_ago = '%d min ago';
+$lang->hrb_hours_ago = '%d hr ago';
+$lang->hrb_days_ago = '%d days ago';
+$lang->hrb_secret = 'Private';
+$lang->hrb_attached = 'Attachment';
+$lang->hrb_new_post = 'New';
+$lang->hrb_select_post = 'Select this post';
+$lang->hrb_all = 'All';
+$lang->hrb_check_all = 'Select all';
+$lang->hrb_search_ph = 'Enter a keyword';
+$lang->hrb_notice = 'Notice';
+$lang->hrb_read_count = 'Views';
+$lang->hrb_vote = 'Like';
+$lang->hrb_unvote = 'Dislike';
+$lang->hrb_attach = 'Files';
+$lang->hrb_write = 'Write';
+$lang->hrb_list = 'List';
+$lang->hrb_modify = 'Edit';
+$lang->hrb_delete = 'Delete';
+$lang->hrb_doc_menu = 'Document menu';
+$lang->hrb_manage = 'Manage posts';
+$lang->hrb_settings = 'Settings';
+$lang->hrb_empty = 'No posts yet.';
+$lang->hrb_search_next = 'See more results';
+$lang->hrb_cancel = 'Cancel';
+$lang->hrb_pagination = 'Pagination';
+$lang->hrb_first_page = 'First page';
+$lang->hrb_last_page = 'Last page';
+$lang->hrb_comment_pagination = 'Comment pagination';

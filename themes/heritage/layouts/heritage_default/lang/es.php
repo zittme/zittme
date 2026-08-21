@@ -1,0 +1,30 @@
+<?php
+
+$lang->hr_login = 'Iniciar sesión';
+$lang->hr_signup = 'Registrarse';
+$lang->hr_logout = 'Cerrar sesión';
+$lang->hr_my_info = 'Mi cuenta';
+$lang->hr_find_account = 'Recuperar cuenta';
+$lang->hr_welcome = 'Hola, %s.';
+$lang->hr_login_notice = 'Inicie sesión para usar los servicios de miembro.';
+$lang->hr_admin = 'Administración';
+$lang->hr_admin_page = 'Página de administración';
+$lang->hr_search = 'Buscar';
+$lang->hr_search_all = 'Buscar en el sitio';
+$lang->hr_menu = 'Menú';
+$lang->hr_menu_open = 'Abrir menú';
+$lang->hr_menu_close = 'Cerrar menú';
+$lang->hr_main_menu = 'Menú principal';
+$lang->hr_sub_menu = 'Submenú';
+$lang->hr_footer_menu = 'Menú del pie';
+$lang->hr_to_top = 'Volver arriba';
+$lang->hr_notify = 'Notificaciones';
+$lang->hr_notify_read_all = 'Marcar todo leido';
+$lang->hr_notify_empty = 'No hay notificaciones nuevas.';
+$lang->hr_notify_all = 'Ver todo';
+$lang->hr_theme_toggle = 'Cambiar modo de color';
+$lang->hr_lang_select = 'Elegir idioma';
+$lang->hr_visual_label = 'Destacados';
+$lang->hr_visual_prev = 'Diapositiva anterior';
+$lang->hr_visual_next = 'Diapositiva siguiente';
+$lang->hr_visual_slide = 'Diapositiva %d';

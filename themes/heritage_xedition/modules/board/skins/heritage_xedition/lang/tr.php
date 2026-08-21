@@ -1,0 +1,32 @@
+<?php
+
+$lang->hrb_just_now = 'az once';
+$lang->hrb_minutes_ago = '%d dk once';
+$lang->hrb_hours_ago = '%d saat once';
+$lang->hrb_days_ago = '%d gun once';
+$lang->hrb_secret = 'Gizli';
+$lang->hrb_attached = 'Ek';
+$lang->hrb_new_post = 'Yeni';
+$lang->hrb_select_post = 'Bu gonderiyi sec';
+$lang->hrb_all = 'Tumu';
+$lang->hrb_check_all = 'Tumunu sec';
+$lang->hrb_search_ph = 'Anahtar kelime girin';
+$lang->hrb_notice = 'Duyuru';
+$lang->hrb_read_count = 'Goruntulenme';
+$lang->hrb_vote = 'Begen';
+$lang->hrb_unvote = 'Begenme';
+$lang->hrb_attach = 'Dosyalar';
+$lang->hrb_write = 'Yaz';
+$lang->hrb_list = 'Liste';
+$lang->hrb_modify = 'Duzenle';
+$lang->hrb_delete = 'Sil';
+$lang->hrb_doc_menu = 'Belge menusu';
+$lang->hrb_manage = 'Gonderileri yonet';
+$lang->hrb_settings = 'Ayarlar';
+$lang->hrb_empty = 'Henuz gonderi yok.';
+$lang->hrb_search_next = 'Daha fazla sonuc';
+$lang->hrb_cancel = 'Iptal';
+$lang->hrb_pagination = 'Sayfalama';
+$lang->hrb_first_page = 'Ilk sayfa';
+$lang->hrb_last_page = 'Son sayfa';
+$lang->hrb_comment_pagination = 'Yorum sayfalama';

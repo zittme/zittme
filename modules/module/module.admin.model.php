@@ -635,6 +635,10 @@ class ModuleAdminModel extends Module
 
 		$model = getModel('module');
 		$module_info = $model->getModuleInfoByModuleSrl($module_srl);
+		if($module_info && isset($module_info->browser_title))
+		{
+			$module_info->browser_title = Context::replaceUserLang($module_info->browser_title);
+		}
 
 		$this->add('module_info', $module_info);
 	}

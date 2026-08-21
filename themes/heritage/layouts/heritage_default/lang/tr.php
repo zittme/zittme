@@ -1,0 +1,30 @@
+<?php
+
+$lang->hr_login = 'Giriş yap';
+$lang->hr_signup = 'Kayıt ol';
+$lang->hr_logout = 'Çıkış yap';
+$lang->hr_my_info = 'Hesabım';
+$lang->hr_find_account = 'Hesap bul';
+$lang->hr_welcome = 'Hoş geldiniz, %s.';
+$lang->hr_login_notice = 'Üye hizmetlerini kullanmak için giriş yapın.';
+$lang->hr_admin = 'Yönetim';
+$lang->hr_admin_page = 'Yönetim sayfası';
+$lang->hr_search = 'Ara';
+$lang->hr_search_all = 'Sitede ara';
+$lang->hr_menu = 'Menü';
+$lang->hr_menu_open = 'Menüyü aç';
+$lang->hr_menu_close = 'Menüyü kapat';
+$lang->hr_main_menu = 'Ana menü';
+$lang->hr_sub_menu = 'Alt menü';
+$lang->hr_footer_menu = 'Alt bilgi menüsü';
+$lang->hr_to_top = 'Yukari don';
+$lang->hr_notify = 'Bildirimler';
+$lang->hr_notify_read_all = 'Tumunu okundu yap';
+$lang->hr_notify_empty = 'Yeni bildirim yok.';
+$lang->hr_notify_all = 'Tumunu gor';
+$lang->hr_theme_toggle = 'Renk modunu değiştir';
+$lang->hr_lang_select = 'Dil seç';
+$lang->hr_visual_label = 'Öne çıkanlar';
+$lang->hr_visual_prev = 'Önceki slayt';
+$lang->hr_visual_next = 'Sonraki slayt';
+$lang->hr_visual_slide = '%d. slayt';

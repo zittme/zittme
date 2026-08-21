@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">헤리티지 XEDITION</title>
+	<title xml:lang="en">Heritage XEDITION</title>
+	<description xml:lang="ko">헤리티지 테마의 회원 스킨입니다. 기본 회원 스킨의 화면 구성을 그대로 쓰고, 디자인을 테마의 보라 포인트에 맞춰 다시 칠했습니다.</description>
+	<description xml:lang="en">Member skin of the Heritage theme — the default member skin's structure repainted to match the theme's purple accent.</description>
+	<version>1.0.0</version>
+	<date>2026-08-05</date>
+	<author email_address="zittme-contact@zzan.me" link="https://zitt.me">
+		<name xml:lang="ko">ZZAN Studio</name>
+		<name xml:lang="en">ZZAN Studio</name>
+	</author>
+	<license>GPLv2</license>
+	<responsive>true</responsive>
+	<colorset>
+		<color name="white">
+			<title xml:lang="ko">기본</title>
+			<title xml:lang="en">Default</title>
+		</color>
+	</colorset>
+</skin>

@@ -1,4 +1,5 @@
 @version(2)
+@load('./lang')
 <include target="_header.html" />
 
 @if ($oDocument->isExists())
@@ -15,10 +16,11 @@ if (!function_exists('hrb_relative_time')) {
 		$ts = ztime($regdate);
 		if (!$ts) { return ''; }
 		$diff = time() - $ts;
-		if ($diff < 60) { return '방금 전'; }
-		if ($diff < 3600) { return floor($diff / 60) . '분 전'; }
-		if ($diff < 86400) { return floor($diff / 3600) . '시간 전'; }
-		if ($diff < 86400 * 30) { return floor($diff / 86400) . '일 전'; }
+		// 문구는 스킨 언어 파일에서 받는다. 여기 박으면 다른 언어에서 한국어가 나온다
+		if ($diff < 60) { return lang('hrb_just_now'); }
+		if ($diff < 3600) { return sprintf(lang('hrb_minutes_ago'), floor($diff / 60)); }
+		if ($diff < 86400) { return sprintf(lang('hrb_hours_ago'), floor($diff / 3600)); }
+		if ($diff < 86400 * 30) { return sprintf(lang('hrb_days_ago'), floor($diff / 86400)); }
 		return date('y.m.d', $ts);
 	}
 }
@@ -41,12 +43,20 @@ foreach ($document_list ?: [] as $hrb_dk => $hrb_dd) { $hrb_docs[$hrb_dk] = $hrb
 	</div>
 	@endif
 
-	@if ($hrb_cat && count($category_list))
-	<div class="hrb-cats">
-		<a class="hr-chip @if (empty($category)) is-on @endif" href="{{ getUrl('category', '', 'page', '') }}">{{ $lang->category_all ?? '전체' }}</a>
-		@foreach ($category_list as $hrb_c)
-		<a class="hr-chip @if ((int)$category === (int)$hrb_c->category_srl) is-on @endif" href="{{ getUrl('category', $hrb_c->category_srl, 'document_srl', '', 'page', '') }}">{{ $hrb_c->title }} <em>{{ $hrb_c->document_count }}</em></a>
-		@endforeach
+	{{-- 목록이 길면 아래 글쓰기 버튼까지 내려가야 한다. 그래서 위에도 둔다 --}}
+	@if (($hrb_cat && count($category_list)) || $grant->write_document)
+	<div class="hrb-toolbar @if (!($hrb_cat && count($category_list))) is-bare @endif">
+		@if ($hrb_cat && count($category_list))
+		<div class="hrb-cats">
+			<a class="hr-chip @if (empty($category)) is-on @endif" href="{{ getUrl('category', '', 'page', '') }}">{{ $lang->category_all ?? $lang->hrb_all }}</a>
+			@foreach ($category_list as $hrb_c)
+			<a class="hr-chip @if ((int)$category === (int)$hrb_c->category_srl) is-on @endif" href="{{ getUrl('category', $hrb_c->category_srl, 'document_srl', '', 'page', '') }}">{{ $hrb_c->title }} <em>{{ $hrb_c->document_count }}</em></a>
+			@endforeach
+		</div>
+		@endif
+		@if ($grant->write_document)
+		<a class="hr-btn hr-btn-primary hrb-write-top" href="{{ getUrl('act', 'dispBoardWrite', 'document_srl', '') }}">{{ $lang->cmd_write_post ?? $lang->cmd_write ?? $lang->hrb_write }}</a>
+		@endif
 	</div>
 	@endif
 
@@ -86,7 +96,7 @@ foreach ($document_list ?: [] as $hrb_dk => $hrb_dd) { $hrb_docs[$hrb_dk] = $hrb
 				@endif
 				@endforeach
 				@if ($grant->manager)
-				<th scope="col" class="hrb-col-check"><input type="checkbox" onclick="XE.checkboxToggleAll({ doClick:true });" title="{{ $lang->check_all ?? '전체 선택' }}" /></th>
+				<th scope="col" class="hrb-col-check"><input type="checkbox" onclick="XE.checkboxToggleAll({ doClick:true });" title="{{ $lang->check_all ?? $lang->hrb_check_all }}" /></th>
 				@endif
 			</tr>
 		</thead>
@@ -114,28 +124,29 @@ foreach ($document_list ?: [] as $hrb_dk => $hrb_dd) { $hrb_docs[$hrb_dk] = $hrb
 					<a class="hrb-cat" href="{{ getUrl('category', $document->get('category_srl'), 'document_srl', '', 'page', '') }}">{{ $category_list[$document->get('category_srl')]->title }}</a>
 					@endif
 					<a class="hrb-title-link" href="{{ getUrl('document_srl', $document->document_srl, 'listStyle', $listStyle, 'cpage', '') }}">
-						@if ($document->isSecret())<svg class="hrb-ico" viewBox="0 0 16 16" aria-label="비밀글"><path d="M4 7V5a4 4 0 1 1 8 0v2h.5A1.5 1.5 0 0 1 14 8.5v5A1.5 1.5 0 0 1 12.5 15h-9A1.5 1.5 0 0 1 2 13.5v-5A1.5 1.5 0 0 1 3.5 7H4zm1.5 0h5V5a2.5 2.5 0 0 0-5 0v2z"/></svg>@endif
+						@if ($document->isSecret())<svg class="hrb-ico" viewBox="0 0 16 16" aria-label="{{ $lang->hrb_secret }}"><path d="M4 7V5a4 4 0 1 1 8 0v2h.5A1.5 1.5 0 0 1 14 8.5v5A1.5 1.5 0 0 1 12.5 15h-9A1.5 1.5 0 0 1 2 13.5v-5A1.5 1.5 0 0 1 3.5 7H4zm1.5 0h5V5a2.5 2.5 0 0 0-5 0v2z"/></svg>@endif
 						{!! $document->getTitle() !!}
 					</a>
 					@if ($document->getCommentCount())<a class="hrb-cmt" href="{{ getUrl('document_srl', $document->document_srl) }}#comment">[{{ $document->getCommentCount() }}]</a>@endif
-					@if ($document->hasUploadedFiles())<svg class="hrb-ico hrb-ico-file" viewBox="0 0 16 16" aria-label="첨부"><path d="M9.5 2a3.5 3.5 0 0 1 3.5 3.5v5a4 4 0 0 1-8 0V5h1.5v5.5a2.5 2.5 0 0 0 5 0v-5a2 2 0 1 0-4 0v5a.5.5 0 0 0 1 0V5H10v5.5a2 2 0 0 1-4 0v-5A3.5 3.5 0 0 1 9.5 2z"/></svg>@endif
-					@if ($document->getRegdateTime() > time() - 60 * 60 * ($module_info->duration_new ?? 24))<em class="hrb-new" aria-label="새 글">N</em>@endif
+					@if ($document->hasUploadedFiles())<svg class="hrb-ico hrb-ico-file" viewBox="0 0 16 16" aria-label="{{ $lang->hrb_attached }}"><path d="M9.5 2a3.5 3.5 0 0 1 3.5 3.5v5a4 4 0 0 1-8 0V5h1.5v5.5a2.5 2.5 0 0 0 5 0v-5a2 2 0 1 0-4 0v5a.5.5 0 0 0 1 0V5H10v5.5a2 2 0 0 1-4 0v-5A3.5 3.5 0 0 1 9.5 2z"/></svg>@endif
+					@if ($document->getRegdateTime() > time() - 60 * 60 * ($module_info->duration_new ?? 24))<em class="hrb-new" aria-label="{{ $lang->hrb_new_post }}">N</em>@endif
 				</td>
 
 				@elseif ($hrb_col->type === 'nick_name')
 				<td class="hrb-col-author">
 					@php $hrb_row_photo = (($module_info->hr_show_photo ?? 'Y') === 'Y') ? $document->getProfileImage() : ''; @endphp
 					@if ($hrb_row_photo)<img class="hrb-photo" src="{{ $hrb_row_photo }}" alt="" />@endif
+					{{-- 기여 뱃지 애드온이 member_ 요소 안쪽을 다시 쓴다. 이 안에 태그를 더 넣으면 안 된다 --}}
 					@if ($document->get('member_srl') > 0)
 					<a href="#popup_menu_area" class="member_{{ $document->get('member_srl') }}" onclick="return false">{{ $document->getNickName() }}</a>
-					@else{{ $document->getNickName() }}@endif
+					@else<span class="hrb-nick">{{ $document->getNickName() }}</span>@endif
 				</td>
 
 				@elseif ($hrb_col->type === 'user_id')
-				<td class="hrb-col-author">{{ $document->getUserID() }}</td>
+				<td class="hrb-col-author"><span class="hrb-nick">{{ $document->getUserID() }}</span></td>
 
 				@elseif ($hrb_col->type === 'user_name')
-				<td class="hrb-col-author">{{ $document->getUserName() }}</td>
+				<td class="hrb-col-author"><span class="hrb-nick">{{ $document->getUserName() }}</span></td>
 
 				@elseif ($hrb_col->type === 'regdate')
 				<td class="hrb-col-date">{{ hrb_relative_time($document->get("regdate")) }}</td>
@@ -163,7 +174,7 @@ foreach ($document_list ?: [] as $hrb_dk => $hrb_dd) { $hrb_docs[$hrb_dk] = $hrb
 
 				@endforeach
 				@if ($grant->manager)
-				<td class="hrb-col-check"><input type="checkbox" name="cart" value="{{ $document->document_srl }}" title="이 글 선택" onclick="doAddDocumentCart(this)" @if ($document->isCarted()) checked @endif /></td>
+				<td class="hrb-col-check"><input type="checkbox" name="cart" value="{{ $document->document_srl }}" title="{{ $lang->hrb_select_post }}" onclick="doAddDocumentCart(this)" @if ($document->isCarted()) checked @endif /></td>
 				@endif
 			</tr>
 			@endforeach
@@ -214,7 +225,7 @@ foreach ($document_list ?: [] as $hrb_dk => $hrb_dd) { $hrb_docs[$hrb_dk] = $hrb
 					<span class="hrb-card-meta">
 						@if ($hrb_author)<span>{{ $document->getNickName() }}</span>@endif
 						<span>{{ hrb_relative_time($document->get("regdate")) }}</span>
-						@if ($hrb_count)<span>{{ $lang->readed_count ?? '조회' }} {{ number_format($document->get('readed_count')) }}</span>@endif
+						@if ($hrb_count)<span>{{ $lang->readed_count ?? $lang->hrb_read_count }} {{ number_format($document->get('readed_count')) }}</span>@endif
 					</span>
 				</span>
 			</a>
@@ -232,12 +243,12 @@ foreach ($document_list ?: [] as $hrb_dk => $hrb_dd) { $hrb_docs[$hrb_dk] = $hrb
 	@endif
 
 	@else
-	<p class="hr-empty">{{ $lang->msg_not_founded ?? '등록된 글이 없습니다.' }}</p>
+	<p class="hr-empty">{{ $lang->msg_not_founded ?? $lang->hrb_empty }}</p>
 	@endif
 
 	@if (count($hrb_docs))
-	<nav class="hr-pages" aria-label="페이지 이동">
-		<a href="{{ getUrl('page', 1, 'document_srl', '', 'division', $division, 'last_division', $last_division) }}" aria-label="첫 페이지">&laquo;</a>
+	<nav class="hr-pages" aria-label="{{ $lang->hrb_pagination }}">
+		<a href="{{ getUrl('page', 1, 'document_srl', '', 'division', $division, 'last_division', $last_division) }}" aria-label="{{ $lang->hrb_first_page }}">&laquo;</a>
 		{@ while ($hrb_page_no = $page_navigation->getNextPage()): }
 			@if ($page == $hrb_page_no)
 			<strong aria-current="page">{{ $hrb_page_no }}</strong>
@@ -245,12 +256,12 @@ foreach ($document_list ?: [] as $hrb_dk => $hrb_dd) { $hrb_docs[$hrb_dk] = $hrb
 			<a href="{{ getUrl('page', $hrb_page_no, 'document_srl', '', 'division', $division, 'last_division', $last_division) }}">{{ $hrb_page_no }}</a>
 			@endif
 		{@ endwhile; }
-		<a href="{{ getUrl('page', $page_navigation->last_page, 'document_srl', '', 'division', $division, 'last_division', $last_division) }}" aria-label="마지막 페이지">&raquo;</a>
+		<a href="{{ getUrl('page', $page_navigation->last_page, 'document_srl', '', 'division', $division, 'last_division', $last_division) }}" aria-label="{{ $lang->hrb_last_page }}">&raquo;</a>
 	</nav>
 	@endif
 
 	@if ($last_division)
-	<p class="hrb-division"><a class="hr-btn" href="{{ getUrl('page', 1, 'document_srl', '', 'division', $last_division, 'last_division', '') }}">{{ $lang->cmd_search_next ?? '다음 검색 결과 보기' }}</a></p>
+	<p class="hrb-division"><a class="hr-btn" href="{{ getUrl('page', 1, 'document_srl', '', 'division', $last_division, 'last_division', '') }}">{{ $lang->cmd_search_next ?? $lang->hrb_search_next }}</a></p>
 	@endif
 
 	<div class="hrb-bar">
@@ -263,18 +274,18 @@ foreach ($document_list ?: [] as $hrb_dk => $hrb_dd) { $hrb_docs[$hrb_dk] = $hrb
 				<option value="{{ $hrb_sk }}" @if ($search_target === $hrb_sk) selected @endif>{{ $hrb_sv }}</option>
 				@endforeach
 			</select>
-			<input type="text" name="search_keyword" value="{{ $search_keyword }}" placeholder="검색어를 입력하세요" />
+			<input type="text" name="search_keyword" value="{{ $search_keyword }}" placeholder="{{ $lang->hrb_search_ph }}" />
 			<button type="submit" class="hr-btn">{{ $lang->cmd_search }}</button>
 		</form>
 		@endif
 
 		<div class="hrb-bar-actions">
 			@if ($grant->manager)
-			<a class="hr-btn" href="{{ getUrl('', 'mid', $mid, 'act', 'dispDocumentManageDocument') }}" onclick="popopen(this.href, 'manageDocument'); return false;">{{ $lang->cmd_manage_document ?? '게시글 관리' }}</a>
-			<a class="hr-btn" href="{{ getUrl('', 'mid', $mid, 'act', 'dispBoardAdminBoardInfo') }}">{{ $lang->cmd_management ?? '설정' }}</a>
+			<a class="hr-btn" href="{{ getUrl('', 'mid', $mid, 'act', 'dispDocumentManageDocument') }}" onclick="popopen(this.href, 'manageDocument'); return false;">{{ $lang->cmd_manage_document ?? $lang->hrb_manage }}</a>
+			<a class="hr-btn" href="{{ getUrl('', 'mid', $mid, 'act', 'dispBoardAdminBoardInfo') }}">{{ $lang->cmd_management ?? $lang->hrb_settings }}</a>
 			@endif
 			@if ($grant->write_document)
-			<a class="hr-btn hr-btn-primary" href="{{ getUrl('act', 'dispBoardWrite', 'document_srl', '') }}">{{ $lang->cmd_write_post ?? $lang->cmd_write ?? '글쓰기' }}</a>
+			<a class="hr-btn hr-btn-primary" href="{{ getUrl('act', 'dispBoardWrite', 'document_srl', '') }}">{{ $lang->cmd_write_post ?? $lang->cmd_write ?? $lang->hrb_write }}</a>
 			@endif
 		</div>
 	</div>

@@ -1,0 +1,145 @@
+
+/* 레이아웃(heritage) 토큰을 따르고, 레이아웃 밖에서는 폴백을 쓴다.
+ * dark/light/soft 파생색은 color-mix 미지원 브라우저용 고정값 — 지원되면 아래 @supports 가 덮는다 */
+.rsv { --rsv-brand: var(--hr-brand, #cda25a); --rsv-brand-dark: #b3873f; --rsv-brand-light: #dcbc84; --rsv-brand-soft: var(--hr-brand-soft, rgba(205, 162, 90, .08));
+	--rsv-border: var(--hr-line, #e6e9ef); --rsv-text: var(--hr-ink, #10151f); --rsv-sub: var(--hr-ink-sub, #525c6b); --rsv-bg: var(--hr-surface, #f7f8fb); --rsv-card: var(--hr-bg, #ffffff);
+	width: 100%; margin: 0 auto; padding: 8px 0 48px; color: var(--rsv-text);
+	font-family: var(--hr-font, 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif); word-break: keep-all; }
+.rsv-narrow { max-width: 720px; }
+.rsv * { box-sizing: border-box; }
+.rsv a { text-decoration: none; color: inherit; }
+
+.rsv-title { margin: 0 0 8px; font-size: 24px; font-weight: 800; letter-spacing: -.02em; }
+.rsv-sub-title { margin: 24px 0 12px; font-size: 17px; font-weight: 700; }
+.rsv-desc { margin: 0 0 16px; font-size: 15px; line-height: 1.7; color: var(--rsv-sub); }
+.rsv-meta-line { display: flex; align-items: center; gap: 10px; margin: 0 0 20px; }
+.rsv-price { font-size: 15px; font-weight: 700; color: var(--rsv-brand); }
+.rsv-duration { font-size: 13px; color: var(--rsv-sub); }
+.rsv-empty { padding: 48px 0; text-align: center; color: var(--rsv-sub); }
+.rsv-warn { padding: 14px 16px; border: 1px solid #f0c36d; border-radius: 0; background: #fdf7ea; font-size: 14px; }
+
+.rsv-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.rsv-card { display: flex; flex-direction: column; border: 1px solid var(--rsv-border); border-radius: 0; background: var(--rsv-card); overflow: hidden; transition: border-color .15s, box-shadow .15s, transform .15s; }
+.rsv-card:hover { border-color: var(--rsv-brand); box-shadow: 0 8px 24px rgba(205, 162, 90, .12); transform: translateY(-2px); }
+.rsv-card-thumb { display: grid; place-items: center; width: 100%; aspect-ratio: 1 / 1; background: var(--rsv-bg) center/cover no-repeat; }
+.rsv-card-thumb svg { width: 48px; height: 48px; fill: var(--rsv-sub); }
+.rsv-card-body { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px 16px; min-width: 0; }
+.rsv-card-title { font-size: 16px; font-weight: 700; }
+.rsv-card-summary { font-size: 13px; color: var(--rsv-sub); overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.rsv-card-meta { display: flex; gap: 10px; align-items: center; margin-top: 4px; }
+.rsv-grid-plain .rsv-card-body { padding: 20px; gap: 6px; }
+.rsv-grid-plain .rsv-card-title { font-size: 17px; }
+
+.rsv-cal { border: 1px solid var(--rsv-border); border-radius: 0; background: var(--rsv-card); padding: 16px; }
+.rsv-cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.rsv-cal-month { font-size: 16px; font-weight: 700; }
+.rsv-cal-nav { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid var(--rsv-border); border-radius: 0; background: var(--rsv-card); cursor: pointer; color: var(--rsv-text); }
+.rsv-cal-nav:hover { border-color: var(--rsv-brand); color: var(--rsv-brand); }
+.rsv-cal-nav svg { width: 16px; height: 16px; }
+.rsv-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.rsv-cal-dow { padding: 6px 0; text-align: center; font-size: 12px; font-weight: 600; color: var(--rsv-sub); }
+.rsv-cal-day { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; aspect-ratio: 1; border: 1px solid transparent; border-radius: 0; background: transparent; font-size: 14px; cursor: default; color: var(--rsv-text); font-family: inherit; }
+.rsv-cal-day.is-out { color: #c3c9d2; }
+.rsv-cal-day.is-avail { cursor: pointer; background: var(--rsv-brand-soft); font-weight: 600; color: var(--rsv-brand); }
+.rsv-cal-day.is-avail:hover { border-color: var(--rsv-brand); }
+.rsv-cal-day.is-selected { background: var(--rsv-brand); color: #fff; }
+.rsv-cal-day .rsv-dot { position: absolute; bottom: 6px; width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
+
+.rsv-times-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; }
+.rsv-time { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 6px; border: 1px solid var(--rsv-border); border-radius: 0; background: var(--rsv-card); font-size: 14px; font-weight: 600; cursor: pointer; color: var(--rsv-text); font-family: inherit; }
+.rsv-time small { font-size: 11px; font-weight: 500; color: var(--rsv-sub); }
+.rsv-time:hover { border-color: var(--rsv-brand); color: var(--rsv-brand); }
+.rsv-time.is-full { opacity: .45; cursor: not-allowed; }
+.rsv-time.is-full:hover { border-color: var(--rsv-border); color: var(--rsv-text); }
+
+.rsv-summary { display: flex; flex-direction: column; gap: 4px; margin-bottom: 20px; padding: 16px 18px; border: 1px solid var(--rsv-border); border-radius: 0; background: var(--rsv-bg); }
+.rsv-summary strong { font-size: 16px; }
+.rsv-form fieldset { margin: 0; padding: 0; border: 0; }
+.rsv-form legend { margin-bottom: 12px; font-size: 16px; font-weight: 700; }
+.rsv-row { margin-bottom: 14px; }
+.rsv-row label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 600; }
+.rsv-row label em { color: #e5484d; font-style: normal; }
+.rsv-row input[type="text"], .rsv-row input[type="tel"], .rsv-row input[type="email"], .rsv-row input[type="password"],
+.rsv-row select, .rsv-row textarea { width: 100%; padding: 11px 12px; border: 1px solid var(--rsv-border); border-radius: 0; font-size: 15px; font-family: inherit; background: var(--rsv-card); color: var(--rsv-text); }
+.rsv-row input:focus, .rsv-row select:focus, .rsv-row textarea:focus { outline: none; border-color: var(--rsv-brand); box-shadow: 0 0 0 3px var(--rsv-brand-soft); }
+.rsv-row small { display: block; margin-top: 5px; font-size: 12px; color: var(--rsv-sub); }
+.rsv-check { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; line-height: 1.5; cursor: pointer; }
+.rsv-check input { margin-top: 3px; }
+.rsv-agree { margin: 20px 0; padding: 14px 16px; border: 1px solid var(--rsv-border); border-radius: 0; }
+.rsv-privacy-text { margin-top: 10px; max-height: 96px; overflow-y: auto; padding: 10px 12px; border-radius: 0; background: var(--rsv-bg); font-size: 12px; line-height: 1.7; color: var(--rsv-sub); }
+
+.rsv-actions { margin-top: 20px; }
+.rsv-btn { display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 13px 20px; border: 1px solid transparent; border-radius: 0; font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer; transition: filter .15s; }
+.rsv-btn-primary { background: var(--rsv-brand); color: #fff; }
+.rsv-btn-primary:hover { filter: brightness(1.06); }
+.rsv-btn-ghost { background: var(--rsv-card); border-color: var(--rsv-border); color: var(--rsv-sub); }
+.rsv-btn-ghost:hover { border-color: #e5484d; color: #e5484d; }
+
+.rsv-result-head { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 24px; text-align: center; }
+.rsv-result-head h2 { margin: 0; font-size: 22px; font-weight: 800; }
+.rsv-result-ico { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: var(--rsv-brand-soft); }
+.rsv-result-ico svg { width: 30px; height: 30px; fill: var(--rsv-brand); }
+.rsv-result-ico.is-wait { background: #fdf3e2; }
+.rsv-result-ico.is-wait svg { fill: #e0952c; }
+.rsv-result-ico.is-off { background: #f2f3f5; }
+.rsv-result-ico.is-off svg { fill: var(--rsv-sub); }
+.rsv-detail { display: grid; grid-template-columns: 110px 1fr; gap: 10px 14px; margin: 0 0 24px; padding: 18px 20px; border: 1px solid var(--rsv-border); border-radius: 0; background: var(--rsv-card); }
+.rsv-detail dt { font-size: 13px; font-weight: 600; color: var(--rsv-sub); }
+.rsv-detail dd { margin: 0; font-size: 14px; }
+
+.rsv-my-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.rsv-my-list a { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1px solid var(--rsv-border); border-radius: 0; background: var(--rsv-card); }
+.rsv-my-list a:hover { border-color: var(--rsv-brand); }
+.rsv-my-code { font-weight: 700; font-size: 14px; }
+.rsv-my-status { padding: 2px 9px; border-radius: 0; font-size: 12px; font-weight: 600; background: var(--rsv-bg); color: var(--rsv-sub); }
+.rsv-st-confirmed { background: var(--rsv-brand-soft); color: var(--rsv-brand); }
+.rsv-st-hold, .rsv-st-pending { background: #fdf3e2; color: #b97a17; }
+.rsv-my-date { margin-left: auto; font-size: 12px; color: var(--rsv-sub); }
+
+.rsv-cancel-form { text-align: center; }
+.rsv-foot-links { display: flex; gap: 18px; justify-content: center; margin-top: 28px; font-size: 14px; }
+.rsv-foot-links a { color: var(--rsv-sub); }
+.rsv-foot-links a:hover { color: var(--rsv-brand); }
+
+@media (max-width: 900px) {
+	.rsv-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+}
+@media (max-width: 560px) {
+	.rsv { padding: 20px 12px 48px; }
+	.rsv-title { font-size: 21px; }
+	.rsv-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+	.rsv-card-title { font-size: 14px; }
+	.rsv-card-body { padding: 11px 12px 13px; }
+	.rsv-detail { grid-template-columns: 96px 1fr; }
+	.rsv-times-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.rsv [class*="rsv-"] { --rsv-r-lg: var(--hr-radius-sm, 6px); }
+.rsv-btn { border-radius: var(--hr-radius-btn, 4px); }
+.rsv-btn-primary {
+	background: var(--rsv-brand);
+	border-color: var(--rsv-brand-dark);
+	text-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+}
+.rsv-btn-primary:hover { filter: none; background: var(--rsv-brand-dark); }
+.rsv div[class*="-card"], .rsv fieldset, .rsv table { border-radius: 0; }
+.rsv select, .rsv input, .rsv textarea, .rsv button { border-radius: var(--hr-radius-btn, 4px); }
+
+/* 어두운 판의 색은 위에서 물려받은 hr 토큰이 알아서 바뀐다. 레이아웃 밖에서 쓰일 때만 여기 값이 쓰인다 */
+[data-theme="dark"] .rsv {
+	--rsv-brand-soft: var(--hr-brand-soft, rgba(154, 139, 240, .16));
+	--rsv-border: var(--hr-line, #2a3040);
+	--rsv-text: var(--hr-ink, #e7eaf0);
+	--rsv-sub: var(--hr-ink-sub, #b3bbc8);
+	--rsv-bg: var(--hr-surface, #1b2130);
+	--rsv-card: var(--hr-bg, #141822);
+}
+[data-theme="dark"] .rsv select, [data-theme="dark"] .rsv input, [data-theme="dark"] .rsv textarea { background: var(--rsv-card); color: var(--rsv-text); border-color: var(--rsv-border); }
+
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+	.rsv {
+		--rsv-brand-dark: color-mix(in srgb, var(--hr-brand, #cda25a) 80%, #000);
+		--rsv-brand-light: color-mix(in srgb, var(--hr-brand, #cda25a) 55%, #fff);
+		--rsv-brand-soft: color-mix(in srgb, var(--hr-brand, #cda25a) 8%, transparent);
+	}
+}

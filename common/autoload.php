@@ -62,7 +62,10 @@ spl_autoload_register(function($class_name)
 	{
 		$legacy_name = str_replace('/', '\\', $class_name);
 		$target_name = 'Zittme' . substr($legacy_name, 6);
-		if (class_exists($target_name) || interface_exists($target_name) || trait_exists($target_name))
+		// Looking up the Zittme name may include a third-party file that declares
+		// the Rhymix name itself. In that case the legacy class now exists and no alias is needed.
+		if ((class_exists($target_name) || interface_exists($target_name) || trait_exists($target_name))
+			&& !class_exists($legacy_name, false) && !interface_exists($legacy_name, false) && !trait_exists($legacy_name, false))
 		{
 			class_alias($target_name, $legacy_name);
 		}
@@ -110,14 +113,29 @@ spl_autoload_register(function($class_name)
 		}
 	}
 
-	// Load the PHP file.
+	// Load the PHP file. include_once: a file may be reached under both the
+	// Zittme and the legacy Rhymix class name, and must never be declared twice.
 	if ($filename1 && file_exists($filename1))
 	{
-		include $filename1;
+		include_once $filename1;
 	}
 	elseif ($filename2 && file_exists($filename2))
 	{
-		include $filename2;
+		include_once $filename2;
+	}
+
+	// Third-party plugins written for Rhymix declare Rhymix\... classes in the
+	// same file layout. When the Zittme name was requested but the file declared
+	// the Rhymix name, alias it so both names resolve to the one declaration.
+	if (strncmp($class_name, 'Zittme/', 7) === 0)
+	{
+		$target_name = str_replace('/', '\\', $class_name);
+		$legacy_name = 'Rhymix' . substr($target_name, 6);
+		if (!class_exists($target_name, false) && !interface_exists($target_name, false) && !trait_exists($target_name, false)
+			&& (class_exists($legacy_name, false) || interface_exists($legacy_name, false) || trait_exists($legacy_name, false)))
+		{
+			class_alias($legacy_name, $target_name);
+		}
 	}
 
 	// Load the lang file for the plugin.

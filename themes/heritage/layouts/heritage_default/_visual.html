@@ -11,7 +11,7 @@ if (!function_exists('hr_visual_text'))
 $hr_visual_boxed = ($hr->gnb_width ?? 'boxed') !== 'full';
 @endphp
 @if ($hr_visual_boxed)<div class="hr-inner">@endif
-<section class="hr-visual @if ($hr_visual_boxed) is-boxed @endif" data-interval="{{ $hr_interval }}" aria-roledescription="carousel" aria-label="주요 안내">
+<section class="hr-visual @if ($hr_visual_boxed) is-boxed @endif" data-interval="{{ $hr_interval }}" aria-roledescription="carousel" aria-label="{{ $lang->hr_visual_label }}">
 	<div class="hr-visual-track">
 		@foreach ($hr_visuals as $hr_vi => $hr_v)
 		<div class="hr-visual-item @if ($hr_vi === 0) is-on @endif align-{{ $hr_v['align'] ?? 'left' }}"
@@ -29,15 +29,15 @@ $hr_visual_boxed = ($hr->gnb_width ?? 'boxed') !== 'full';
 	</div>
 
 	@if (count($hr_visuals) > 1)
-	<button type="button" class="hr-visual-nav prev" aria-label="이전 슬라이드">
+	<button type="button" class="hr-visual-nav prev" aria-label="{{ $lang->hr_visual_prev }}">
 		<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7z"/></svg>
 	</button>
-	<button type="button" class="hr-visual-nav next" aria-label="다음 슬라이드">
+	<button type="button" class="hr-visual-nav next" aria-label="{{ $lang->hr_visual_next }}">
 		<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7z"/></svg>
 	</button>
 	<div class="hr-visual-dots" role="tablist">
 		@foreach ($hr_visuals as $hr_di => $hr_dv)
-		<button type="button" class="@if ($hr_di === 0) is-on @endif" data-go="{{ $hr_di }}" role="tab" aria-label="{{ $hr_di + 1 }}번째 슬라이드"></button>
+		<button type="button" class="@if ($hr_di === 0) is-on @endif" data-go="{{ $hr_di }}" role="tab" aria-label="{{ sprintf($lang->hr_visual_slide, $hr_di + 1) }}"></button>
 		@endforeach
 	</div>
 	@endif
