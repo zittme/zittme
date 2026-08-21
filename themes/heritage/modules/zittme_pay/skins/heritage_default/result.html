@@ -72,6 +72,12 @@
 				<dt>{{ $lang->zpay_bank_holder }}</dt>
 				<dd>{{ $order->extra['holder'] ?? '' }}</dd>
 			</div>
+			@foreach($order->extra['bank_extra'] ?? [] as $zpay_ex)
+			<div class="zpay-summary-row">
+				<dt>{{ $zpay_ex['label'] ?? '' }}</dt>
+				<dd>{{ $zpay_ex['value'] ?? '' }}</dd>
+			</div>
+			@endforeach
 			<div class="zpay-summary-row">
 				<dt>{{ $lang->zpay_depositor_name }}</dt>
 				<dd>{{ $order->extra['depositor_name'] ?? '' }}</dd>

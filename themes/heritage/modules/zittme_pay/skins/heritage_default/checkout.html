@@ -60,6 +60,9 @@
 						@if($account['holder'])
 						<span class="zpay-bank-holder">{{ $account['holder'] }}</span>
 						@endif
+						@foreach($account['extra'] ?? [] as $zpay_ex)
+						<span class="zpay-bank-extra">{{ $zpay_ex['label'] }} {{ $zpay_ex['value'] }}</span>
+						@endforeach
 					</label>
 				</li>
 				@endforeach
