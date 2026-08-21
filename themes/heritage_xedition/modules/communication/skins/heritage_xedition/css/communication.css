@@ -1,8 +1,8 @@
 @charset "utf-8";
-/* Zittme default communication skin — zm 디자인 토큰 리디자인 (마크업/클래스는 기존 유지, 원본은 communication.css.orig) */
+/* Heritage XEDITION communication skin: 코어 default 스킨 마크업에 hr 토큰 적용 */
 
 .xc {
-    /* 레이아웃(heritage) hr 토큰을 따르고, 레이아웃 밖에서는 폴백을 쓴다. XEDITION: 직각 + 골드 */
+    /* 레이아웃 hr 토큰을 따르고, 레이아웃 밖에서는 폴백을 쓴다 */
     --zm-brand: var(--hr-brand, #cda25a);
     --zm-brand-hover: #b3873f;
     --zm-brand-soft: var(--hr-brand-soft, rgba(205, 162, 90, 0.1));
@@ -284,7 +284,7 @@
 .xc .btnArea.xc-msg-actions { justify-content: flex-start; margin: 24px 0 0; }
 .xc .btnArea.xc-msg-actions .btn { padding: 12px 28px; font-size: 15px; }
 
-/* XEDITION: 버튼을 플랫하게, 폼 인풋 높이(44px)에 맞춘다 */
+/* 플랫 버튼, 폼 인풋 높이(44px)에 맞춤 */
 .xc .btn {
     min-height: 44px;
     padding: 0 24px;

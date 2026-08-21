@@ -21,7 +21,7 @@
 	--hr-btn-strong: var(--hr-brand);
 	--hr-btn-strong-hover: var(--hr-brand-dark);
 
-	/* XEDITION 무드: 라운드 없는 직사각 구획이 디자인 정체성이다 */
+	/* 라운드 없음: 모든 구획은 직사각 */
 	--hr-radius: 0;
 	--hr-radius-sm: 0;
 	--hr-radius-btn: 0;
@@ -31,12 +31,12 @@
 	--hr-w: 1440px;
 	--hr-font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
 		'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-	/* 제목·로고용 디스플레이 폰트. 영문만 Raleway, 한글은 본문 폰트로 폴백 (XEDITION 계보) */
+	/* 제목·로고용 디스플레이 폰트. 영문만 Raleway, 한글은 본문 폰트로 폴백 */
 	--hr-font-display: 'Raleway', 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
 		'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
 }
 
-/* 다크 팔레트: 골드 포인트에 맞춘 웜 차콜. 푸른 기 도는 남색 계열은 금색과 부딪힌다 */
+/* 다크 팔레트: 웜 차콜 */
 [data-theme="dark"] {
 	--hr-brand-soft: rgba(205, 162, 90, .2);
 	--hr-ink: #ece9e2;

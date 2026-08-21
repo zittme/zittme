@@ -43,8 +43,6 @@
 				<title xml:lang="en">Logo text</title>
 				<description xml:lang="ko">비워두면 사이트 제목이 표시됩니다.</description>
 			</var>
-			<!-- 원본 게시판 스킨의 보라 강조색(#4736ac)을 한 단계 밝게 푼 값.
-			     이 값이 버튼·링크·활성 표시와 게시판 스킨 강조색까지 함께 결정한다 -->
 			<var name="point_color" type="colorpicker" default="#cda25a">
 				<title xml:lang="ko">포인트 색상</title>
 				<title xml:lang="en">Point color</title>

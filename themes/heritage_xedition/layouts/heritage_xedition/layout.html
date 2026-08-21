@@ -5,7 +5,7 @@
 @load('js/layout.js')
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
-{{-- XEDITION 계보: 영문 제목용 Raleway (한글은 Pretendard 로 폴백) --}}
+{{-- 영문 제목용 Raleway (한글은 Pretendard 로 폴백) --}}
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@500;600;700;800&display=swap" />
@@ -111,7 +111,7 @@ $hr_footer_info = array_values(array_filter(array_map('trim', explode("\n", (str
 		@include('_visual')
 	@endif
 
-	{{-- XEDITION 서브 타이틀 밴드: 회색 띠 + 제목 밑 짧은 밑줄 장식. slx/sfx 는 표시하지 않는다 --}}
+	{{-- 서브 타이틀 밴드. slx/sfx 는 표시하지 않는다 --}}
 	@if (!$hr_show_visual && $hr_type !== 'main' && !$hr_no_subhead)
 	@php $hr_sub_title = trim((string)(\Context::getBrowserTitle() ?: ($hr_module_info->browser_title ?? ''))); @endphp
 	@if ($hr_sub_title !== '')

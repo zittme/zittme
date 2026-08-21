@@ -9,7 +9,7 @@ if (!function_exists('hr_visual_text'))
 	}
 }
 @endphp
-{{-- XEDITION: 비주얼 슬라이더는 항상 화면 전체 폭을 쓴다 --}}
+{{-- 비주얼 슬라이더는 항상 화면 전체 폭 --}}
 <section class="hr-visual" data-interval="{{ $hr_interval }}" aria-roledescription="carousel" aria-label="{{ $lang->hr_visual_label }}">
 	<div class="hr-visual-track">
 		@foreach ($hr_visuals as $hr_vi => $hr_v)

@@ -44,7 +44,7 @@
 }
 .hrb-cats .hr-chip em { font-style: normal; opacity: .6; font-size: 12px; }
 
-/* XEDITION 클래식 테이블: 위아래 굵은 구분선 사이, 헤더는 밝은 바탕에 더블 보더로 마감 */
+/* 목록 테이블: 위아래 굵은 구분선, 헤더는 밝은 바탕 + 더블 보더 */
 .hrb-table { table-layout: auto; font-size: 13.5px; border-top: 1px solid var(--hr-ink-sub); border-bottom: 1px solid var(--hr-line); }
 .hrb-table thead th {
 	padding: 12px 8px;
@@ -184,7 +184,7 @@
 .hrb-bar-actions { display: flex; gap: 6px; margin-left: auto; }
 .hrb-division { margin: 16px 0 0; text-align: center; }
 
-/* XEDITION 글읽기: 어두운 제목 바 대신 담백한 큰 제목 + 밑줄 메타 줄 */
+/* 글읽기: 큰 제목 + 밑줄 메타 줄 */
 .hrb-read { padding-bottom: 26px; border-bottom: 1px solid var(--hr-line); }
 .hrb-read-head { padding: 0; border-bottom: 0; }
 .hrb-read-title {
@@ -458,7 +458,7 @@
 .hrb .hr-pages .hrb-page-arrow svg { width: 15px; height: 15px; fill: currentColor; vertical-align: -3px; }
 .hrb .hr-pages .hrb-page-arrow:hover { color: var(--hr-brand); }
 
-/* XEDITION 버튼: 플랫 연회색, 올리면 포인트색 채움. 다크 색은 토큰이 알아서 정한다 */
+/* 플랫 버튼: 연회색, 호버 시 포인트색 */
 .hrb .hr-btn,
 .hrb a.hr-btn,
 .hrb button.hr-btn,

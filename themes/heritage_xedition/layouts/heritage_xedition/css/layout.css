@@ -4,9 +4,7 @@ html, body { margin: 0; background: var(--hr-bg); }
 
 .hr-layout { display: flex; flex-direction: column; min-height: 100vh; background: var(--hr-bg); }
 
-/* XEDITION: 로고·GNB·유틸이 한 줄에 서는 높은 헤더 */
-/* 스크롤 고정 헤더: 내리면 높이를 줄이고 글래스(반투명 블러) 처리 (원본 shrink 의 재해석).
- * sticky 는 부모 높이 안에서만 붙는다. utilrow 가 아니라 header 전체를 붙인다 */
+/* 헤더: 로고·GNB·유틸 한 줄. 스크롤 시 높이 축소 + 반투명 블러(is-shrink) */
 .hr-utilrow {
 	border-bottom: 1px solid var(--hr-line-soft);
 	background: var(--hr-bg);
@@ -43,12 +41,16 @@ html, body { margin: 0; background: var(--hr-bg); }
 .hr-utilrow-inner.g-left .hr-gnb { margin-left: 8px; margin-right: auto; }
 .hr-utilrow-inner.g-center .hr-gnb {
 	position: absolute;
-	left: 50%;
+	left: 0;
+	right: 0;
 	top: 0;
 	bottom: 0;
-	transform: translateX(-50%);
+	display: flex;
+	justify-content: center;
 	margin: 0;
+	pointer-events: none;
 }
+.hr-utilrow-inner.g-center .hr-gnb-list { pointer-events: auto; }
 .hr-utilrow-inner.g-center .hr-utils { margin-left: auto; }
 .hr-utilrow-inner .hr-utils { flex: none; }
 /* sticky 는 부모 높이 안에서만 붙는다. utilrow 가 아니라 header 전체를 붙인다 */
@@ -71,7 +73,7 @@ html, body { margin: 0; background: var(--hr-bg); }
 .hr-iconbtn svg { width: 20px; height: 20px; fill: currentColor; }
 .hr-iconbtn:hover { color: var(--hr-brand); }
 
-/* 프로필 영역: 포인트색 박스(사진+닉네임+벨). 올리면 다크 드롭다운 (원본 ly_login 계보) */
+/* 프로필 영역: 포인트색 박스(사진+닉네임+벨), 호버 시 다크 드롭다운 */
 .hr-me {
 	position: relative;
 	display: flex;
@@ -119,7 +121,7 @@ html, body { margin: 0; background: var(--hr-bg); }
 .hr-me-menu a { display: block; padding: 9px 20px; font-size: 13px; color: rgba(255, 255, 255, .68); white-space: nowrap; }
 .hr-me-menu a:hover { color: var(--hr-brand-light); }
 
-/* 검색 오버레이: 헤더 줄 전체를 덮는 대형 인풋 (원본 search_area 계보) */
+/* 검색 오버레이: 헤더 줄 전체를 덮는 대형 인풋 */
 .hr-searchbar {
 	position: absolute;
 	inset: 0;
@@ -267,12 +269,12 @@ html, body { margin: 0; background: var(--hr-bg); }
 	--hr-nav-deep: var(--hr-bg);
 }
 
-/* GNB: XEDITION 배치 — 로고와 같은 줄 오른쪽, 굵은 항목, 항목별 다크 드롭다운.
- * 드롭다운 상단 3px 포인트색 라인이 원본의 시그니처다 */
+/* GNB: 항목별 다크 드롭다운, 상단 3px 포인트색 라인 */
 .hr-gnb { margin-left: auto; align-self: stretch; }
 .hr-gnb-list { display: flex; height: 100%; }
 .hr-gnb-list > li { position: relative; display: flex; align-items: stretch; }
 .hr-gnb a.hr-gnb-top {
+	position: relative;
 	display: flex;
 	align-items: center;
 	padding: 0 22px;
@@ -280,12 +282,13 @@ html, body { margin: 0; background: var(--hr-bg); }
 	font-weight: 700;
 	color: var(--hr-ink-sub);
 	white-space: nowrap;
-	transition: color .14s, box-shadow .14s;
+	transition: color .14s;
 }
 .hr-gnb-top:hover,
 .hr-gnb-list > li:hover > .hr-gnb-top,
 .hr-gnb-list > li:focus-within > .hr-gnb-top { color: var(--hr-ink); }
-.hr-gnb-list > li.is-on > .hr-gnb-top { color: var(--hr-ink); box-shadow: inset 0 -3px 0 var(--hr-brand); }
+.hr-gnb-list > li.is-on > .hr-gnb-top { color: var(--hr-ink); }
+.hr-gnb-list > li.is-on > .hr-gnb-top::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--hr-brand); }
 
 .hr-gnb-sub {
 	position: absolute;
@@ -331,8 +334,7 @@ html, body { margin: 0; background: var(--hr-bg); }
 
 .hr-mobile-dim { position: fixed; inset: 0; z-index: 190; background: rgba(0, 0, 0, .45); opacity: 0; transition: opacity .22s ease; }
 .hr-mobile-dim.is-open { opacity: 1; }
-/* 서랍은 내비 색상 옵션(n-light 등)과 무관하게 항상 다크 톤으로 고정한다.
- * 옵션 조합에 따라 배경과 글자색 변수가 어긋나 문구가 안 보이는 조합이 생기기 때문이다 */
+/* 서랍은 메뉴 바 색상 옵션과 무관하게 항상 다크 톤 */
 /* 메뉴가 늘어나도 아래 도구 줄은 자리를 지킨다. 가운데 목록만 굴린다 */
 /* 모바일 서랍: 포인트컬러 베이스. 깊이는 검정 반투명으로만 낸다 */
 .hr-mobile { position: fixed; top: 0; right: 0; bottom: 0; z-index: 200; width: min(320px, 85vw); --hr-nav-fg-on: #fff; background: var(--hr-brand); color: var(--hr-nav-fg-on); display: flex; flex-direction: column; overscroll-behavior: contain; transform: translateX(100%); transition: transform .24s ease; box-shadow: -8px 0 32px rgba(0, 0, 0, .25); }
@@ -394,7 +396,7 @@ body.hr-mobile-on { overflow: hidden; }
 .hr-mobile-sub2 a { padding: 7px clamp(38px, 8vw, 60px); font-size: 13px; color: rgba(255, 255, 255, .55); }
 .hr-mobile-sub2 a::before { content: "- "; }
 
-/* XEDITION: 풀폭 대형 비주얼 (원본 600px) */
+/* 비주얼: 항상 화면 전체 폭 */
 .hr-visual { position: relative; overflow: hidden; background: #141210; }
 .hr-visual-track { position: relative; height: clamp(320px, 42vw, 600px); }
 .hr-visual-item {
@@ -444,7 +446,7 @@ body.hr-mobile-on { overflow: hidden; }
 .hr-visual-nav.prev { left: clamp(16px, 2.5vw, 36px); }
 .hr-visual-nav.next { right: clamp(16px, 2.5vw, 36px); }
 
-/* 페이지네이션: 직사각 테마답게 사각형. 현재 페이지는 위로 길어진 포인트색 사각형 */
+/* 슬라이더 페이지네이션: 사각 도트, 현재 페이지는 세로로 긴 포인트색 사각형 */
 .hr-visual-dots { position: absolute; left: 0; right: 0; bottom: 24px; display: flex; justify-content: center; align-items: flex-end; gap: 8px; }
 .hr-visual-dots button {
 	width: 9px;
@@ -460,11 +462,10 @@ body.hr-mobile-on { overflow: hidden; }
 .hr-visual-dots button.is-on { height: 22px; background: var(--hr-brand); }
 
 .hr-body { flex: 1 0 auto; padding: clamp(28px, 4vw, 44px) 0 clamp(48px, 6vw, 72px); }
-/* XEDITION 그리드: LNB 260px + 본문 (원본 260/900) */
+/* 서브 그리드: LNB 260px + 본문 */
 .hr-body.has-lnb .hr-body-inner { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 40px; }
 
-/* LNB: 박스 없는 모던 리스트. 타이틀은 구분선+골드 라인(공통 문법),
- * 활성 항목은 왼쪽 3px 포인트색 바, 하위 메뉴는 셰브런으로 표시 */
+/* LNB: 타이틀 구분선+포인트색 라인, 활성 항목 왼쪽 3px 바, 하위 메뉴 셰브런 */
 .hr-lnb { padding-top: 6px; }
 .hr-lnb-title, .hr-lnb > .hr-lnb-title {
 	position: relative;
@@ -517,7 +518,7 @@ body.hr-mobile-on { overflow: hidden; }
 
 .hr-content { min-width: 0; padding-bottom: 10px; }
 
-/* 푸터: 본문 폭에 맞춘 좌측 정렬 컬럼 + 전폭 다크 카피라이트 바 + 3px 포인트색 마감선 */
+/* 푸터: 본문 폭 좌측 정렬 컬럼 + 전폭 다크 카피라이트 바 + 3px 포인트색 선 */
 .hr-footer { flex: none; padding: clamp(40px, 5vw, 56px) 0 0; border-top: 1px solid var(--hr-line); border-bottom: 3px solid var(--hr-brand); background: var(--hr-surface); color: var(--hr-muted); font-size: 13.5px; }
 .hr-footer-inner { padding-bottom: 30px; }
 .hr-footer-bar { background: var(--hr-nav-bg); color: rgba(255, 255, 255, .72); }
@@ -535,7 +536,7 @@ body.hr-mobile-on { overflow: hidden; }
 .hr-footer-bottom { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; margin: 0; padding-top: 15px; padding-bottom: 15px; border-top: 0; font-size: 12.5px; }
 .hr-footer-bottom a:hover { text-decoration: underline; }
 
-/* XEDITION 서브 타이틀 밴드: 회색 띠, 제목 밑 22px 짧은 밑줄 */
+/* 서브 타이틀 밴드: 회색 띠, 제목 밑 22px 밑줄 */
 .hr-subhead { background: var(--hr-surface); border-bottom: 1px solid var(--hr-line-soft); }
 .hr-subhead h1 { position: relative; margin: 0; padding: 30px 0 34px; font-family: var(--hr-font-display, inherit); font-size: 18px; font-weight: 700; letter-spacing: .01em; color: var(--hr-ink); }
 .hr-subhead h1::after { content: ""; position: absolute; left: 0; bottom: 22px; width: 22px; height: 2px; background: var(--hr-brand); }

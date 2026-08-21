@@ -1,11 +1,8 @@
 @version(2)
-<!-- 머리 구조 (XEDITION 계보)
-     한 줄 헤더: 로고(왼쪽) + GNB(오른쪽 인라인) + 유틸리티 아이콘.
-     1차 메뉴에 올리면 그 항목 아래로만 다크 드롭다운이 열린다 -->
+<!-- 한 줄 헤더(화면 전체 폭): 로고 + GNB(로고 옆 또는 중앙, gnb_align) + 우측 유틸 -->
 <header class="hr-header" id="hr_header">
 
 	<div class="hr-utilrow">
-		{{-- 재해석: 헤더는 화면 전체 폭. 로고는 왼쪽 끝, GNB 는 중앙 또는 로고 옆(gnb_align), 유틸은 오른쪽 끝 --}}
 		<div class="hr-utilrow-inner g-{{ $hr->gnb_align ?? 'left' }}">
 			<a class="hr-logo" href="{{ getUrl('') }}">
 				@if (!empty($hr->logo_image))
@@ -47,7 +44,7 @@
 			{{-- 우측 유틸: 다크모드 · 검색 · 언어(축약 코드) · 프로필 영역(포인트색 박스) 순 --}}
 			<div class="hr-utils">
 				@php
-				// 알림센터(ncenterlite) 헤더 연동 — 기본 플로팅 위젯은 끄고 프로필 영역 안에 벨을 그린다
+				// 알림센터(ncenterlite) 헤더 연동: 기본 플로팅 위젯은 끄고 프로필 영역 안에 벨을 그린다
 				$hr_nc_items = [];
 				$hr_nc_unread = 0;
 				$hr_nc_on = false;
@@ -165,7 +162,7 @@
 				</button>
 			</div>
 
-			{{-- XEDITION 계보: 검색 아이콘을 누르면 헤더 위로 대형 검색 오버레이가 열린다 --}}
+			{{-- 검색 아이콘을 누르면 헤더 위로 대형 검색 오버레이가 열린다 --}}
 			@if ($hr->use_search !== 'N')
 			<form class="hr-searchbar" id="hr_searchbar" action="{{ getUrl() }}" method="get" role="search" hidden>
 				<input type="hidden" name="act" value="IS" />
