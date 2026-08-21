@@ -582,7 +582,7 @@ body.hr-mobile-on { overflow: hidden; }
 	.hr-utilrow-inner { padding-top: 14px; padding-bottom: 14px; }
 	.hr-logo { font-size: 22px; }
 	.hr-logo img { height: 32px; }
-	.hr-gnb, .hr-search, .hr-util-link { display: none; }
+	.hr-gnb, .hr-utilrow-inner.g-center .hr-gnb, .hr-search, .hr-util-link { display: none; }
 	.hr-utilrow-inner { min-height: 0; }
 	/* GNB 가 숨으면 우측으로 밀어줄 요소가 없다. 유틸(빵메뉴 포함)을 오른쪽 끝에 붙인다 */
 	.hr-utils { margin-left: auto; }
