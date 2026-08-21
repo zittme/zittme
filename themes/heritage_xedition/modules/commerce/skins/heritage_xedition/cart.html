@@ -19,7 +19,9 @@
 					<div class="shp-cart-info">
 						<a class="shp-cart-name" href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceItem', 'item_srl', $entry->item->item_srl) }}">{{ $entry->item->item_name }}</a>
 						@if ($entry->option)<div class="shp-cart-option">{{ $entry->option->option_label }}</div>@endif
-						@if ($entry->blocked)<div class="shp-cart-blocked">{{ $lang->shop_cart_blocked }}</div>@endif
+						@if (!empty($entry->changed))<div class="shp-cart-blocked">{{ $lang->shop_cart_changed }}</div>
+						@elseif ($entry->blocked)<div class="shp-cart-blocked">{{ $lang->shop_cart_blocked }}</div>@endif
+						@if (empty($entry->changed))
 						<form action="{{ getUrl('') }}" method="post" class="shp-cart-qty">
 							<input type="hidden" name="act" value="procCommerceCartUpdate" />
 							<input type="hidden" name="mid" value="{{ $mid }}" />
@@ -30,6 +32,7 @@
 								<button type="button" class="shp-step" data-step="1" aria-label="{{ $lang->shop_a11y_qty_up }}">+</button>
 							</div>
 						</form>
+						@endif
 					</div>
 					<div class="shp-cart-right">
 						<form action="{{ getUrl('') }}" method="post" class="shp-cart-del">
