@@ -56,6 +56,25 @@
 		</dl>
 	</section>
 
+	{{-- Conekta 현금(OXXO)·계좌이체(SPEI)는 참조번호로 입금한 뒤 웹훅으로 확정된다 --}}
+	@if($order->status === 'pending' && $order->gateway === 'conekta')
+	<section class="zpay-bank-guide">
+		<h2 class="zpay-section-title">{{ $lang->zpay_bank_guide_title }}</h2>
+		<p class="zpay-notice">{{ $lang->zpay_conekta_pending_guide }}</p>
+		<dl class="zpay-summary-list">
+			@if(!empty($order->extra['conekta']['bank']))
+			<div class="zpay-summary-row"><dt>{{ $lang->zpay_bank_name }}</dt><dd>{{ $order->extra['conekta']['bank'] }}</dd></div>
+			@endif
+			@if(!empty($order->extra['conekta']['reference']))
+			<div class="zpay-summary-row"><dt>{{ $lang->zpay_conekta_reference }}</dt><dd>{{ $order->extra['conekta']['reference'] }}</dd></div>
+			@endif
+			@if(!empty($order->due_date))
+			<div class="zpay-summary-row"><dt>{{ $lang->zpay_bank_due_date }}</dt><dd>{{ zdate($order->due_date, 'Y-m-d H:i') }}</dd></div>
+			@endif
+		</dl>
+	</section>
+	@endif
+
 	@if($order->status === 'pending' && $order->gateway === 'banktransfer')
 	<section class="zpay-bank-guide">
 		<h2 class="zpay-section-title">{{ $lang->zpay_bank_guide_title }}</h2>
