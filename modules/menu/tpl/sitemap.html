@@ -2977,6 +2977,7 @@ jQuery(function($){
 			// 스킨 행은 design_types 기준. 메뉴 추가에서 스스로를 숨긴 모듈
 			// (커머스·예약)도 디자인 패널에는 나와야 한다.
 			var htDesignTypes = htData.design_types || $._xeAdminVar.htItemTypes;
+			$._xeAdminVar.htDesignTypes = htDesignTypes;
 
 			var item;
 			var sModuleTitle;
@@ -3170,12 +3171,13 @@ jQuery(function($){
 		var htDesign = $._xeAdminVar.htSelectedMenuDesign;
 		var htSkins = {};
 		var item;
-		for(var sModuleName in $._xeAdminVar.htItemTypes){
-			if(! $._xeAdminVar.htItemTypes.hasOwnProperty(sModuleName)) continue;
+		var htSaveTypes = $._xeAdminVar.htDesignTypes || $._xeAdminVar.htItemTypes;
+		for(var sModuleName in htSaveTypes){
+			if(! htSaveTypes.hasOwnProperty(sModuleName)) continue;
 			if(sModuleName === "_SHORTCUT") continue;
 
 			item = $._xeAdminVar.htAllModules[sModuleName];
-			if (!item) continue;
+			if (!item || !item.defaultSkin || !item.defaultMobileSkin) continue;
 			sModuleTitle = item.title;
 
 			htSkins[sModuleName] = (sMode === "P") ? item.defaultSkin.skin : item.defaultMobileSkin.skin;
