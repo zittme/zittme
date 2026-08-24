@@ -96,3 +96,17 @@
 		</div>
 	</form>
 </section>
+
+<script>
+// admin.js 가 없는 프론트 경로에서도 닫히도록 하는 폴백. 캡처 단계라 다른 처리기의 오류에 막히지 않는다
+document.addEventListener('click', function (e) {
+	var btn = e.target && e.target.closest ? e.target.closest('#__category_info [data-hide]') : null;
+	if (!btn) { return; }
+	var target = document.querySelector(btn.getAttribute('data-hide'));
+	if (target) {
+		target.hidden = true;
+		target.style.display = 'none';
+	}
+	document.querySelectorAll('.x_modal-backdrop').forEach(function (el) { el.style.display = 'none'; });
+}, true);
+</script>

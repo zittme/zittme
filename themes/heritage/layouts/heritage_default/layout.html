@@ -69,6 +69,23 @@ $hr_show_visual = count($hr_visuals) && $hr_visual_mode !== 'none'
 	&& ($hr_visual_mode === 'all' || $hr_type === 'main');
 $hr_interval = max(0, (int)($hr->visual_interval ?? 6));
 
+foreach (['logo_text', 'footer_about', 'footer_info', 'copyright'] as $hr_lang_field)
+{
+	if (!empty($hr->$hr_lang_field))
+	{
+		$hr->$hr_lang_field = \Context::replaceUserLang((string)$hr->$hr_lang_field);
+	}
+}
+foreach ($hr_visuals as $hr_vk => $hr_vv)
+{
+	foreach (['title', 'text', 'link_text'] as $hr_lang_field)
+	{
+		if (!empty($hr_vv[$hr_lang_field]))
+		{
+			$hr_visuals[$hr_vk][$hr_lang_field] = \Context::replaceUserLang((string)$hr_vv[$hr_lang_field]);
+		}
+	}
+}
 $hr_footer_info = array_values(array_filter(array_map('trim', explode("\n", (string)($hr->footer_info ?? '')))));
 @endphp
 
