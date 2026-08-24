@@ -280,6 +280,10 @@
 		var buyPanel = document.getElementById('shpBuyPanel');
 		if (side && topWrap && buyPanel) {
 			var relocate = function () {
+				if (window.innerWidth <= 860) {
+					if (buyPanel.parentNode !== topWrap) { topWrap.appendChild(buyPanel); }
+					return;
+				}
 				var passed = window.scrollY > topWrap.offsetTop + topWrap.offsetHeight - 90;
 				if (passed && buyPanel.parentNode !== side) {
 					side.appendChild(buyPanel);
@@ -288,6 +292,7 @@
 				}
 			};
 			window.addEventListener('scroll', relocate, { passive: true });
+			window.addEventListener('resize', relocate);
 			relocate();
 		}
 

@@ -200,6 +200,16 @@ foreach ($document_list ?: [] as $hrb_dk => $hrb_dd) { $hrb_docs[$hrb_dk] = $hrb
 				<div class="hrb-faq-a">
 					<span class="hrb-faq-mark">A</span>
 					<div class="hrb-faq-body rhymix_content xe_content">{!! $document->getContent(false) !!}</div>
+					@if ($document->isEditable() || $document->isGranted())
+					<div class="hrb-faq-tools">
+						@if ($document->isEditable())
+						<a class="hr-btn" href="{{ getUrl('act', 'dispBoardWrite', 'document_srl', $document->document_srl) }}">{{ $lang->cmd_modify ?? $lang->hrb_modify }}</a>
+						@endif
+						@if ($document->isGranted())
+						<a class="hr-btn" href="{{ getUrl('act', 'dispBoardDelete', 'document_srl', $document->document_srl) }}">{{ $lang->cmd_delete ?? $lang->hrb_delete }}</a>
+						@endif
+					</div>
+					@endif
 				</div>
 			</details>
 		</li>
