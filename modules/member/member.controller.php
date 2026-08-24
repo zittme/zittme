@@ -1649,7 +1649,11 @@ class MemberController extends Member
 		if($account)
 		{
 			// Known account — log in.
-			$this->doLogin($this->_snsUserId($account->member_srl));
+			$login_output = $this->_snsLogin($account->member_srl);
+			if(!$login_output->toBool())
+			{
+				return $this->_snsAlertAndBackMessage($login_output->getMessage());
+			}
 			$redirectUrl = $_SESSION['member_sns_auth']['referer'] ?? getNotEncodedFullUrl('');
 			unset($_SESSION['member_sns_auth']['referer']);
 			header('Location: ' . $redirectUrl);
@@ -1680,7 +1684,11 @@ class MemberController extends Member
 					'last_login' => date('YmdHis'),
 				]);
 
-				$this->doLogin($existMember->user_id);
+				$login_output = $this->_snsLogin($existMember->member_srl);
+				if(!$login_output->toBool())
+				{
+					return $this->_snsAlertAndBackMessage($login_output->getMessage());
+				}
 				$redirectUrl = $_SESSION['member_sns_auth']['referer'] ?? getNotEncodedFullUrl('');
 				unset($_SESSION['member_sns_auth']['referer']);
 				header('Location: ' . $redirectUrl);
@@ -1927,15 +1935,6 @@ class MemberController extends Member
 	}
 
 	/**
-	 * Resolve a member's user_id for doLogin().
-	 */
-	private function _snsUserId($member_srl)
-	{
-		$memberInfo = MemberModel::getMemberInfoByMemberSrl($member_srl);
-		return $memberInfo ? $memberInfo->user_id : null;
-	}
-
-	/**
 	 * Create a new social-only member (empty password) and link the account.
 	 *
 	 * @return int|BaseObject member_srl on success, BaseObject on failure
@@ -2005,7 +2004,7 @@ class MemberController extends Member
 			$this->_snsDownloadProfileImage($member_srl, $userInfo->sns_profile_image);
 		}
 
-		$this->doLogin($user_id);
+		$this->_snsLogin($member_srl);
 		return $member_srl;
 	}
 
@@ -2034,9 +2033,69 @@ class MemberController extends Member
 	 */
 	private function _snsAlertAndBack($msg_code)
 	{
-		$msg = lang($msg_code);
-		echo '<script>alert("' . addslashes($msg) . '"); history.back();</script>';
+		$this->_snsAlertAndBackMessage(lang($msg_code));
+	}
+
+	/**
+	 * Same as _snsAlertAndBack(), but for a message that is already translated.
+	 *
+	 * @param string $msg
+	 * @return void
+	 */
+	private function _snsAlertAndBackMessage($msg)
+	{
+		echo '<script>alert("' . addslashes((string)$msg) . '"); history.back();</script>';
 		exit;
+	}
+
+	/**
+	 * Log in a member linked to a social account.
+	 *
+	 * doLogin() only accepts identifiers enabled in the login settings, which a
+	 * social-only member may not have. Logs in by member_srl instead.
+	 *
+	 * @param int $member_srl
+	 * @return BaseObject
+	 */
+	private function _snsLogin($member_srl)
+	{
+		$member_info = MemberModel::getMemberInfoByMemberSrl($member_srl);
+		if(!$member_info || !$member_info->member_srl)
+		{
+			return new BaseObject(-1, 'invalid_user_id');
+		}
+
+		if($member_info->denied === 'Y')
+		{
+			return new BaseObject(-1, lang('msg_user_denied'));
+		}
+		if($member_info->limit_date && substr($member_info->limit_date, 0, 8) >= date('Ymd'))
+		{
+			return new BaseObject(-9, sprintf(lang('msg_user_limited'), zdate($member_info->limit_date, 'Y-m-d')));
+		}
+
+		$trigger_obj = new stdClass();
+		$trigger_obj->user_id = $member_info->user_id;
+		$trigger_obj->password = '';
+		$trigger_output = ModuleHandler::triggerCall('member.doLogin', 'before', $trigger_obj);
+		if(!$trigger_output->toBool())
+		{
+			return $trigger_output;
+		}
+
+		Zittme\Framework\Session::login($member_info->member_srl);
+		self::updateLastLogin($member_info->member_srl);
+		$this->setSessionInfo();
+
+		$config = MemberModel::getMemberConfig();
+		if($config->login_invalidate_other_sessions === 'Y')
+		{
+			Zittme\Framework\Session::destroyOtherSessions($member_info->member_srl);
+		}
+
+		ModuleHandler::triggerCall('member.doLogin', 'after', $member_info);
+
+		return new BaseObject();
 	}
 
 	/**
