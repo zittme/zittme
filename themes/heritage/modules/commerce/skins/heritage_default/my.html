@@ -57,8 +57,8 @@
 				@foreach ($credit_logs as $cl)
 				<tr>
 					<td><small>{{ zdate($cl->regdate, 'Y.m.d H:i') }}</small></td>
-					<td class="{{ $cl->amount >= 0 ? 'shp-amt-plus' : 'shp-amt-minus' }}">{{ $cl->amount >= 0 ? '+' : '' }}{{ number_format($cl->amount) }}</td>
-					<td>{{ number_format($cl->balance_after) }}</td>
+					<td class="{{ $cl->amount >= 0 ? 'shp-amt-plus' : 'shp-amt-minus' }}">{{ $cl->amount >= 0 ? '+' : '-' }}{{ shop_money_base(abs((int)$cl->amount)) }}</td>
+					<td>{{ shop_money_base((int)$cl->balance_after) }}</td>
 					<td>{{ $lang->{'shop_credit_type_' . $cl->type} ?? $cl->type }}</td>
 				</tr>
 				@endforeach
