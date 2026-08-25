@@ -362,7 +362,6 @@
 							chip.classList.toggle('is-soldout', out);
 							chip.disabled = out;
 						});
-						// 셀렉트형 축도 품절 값을 고를 수 없게 막고 표시한다
 						if (sel && sel.tagName === 'SELECT') {
 							Array.prototype.forEach.call(sel.options, function (op) {
 								if (op.value === '') return;
