@@ -12,12 +12,24 @@ html, body { margin: 0; background: var(--hr-bg); }
 [data-theme="dark"] .hr-logo .hr-logo-dark { display: block; }
 [data-theme="dark"] .hr-logo .hr-logo-light:not(:only-child) { display: none; }
 
-.hr-utils { display: flex; align-items: center; gap: 12px; }
-.hr-utils a.hr-util-link { font-size: 13px; font-weight: 600; color: var(--hr-ink-sub); white-space: nowrap; }
-.hr-util-link:hover { color: var(--hr-brand); }
-.hr-utils a.hr-util-admin { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border: 1px solid var(--hr-line); border-radius: 999px; color: var(--hr-brand); }
+.hr-utils { display: flex; align-items: center; gap: 6px; }
+.hr-utils a.hr-util-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	height: 32px;
+	padding: 0 10px;
+	border-radius: 8px;
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--hr-ink-sub);
+	white-space: nowrap;
+	transition: color .14s, background-color .14s;
+}
+.hr-utils a.hr-util-link:hover,
+.hr-utils a.hr-util-link:focus-visible { color: var(--hr-brand); background: var(--hr-brand-soft); }
+.hr-utils a.hr-util-admin { color: var(--hr-brand); }
 .hr-util-admin svg { width: 14px; height: 14px; fill: currentColor; }
-.hr-utils a.hr-util-admin:hover { border-color: var(--hr-brand); background: var(--hr-brand); color: #fff; }
 
 .hr-search { position: relative; }
 .hr-search input[type="search"] {
@@ -55,17 +67,18 @@ html, body { margin: 0; background: var(--hr-bg); }
 	gap: 5px;
 	height: 32px;
 	padding: 0 10px;
-	border: 1px solid var(--hr-line);
-	border-radius: 999px;
-	background: var(--hr-bg);
+	border: 0;
+	border-radius: 8px;
+	background: transparent;
 	color: var(--hr-ink-sub);
 	font-family: inherit;
 	font-size: 12.5px;
 	font-weight: 600;
 	cursor: pointer;
+	transition: color .14s, background-color .14s;
 }
 .hr-lang-btn svg { width: 15px; height: 15px; fill: currentColor; }
-.hr-lang-btn:hover { border-color: var(--hr-brand); color: var(--hr-brand); }
+.hr-lang-btn:hover, .hr-lang-btn:focus-visible { color: var(--hr-brand); background: var(--hr-brand-soft); }
 .hr-lang-list {
 	position: absolute;
 	top: calc(100% + 6px);
@@ -97,14 +110,15 @@ html, body { margin: 0; background: var(--hr-bg); }
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	border: 1px solid var(--hr-line);
-	border-radius: 50%;
-	background: var(--hr-bg);
+	border: 0;
+	border-radius: 8px;
+	background: transparent;
 	color: var(--hr-ink-sub);
 	cursor: pointer;
+	transition: color .14s, background-color .14s;
 }
 .hr-theme svg { width: 16px; height: 16px; fill: currentColor; }
-.hr-theme:hover { border-color: var(--hr-brand); color: var(--hr-brand); }
+.hr-theme:hover, .hr-theme:focus-visible { color: var(--hr-brand); background: var(--hr-brand-soft); }
 .hr-ico-moon { display: none; }
 [data-theme="dark"] .hr-ico-sun { display: none; }
 [data-theme="dark"] .hr-ico-moon { display: inline; }
@@ -442,7 +456,7 @@ body.hr-mobile-on { overflow: hidden; }
 
 /* ── 알림센터 헤더 벨 ── */
 .hr-nc { position: relative; display: flex; align-items: center; }
-.hr-nc-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 0; border-radius: 50%; background: transparent; color: var(--hr-ink-sub); cursor: pointer; transition: background .13s, color .13s; }
+.hr-nc-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 0; border-radius: 8px; background: transparent; color: var(--hr-ink-sub); cursor: pointer; transition: background .13s, color .13s; }
 .hr-nc-btn svg { width: 19px; height: 19px; fill: currentColor; }
 .hr-nc-btn:hover { background: var(--hr-brand-soft); color: var(--hr-brand); }
 .hr-nc-badge { position: absolute; top: 0; right: -1px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; background: #e5484d; color: #fff; font-size: 10px; font-weight: 800; font-style: normal; line-height: 16px; text-align: center; box-shadow: 0 0 0 2px var(--hr-bg, #fff); }
