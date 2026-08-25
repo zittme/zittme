@@ -63,7 +63,7 @@ if (!$hr_has_class_type && in_array($hr_module_now, $hr_full_modules, true)) {
 }
 $hr_lnb = ($hr_type === 'sub' && $hr_current && !empty($hr_current['list'])) ? $hr_current : null;
 
-$hr_visuals = array_values((array)($hr->visuals ?? []));
+$hr_visuals = array_map(function($hr_nv) { return is_array($hr_nv) ? $hr_nv : (array)$hr_nv; }, array_values((array)($hr->visuals ?? [])));
 $hr_visual_mode = $hr->show_visual ?? 'main';
 $hr_show_visual = count($hr_visuals) && $hr_visual_mode !== 'none'
 	&& ($hr_visual_mode === 'all' || $hr_type === 'main');
