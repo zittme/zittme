@@ -60,6 +60,27 @@
 
 	<div class="shp-content" id="shpContent">@if (!empty($item->content)){!! $item->content !!}@endif</div>
 
+	@php
+	$shp_ship_guide = trim((string)($shop_config->ship_guide ?? ''));
+	$shp_claim_guide = trim((string)($shop_config->claim_guide ?? ''));
+	@endphp
+	@if ($shp_ship_guide !== '' || $shp_claim_guide !== '')
+	<div class="shp-guides">
+		@if ($shp_ship_guide !== '')
+		<details class="shp-guide" open>
+			<summary>{{ $lang->cfg_ship_guide }}</summary>
+			<div class="shp-guide-body">{!! nl2br(escape($shp_ship_guide)) !!}</div>
+		</details>
+		@endif
+		@if ($shp_claim_guide !== '')
+		<details class="shp-guide">
+			<summary>{{ $lang->cfg_claim_guide }}</summary>
+			<div class="shp-guide-body">{!! nl2br(escape($shp_claim_guide)) !!}</div>
+		</details>
+		@endif
+	</div>
+	@endif
+
 	<div class="shp-section" id="shpReviews">
 		<h2>{{ $lang->shop_reviews }} <small>{{ count($reviews ?? []) }}</small></h2>
 		@if (!count($reviews ?? []))
@@ -410,8 +431,15 @@
 		}
 
 
-		var buyBtn = document.getElementById('shpBuyBtn');
-		var cartBtn = document.getElementById('shpCartBtn');
+		var noSelection = false;
+		var buyForm = document.getElementById('shpBuyForm');
+		if (buyForm) {
+			buyForm.addEventListener('submit', function (e) {
+				if (!noSelection) return;
+				e.preventDefault();
+				alert({!! json_encode($lang->msg_shop_need_option) !!});
+			});
+		}
 
 		var shpUnit = '{{ $shp_unit_label }}';
 		{{-- 서버가 이미 표시 통화 값으로 내려보낸다. 여기서 환율을 다시 곱하면 어긋난다 --}}
@@ -480,9 +508,7 @@
 				var creditRate = parseFloat(creditEl.getAttribute('data-credit-rate')) || 0;
 				creditEl.textContent = creditRate > 0 && totalPrice > 0 ? {!! json_encode($lang->shop_credit_estimate) !!}.replace('%s', smoney(Math.floor(totalPrice * creditRate / 100))) : '';
 			}
-			var empty = rows.length === 0;
-			if (buyBtn) buyBtn.disabled = empty;
-			if (cartBtn) cartBtn.disabled = empty;
+			noSelection = rows.length === 0;
 		}
 		rowsEl.addEventListener('click', function (e) {
 			var stepBtn = e.target.closest('.shp-step');

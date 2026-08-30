@@ -411,3 +411,6 @@
 .xm .zm-agreements-collapsed .agreement { margin-bottom: 8px; }
 /* 본인인증으로 잠긴 입력 */
 .xm .zm-identity-locked { opacity: .75; pointer-events: none; background: var(--zm-surface) !important; }
+
+.xm .member-sns-btn { width: 100%; max-width: 360px; box-sizing: border-box; }
+.xm .signin .login-body input[type="submit"].submit { max-width: 360px; }

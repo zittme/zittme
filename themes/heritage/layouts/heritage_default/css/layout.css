@@ -515,3 +515,14 @@ body.hr-mobile-on { overflow: hidden; }
 	cursor: pointer;
 	border-radius: 8px;
 }
+
+.hr-logo { flex: none; }
+.hr-utils { min-width: 0; }
+.hr-util-link { max-width: 14em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 1400px) {
+	.hr-visual-copy { padding-left: clamp(96px, 8vw, 140px); padding-right: clamp(96px, 8vw, 140px); }
+}
+@media (max-width: 860px) {
+	.hr-visual-copy { padding-left: 28px; padding-right: 28px; }
+}

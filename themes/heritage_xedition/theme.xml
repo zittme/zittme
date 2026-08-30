@@ -4,8 +4,8 @@
 	<title xml:lang="en">Heritage XEDITION</title>
 	<description xml:lang="ko">헤리티지 테마를 기반으로 XE 시절 XEDITION 레이아웃의 디자인을 되살린 테마입니다. 골드 포인트 컬러와 다크 그레이 조합, 클래식 테이블형 게시판 등 XEDITION 특유의 무드를 현재 코드 기준(템플릿 v2 · 반응형 · 다크 모드)으로 재해석했습니다. 레이아웃과 게시판·회원·커머스·예약·짓미페이 스킨이 한 벌로 맞춰져 있습니다.</description>
 	<description xml:lang="en">A Heritage-based theme that revives the design of the classic XEDITION layout: gold accent with dark gray, classic table-style board and the rest of the XEDITION mood, reinterpreted on today's codebase (template v2, responsive, dark mode). Layout plus board, member, commerce, reservation and Zittme Pay skins ship as one matched set.</description>
-	<version>1.0.4</version>
-	<date>2026-08-25</date>
+	<version>1.0.5</version>
+	<date>2026-08-31</date>
 	<author email_address="zittme-contact@zzan.me" link="https://zitt.me">ZZAN Studio</author>
 	<license>GPLv2</license>
 

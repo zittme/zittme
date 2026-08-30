@@ -338,7 +338,7 @@
 .hrb-cmts-title em { font-style: normal; color: var(--hrb-cmt-point); text-decoration: underline; }
 
 .hrb .hrb-cmt-list, .hrb ul.hrb-cmt-list { margin: 0; padding: 0 22px; }
-.hrb-cmt-item { padding: 16px 0; border-bottom: 1px dashed var(--hr-line); }
+.hrb-cmt-item { padding: 16px 0; border-bottom: 1px dashed var(--hr-line); scroll-margin-top: 96px; }
 .hrb-cmt-item:last-child { border-bottom: 0; }
 .hrb-cmt-item.is-reply { padding-left: 20px; }
 .hrb-cmt-item.d2 { padding-left: 40px; }

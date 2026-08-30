@@ -12,6 +12,24 @@
 			<div class="shp-summary-row is-total"><span>{{ $lang->shop_credit_balance }}</span><span>{{ shop_money_base($credit_balance) }}</span></div>
 		</div>
 
+		<div class="shp-mycoupons">
+			<h3>{{ $lang->shop_my_coupons }} <small>{{ count($my_coupons ?? []) }}</small></h3>
+			@if (!count($my_coupons ?? []))
+			<p class="shp-empty">{{ $lang->shop_no_coupons }}</p>
+			@else
+			<ul class="shp-coupon-list">
+				@foreach ($my_coupons as $shp_cp)
+				<li>
+					<strong>{{ $shp_cp->coupon->title }}</strong>
+					<span class="shp-coupon-off">{{ shop_money_base((int)$shp_cp->discount) }}</span>
+					@if (!empty($shp_cp->coupon->min_order))<small>{{ sprintf($lang->shop_coupon_min, shop_money_base((int)$shp_cp->coupon->min_order)) }}</small>@endif
+					@if (!empty($shp_cp->coupon->use_end))<small>{{ zdate($shp_cp->coupon->use_end, 'Y.m.d') }} {{ $lang->shop_coupon_until }}</small>@endif
+				</li>
+				@endforeach
+			</ul>
+			@endif
+		</div>
+
 		@if (empty($orders))
 		<p class="shp-empty">{{ $lang->shop_no_orders }}</p>
 		@else

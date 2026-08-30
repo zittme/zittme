@@ -503,3 +503,6 @@
 
 /* 검색줄(페이지네이션 폼) 안에서는 여백을 걷어 한 줄 정렬을 맞춘다 */
 .xm .pagination form select, .xm .pagination form input, .xm .pagination form .btn, .xm .pagination form button { margin-bottom: 0; }
+
+.xm .member-sns-btn { width: 100%; max-width: 360px; box-sizing: border-box; }
+.xm .signin .login-body input[type="submit"].submit { max-width: 360px; }

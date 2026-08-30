@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget version="0.1">
+	<title xml:lang="ko">통합 커머스 위젯</title>
+	<title xml:lang="en">Unified Commerce Widget</title>
+	<description xml:lang="ko">
+		쇼핑몰 상품을 메인 페이지나 어느 페이지에든 꺼내 전시합니다.
+		신상품, 인기, 할인, 추천, 분류, 기획전, 직접 지정 중에서 기준만 정해 두면 상품이 바뀔 때 화면도 알아서 바뀝니다.
+		격자, 가로 넘김, 목록, 큰 카드, 분류 탭 중에서 전시 형태를 고르고, 한 줄을 최대 4칸으로 나눠 칸마다 다른 상품을 둘 수 있습니다.
+		화면 크기에 맞춰 배치가 자동으로 바뀝니다.
+	</description>
+	<description xml:lang="en">
+		Puts shop products on your front page, or any page.
+		Choose what to show once - newest, popular, on sale, recommended, a category, a promotion, or specific items - and the page keeps itself up to date.
+		Pick a display: grid, carousel, list, feature card, or category tabs. One row can be split into up to four slots, each showing something different.
+	</description>
+	<version>0.2.0</version>
+	<date>2026-08-31</date>
+	<author email_address="contact@zzan.me" link="https://zzan.me/">
+		<name xml:lang="ko">ZZAN Studio</name>
+		<name xml:lang="en">ZZAN Studio</name>
+	</author>
+	<extra_vars>
+		<var id="preset" type="select">
+			<name xml:lang="ko">줄 구성</name>
+			<name xml:lang="en">Row layout</name>
+			<description xml:lang="ko">한 줄을 어떻게 나눌지 고릅니다. 직접 구성을 고르면 아래 비율과 슬롯 설정을 씁니다.</description>
+			<description xml:lang="en">Choose how this row is split. Pick Custom to use the ratio and slot settings below.</description>
+			<options><value>grid4</value><name xml:lang="ko">격자 - 가로 4칸</name><name xml:lang="en">Grid, 4 across</name></options>
+			<options><value>grid3</value><name xml:lang="ko">격자 - 가로 3칸</name><name xml:lang="en">Grid, 3 across</name></options>
+			<options><value>carousel</value><name xml:lang="ko">가로 넘김 (한 줄 전체)</name><name xml:lang="en">Carousel</name></options>
+			<options><value>feature_grid</value><name xml:lang="ko">큰 카드 + 격자</name><name xml:lang="en">Feature + grid</name></options>
+			<options><value>grid_list</value><name xml:lang="ko">격자 + 목록</name><name xml:lang="en">Grid + list</name></options>
+			<options><value>list_list</value><name xml:lang="ko">목록 + 목록</name><name xml:lang="en">List + list</name></options>
+			<options><value>tab_grid</value><name xml:lang="ko">탭 + 격자</name><name xml:lang="en">Tabs + grid</name></options>
+			<options><value>grid3col</value><name xml:lang="ko">격자 3덩어리</name><name xml:lang="en">Three grids</name></options>
+			<options><value>custom</value><name xml:lang="ko">직접 구성</name><name xml:lang="en">Custom</name></options>
+		</var>
+		<var id="columns" type="text">
+			<name xml:lang="ko">직접 구성 비율</name>
+			<name xml:lang="en">Custom ratio</name>
+			<description xml:lang="ko">줄 구성이 "직접 구성"일 때만 씁니다. 예: 50:50 또는 60:40 또는 34:33:33</description>
+			<description xml:lang="en">Used only with Custom. Example: 50:50 or 60:40 or 34:33:33</description>
+		</var>
+		<var id="carousel_auto" type="select">
+			<name xml:lang="ko">가로 넘김 자동 흐름</name>
+			<name xml:lang="en">Carousel autoplay</name>
+			<description xml:lang="ko">가로 넘김 전시에서 상품이 저절로 흘러가게 합니다. 마우스를 올리면 멈춥니다.</description>
+			<description xml:lang="en">Let the carousel scroll by itself. It pauses on hover.</description>
+			<options><value>N</value><name xml:lang="ko">사용 안 함</name><name xml:lang="en">Off</name></options>
+			<options><value>Y</value><name xml:lang="ko">사용</name><name xml:lang="en">On</name></options>
+		</var>
+		<var id="carousel_speed" type="select">
+			<name xml:lang="ko">흐르는 속도</name>
+			<name xml:lang="en">Scroll speed</name>
+			<options><value>slow</value><name xml:lang="ko">느리게</name><name xml:lang="en">Slow</name></options>
+			<options><value>normal</value><name xml:lang="ko">보통</name><name xml:lang="en">Normal</name></options>
+			<options><value>fast</value><name xml:lang="ko">빠르게</name><name xml:lang="en">Fast</name></options>
+		</var>
+		<var id="new_hours" type="text">
+			<name xml:lang="ko">새 상품 표시 시간</name>
+			<name xml:lang="en">New badge window (hours)</name>
+			<description xml:lang="ko">등록 후 이 시간 안이면 NEW 를 붙입니다. 비우면 72시간.</description>
+			<description xml:lang="en">Show a NEW badge within this many hours of registration. Default 72.</description>
+		</var>
+		<var id="show_price" type="select">
+			<name xml:lang="ko">가격 표시</name>
+			<name xml:lang="en">Show price</name>
+			<options><value>Y</value><name xml:lang="ko">보임</name><name xml:lang="en">Show</name></options>
+			<options><value>N</value><name xml:lang="ko">감춤</name><name xml:lang="en">Hide</name></options>
+		</var>
+		<var id="show_badge" type="select">
+			<name xml:lang="ko">뱃지 표시</name>
+			<name xml:lang="en">Show badges</name>
+			<options><value>Y</value><name xml:lang="ko">보임</name><name xml:lang="en">Show</name></options>
+			<options><value>N</value><name xml:lang="ko">감춤</name><name xml:lang="en">Hide</name></options>
+		</var>
+		<var id="show_soldout" type="select">
+			<name xml:lang="ko">품절 상품</name>
+			<name xml:lang="en">Sold-out items</name>
+			<options><value>Y</value><name xml:lang="ko">품절 표시하고 보임</name><name xml:lang="en">Show with a sold-out mark</name></options>
+			<options><value>N</value><name xml:lang="ko">목록에서 뺌</name><name xml:lang="en">Leave them out</name></options>
+		</var>
+
+		<var id="slot1_mid" type="text">
+			<name xml:lang="ko">슬롯 1 쇼핑몰 주소</name>
+			<name xml:lang="en">Slot 1 shop address</name>
+			<description xml:lang="ko">쇼핑몰의 mid 를 적습니다. 비우면 처음 만든 쇼핑몰을 씁니다.</description>
+			<description xml:lang="en">The shop mid. Leave empty to use the first shop.</description>
+		</var>
+		<var id="slot1_title" type="text">
+			<name xml:lang="ko">슬롯 1 제목</name>
+			<name xml:lang="en">Slot 1 title</name>
+		</var>
+		<var id="slot1_source" type="select">
+			<name xml:lang="ko">슬롯 1 무엇을 뽑을지</name>
+			<name xml:lang="en">Slot 1 source</name>
+			<options><value>newest</value><name xml:lang="ko">신상품</name><name xml:lang="en">Newest</name></options>
+			<options><value>popular</value><name xml:lang="ko">인기 상품</name><name xml:lang="en">Popular</name></options>
+			<options><value>sale</value><name xml:lang="ko">할인 상품</name><name xml:lang="en">On sale</name></options>
+			<options><value>recommend</value><name xml:lang="ko">추천 상품</name><name xml:lang="en">Recommended</name></options>
+			<options><value>category</value><name xml:lang="ko">분류</name><name xml:lang="en">Category</name></options>
+			<options><value>promotion</value><name xml:lang="ko">기획전</name><name xml:lang="en">Promotion</name></options>
+			<options><value>items</value><name xml:lang="ko">직접 지정</name><name xml:lang="en">Specific items</name></options>
+		</var>
+		<var id="slot1_key" type="text">
+			<name xml:lang="ko">슬롯 1 대상 번호</name>
+			<name xml:lang="en">Slot 1 target</name>
+			<description xml:lang="ko">분류·기획전이면 그 번호, 직접 지정이면 상품 번호를 쉼표로 나눠 적습니다.</description>
+			<description xml:lang="en">Category or promotion number, or item numbers separated by commas.</description>
+		</var>
+		<var id="slot1_count" type="text">
+			<name xml:lang="ko">슬롯 1 개수</name>
+			<name xml:lang="en">Slot 1 count</name>
+			<description xml:lang="ko">전시할 상품 수입니다. 격자에서 가로 칸 수보다 많이 넣으면 그만큼 아랫줄이 생깁니다. 비우면 줄 구성의 기본값을 씁니다.</description>
+			<description xml:lang="en">How many products to show. In a grid, more than the number of columns wraps to extra rows. Leave empty to use the row layout default.</description>
+		</var>
+		<var id="slot1_style" type="select">
+			<name xml:lang="ko">슬롯 1 형태 (직접 구성용)</name>
+			<name xml:lang="en">Slot 1 style (for custom layouts)</name>
+			<options><value>grid</value><name xml:lang="ko">격자</name><name xml:lang="en">Grid</name></options>
+			<options><value>carousel</value><name xml:lang="ko">가로 넘김</name><name xml:lang="en">Carousel</name></options>
+			<options><value>list</value><name xml:lang="ko">목록</name><name xml:lang="en">List</name></options>
+			<options><value>feature</value><name xml:lang="ko">큰 카드</name><name xml:lang="en">Feature</name></options>
+			<options><value>tab</value><name xml:lang="ko">탭 (분류별)</name><name xml:lang="en">Tabs by category</name></options>
+		</var>
+
+		<var id="slot2_mid" type="text">
+			<name xml:lang="ko">슬롯 2 쇼핑몰 주소</name>
+			<name xml:lang="en">Slot 2 shop address</name>
+		</var>
+		<var id="slot2_title" type="text">
+			<name xml:lang="ko">슬롯 2 제목</name>
+			<name xml:lang="en">Slot 2 title</name>
+		</var>
+		<var id="slot2_source" type="select">
+			<name xml:lang="ko">슬롯 2 무엇을 뽑을지</name>
+			<name xml:lang="en">Slot 2 source</name>
+			<options><value>newest</value><name xml:lang="ko">신상품</name><name xml:lang="en">Newest</name></options>
+			<options><value>popular</value><name xml:lang="ko">인기 상품</name><name xml:lang="en">Popular</name></options>
+			<options><value>sale</value><name xml:lang="ko">할인 상품</name><name xml:lang="en">On sale</name></options>
+			<options><value>recommend</value><name xml:lang="ko">추천 상품</name><name xml:lang="en">Recommended</name></options>
+			<options><value>category</value><name xml:lang="ko">분류</name><name xml:lang="en">Category</name></options>
+			<options><value>promotion</value><name xml:lang="ko">기획전</name><name xml:lang="en">Promotion</name></options>
+			<options><value>items</value><name xml:lang="ko">직접 지정</name><name xml:lang="en">Specific items</name></options>
+		</var>
+		<var id="slot2_key" type="text">
+			<name xml:lang="ko">슬롯 2 대상 번호</name>
+			<name xml:lang="en">Slot 2 target</name>
+		</var>
+		<var id="slot2_count" type="text">
+			<name xml:lang="ko">슬롯 2 개수</name>
+			<name xml:lang="en">Slot 2 count</name>
+		</var>
+		<var id="slot2_style" type="select">
+			<name xml:lang="ko">슬롯 2 형태 (직접 구성용)</name>
+			<name xml:lang="en">Slot 2 style (for custom layouts)</name>
+			<options><value>grid</value><name xml:lang="ko">격자</name><name xml:lang="en">Grid</name></options>
+			<options><value>carousel</value><name xml:lang="ko">가로 넘김</name><name xml:lang="en">Carousel</name></options>
+			<options><value>list</value><name xml:lang="ko">목록</name><name xml:lang="en">List</name></options>
+			<options><value>feature</value><name xml:lang="ko">큰 카드</name><name xml:lang="en">Feature</name></options>
+			<options><value>tab</value><name xml:lang="ko">탭 (분류별)</name><name xml:lang="en">Tabs by category</name></options>
+		</var>
+
+		<var id="slot3_mid" type="text">
+			<name xml:lang="ko">슬롯 3 쇼핑몰 주소</name>
+			<name xml:lang="en">Slot 3 shop address</name>
+		</var>
+		<var id="slot3_title" type="text">
+			<name xml:lang="ko">슬롯 3 제목</name>
+			<name xml:lang="en">Slot 3 title</name>
+		</var>
+		<var id="slot3_source" type="select">
+			<name xml:lang="ko">슬롯 3 무엇을 뽑을지</name>
+			<name xml:lang="en">Slot 3 source</name>
+			<options><value>newest</value><name xml:lang="ko">신상품</name><name xml:lang="en">Newest</name></options>
+			<options><value>popular</value><name xml:lang="ko">인기 상품</name><name xml:lang="en">Popular</name></options>
+			<options><value>sale</value><name xml:lang="ko">할인 상품</name><name xml:lang="en">On sale</name></options>
+			<options><value>recommend</value><name xml:lang="ko">추천 상품</name><name xml:lang="en">Recommended</name></options>
+			<options><value>category</value><name xml:lang="ko">분류</name><name xml:lang="en">Category</name></options>
+			<options><value>promotion</value><name xml:lang="ko">기획전</name><name xml:lang="en">Promotion</name></options>
+			<options><value>items</value><name xml:lang="ko">직접 지정</name><name xml:lang="en">Specific items</name></options>
+		</var>
+		<var id="slot3_key" type="text">
+			<name xml:lang="ko">슬롯 3 대상 번호</name>
+			<name xml:lang="en">Slot 3 target</name>
+		</var>
+		<var id="slot3_count" type="text">
+			<name xml:lang="ko">슬롯 3 개수</name>
+			<name xml:lang="en">Slot 3 count</name>
+		</var>
+		<var id="slot3_style" type="select">
+			<name xml:lang="ko">슬롯 3 형태 (직접 구성용)</name>
+			<name xml:lang="en">Slot 3 style (for custom layouts)</name>
+			<options><value>grid</value><name xml:lang="ko">격자</name><name xml:lang="en">Grid</name></options>
+			<options><value>carousel</value><name xml:lang="ko">가로 넘김</name><name xml:lang="en">Carousel</name></options>
+			<options><value>list</value><name xml:lang="ko">목록</name><name xml:lang="en">List</name></options>
+			<options><value>feature</value><name xml:lang="ko">큰 카드</name><name xml:lang="en">Feature</name></options>
+			<options><value>tab</value><name xml:lang="ko">탭 (분류별)</name><name xml:lang="en">Tabs by category</name></options>
+		</var>
+
+		<var id="slot4_mid" type="text">
+			<name xml:lang="ko">슬롯 4 쇼핑몰 주소</name>
+			<name xml:lang="en">Slot 4 shop address</name>
+		</var>
+		<var id="slot4_title" type="text">
+			<name xml:lang="ko">슬롯 4 제목</name>
+			<name xml:lang="en">Slot 4 title</name>
+		</var>
+		<var id="slot4_source" type="select">
+			<name xml:lang="ko">슬롯 4 무엇을 뽑을지</name>
+			<name xml:lang="en">Slot 4 source</name>
+			<options><value>newest</value><name xml:lang="ko">신상품</name><name xml:lang="en">Newest</name></options>
+			<options><value>popular</value><name xml:lang="ko">인기 상품</name><name xml:lang="en">Popular</name></options>
+			<options><value>sale</value><name xml:lang="ko">할인 상품</name><name xml:lang="en">On sale</name></options>
+			<options><value>recommend</value><name xml:lang="ko">추천 상품</name><name xml:lang="en">Recommended</name></options>
+			<options><value>category</value><name xml:lang="ko">분류</name><name xml:lang="en">Category</name></options>
+			<options><value>promotion</value><name xml:lang="ko">기획전</name><name xml:lang="en">Promotion</name></options>
+			<options><value>items</value><name xml:lang="ko">직접 지정</name><name xml:lang="en">Specific items</name></options>
+		</var>
+		<var id="slot4_key" type="text">
+			<name xml:lang="ko">슬롯 4 대상 번호</name>
+			<name xml:lang="en">Slot 4 target</name>
+		</var>
+		<var id="slot4_count" type="text">
+			<name xml:lang="ko">슬롯 4 개수</name>
+			<name xml:lang="en">Slot 4 count</name>
+		</var>
+		<var id="slot4_style" type="select">
+			<name xml:lang="ko">슬롯 4 형태 (직접 구성용)</name>
+			<name xml:lang="en">Slot 4 style (for custom layouts)</name>
+			<options><value>grid</value><name xml:lang="ko">격자</name><name xml:lang="en">Grid</name></options>
+			<options><value>carousel</value><name xml:lang="ko">가로 넘김</name><name xml:lang="en">Carousel</name></options>
+			<options><value>list</value><name xml:lang="ko">목록</name><name xml:lang="en">List</name></options>
+			<options><value>feature</value><name xml:lang="ko">큰 카드</name><name xml:lang="en">Feature</name></options>
+			<options><value>tab</value><name xml:lang="ko">탭 (분류별)</name><name xml:lang="en">Tabs by category</name></options>
+		</var>
+	</extra_vars>
+</widget>

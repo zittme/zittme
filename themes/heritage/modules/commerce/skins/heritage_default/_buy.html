@@ -17,6 +17,18 @@
 			@if (!empty($item->summary))
 			<p class="shp-detail-summary">{{ $item->summary }}</p>
 			@endif
+
+				@php
+				$shp_attrs = json_decode((string)($item->attrs ?? ''), true);
+				$shp_attrs = is_array($shp_attrs) ? $shp_attrs : [];
+				@endphp
+				@if (count($shp_attrs))
+				<dl class="shp-attrs">
+					@foreach ($shp_attrs as $shp_at)
+					<dt>{{ $shp_at['name'] ?? '' }}</dt><dd>{{ $shp_at['value'] ?? '' }}</dd>
+					@endforeach
+				</dl>
+				@endif
 			{{-- 아래 합계 계산도 위 표시가와 같은 값을 써야 한다. 등급가가 있으면 그것이 기준가다 --}}
 			@php $shp_buy_price = !empty($item->grade_price) ? (int)$item->grade_price : (int)($disp_effective_price ?? $effective_price); @endphp
 			<p class="shp-detail-price">

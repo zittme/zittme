@@ -70,7 +70,8 @@
 		<div class="shp-home-banner-track">
 			@foreach ($home_banners as $shp_bi => $shp_bn)
 			@php $shp_bn = (array)$shp_bn; @endphp
-			<a class="shp-home-banner-item @if ($shp_bi === 0) is-on @endif"
+			<a class="shp-home-banner-item align-{{ in_array($shp_bn['align'] ?? 'left', ['center', 'right'], true) ? $shp_bn['align'] : 'left' }} @if ($shp_bi === 0) is-on @endif"
+				@if (($shp_bn['target'] ?? 'self') === 'blank') target="_blank" rel="noopener" @endif
 				href="{{ !empty($shp_bn['url']) ? escape($shp_bn['url']) : getUrl('', 'mid', $mid, 'v', 'list') }}"
 				style="{{ $shp_bn['bg_style'] ?? '' }}">
 				<span class="shp-home-banner-copy {{ ($shp_bn['shadow'] ?? 'Y') === 'N' ? 'no-shadow' : '' }}" style="color:{{ $shp_bn['text_color'] ?? '#ffffff' }}">

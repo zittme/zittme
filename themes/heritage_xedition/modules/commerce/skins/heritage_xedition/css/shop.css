@@ -443,7 +443,7 @@ html { scroll-behavior: smooth; }
 
 .shp .shp-btn-primary, .shp a.shp-btn-primary, .shp a.shp-btn-primary:hover, .shp a.shp-btn-primary:visited { color: #fff; }
 
-.shp-promo-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.shp-promo-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
 .shp-promo-card { position: relative; display: flex; align-items: center; min-height: 140px; padding: 20px 24px; border-radius: 0; overflow: hidden; background: linear-gradient(120deg, #161b29, #232b40) center/cover no-repeat; text-decoration: none; transition: transform .15s, box-shadow .15s; }
 .shp-promo-card:hover { transform: translateY(-3px); box-shadow: 0 10px 26px rgba(0, 0, 0, .16); }
 .shp-promo-card-copy { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 4px; max-width: 68%; text-shadow: 0 2px 12px rgba(0, 0, 0, .3); }
@@ -716,3 +716,39 @@ html { scroll-behavior: smooth; }
 :is([data-theme="dark"], body.color_scheme_dark) .shp-pending-box { border-color: rgba(240, 195, 109, .4); background: rgba(240, 195, 109, .12); }
 :is([data-theme="dark"], body.color_scheme_dark) .shp-pending-msg { color: #e8c987; }
 :is([data-theme="dark"], body.color_scheme_dark) .shp-pending-row td { background: rgba(240, 195, 109, .1); }
+
+.shp-home-nav { flex: 1 1 auto; min-width: 0; }
+.shp-cart-link { flex: 0 0 auto; white-space: nowrap; }
+.shp-cart-link + .shp-cart-link { margin-left: 0; }
+@media (max-width: 720px) {
+	.shp-cart-link span, .shp-cart-link em { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+	.shp-cart-link { gap: 0; padding: 6px; }
+	.shp-cart-link .shp-cart-count { position: static; width: auto; height: auto; clip: auto; }
+}
+
+.shp-home-banner-item.align-left { justify-content: flex-start; }
+.shp-home-banner-item.align-center { justify-content: center; }
+.shp-home-banner-item.align-center .shp-home-banner-copy { text-align: center; align-items: center; }
+.shp-home-banner-item.align-right { justify-content: flex-end; }
+.shp-home-banner-item.align-right .shp-home-banner-copy { text-align: right; align-items: flex-end; }
+
+.shp-guides { margin: 26px 0 0; border-top: 1px solid var(--shp-border); }
+.shp-guide { border-bottom: 1px solid var(--shp-border); }
+.shp-guide > summary { padding: 15px 4px; font-size: 15px; font-weight: 700; cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; }
+.shp-guide > summary::-webkit-details-marker { display: none; }
+.shp-guide > summary::after { content: ""; width: 8px; height: 8px; margin-right: 6px; border-right: 2px solid var(--shp-sub); border-bottom: 2px solid var(--shp-sub); transform: rotate(45deg) translateY(-2px); transition: transform .15s; }
+.shp-guide[open] > summary::after { transform: rotate(-135deg) translateY(-2px); }
+.shp-guide-body { padding: 0 4px 18px; font-size: 14px; line-height: 1.8; color: var(--shp-sub); }
+
+.shp-mycoupons { margin: 0 0 20px; }
+.shp-mycoupons h3 { margin: 0 0 10px; font-size: 15px; font-weight: 700; }
+.shp-mycoupons h3 small { margin-left: 5px; color: var(--shp-brand); font-size: 13px; }
+.shp-coupon-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.shp-coupon-list li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; padding: 14px 16px; border: 1px dashed var(--shp-border); border-radius: 12px; background: var(--shp-card); }
+.shp-coupon-list strong { flex: 1 1 100%; font-size: 14.5px; font-weight: 700; }
+.shp-coupon-off { font-size: 17px; font-weight: 800; color: var(--shp-brand); }
+.shp-coupon-list small { font-size: 12px; color: var(--shp-sub); }
+
+.shp-attrs { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; margin: 0 0 16px; font-size: 13.5px; }
+.shp-attrs dt { color: var(--shp-sub); white-space: nowrap; }
+.shp-attrs dd { margin: 0; color: var(--shp-text); }

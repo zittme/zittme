@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.1">
+	<title xml:lang="ko">헤리티지 XEDITION</title>
+	<title xml:lang="en">Heritage XEDITION</title>
+	<description xml:lang="ko">heritage XEDITION 테마용 변형입니다. NEW 배지를 게시판 스킨과 같은 모양으로 씁니다.</description>
+	<description xml:lang="en">Variant for the heritage XEDITION theme: the NEW badge matches the board skin.</description>
+	<version>0.1.0</version>
+	<date>2026-08-19</date>
+	<author email_address="contact@zzan.me" link="https://zzan.me/">
+		<name xml:lang="ko">ZZAN Studio</name>
+		<name xml:lang="en">ZZAN Studio</name>
+	</author>
+</skin>

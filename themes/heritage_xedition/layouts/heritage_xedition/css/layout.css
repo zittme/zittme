@@ -683,3 +683,7 @@ body.hr-mobile-on { overflow: hidden; }
 }
 /* 푸터 카피라이트 줄은 전폭 바 안에 있으므로 항상 좌우 여백을 둔다 */
 .hr-footer-bottom { padding-left: clamp(16px, 2.6vw, 40px); padding-right: clamp(16px, 2.6vw, 40px); }
+
+.hr-logo { flex: none; }
+.hr-utils { min-width: 0; }
+.hr-util-link { max-width: 14em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
