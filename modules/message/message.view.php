@@ -34,7 +34,8 @@ class MessageView extends Message
 		{
 			if($config->mskin === '/USE_RESPONSIVE/')
 			{
-				$template_path = sprintf('%sskins/%s/', $this->module_path, $config->skin);
+				// 테마 결합 스킨명(테마|@|스킨)도 풀 수 있게 한다
+				$template_path = Zittme\Framework\Theme::resolveSkinPath($this->module_path, $config->skin, 'skins') . '/';
 				if(!is_dir($template_path))
 				{
 					$template_path = sprintf('%sskins/%s/', $this->module_path, 'default');
@@ -51,7 +52,8 @@ class MessageView extends Message
 		}
 		else
 		{
-			$template_path = sprintf('%sskins/%s', $this->module_path, $config->skin);
+			// 테마 결합 스킨명(테마|@|스킨)도 풀 수 있게 한다
+			$template_path = Zittme\Framework\Theme::resolveSkinPath($this->module_path, $config->skin, 'skins');
 			if(!is_dir($template_path))
 			{
 				$template_path = sprintf('%sskins/%s/', $this->module_path, 'default');
