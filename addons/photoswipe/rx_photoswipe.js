@@ -231,12 +231,14 @@ var initPhotoSwipeFromDOM = function(gallerySelector) {
 		// do not activate PhotoSwipe at the editor-component or other module components
 		var regx_skip = /(?:(modules|addons|classes|common|layouts|libs|widgets|widgetstyles)\/)/i;
 		var regx_allow_i6pngfix = /(?:common\/tpl\/images\/blank\.gif$)/i;
+		// module documentation images (e.g. modules/manual/docs/...) are content, not components
+		var regx_allow_docs = /modules\/[a-z0-9_]+\/docs\//i;
 
 		var isMobile = String(navigator.userAgent).match(/mobile/i);
 		var galleryImgEls = $(galleryElements[i]).find(ps_find_selector);
 		for(var j = 0, jl = galleryImgEls.length; j < jl; j++) {
 			// skip components
-			if(regx_skip.test($(galleryImgEls[j]).attr('src')) && !regx_allow_i6pngfix.test($(galleryImgEls[j]).attr('src'))) continue;
+			if(regx_skip.test($(galleryImgEls[j]).attr('src')) && !regx_allow_i6pngfix.test($(galleryImgEls[j]).attr('src')) && !regx_allow_docs.test($(galleryImgEls[j]).attr('src'))) continue;
 
 			//$(galleryImgEls[j]).attr('data-pswp-uid', i+1);
 			$(galleryImgEls[j]).attr('data-pswp-pid', j+1);
