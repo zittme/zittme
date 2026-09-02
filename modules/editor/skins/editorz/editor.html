@@ -1,0 +1,172 @@
+<!--// editorZ 스킨 — 의존성 없는 리치텍스트 에디터 (zzan_editor 기반, 외부 동영상 임베드).
+       simpleeditor 패턴(공용 editor_common.js + 자체 interface.js로 editorGetContent 등 API 오버라이드) 재사용. -->
+<load target="../../tpl/js/editor_common.js" />
+<load target="css/editor.css" />
+<load target="js/editor.js" />
+<load target="js/interface.js" />
+
+<div id="edz_wrap_{$editor_sequence}" class="edz {$colorset}"<!--@if($accent_color)--> style="--edz-accent-set:{$accent_color}"<!--@endif-->>
+
+    <div class="edz__tool" data-editor-sequence="{$editor_sequence}">
+        <!-- 본문 포맷 선택 -->
+        <div class="edz__fmt">
+            <button type="button" class="edz__sel" id="edzFmtBtn" title="문단 서식">
+                <span id="edzFmtLabel">본문</span>
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="edz__pop edz__pop--menu" id="edzFmtPop" hidden>
+                <button type="button" data-block="P" data-label="본문">본문</button>
+                <button type="button" data-block="H2" data-label="대제목" class="edz__mi-h2">대제목</button>
+                <button type="button" data-block="H3" data-label="소제목" class="edz__mi-h3">소제목</button>
+            </div>
+        </div>
+        <span class="edz__div"></span>
+
+        <button type="button" class="edz__btn" data-cmd="bold" title="굵게"><b>B</b></button>
+        <button type="button" class="edz__btn" data-cmd="italic" title="기울임"><i>I</i></button>
+        <button type="button" class="edz__btn" data-cmd="underline" title="밑줄"><u>U</u></button>
+        <button type="button" class="edz__btn" data-cmd="strikeThrough" title="취소선"><s>S</s></button>
+
+        <!-- 글자색 -->
+        <div class="edz__fmt">
+            <button type="button" class="edz__colorbtn" id="edzColorBtn" title="글자색"><b>A</b><i class="edz__colorbar" id="edzColorBar"></i></button>
+            <div class="edz__pop" id="edzColorPop" hidden>
+                <span class="edz__sw" data-color="#15171c" style="background:#15171c"></span>
+                <span class="edz__sw" data-color="#ee3b34" style="background:#ee3b34"></span>
+                <span class="edz__sw" data-color="#f59e0b" style="background:#f59e0b"></span>
+                <span class="edz__sw" data-color="#1c9e4b" style="background:#1c9e4b"></span>
+                <span class="edz__sw" data-color="#2563eb" style="background:#2563eb"></span>
+                <span class="edz__sw" data-color="#7c3aed" style="background:#7c3aed"></span>
+                <label class="edz__sw edz__sw--pick" title="직접 선택">
+                    <input type="color" class="edz__pick" id="edzColorPick" value="#ee3b34" />
+                </label>
+            </div>
+        </div>
+
+        <!-- 형광펜 -->
+        <div class="edz__fmt">
+            <button type="button" class="edz__btn" id="edzHiliteBtn" title="형광펜">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16"/><path d="M6 16l8-8 4 4-8 8H6z"/></svg>
+                <i class="edz__colorbar edz__colorbar--hi" id="edzHiliteBar"></i>
+            </button>
+            <div class="edz__pop" id="edzHilitePop" hidden>
+                <span class="edz__sw" data-color="#fff3b0" style="background:#fff3b0"></span>
+                <span class="edz__sw" data-color="#ffd6a5" style="background:#ffd6a5"></span>
+                <span class="edz__sw" data-color="#ffadad" style="background:#ffadad"></span>
+                <span class="edz__sw" data-color="#caffbf" style="background:#caffbf"></span>
+                <span class="edz__sw" data-color="#a0e7ff" style="background:#a0e7ff"></span>
+                <span class="edz__sw" data-color="#e0c3fc" style="background:#e0c3fc"></span>
+                <span class="edz__sw edz__sw--none" data-color="transparent" title="형광펜 해제">✕</span>
+                <label class="edz__sw edz__sw--pick" title="직접 선택">
+                    <input type="color" class="edz__pick" id="edzHilitePick" value="#fff3b0" />
+                </label>
+            </div>
+        </div>
+
+        <span class="edz__div"></span>
+        <button type="button" class="edz__btn" data-cmd="justifyLeft" title="왼쪽정렬">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="18" y2="18"/></svg>
+        </button>
+        <button type="button" class="edz__btn" data-cmd="justifyCenter" title="가운데정렬">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="5" y1="18" x2="19" y2="18"/></svg>
+        </button>
+        <button type="button" class="edz__btn" data-cmd="insertUnorderedList" title="목록">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="7" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="5" cy="17" r="1"/><line x1="9" y1="7" x2="20" y2="7"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="17" x2="20" y2="17"/></svg>
+        </button>
+        <button type="button" class="edz__btn" data-cmd="formatBlock" data-val="BLOCKQUOTE" title="인용">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 7H4v6h3l-1 4M16 7h-3v6h3l-1 4"/></svg>
+        </button>
+        <span class="edz__div"></span>
+        <button type="button" class="edz__btn edz__btn--ins" id="edzLinkBtn" title="링크">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 15l6-6M10 6l1-1a4 4 0 0 1 6 6l-1 1M14 18l-1 1a4 4 0 0 1-6-6l1-1"/></svg>
+        </button>
+        <button type="button" class="edz__btn edz__btn--ins" id="edzImageBtn" title="사진">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 16l-5-5L5 20"/></svg>
+        </button>
+        <button type="button" class="edz__btn edz__btn--ins" id="edzVideoBtn" title="동영상">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z" fill="currentColor" stroke="none"/></svg>
+        </button>
+        <button type="button" class="edz__btn edz__btn--ins" id="edzFileBtn" title="파일">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.5l-8.5 8.5a5 5 0 0 1-7-7l9-9a3.5 3.5 0 0 1 5 5l-9 9a2 2 0 0 1-3-3l8.5-8.5"/></svg>
+        </button>
+        <button type="button" class="edz__btn" id="edzHrBtn" title="구분선">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="12" x2="20" y2="12"/></svg>
+        </button>
+        <button type="button" class="edz__btn" id="edzTableBtn" title="표">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="4" x2="9" y2="20"/></svg>
+        </button>
+        <span class="edz__div"></span>
+        <button type="button" class="edz__btn" data-cmd="undo" title="실행취소">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 7L4 12l5 5"/><path d="M4 12h11a5 5 0 0 1 0 10h-1"/></svg>
+        </button>
+        <button type="button" class="edz__btn" data-cmd="redo" title="다시실행">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 7l5 5-5 5"/><path d="M20 12H9a5 5 0 0 0 0 10h1"/></svg>
+        </button>
+    </div>
+
+    <div id="edz_instance_{$editor_sequence}" class="edz__body {$colorset} rhymix_content editable" contenteditable="true" spellcheck="false"
+         data-editor-sequence="{$editor_sequence}"
+         data-editor-primary-key-name="{$editor_primary_key_name}"
+         data-editor-content-key-name="{$editor_content_key_name}"
+         data-editor-height="{$editor_height}"
+         style="min-height:{$editor_height}px">
+    </div>
+
+    <!--@if($allow_fileupload)-->
+    <include target="../ckeditor/file_upload.html" />
+    <!--@endif-->
+
+    <!-- 표 편집 플로팅 툴바 (셀 안에 커서가 있을 때 표 위에 표시) -->
+    <div class="edz__ttool" hidden>
+        <div class="edz__fmt">
+            <button type="button" class="edz__ttool-btn" id="edzCellColorBtn" title="셀 배경색"><span class="edz__ttool-ci"></span>셀색</button>
+            <div class="edz__pop" id="edzCellColorPop" hidden>
+                <span class="edz__sw" data-color="#fdecea" style="background:#fdecea"></span>
+                <span class="edz__sw" data-color="#e7f0ff" style="background:#e7f0ff"></span>
+                <span class="edz__sw" data-color="#e6f7ea" style="background:#e6f7ea"></span>
+                <span class="edz__sw" data-color="#fff6e0" style="background:#fff6e0"></span>
+                <span class="edz__sw" data-color="#f3e8ff" style="background:#f3e8ff"></span>
+                <span class="edz__sw" data-color="#eef1f4" style="background:#eef1f4"></span>
+                <span class="edz__sw edz__sw--none" data-color="transparent" title="배경 제거">✕</span>
+                <label class="edz__sw edz__sw--pick" title="직접 선택"><input type="color" class="edz__pick" value="#fdecea" /></label>
+            </div>
+        </div>
+        <span class="edz__div"></span>
+        <button type="button" class="edz__ttool-btn" data-tact="col-add" title="오른쪽에 열 추가">열 +</button>
+        <button type="button" class="edz__ttool-btn" data-tact="col-del" title="현재 열 삭제">열 −</button>
+        <button type="button" class="edz__ttool-btn" data-tact="row-add" title="아래에 행 추가">행 +</button>
+        <button type="button" class="edz__ttool-btn" data-tact="row-del" title="현재 행 삭제">행 −</button>
+    </div>
+
+    <!-- 표 삽입 레이어 -->
+    <div class="edz__modal edz__modal--table" hidden>
+        <div class="edz__modal-box">
+            <div class="edz__modal-h">표 삽입</div>
+            <div class="edz__modal-fields">
+                <label class="edz__field">행 <input type="number" class="edz__num edz__num--rows" value="3" min="1" max="30" /></label>
+                <label class="edz__field">열 <input type="number" class="edz__num edz__num--cols" value="3" min="1" max="10" /></label>
+            </div>
+            <div class="edz__modal-hint">삽입 후 셀 오른쪽 경계를 드래그하면 열 너비를 조절할 수 있어요.</div>
+            <div class="edz__modal-btns">
+                <button type="button" class="edz__modal-cancel">취소</button>
+                <button type="button" class="edz__modal-ok">삽입</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 동영상 레이어: 링크 하나만 붙여넣으면 플랫폼을 자동 인식해 임베드 -->
+    <div class="edz__modal edz__modal--video" hidden>
+        <div class="edz__modal-box">
+            <div class="edz__modal-h">동영상 넣기</div>
+            <p class="edz__vguide">YouTube · Vimeo 링크를 붙여넣으면 자동으로 인식합니다.</p>
+            <input type="text" class="edz__vurl" placeholder="동영상 링크를 붙여넣으세요 (예: https://youtu.be/... , https://vimeo.com/...)" />
+            <div class="edz__vplat" hidden></div>
+            <div class="edz__vpreview" hidden></div>
+            <div class="edz__verr" hidden>링크를 인식할 수 없어요. 지원 플랫폼(YouTube · Vimeo)의 주소인지 확인해주세요.</div>
+            <div class="edz__modal-btns">
+                <button type="button" class="edz__modal-cancel">취소</button>
+                <button type="button" class="edz__modal-ok edz__vinsert" disabled>삽입</button>
+            </div>
+        </div>
+    </div>
+</div>

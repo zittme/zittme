@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+    <title xml:lang="ko">editorZ</title>
+    <title xml:lang="en">editorZ</title>
+    <description xml:lang="ko">외부 라이브러리 없는 경량 리치텍스트 에디터. 서식·색·형광펜·표·이미지·파일·외부 동영상(YouTube·Vimeo) 임베드를 지원하며, 사이트 포인트 색을 자동으로 따라갑니다.</description>
+    <description xml:lang="en">A lightweight rich-text editor with no external library. Supports formatting, colors, highlighter, tables, images, files and external video (YouTube, Vimeo) embeds, and follows the site point color automatically.</description>
+    <version>1.0.0</version>
+    <date>2026-09-02</date>
+    <author email_address="zittme-contact@zzan.me" link="https://zitt.me">
+        <name xml:lang="ko">ZZAN Studio</name>
+        <name xml:lang="en">ZZAN Studio</name>
+    </author>
+    <colorset>
+        <color name="light">
+            <title xml:lang="ko">라이트</title>
+            <title xml:lang="en">Light</title>
+        </color>
+        <color name="dark">
+            <title xml:lang="ko">다크</title>
+            <title xml:lang="en">Dark</title>
+        </color>
+    </colorset>
+    <extra_vars>
+        <var name="accent_color" type="text">
+            <title xml:lang="ko">포인트 색상 (선택)</title>
+            <title xml:lang="en">Accent color (optional)</title>
+            <description xml:lang="ko">툴바 강조·버튼 색입니다. 비워두면 사이트 레이아웃의 포인트 색을 자동으로 따라갑니다. 예: #2f6b4a</description>
+            <description xml:lang="en">Toolbar accent / button color. Leave empty to follow the site layout's point color automatically. e.g. #2f6b4a</description>
+        </var>
+    </extra_vars>
+</skin>

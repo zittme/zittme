@@ -187,6 +187,12 @@ class EditorModel extends Editor
 		Context::set('skin', $option->editor_skin);
 		Context::set('editor_path', './modules/editor/skins/' . $option->editor_skin . '/');
 		Context::set('colorset', $option->editor_colorset);
+		// 에디터 스킨의 extra_vars 를 템플릿 변수로 노출한다. 스킨이 자체 설정(포인트색 등)을
+		// editor.html 에서 {$변수}로 바로 쓸 수 있게 한다. extra_vars 가 없으면 아무 것도 하지 않는다.
+		foreach ((array) self::getSkinConfig($option->editor_skin) as $skin_var_key => $skin_var_val)
+		{
+			Context::set($skin_var_key, $skin_var_val);
+		}
 		Context::set('editor_height', $option->editor_height);
 		Context::set('editor_toolbar', $option->editor_toolbar ?? null);
 		Context::set('editor_toolbar_hide', toBool($option->editor_toolbar_hide ?? null));
