@@ -1,0 +1,156 @@
+@charset "utf-8";
+/* galleryZ — 본문 이미지 뷰어. 어느 테마에서도 어울리는 다크 글래스 톤 */
+
+.gz-thumb { cursor: zoom-in; }
+
+html.gz-lock { overflow: hidden; }
+
+.gz {
+	position: fixed;
+	inset: 0;
+	z-index: 4000;
+	display: block;
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity .22s ease, visibility .22s ease;
+	font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
+		'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+	-webkit-tap-highlight-color: transparent;
+}
+.gz.is-open { opacity: var(--gz-fade, 1); visibility: visible; }
+
+.gz-backdrop {
+	position: absolute;
+	inset: 0;
+	background: rgba(9, 11, 14, .93);
+	backdrop-filter: blur(20px);
+	-webkit-backdrop-filter: blur(20px);
+}
+
+.gz-stage {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	touch-action: none;
+	overflow: hidden;
+}
+.gz-img {
+	max-width: calc(100vw - 32px);
+	max-height: calc(100vh - 96px);
+	max-height: calc(100dvh - 96px);
+	border-radius: 10px;
+	box-shadow: 0 30px 90px -20px rgba(0, 0, 0, .8);
+	user-select: none;
+	will-change: transform;
+	cursor: zoom-in;
+}
+.gz.is-zoomed .gz-img { cursor: grab; }
+.gz.is-zoomed .gz-img:active { cursor: grabbing; }
+
+/* 상단 바 */
+.gz-top {
+	position: absolute;
+	top: 0; left: 0; right: 0;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 14px 16px;
+	padding-top: max(14px, env(safe-area-inset-top, 0px));
+	background: linear-gradient(180deg, rgba(0, 0, 0, .38), transparent);
+	pointer-events: none;
+}
+.gz-counter {
+	pointer-events: auto;
+	padding: 6px 13px;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, .1);
+	backdrop-filter: blur(8px);
+	color: rgba(255, 255, 255, .92);
+	font-size: 12.5px;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+	letter-spacing: .04em;
+}
+.gz-tools { display: flex; gap: 8px; pointer-events: auto; }
+.gz-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px; height: 40px;
+	border: 1px solid rgba(255, 255, 255, .16);
+	border-radius: 50%;
+	background: rgba(255, 255, 255, .1);
+	backdrop-filter: blur(8px);
+	color: #fff;
+	cursor: pointer;
+	transition: background-color .15s, transform .15s;
+}
+.gz-btn:hover { background: rgba(255, 255, 255, .22); transform: scale(1.05); }
+.gz-btn svg { width: 19px; height: 19px; fill: currentColor; }
+
+/* 좌우 이동 */
+.gz-nav {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 2;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 48px; height: 48px;
+	border: 1px solid rgba(255, 255, 255, .14);
+	border-radius: 50%;
+	background: rgba(255, 255, 255, .08);
+	backdrop-filter: blur(8px);
+	color: #fff;
+	cursor: pointer;
+	transition: background-color .15s, opacity .15s, transform .15s;
+}
+.gz-nav:hover { background: rgba(255, 255, 255, .2); transform: translateY(-50%) scale(1.06); }
+.gz-nav svg { width: 22px; height: 22px; fill: currentColor; }
+.gz-prev { left: max(16px, env(safe-area-inset-left, 0px)); }
+.gz-next { right: max(16px, env(safe-area-inset-right, 0px)); }
+.gz-nav.is-off { opacity: .25; pointer-events: none; }
+@media (pointer: coarse) {
+	.gz-nav { display: none; }
+}
+
+/* 캡션 */
+.gz-caption {
+	position: absolute;
+	left: 0; right: 0;
+	bottom: 0;
+	z-index: 2;
+	padding: 26px 20px 18px;
+	padding-bottom: max(18px, env(safe-area-inset-bottom, 0px));
+	background: linear-gradient(0deg, rgba(0, 0, 0, .42), transparent);
+	color: rgba(255, 255, 255, .88);
+	font-size: 13.5px;
+	line-height: 1.5;
+	text-align: center;
+	pointer-events: none;
+	word-break: break-all;
+}
+.gz-caption.is-empty { display: none; }
+
+/* 로딩 스피너 */
+.gz-spinner {
+	position: absolute;
+	top: 50%; left: 50%;
+	z-index: 1;
+	width: 34px; height: 34px;
+	margin: -17px 0 0 -17px;
+	border: 3px solid rgba(255, 255, 255, .2);
+	border-top-color: #fff;
+	border-radius: 50%;
+	animation: gz-spin .7s linear infinite;
+}
+@keyframes gz-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+	.gz, .gz-btn, .gz-nav, .gz-img { transition: none !important; }
+	.gz-spinner { animation-duration: 1.4s; }
+}

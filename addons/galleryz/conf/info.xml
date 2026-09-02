@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon version="0.2">
+	<title xml:lang="ko">galleryZ (넘겨보는 사진)</title>
+	<title xml:lang="en">galleryZ</title>
+	<title xml:lang="jp">galleryZ</title>
+	<title xml:lang="zh-CN">galleryZ</title>
+	<title xml:lang="zh-TW">galleryZ</title>
+	<title xml:lang="es">galleryZ</title>
+	<title xml:lang="ru">galleryZ</title>
+	<title xml:lang="fr">galleryZ</title>
+	<title xml:lang="de">galleryZ</title>
+	<title xml:lang="tr">galleryZ</title>
+	<title xml:lang="vi">galleryZ</title>
+	<title xml:lang="mn">galleryZ</title>
+	<description xml:lang="ko">본문 이미지를 클릭하면 갤러리로 크게 넘겨봅니다. 확대(휠·더블탭·핀치), 이동, 스와이프, 키보드 탐색, 다운로드를 지원합니다. 외부 라이브러리 없이 동작하는 photoswipe 애드온의 후속입니다.</description>
+	<description xml:lang="en">Click an image in a post to browse all images as a gallery. Supports zoom (wheel, double-tap, pinch), pan, swipe, keyboard navigation and download. Successor to the photoswipe add-on with no external library.</description>
+	<description xml:lang="jp">本文の画像をクリックするとギャラリーとして拡大表示します。ズーム・パン・スワイプ・キーボード操作・ダウンロードに対応。外部ライブラリ不要の photoswipe 後継アドオンです。</description>
+	<description xml:lang="zh-CN">点击正文图片即可以画廊方式浏览。支持缩放、拖动、滑动、键盘导航和下载。无外部依赖的 photoswipe 后续版本。</description>
+	<description xml:lang="zh-TW">點擊內文圖片即可以圖庫方式瀏覽。支援縮放、拖曳、滑動、鍵盤操作與下載。無外部相依的 photoswipe 後續版本。</description>
+	<description xml:lang="es">Haz clic en una imagen para verlas como galería. Zoom, arrastre, deslizamiento, teclado y descarga, sin bibliotecas externas.</description>
+	<description xml:lang="ru">Просмотр изображений записи как галереи: масштабирование, панорамирование, свайпы, клавиатура и загрузка. Без внешних библиотек.</description>
+	<description xml:lang="fr">Parcourez les images d'un contenu comme une galerie : zoom, déplacement, balayage, clavier et téléchargement, sans bibliothèque externe.</description>
+	<description xml:lang="de">Bilder eines Beitrags als Galerie ansehen: Zoom, Verschieben, Wischen, Tastatur und Download — ohne externe Bibliothek.</description>
+	<description xml:lang="tr">Yazi gorsellerini galeri olarak gezin: yakinlastirma, kaydirma, klavye ve indirme. Harici kitaplik gerektirmez.</description>
+	<description xml:lang="vi">Xem ảnh trong bài viết dưới dạng thư viện: thu phóng, kéo, vuốt, bàn phím và tải về. Không cần thư viện ngoài.</description>
+	<description xml:lang="mn">Бичлэгийн зургуудыг галерей хэлбэрээр үзнэ: томруулах, чирэх, гулсуулах, гар болон татах дэмжинэ.</description>
+	<license>GPLv2</license>
+	<version>RX_VERSION</version>
+	<date>RX_CORE</date>
+
+	<author email_address="zittme-contact@zzan.me" link="https://zitt.me">
+		<name xml:lang="ko">ZZAN Studio</name>
+		<name xml:lang="en">ZZAN Studio</name>
+	</author>
+	<extra_vars>
+		<var name="display_name" type="select">
+			<title xml:lang="ko">하단 캡션 출력</title>
+			<title xml:lang="en">Show caption</title>
+			<description xml:lang="ko">뷰어 하단에 이미지의 대체 텍스트(alt)나 제목을 표시할지 선택합니다. 기본값은 표시입니다.</description>
+			<description xml:lang="en">Whether to show the image alt text or title at the bottom of the viewer. Shown by default.</description>
+			<options value="block">
+				<title xml:lang="ko">표시</title>
+				<title xml:lang="en">Show</title>
+			</options>
+			<options value="none">
+				<title xml:lang="ko">표시 안 함</title>
+				<title xml:lang="en">Hide</title>
+			</options>
+		</var>
+	</extra_vars>
+</addon>
