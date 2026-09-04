@@ -134,7 +134,7 @@
 								<li class="hr-nc-empty">{{ $lang->hr_notify_empty }}</li>
 								@endforelse
 							</ul>
-							<a class="hr-nc-all" href="{{ Context::getRequestUri() }}member/notifications">{{ $lang->hr_notify_all }}</a>
+							<a class="hr-nc-all" href="{{ !empty(($hr_nc_mcfg = MemberModel::getMemberConfig())->mid) ? getUrl('', 'mid', $hr_nc_mcfg->mid, 'act', 'dispNcenterliteNotifyList') : getUrl('', 'act', 'dispNcenterliteNotifyList') }}">{{ $lang->hr_notify_all }}</a>
 						</div>
 					</div>
 					@endif
