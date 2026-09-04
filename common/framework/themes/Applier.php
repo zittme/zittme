@@ -203,8 +203,8 @@ class Applier
 
 	/**
 	 * Modules that store their skin in the module config instead of a module
-	 * instance (member). The design default alone does not reach them when a
-	 * value is already saved, so the config is updated directly.
+	 * instance (member, communication, message). The design default alone does
+	 * not reach them when a value is already saved, so the config is updated directly.
 	 *
 	 * @param object $info
 	 * @param string $theme_name
@@ -212,7 +212,7 @@ class Applier
 	 */
 	protected static function applyConfigSkins(object $info, string $theme_name): void
 	{
-		$config_skin_modules = ['member'];
+		$config_skin_modules = ['member', 'communication', 'message', 'ncenterlite'];
 
 		foreach (['skins' => 'skin', 'mskins' => 'mskin'] as $key => $column)
 		{
