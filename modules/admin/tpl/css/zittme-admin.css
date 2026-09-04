@@ -2319,7 +2319,6 @@ body.color_scheme_dark .zdb-release-banner { background: rgba(38, 119, 227, .14)
 .zdb-page .zdb-release-banner a.zdb-release-link:visited { color: #fff !important; text-decoration: none !important; }
 .zdb-page .zdb-release-banner a.zdb-release-link:hover { color: #fff !important; background: #1c5fc0; }
 
-/* 서버 환경 표시(dispAdminViewServerEnv) — 줄바꿈과 고정폭 글꼴 (이슈 32770) */
 .x .server_env, .server_env {
 	white-space: pre-wrap;
 	word-break: break-all;

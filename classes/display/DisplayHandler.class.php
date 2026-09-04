@@ -200,9 +200,6 @@ class DisplayHandler extends Handler
 		$debug_output = '';
 		$response_type = Context::getResponseMethod();
 
-		// multipart 업로드 등 _rx_ajax_compat 요청은 응답 메서드가 HTML 로 남아 있어도
-		// 본문은 JSONDisplayHandler 가 JSON 으로 내보낸다(printContent 참고).
-		// 이때 디버그를 HTML 기준으로 판정하면 JSON 뒤에 주석 덩어리가 붙어 파싱이 깨진다.
 		if ($response_type === 'HTML' && (isset($_SERVER['HTTP_X_AJAX_COMPAT']) || isset($_POST['_rx_ajax_compat'])))
 		{
 			$response_type = 'JSON';

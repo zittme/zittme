@@ -268,7 +268,6 @@
 .xc .btnArea.xc-msg-actions { justify-content: flex-start; margin: 24px 0 0; }
 .xc .btnArea.xc-msg-actions .btn { padding: 12px 28px; font-size: 15px; }
 
-/* 폼 요소와 버튼 높이 통일 — 입력칸·셀렉트·버튼 모두 46px, 버튼은 그만큼 가로폭도 넉넉히 */
 .xc select,
 .xc input[type="text"], .xc input[type="password"], .xc input[type="email"],
 .xc input[type="search"], .xc input[type="tel"], .xc input[type="number"] {
