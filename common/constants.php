@@ -3,7 +3,7 @@
 /**
  * ZITTME_VERSION is the version number of the Zittme CMS.
  */
-define('ZITTME_VERSION', '1.0.0');
+define('ZITTME_VERSION', '1.0.1');
 
 /**
  * RX_VERSION is the Rhymix engine compatibility version.
