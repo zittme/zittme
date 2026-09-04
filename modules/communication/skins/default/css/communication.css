@@ -156,8 +156,7 @@
 /* ───────── 보강 패치: 페이지네이션/검색/버튼 그룹 ───────── */
 
 /* 제목 액센트 */
-.xc h1 { position: relative; padding-bottom: 14px; margin-bottom: 24px; border-bottom: 0; }
-.xc h1::after { content: ''; position: absolute; left: 0; bottom: 0; width: 28px; height: 3px; border-radius: 2px; background: var(--zm-brand); }
+.xc h1 { position: relative; margin-bottom: 22px; border-bottom: 0; }
 
 /* 쪽지함 탭/수신설정 툴바: 붙어있던 버튼 간격 */
 .xc .btnArea { display: flex; justify-content: flex-start; align-items: center; gap: 8px; margin: 0 0 16px; flex-wrap: wrap; }
@@ -268,3 +267,25 @@
 /* 목록 화면용 .btnArea 규칙(margin:0 0 16px)이 이 화면에서는 버튼을 에디터에 붙여 버린다 */
 .xc .btnArea.xc-msg-actions { justify-content: flex-start; margin: 24px 0 0; }
 .xc .btnArea.xc-msg-actions .btn { padding: 12px 28px; font-size: 15px; }
+
+/* 폼 요소와 버튼 높이 통일 — 입력칸·셀렉트·버튼 모두 46px, 버튼은 그만큼 가로폭도 넉넉히 */
+.xc select,
+.xc input[type="text"], .xc input[type="password"], .xc input[type="email"],
+.xc input[type="search"], .xc input[type="tel"], .xc input[type="number"] {
+	height: 46px !important;
+	padding-top: 0;
+	padding-bottom: 0;
+}
+.xc textarea { height: auto !important; }
+.xc .btn,
+.xc a.btn,
+.xc button.btn,
+.xc input[type="submit"].btn,
+.xc input[type="button"].btn {
+	height: 46px !important;
+	padding-top: 0;
+	padding-bottom: 0;
+	padding-left: 24px;
+	padding-right: 24px;
+	min-width: 92px;
+}
