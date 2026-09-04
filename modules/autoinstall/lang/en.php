@@ -133,6 +133,6 @@ $lang->msg_project_agree_period_desc = 'Until the request is deleted or the acco
 $lang->msg_project_agree_scope = 'Disclosure';
 $lang->msg_project_agree_scope_desc = 'The request is published on the zitt.me expert market; your contact is shared only with the expert you select.';
 $lang->msg_project_agree_refuse = 'You may decline, but then the request cannot be posted.';
-$lang->msg_project_agree_owner = 'Data controller: ZZAN Studio · Representative and privacy officer: Kim Dongjin · Contact: contact@zzan.me';
+$lang->msg_project_agree_owner = 'Data controller: ZZAN · Representative and privacy officer: Kim Misook · Contact: contact@zzan.me';
 $lang->msg_project_attachments = 'Attachments';
 $lang->msg_project_attachments_hint = 'Images, PDF, documents and archives (up to 10MB each). Uploaded files are published with the request on zitt.me.';

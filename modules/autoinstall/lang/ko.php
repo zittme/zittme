@@ -133,6 +133,6 @@ $lang->msg_project_agree_period_desc = '의뢰 삭제 또는 회원 탈퇴 시�
 $lang->msg_project_agree_scope = '제공 범위';
 $lang->msg_project_agree_scope_desc = '의뢰 내용은 zitt.me 전문가 마켓에 공개되며, 연락처는 채택한 전문가에게만 공개됩니다.';
 $lang->msg_project_agree_refuse = '동의를 거부하실 수 있으나, 이 경우 작업 의뢰 등록이 불가능합니다.';
-$lang->msg_project_agree_owner = '개인정보 처리자: 짠 스튜디오(ZZAN Studio) · 대표 및 개인정보 보호책임자: 김동진 · 문의: contact@zzan.me';
+$lang->msg_project_agree_owner = '개인정보 처리자: 짠(ZZAN) · 대표 및 개인정보 보호책임자: 김미숙 · 문의: contact@zzan.me';
 $lang->msg_project_attachments = '첨부 파일';
 $lang->msg_project_attachments_hint = '이미지·PDF·문서·압축 파일을 올릴 수 있습니다(1개당 최대 10MB). 올린 파일은 zitt.me 의뢰 글에 함께 게시됩니다.';
