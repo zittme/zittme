@@ -131,10 +131,22 @@ spl_autoload_register(function($class_name)
 	{
 		$target_name = str_replace('/', '\\', $class_name);
 		$legacy_name = 'Rhymix' . substr($target_name, 6);
-		if (!class_exists($target_name, false) && !interface_exists($target_name, false) && !trait_exists($target_name, false)
-			&& (class_exists($legacy_name, false) || interface_exists($legacy_name, false) || trait_exists($legacy_name, false)))
+		$target_exists = class_exists($target_name, false) || interface_exists($target_name, false) || trait_exists($target_name, false);
+		$legacy_exists = class_exists($legacy_name, false) || interface_exists($legacy_name, false) || trait_exists($legacy_name, false);
+
+		if (!$target_exists && $legacy_exists)
 		{
 			class_alias($legacy_name, $target_name);
+		}
+		// 반대 방향도 그 자리에서 이어 둔다.
+		//
+		// PHP 는 인자 타입 검사에서 자동 로딩을 건너뛸 수 있다. 넘어온 객체의 클래스와
+		// 그 부모·인터페이스 이름 중에 맞는 것이 없으면 Rhymix\ 이름을 찾아보지도 않고 실패한다.
+		// 그러면 위쪽 Rhymix\ 분기가 실행될 기회 자체가 없어 별칭이 생기지 않는다.
+		// Rhymix 용으로 만들어진 모듈이 Rhymix\Framework\... 로 타입을 걸어 두면 여기서 걸린다.
+		elseif ($target_exists && !$legacy_exists)
+		{
+			class_alias($target_name, $legacy_name);
 		}
 	}
 
