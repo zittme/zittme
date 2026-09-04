@@ -49,6 +49,13 @@
 require __DIR__ . '/common/autoload.php';
 
 /**
+ * Web servers configured with only the standard "try_files ... /index.php"
+ * rule send the installer's rewrite probe and a few legacy asset URLs here.
+ * Answer those before anything else; every other request continues below.
+ */
+Zittme\Framework\RewriteCompat::handle();
+
+/**
  * Set all request arguments and environment variables.
  */
 Context::init();
