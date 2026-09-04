@@ -306,6 +306,7 @@ class Cleanup extends Base
 		'classes/security/phphtmlparser/' => 'deleted:xe',
 		'classes/xml/XmlQueryParser.class.php' => 'deleted:xe',
 		'classes/xml/xmlquery/' => 'deleted:xe',
+		'addons/photoswipe/' => 'deleted',
 		'common/css/mobile.css' => 'deleted',
 		'common/css/mobile.min.css' => 'deleted',
 		'common/css/zittme.less' => 'deleted',
