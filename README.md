@@ -1,7 +1,5 @@
 [![Zittme](./common/img/logo.png)](https://zitt.me)
 
-![PHP Lint & Codeception](https://github.com/zittme/zittme/workflows/PHP%20Lint%20&%20Codeception/badge.svg)
-
 # 한국어
 
 Zittme는 누구든지 쉽고 자유롭게 독립적인 홈페이지를 만들어
