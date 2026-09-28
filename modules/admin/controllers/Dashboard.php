@@ -2,8 +2,9 @@
 
 namespace Zittme\Modules\Admin\Controllers;
 
+use Zittme\Framework\Security;
+use Zittme\Framework\Exceptions\InvalidRequest;
 use Context;
-use FileHandler;
 use AddonAdminModel;
 use DocumentAdminModel;
 use DocumentModel;
@@ -181,6 +182,12 @@ class Dashboard extends Base
 	 */
 	public function procAdminLogout()
 	{
+		// Check the origin.
+		if (!Security::isSameOrigin())
+		{
+			throw new InvalidRequest;
+		}
+
 		MemberController::getInstance()->procMemberLogout();
 		header('Location: ' . getNotEncodedUrl(''));
 	}

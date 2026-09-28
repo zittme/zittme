@@ -182,7 +182,7 @@ class DocumentAdminController extends Document
 		{
 			$options = array_map('trim', explode("\n", $options));
 		}
-		$desc = Context::get('desc') ? Context::get('desc') : '';
+		$desc = escape(Context::get('desc') ? Context::get('desc') : '', true, true);
 		$search = Context::get('search') === 'Y' ? 'Y' : 'N';
 		$sort = Context::get('sort') === 'Y' ? 'Y' : 'N';
 		$eid = Context::get('eid');
@@ -572,7 +572,7 @@ class DocumentAdminController extends Document
 		$module_info = $oModuleModel->getModuleInfoByDocumentSrl($document_srl);
 
 		$args = new stdClass();
-		$args->description = $message_content;
+		$args->description = '';
 		$args->document_srl = $document_srl;
 
 		$oDocumentController->moveDocumentToTrash($args);

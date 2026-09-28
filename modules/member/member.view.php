@@ -1148,6 +1148,12 @@ class MemberView extends Member
 	 */
 	function dispMemberLogout()
 	{
+		// Check the origin.
+		if (!Zittme\Framework\Security::isSameOrigin())
+		{
+			throw new Zittme\Framework\Exceptions\InvalidRequest;
+		}
+
 		// Redirect if not logged in.
 		if(!Context::get('is_logged'))
 		{

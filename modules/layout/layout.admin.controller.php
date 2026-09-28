@@ -230,13 +230,16 @@ class LayoutAdminController extends Layout
 	 * @param object $args
 	 * @return Object
 	 */
-	function updateLayout($args) {
+	public function updateLayout($args)
+	{
 		$output = executeQuery('layout.updateLayout', $args);
 		if($output->toBool())
 		{
-			$oLayoutModel = getModel('layout');
-			$cache_file = $oLayoutModel->getUserLayoutCache($args->layout_srl, Context::getLangType());
-			FileHandler::removeFile($cache_file);
+			$cache_files = glob(LayoutModel::getUserLayoutCache($args->layout_srl, '*'));
+			foreach ($cache_files as $cache_file)
+			{
+				Zittme\Framework\Storage::delete($cache_file);
+			}
 			Zittme\Framework\Cache::delete('layout:' . $args->layout_srl);
 		}
 
@@ -888,18 +891,25 @@ class LayoutAdminController extends Layout
 		$oModel = getModel('layout');
 		$layoutInfo = $oModel->getLayout($layoutSrl);
 
-		$newLayoutInfo = new stdClass;
-		if($layoutInfo->extra_var_count)
+		if(!$layoutInfo || !isset($layoutInfo->extra_var->{$name}))
 		{
-			foreach($layoutInfo->extra_var as $varId => $val)
-			{
-				$newLayoutInfo->{$varId} = $val->value;
-			}
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
+
+		$args = new stdClass();
+		$args->layout_srl = $layoutSrl;
+		$output = executeQuery('layout.getLayout', $args);
+		$newLayoutInfo = null;
+		if($output->toBool() && !empty($output->data->extra_vars))
+		{
+			$newLayoutInfo = unserialize($output->data->extra_vars);
+		}
+		if(!is_object($newLayoutInfo))
+		{
+			$newLayoutInfo = new stdClass;
 		}
 
 		unset($newLayoutInfo->{$name});
-		$args = new stdClass();
-		$args->layout_srl = $layoutSrl;
 		$args->extra_vars = serialize($newLayoutInfo);
 		$output = $this->updateLayout($args);
 		if(!$output->toBool())

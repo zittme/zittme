@@ -1717,6 +1717,7 @@ jQuery(function($){
 						if(pattern.test(value)){
 							$this.val('').data('value', '');
 						}else{
+							value = value.unescape();
 							$this.val(value).data('value', value);
 						}
 					});

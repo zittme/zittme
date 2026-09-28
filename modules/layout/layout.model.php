@@ -577,6 +577,34 @@ class LayoutModel extends Layout
 				return;
 			}
 
+			if ($vars)
+			{
+				foreach ($layout_info->extra_var ?: [] as $key => $value)
+				{
+					if (isset($vars->{$key}))
+					{
+						if (isset($value->type) && $value->type === 'repeat')
+						{
+							$decoded = is_string($vars->{$key}) ? json_decode($vars->{$key}) : $vars->{$key};
+							$value->value = is_array($decoded) ? $decoded : [];
+						}
+						else
+						{
+							$value->value = $vars->{$key};
+						}
+					}
+				}
+				foreach ($layout_info->menu ?: [] as $key => $value)
+				{
+					if (isset($vars->{$key}) && $vars->{$key})
+					{
+						$value->menu_srl = $vars->{$key};
+						$value->xml_file = sprintf('./files/cache/menu/%s.xml.php', $vars->{$key});
+						$value->php_file = sprintf('./files/cache/menu/%s.php', $vars->{$key});
+					}
+				}
+			}
+
 			if ($layout_info->extra_var && $vars)
 			{
 				foreach($vars as $key => $value)
