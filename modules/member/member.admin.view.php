@@ -585,7 +585,7 @@ class MemberAdminView extends Member
 			{
 				continue;
 			}
-			if((in_array($formInfo->name, $identifiers) && $formInfo->name === array_first($identifiers)) && !$isAdmin)
+			if($formInfo->name === array_first($identifiers) && !$isAdmin)
 			{
 				continue;
 			}
@@ -786,7 +786,11 @@ class MemberAdminView extends Member
 				// User-defined input fields
 				else
 				{
-					$extendForm = $extend_form_list[$formInfo->member_join_form_srl];
+					$extendForm = $extend_form_list[$formInfo->member_join_form_srl] ?? null;
+					if (!$extendForm || empty($extendForm->column_type))
+					{
+						continue;
+					}
 					$formTag->type = $extendForm->column_type;
 					$input = new Zittme\Modules\Extravar\Models\Value(0, 1, '', $extendForm->column_type);
 					$input->parent_type = 'member';

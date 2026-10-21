@@ -1241,7 +1241,7 @@ class ModuleModel extends Module
 		$result = array();
 		foreach($output->data as $key => $val)
 		{
-			$result[$val->module_srl] = unserialize($val->config);
+			$result[$val->module_srl] = $val->config ? unserialize($val->config) : null;
 		}
 
 		return $result;
@@ -2036,7 +2036,7 @@ class ModuleModel extends Module
 
 		if (isset($GLOBALS['__MODULE_GRANT__'][$module_info->module][intval($module_info->module_srl ?? 0)][intval($member_info->member_srl ?? 0)]))
 		{
-			$__cache = &$GLOBALS['__MODULE_GRANT__'][$module_info->module][intval($module_info->module_srl ?? 0)][intval($member_info->member_srl ?? 0)];
+			$__cache = $GLOBALS['__MODULE_GRANT__'][$module_info->module][intval($module_info->module_srl ?? 0)][intval($member_info->member_srl ?? 0)];
 			if (is_object($__cache) && !$xml_info)
 			{
 				return $__cache;
@@ -2057,7 +2057,8 @@ class ModuleModel extends Module
 			throw new Zittme\Framework\Exceptions\DBError(lang('msg_db_query_failed'));
 		}
 		$grant = new Zittme\Modules\Module\Models\Permission($xml_grant_list, $module_grants->data ?: [], $module_info, $member_info ?: null);
-		return $__cache = $grant;
+		$GLOBALS['__MODULE_GRANT__'][$module_info->module][intval($module_info->module_srl ?? 0)][intval($member_info->member_srl ?? 0)] = $grant;
+		return $grant;
 	}
 
 	/**

@@ -438,7 +438,6 @@ class CommunicationController extends communication
 		}
 
 		$logged_info = Context::get('logged_info');
-		$member_srl = $logged_info->member_srl;
 
 		// Check the variable
 		$message_srl = intval(Context::get('message_srl'));
@@ -455,21 +454,19 @@ class CommunicationController extends communication
 		}
 
 		// Check the grant
-		switch($message->message_type)
+		if ($message->message_type === 'S')
 		{
-			case 'S':
-				if($message->sender_srl != $member_srl)
-				{
-					throw new Zittme\Framework\Exceptions\InvalidRequest;
-				}
-				break;
-
-			case 'R':
-				if($message->receiver_srl != $member_srl)
-				{
-					throw new Zittme\Framework\Exceptions\InvalidRequest;
-				}
-				break;
+			if ($message->sender_srl != $logged_info->member_srl)
+			{
+				throw new Zittme\Framework\Exceptions\TargetNotFound;
+			}
+		}
+		else
+		{
+			if ($message->receiver_srl != $logged_info->member_srl)
+			{
+				throw new Zittme\Framework\Exceptions\TargetNotFound;
+			}
 		}
 
 		// Call trigger (before)
@@ -500,7 +497,7 @@ class CommunicationController extends communication
 		// Call trigger (after)
 		ModuleHandler::triggerCall('communication.deleteMessage', 'after', $args);
 
-		$this->updateFlagFile($member_srl);
+		$this->updateFlagFile($logged_info->member_srl);
 		$this->setMessage('success_deleted');
 	}
 
