@@ -115,7 +115,7 @@
 	R.login_failure_except_ip = function () {
 		return srow('login_failure_except_ip', '', sub('<textarea class="inp" id="zmc-s-login_failure_except_ip" data-k="login_failure_except_ip" rows="3" aria-label="' + esc(T('s_login_failure_except_ip')) + '" placeholder="' + esc(T('s_ip_ph')) + '">' + esc(V.login_failure_except_ip) + '</textarea>'));
 	};
-	['password_change_invalidate_other_sessions', 'login_invalidate_other_sessions', 'member_profile_view', 'allow_nickname_change', 'update_nickname_log', 'allow_duplicate_nickname', 'nickname_spaces', 'password_hashing_auto_upgrade', 'sns_login_enable', 'force_mid'].forEach(function (key) {
+	['signup_dup_button', 'password_change_invalidate_other_sessions', 'login_invalidate_other_sessions', 'member_profile_view', 'allow_nickname_change', 'update_nickname_log', 'allow_duplicate_nickname', 'nickname_spaces', 'password_hashing_auto_upgrade', 'sns_login_enable', 'force_mid'].forEach(function (key) {
 		R[key] = function () { return srow(key, swc(key)); };
 	});
 	R.change_password_date = function () { return srow('change_password_date', num('change_password_date', T('s_unit_days'))); };
@@ -279,7 +279,7 @@
 	};
 
 	var ROWS = {
-		join: [['card', ['enable_join', 'enable_confirm', 'def_group', 'limit_day', 'redirect_url', 'email_hosts', 'denied_ids', 'denied_nicks']], ['card', ['special_phone', 'sms_limit']], ['card', ['form_link']]],
+		join: [['card', ['enable_join', 'enable_confirm', 'signup_dup_button', 'def_group', 'limit_day', 'redirect_url', 'email_hosts', 'denied_ids', 'denied_nicks']], ['card', ['special_phone', 'sms_limit']], ['card', ['form_link']]],
 		login: [['card', ['identifiers', 'password_strength', 'login_limit', 'login_failure_except_ip', 'password_change_invalidate_other_sessions', 'login_invalidate_other_sessions', 'change_password_date', 'after_login_url', 'after_logout_url']]],
 		social: [['card', ['sns_login_enable', 'SNS']], ['title', 's_identity_title'], ['card', ['identity_enable', 'identity_provider', 'identity_dup_check', 'identity_signup_required', 'identity_find_account', 'identity_adult', 'identity_age_groups']], ['card', ['identity_danal']], ['card', ['identity_truora']], ['card', ['identity_extra']]],
 		terms: [['card', ['agreements']]],

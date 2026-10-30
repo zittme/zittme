@@ -2822,7 +2822,7 @@ jQuery(function($){
 			// 좌측 목록의 [ ] 표기를 새 테마 이름으로 바꾼다.
 			var sTitle = ($('#theme input[name=theme_item]:checked').closest('label').text() || g_selectedTheme).replace(/\s+/g,' ').trim();
 			$('.themeName._themeName').text(sTitle);
-			$.xeMsgBox.alert(xe.lang.success_saved);
+			$.xeMsgBox.alertDialog({ bSmall: true, sText: xe.lang.success_saved, fnOnHide: function(){ location.reload(); } });
 		});
 	});
 	$( "#tmpl_layoutItem" ).template( "design_layoutItem" );

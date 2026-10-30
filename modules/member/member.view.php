@@ -319,6 +319,11 @@ class MemberView extends Member
 		$trigger_output = ModuleHandler::triggerCall('member.dispMemberSignUpForm', 'before', $member_config);
 		if(!$trigger_output->toBool()) return $trigger_output;
 
+		if (($member_config->signup_dup_button ?? 'N') === 'Y')
+		{
+			Context::addHtmlFooter('<script>window.zmSignupDupBtn=' . json_encode(['label' => lang('member.signup_dup_check_button'), 'ok' => lang('member.signup_dup_check_ok')], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ';</script>');
+		}
+
 		// Error appears if the member is not allowed to join
 		if ($member_config->enable_join !== 'Y')
 		{

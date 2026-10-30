@@ -75,6 +75,14 @@
 		</div>
 	</div>
 	<div class="x_control-group">
+		<label class="x_control-label">{$lang->mx_config_login_status}</label>
+		<div class="x_controls">
+			<label class="x_inline"><input type="radio" name="login_status" value="" checked="checked"|cond="($config->login_status ?? '') !== '200'" /> {$lang->mx_config_login_status_403}</label>
+			<label class="x_inline"><input type="radio" name="login_status" value="200" checked="checked"|cond="($config->login_status ?? '') === '200'" /> {$lang->mx_config_login_status_200}</label>
+			<p class="x_help-block">{$lang->mx_config_login_status_help}</p>
+		</div>
+	</div>
+	<div class="x_control-group">
 		<label for="maintenance_message" class="x_control-label">{$lang->mx_config_maintenance}</label>
 		<div class="x_controls">
 			<textarea name="maintenance_message" id="maintenance_message" rows="3" style="width:100%;max-width:560px">{$config->maintenance_message ?? ''}</textarea>

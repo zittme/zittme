@@ -521,21 +521,21 @@
 
 /* ═══════ 상세 설정(fullSetup): iframe 게시판 관리 — 풀와이드 패널 ═══════ */
 #site #fullSetup, #site #layoutSetup { width: min(1100px, calc(100vw - 60px)); }
-#site #fullSetup, #site #layoutSetup .cnt._setupHTML {
+#site #fullSetup .cnt._setupHTML, #site #layoutSetup .cnt._setupHTML {
 	padding: 4px 6px 70px;   /* 하단 고정 확인버튼바에 가리지 않도록 여백 */
 	overflow-y: auto;
 	max-height: calc(72vh - 54px);
 }
-#site #fullSetup, #site #layoutSetup .cnt._setupHTML iframe { width: 100%; min-height: calc(72vh - 130px); border: 0; display: block; }
+#site #fullSetup .cnt._setupHTML iframe, #site #layoutSetup .cnt._setupHTML iframe { width: 100%; min-height: calc(72vh - 130px); border: 0; display: block; }
 /* 레이아웃 상세설정: ._contents 에 폼이 주입됨 */
 #site #layoutSetup .cnt { padding: 8px 16px 16px; }
 #site #layoutSetup ._contents { width: 100%; }
 /* iframe이 아닌 인라인 폼 로드 케이스: 마지막 요소(고급설정 링크)가 버튼바에 가리지 않도록 */
-#site #fullSetup, #site #layoutSetup form { padding: 4px 14px 8px; }
-#site #fullSetup, #site #layoutSetup form > p:last-child { margin-bottom: 8px; }
+#site #fullSetup form, #site #layoutSetup form { padding: 4px 14px 8px; }
+#site #fullSetup form > p:last-child, #site #layoutSetup form > p:last-child { margin-bottom: 8px; }
 
 /* ── 상세설정 인라인 폼: x_form-horizontal 레이아웃 복원 ── */
-#site #fullSetup, #site #layoutSetup .x_control-group {
+#site #fullSetup .x_control-group, #site #layoutSetup .x_control-group {
 	display: flex;
 	align-items: flex-start;
 	gap: 16px;
@@ -543,11 +543,11 @@
 	border-bottom: 1px solid var(--zm-line-soft, #f0f3f8);
 	margin: 0;
 }
-#site #fullSetup, #site #layoutSetup .x_control-label { flex: 0 0 130px; padding-top: 8px; font-weight: 600; font-size: 13px; margin: 0; }
-#site #fullSetup, #site #layoutSetup .x_controls { flex: 1 1 auto; min-width: 0; }
+#site #fullSetup .x_control-label, #site #layoutSetup .x_control-label { flex: 0 0 130px; padding-top: 8px; font-weight: 600; font-size: 13px; margin: 0; }
+#site #fullSetup .x_controls, #site #layoutSetup .x_controls { flex: 1 1 auto; min-width: 0; }
 /* 나란한 select(정렬방법)는 인라인 자동폭 — #site .cnt select{width:100%} 무력화 */
-#site #fullSetup, #site #layoutSetup .x_controls > select,
-#site #fullSetup, #site #layoutSetup .x_controls > input[type=number] {
+#site #fullSetup .x_controls > select, #site #layoutSetup .x_controls > select,
+#site #fullSetup .x_controls > input[type=number], #site #layoutSetup .x_controls > input[type=number] {
 	width: auto !important;
 	display: inline-block;
 	min-width: 140px;
@@ -556,21 +556,21 @@
 	vertical-align: middle;
 }
 /* 관리자 ID: select/input + 버튼을 붙이지 않고 분리, 버튼 라운드 복원 */
-#site #fullSetup, #site #layoutSetup .x_input-append {
+#site #fullSetup .x_input-append, #site #layoutSetup .x_input-append {
 	display: inline-flex;
 	align-items: stretch;
 	gap: 6px;               /* 버튼을 폼에서 떼기 */
 	width: auto;
 	max-width: 100%;
 }
-#site #fullSetup, #site #layoutSetup .x_input-append > input,
-#site #fullSetup, #site #layoutSetup .x_input-append > select {
+#site #fullSetup .x_input-append > input, #site #layoutSetup .x_input-append > input,
+#site #fullSetup .x_input-append > select, #site #layoutSetup .x_input-append > select {
 	width: auto !important;
 	min-width: 180px;
 	border-radius: 8px !important;   /* 좌측 라운드 복원 */
 	margin: 0;
 }
-#site #fullSetup, #site #layoutSetup .x_input-append > .x_btn {
+#site #fullSetup .x_input-append > .x_btn, #site #layoutSetup .x_input-append > .x_btn {
 	flex: 0 0 auto;
 	white-space: nowrap;
 	border: 1px solid var(--zm-input-border, #d4dae3) !important;
@@ -578,7 +578,7 @@
 	background: var(--zm-surface-2, #fafcfe);
 	padding: 8px 16px;
 }
-#site #fullSetup, #site #layoutSetup .x_input-append > .x_btn:hover { background: var(--zm-hover, #f2f5f9); border-color: var(--zm-brand, #2677e3) !important; color: var(--zm-brand, #2677e3); }
+#site #fullSetup .x_input-append > .x_btn:hover, #site #layoutSetup .x_input-append > .x_btn:hover { background: var(--zm-hover, #f2f5f9); border-color: var(--zm-brand, #2677e3) !important; color: var(--zm-brand, #2677e3); }
 
 /* ═══════ 디자인 패널: 미리보기 iframe + 스킨/레이아웃 선택 ═══════ */
 #site #design { width: 380px; }
@@ -631,7 +631,7 @@
 .download .item.installed.up_to_date ._need_to_update { display: none; }
 .download .item.installed ._already_up_to_date { display: none; }
 #properties li.ex { border-top: 0; }
-#properties.prop-shortcut li.details { display: none; }
+#properties.prop-shortcut li.details, #properties.prop-shortcut li.design { display: none; }
 #properties ._hasFullSetupO { display: none; }
 #properties._hasFullSetup ._hasFullSetupO { display: block; }
 #properties._hasFullSetup ._hasFullSetupX { display: none; }

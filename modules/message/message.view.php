@@ -112,7 +112,12 @@ class MessageView extends Message
 		}
 
 		Context::loadLang($this->module_path . 'lang');
-		Context::set('mx', $this->buildScreen($config, strval($detail ?? ''), $location ?? '', $status_before));
+		$mx = $this->buildScreen($config, strval($detail ?? ''), $location ?? '', $status_before);
+		if ($mx->type === 'login' && ($config->login_status ?? '') === '200' && Context::getResponseMethod() === 'HTML')
+		{
+			$this->setHttpStatusCode(200);
+		}
+		Context::set('mx', $mx);
 	}
 
 	/**

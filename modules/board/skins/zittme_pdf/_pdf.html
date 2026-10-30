@@ -1,0 +1,44 @@
+@version(2)
+@load('./lang')
+@php
+$zp_files = [];
+if (($module_info->pdf_viewer ?? 'N') === 'Y' && $oDocument->isAccessible())
+{
+	foreach (($oDocument->getUploadedFiles() ?: []) as $zp_f)
+	{
+		if (strtolower(pathinfo((string)$zp_f->source_filename, PATHINFO_EXTENSION)) === 'pdf')
+		{
+			$zp_files[] = $zp_f;
+		}
+	}
+}
+$zp_inline = in_array('pdf', (array)FileModel::getFileConfig($module_info->module_srl)->inline_download_format, true);
+$zp_phone = Mobile::isFromMobilePhone();
+$zp_h = max(320, min(1600, (int)($module_info->pdf_height ?? 0) ?: 720));
+@endphp
+@if (count($zp_files))
+@load('css/pdf.css')
+<section class="zpdf" aria-label="{{ $lang->zpdf_files }}">
+	@foreach ($zp_files as $zp_f)
+	@php $zp_url = getUrl('') . $zp_f->download_url; @endphp
+	<div class="zpdf-item">
+		<div class="zpdf-bar">
+			<strong class="zpdf-name">{{ $zp_f->source_filename }}</strong>
+			<span class="zpdf-size">{{ FileHandler::filesize($zp_f->file_size) }}</span>
+			<span class="zpdf-act">
+				@if ($zp_inline)<a class="zpdf-btn" href="{{ $zp_url }}" target="_blank" rel="noopener">{{ $lang->zpdf_open }}</a>@endif
+				<a class="zpdf-btn" href="{{ $zp_url }}{{ strpos($zp_url, '?') === false ? '?' : '&' }}force_download=Y">{{ $lang->zpdf_download }}</a>
+			</span>
+		</div>
+		@if ($zp_inline && !$zp_phone)
+		<iframe class="zpdf-frame" src="{{ $zp_url }}" style="height:{{ $zp_h }}px" loading="lazy" title="{{ $zp_f->source_filename }}"></iframe>
+		<p class="zpdf-note">{{ $lang->zpdf_fallback }}</p>
+		@elseif ($zp_phone)
+		<p class="zpdf-note">{{ $lang->zpdf_phone_note }}</p>
+		@elseif ($grant->manager)
+		<p class="zpdf-note">{{ $lang->zpdf_admin_note }}</p>
+		@endif
+	</div>
+	@endforeach
+</section>
+@endif

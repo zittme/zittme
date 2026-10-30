@@ -328,6 +328,78 @@
         try { body.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) {}
     }
 
+    var CODE_INLINE_STYLE = 'font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.92em;padding:1px 5px;border-radius:4px;background:rgba(128,128,128,.18)';
+    var CODE_BLOCK_STYLE = 'margin:12px 0;padding:12px 14px;border-radius:6px;background:rgba(128,128,128,.12);overflow:auto;white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.92em;line-height:1.5';
+    function escHtml(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    function insertInlineCode(seq) {
+        focusBody(seq);
+        var sel = window.getSelection();
+        if (!sel.rangeCount) return;
+        var n = sel.anchorNode;
+        var el = n && (n.nodeType === 1 ? n : n.parentElement);
+        var code = el && el.closest ? el.closest('code') : null;
+        var body = getBody(seq);
+        if (code && body && body.contains(code) && !code.closest('pre')) {
+            var r = document.createRange();
+            r.selectNodeContents(code);
+            sel.removeAllRanges(); sel.addRange(r);
+            document.execCommand('insertText', false, code.textContent);
+            return;
+        }
+        var text = sel.toString();
+        if (!text) return;
+        document.execCommand('insertHTML', false, '<code style="' + CODE_INLINE_STYLE + '">' + escHtml(text) + '</code>&nbsp;');
+    }
+    function insertCodeBlock(seq) {
+        focusBody(seq);
+        var sel = window.getSelection();
+        var text = sel && sel.rangeCount ? sel.toString() : '';
+        var inner = text ? escHtml(text).replace(/\r?\n/g, '<br>') : '<br>';
+        document.execCommand('insertHTML', false, '<pre data-edz-new="1" style="' + CODE_BLOCK_STYLE + '"><code>' + inner + '</code></pre><p><br></p>');
+        var body = getBody(seq);
+        var pre = body && body.querySelector('pre[data-edz-new]');
+        if (!pre) return;
+        pre.removeAttribute('data-edz-new');
+        if (!text) {
+            var r = document.createRange();
+            r.setStart(pre.querySelector('code'), 0); r.collapse(true);
+            sel.removeAllRanges(); sel.addRange(r);
+        }
+        try { body.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) {}
+    }
+
+    // 소스 보기: 켜져 있는 동안은 textarea 가 원본이고, 끌 때와 저장할 때 본문으로 되돌려 넣는다
+    function syncSource(seq) {
+        var wrap = document.getElementById('edz_wrap_' + seq);
+        var body = getBody(seq);
+        var ta = document.getElementById('edz_src_' + seq);
+        if (!wrap || !body || !ta || !wrap.classList.contains('is-src')) return;
+        window.edzLoadHtml(body, ta.value);
+    }
+    window.edzSyncSource = syncSource;
+    function toggleSource(seq) {
+        var wrap = document.getElementById('edz_wrap_' + seq);
+        var body = getBody(seq);
+        var ta = document.getElementById('edz_src_' + seq);
+        if (!wrap || !body || !ta) return;
+        if (wrap.classList.contains('is-src')) {
+            syncSource(seq);
+            wrap.classList.remove('is-src');
+            ta.hidden = true;
+            normalizeBody(body);
+            try { body.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) {}
+            body.focus();
+        } else {
+            ta.value = window.edzCleanHtml(body);
+            ta.style.height = Math.max(200, body.offsetHeight) + 'px';
+            wrap.classList.add('is-src');
+            ta.hidden = false;
+            ta.focus();
+        }
+    }
+
     // 표: 레이어에서 행/열 입력 후 삽입
     var tableSavedRange = null;
     function openTableLayer(seq) {
@@ -338,6 +410,54 @@
         modal.hidden = false;
         var rowsIn = modal.querySelector('.edz__num--rows');
         if (rowsIn) { rowsIn.focus(); rowsIn.select(); }
+    }
+    var GRID_ROWS = 8, GRID_COLS = 10;
+    function initTableGrid(seq, modal) {
+        var grid = modal.querySelector('.edz__tgrid');
+        if (!grid) return;
+        var label = modal.querySelector('.edz__tgrid-label');
+        var defaultLabel = label ? label.textContent : '';
+        var rowsIn = modal.querySelector('.edz__num--rows');
+        var colsIn = modal.querySelector('.edz__num--cols');
+        var cells = [], dragging = false, cur = { r: 0, c: 0 };
+        for (var r = 1; r <= GRID_ROWS; r++) {
+            for (var c = 1; c <= GRID_COLS; c++) {
+                var cell = document.createElement('div');
+                cell.className = 'edz__tgrid-cell';
+                cell.setAttribute('role', 'gridcell');
+                cell.dataset.r = r;
+                cell.dataset.c = c;
+                grid.appendChild(cell);
+                cells.push(cell);
+            }
+        }
+        function paint(r, c) {
+            cur = { r: r, c: c };
+            cells.forEach(function (el) {
+                el.classList.toggle('is-on', +el.dataset.r <= r && +el.dataset.c <= c);
+            });
+            if (label) label.textContent = r && c ? r + ' x ' + c : defaultLabel;
+            if (r && c) { rowsIn.value = r; colsIn.value = c; }
+        }
+        function pick(e) {
+            var el = document.elementFromPoint(e.clientX, e.clientY);
+            if (el && el.classList.contains('edz__tgrid-cell')) paint(+el.dataset.r, +el.dataset.c);
+        }
+        grid.addEventListener('pointerdown', function (e) {
+            dragging = true;
+            try { grid.setPointerCapture(e.pointerId); } catch (x) {}
+            pick(e);
+            e.preventDefault();
+        });
+        grid.addEventListener('pointermove', function (e) { if (dragging || e.pointerType === 'mouse') pick(e); });
+        grid.addEventListener('pointerleave', function () { if (!dragging) paint(0, 0); });
+        grid.addEventListener('pointerup', function (e) {
+            if (!dragging) return;
+            dragging = false;
+            pick(e);
+            if (cur.r && cur.c) insertTableFromModal(seq, modal);
+        });
+        grid.addEventListener('pointercancel', function () { dragging = false; paint(0, 0); });
     }
     var TABLE_STYLE = 'border-collapse:collapse;width:100%;table-layout:fixed;margin:12px 0';
     var CELL_STYLE = 'border:1px solid rgba(128,128,128,.45);padding:8px 10px;vertical-align:top;word-break:break-word';
@@ -695,6 +815,12 @@
                 if (!sel.rangeCount) return;
                 var n = sel.anchorNode;
                 var el = (n.nodeType === 1) ? n : n.parentElement;
+                var pre = el && el.closest ? el.closest('pre') : null;
+                if (pre && bodyEl.contains(pre)) {
+                    e.preventDefault();
+                    document.execCommand('insertLineBreak');
+                    return;
+                }
                 var bq = el && el.closest ? el.closest('blockquote') : null;
                 if (bq && bodyEl.contains(bq)) {
                     // 인용 안에서 Enter = 빈 줄 만들지 않고 즉시 인용 밖으로 (여러 줄 인용은 Shift+Enter)
@@ -998,6 +1124,13 @@
         if (linkBtn) linkBtn.addEventListener('click', function () { openLinkLayer(seq); });
 
         // 서식 지우기
+        var codeInlineBtn = toolbar.querySelector('#edzCodeInlineBtn');
+        if (codeInlineBtn) codeInlineBtn.addEventListener('click', function () { insertInlineCode(seq); });
+        var codeBlockBtn = toolbar.querySelector('#edzCodeBlockBtn');
+        if (codeBlockBtn) codeBlockBtn.addEventListener('click', function () { insertCodeBlock(seq); });
+        var srcBtn = toolbar.querySelector('#edzSrcBtn');
+        if (srcBtn) srcBtn.addEventListener('click', function () { toggleSource(seq); });
+
         var clearBtn = toolbar.querySelector('#edzClearBtn');
         if (clearBtn) clearBtn.addEventListener('click', function () { clearFormat(seq); });
 
@@ -1053,6 +1186,7 @@
         var wrap = document.getElementById('edz_wrap_' + seq);
         var tableModal = wrap && wrap.querySelector('.edz__modal--table');
         if (tableModal) {
+            initTableGrid(seq, tableModal);
             var okBtn = tableModal.querySelector('.edz__modal-ok');
             var cancelBtn = tableModal.querySelector('.edz__modal-cancel');
             if (okBtn) okBtn.addEventListener('click', function () { insertTableFromModal(seq, tableModal); });
@@ -1181,6 +1315,13 @@
                     }
                 }
                 if (!imgs.length) {
+                    var plain = cd.getData ? String(cd.getData('text/plain') || '').trim() : '';
+                    var vid = plain && !/\s/.test(plain) ? detectVideo(plain) : null;
+                    if (vid) {
+                        e.preventDefault();
+                        document.execCommand('insertHTML', false, vid.html);
+                        return;
+                    }
                     var pasted = cd.getData ? cd.getData('text/html') : '';
                     if (pasted) {
                         e.preventDefault();

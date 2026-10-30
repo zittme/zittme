@@ -21,12 +21,13 @@ class MessageAdminController extends Message
 	{
 		// Get information
 		$args = Context::gets('skin', 'mskin', 'colorset', 'mcolorset');
-		$vars = Context::gets('accent_color', 'show_logo', 'logo_url', 'contact_url', 'maintenance_message', 'show_powered');
+		$vars = Context::gets('accent_color', 'show_logo', 'logo_url', 'contact_url', 'maintenance_message', 'show_powered', 'login_status');
 		$args->accent_color = MessageView::normalizeColor(strval($vars->accent_color ?? ''));
 		$args->show_logo = ($vars->show_logo ?? 'Y') === 'N' ? 'N' : 'Y';
 		$args->logo_url = MessageView::sanitizeLink(strval($vars->logo_url ?? ''), false);
 		$args->contact_url = MessageView::sanitizeLink(strval($vars->contact_url ?? ''));
 		$args->maintenance_message = mb_substr(trim(strip_tags(strval($vars->maintenance_message ?? ''))), 0, 1000);
+		$args->login_status = ($vars->login_status ?? '') === '200' ? '200' : '';
 		$args->show_powered = ($vars->show_powered ?? 'N') === 'Y' ? 'Y' : 'N';
 		// Create a module Controller object
 		$oModuleController = getController('module');

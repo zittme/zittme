@@ -37,7 +37,7 @@ class ConsoleSettings
 		'member_mid', 'force_mid', 'enable_join', 'enable_join_key', 'enable_confirm', 'authmail_expires', 'authmail_expires_unit',
 		'password_strength', 'password_hashing_algorithm', 'password_hashing_work_factor', 'password_hashing_auto_upgrade',
 		'password_change_invalidate_other_sessions', 'password_reset_method', 'allow_nickname_change', 'update_nickname_log',
-		'nickname_symbols', 'nickname_symbols_allowed_list', 'nickname_spaces', 'allow_duplicate_nickname', 'member_profile_view',
+		'nickname_symbols', 'nickname_symbols_allowed_list', 'nickname_spaces', 'allow_duplicate_nickname', 'member_profile_view', 'signup_dup_button',
 	];
 	public const FEATURE_KEYS = ['scrapped_documents', 'saved_documents', 'my_documents', 'my_comments', 'active_logins', 'nickname_log'];
 	public const AGREEMENT_COUNT = 5;
@@ -516,6 +516,7 @@ class ConsoleSettings
 		$v['authmail_expires'] = intval($config->authmail_expires ?: 1);
 		$v['authmail_expires_unit'] = in_array(intval($config->authmail_expires_unit), [86400, 3600, 60, 1], true) ? intval($config->authmail_expires_unit) : 86400;
 		$v['member_profile_view'] = self::yn($config->member_profile_view);
+		$v['signup_dup_button'] = self::yn($config->signup_dup_button ?? 'N');
 		$v['allow_nickname_change'] = ($config->allow_nickname_change ?? 'Y') !== 'N' ? 'Y' : 'N';
 		$v['update_nickname_log'] = self::yn($config->update_nickname_log);
 		$v['nickname_symbols'] = in_array($config->nickname_symbols, ['Y', 'N', 'LIST'], true) ? $config->nickname_symbols : 'Y';
@@ -999,7 +1000,7 @@ class ConsoleSettings
 	public static function normalize(string $key, $value, array $current)
 	{
 		$yn = ['force_mid', 'enable_confirm', 'member_profile_view', 'allow_nickname_change', 'update_nickname_log', 'nickname_spaces',
-			'allow_duplicate_nickname', 'password_hashing_auto_upgrade', 'password_change_invalidate_other_sessions',
+			'allow_duplicate_nickname', 'signup_dup_button', 'password_hashing_auto_upgrade', 'password_change_invalidate_other_sessions',
 			'phone_number_hide_country', 'phone_number_allow_duplicate', 'phone_number_verify_by_sms', 'profile_image_force_ratio',
 			'signature_html', 'signature_html_retroact', 'member_allow_fileupload', 'login_invalidate_other_sessions',
 			'sns_login_enable', 'identity_enable', 'identity_dup_check', 'identity_signup_required', 'identity_find_account',

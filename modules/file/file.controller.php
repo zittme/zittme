@@ -445,7 +445,7 @@ class FileController extends File
 		$file_key = Context::get('file_key');
 		$filename_arg = htmlspecialchars_decode(Context::get('filename') ?? '');
 
-		$columnList = array('source_filename', 'uploaded_filename', 'file_size');
+		$columnList = array('module_srl', 'source_filename', 'uploaded_filename', 'file_size');
 		$file_obj = FileModel::getFile($file_srl, $columnList);
 		$file_config = FileModel::getFileConfig($file_obj->module_srl ?: null);
 		$filesize = $file_obj->file_size;

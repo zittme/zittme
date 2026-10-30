@@ -1,0 +1,20 @@
+@version(2)
+@load('./lang')
+@php
+$zb_has = false;
+if (($module_info->pdf_badge ?? 'N') === 'Y' && $document->hasUploadedFiles())
+{
+	foreach (($document->getUploadedFiles() ?: []) as $zb_f)
+	{
+		if (strtolower(pathinfo((string)$zb_f->source_filename, PATHINFO_EXTENSION)) === 'pdf')
+		{
+			$zb_has = true;
+			break;
+		}
+	}
+}
+@endphp
+@if ($zb_has)
+@load('css/pdf.css')
+<span class="zpdf-badge">{{ $lang->zpdf_badge }}</span>
+@endif

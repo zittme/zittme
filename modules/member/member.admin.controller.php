@@ -258,7 +258,8 @@ class MemberAdminController extends Member
 			'nickname_symbols_allowed_list',
 			'nickname_spaces',
 			'allow_duplicate_nickname',
-			'member_profile_view'
+			'member_profile_view',
+			'signup_dup_button'
 		);
 
 		// Update member mid
@@ -349,6 +350,14 @@ class MemberAdminController extends Member
 		}
 		$args->nickname_symbols_allowed_list = utf8_trim($args->nickname_symbols_allowed_list);
 		$args->nickname_spaces = (isset($args->nickname_spaces) && $args->nickname_spaces === 'Y') ? 'Y' : 'N';
+		if ($args->signup_dup_button === null)
+		{
+			unset($args->signup_dup_button);
+		}
+		else
+		{
+			$args->signup_dup_button = ($args->signup_dup_button === 'Y') ? 'Y' : 'N';
+		}
 
 		$oModuleController = getController('module');
 		$output = $oModuleController->updateModuleConfig('member', $args);

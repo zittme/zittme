@@ -50,9 +50,14 @@
 	<!--// Updates tab with nothing to update -->
 	<p class="zmst-empty" cond="$type == 'updates' && !count($package_list)">{$lang->msg_no_updates_available}</p>
 
+	<div class="zmst-bulk" cond="$type == 'updates' && $bulk_count > 0">
+		<button type="button" class="zmst-btn zmst-btn-primary" id="zmstUpdateAll" data-confirm="{$lang->msg_autoinstall_update_all_confirm}" data-license-confirm="{$lang->msg_autoinstall_paid_license_confirm}" data-label="{$lang->cmd_autoinstall_update_all}" data-done="{$lang->msg_autoinstall_update_all_done}" data-failed="{$lang->msg_autoinstall_update_all_failed}" data-downloading="{$lang->msg_autoinstall_downloading}" data-installing="{$lang->msg_autoinstall_installing}" data-cleanup="{$lang->msg_autoinstall_cleanup}">{sprintf($lang->cmd_autoinstall_update_all, $bulk_count)}</button>
+		<span class="zmst-bulk-status" id="zmstBulkStatus" aria-live="polite"></span>
+	</div>
+
 	<ul class="zmst-list">
 		<!--@foreach($package_list as $package)-->
-			<li class="zmst-item">
+			<li class="zmst-item" data-bulk-srl="{$package->package_srl}" data-bulk-title="{$package->title}" data-bulk-paid="Y"|cond="$package->install_type === 'paid_licensed'" data-bulk-skip="Y"|cond="$type != 'updates' || !$package->isInstalled() || !$package->getUpdateInfo()->update_available || !$package->isInstallable()">
 				<a class="zmst-thumb" href="{getUrl(['module' => $module, 'act' => 'dispAutoinstallAdminPackageDetail', 'package_srl' => $package->package_srl])}">
 					<!--@if(!empty($package->extra_vars->thumbnail))-->
 						<img src="{$package->extra_vars->thumbnail}" alt="" loading="lazy" />

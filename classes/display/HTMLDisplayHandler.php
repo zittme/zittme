@@ -409,6 +409,17 @@ class HTMLDisplayHandler
 			return;
 		}
 
+		$mobile_css = '';
+		$mobile_mode = $admin_config->front_admin_bar_mobile ?? '';
+		if($mobile_mode === 'hide')
+		{
+			$mobile_css = '@media (max-width:768px){#zittme-adminbar{display:none}}';
+		}
+		elseif($mobile_mode === 'icon')
+		{
+			$mobile_css = '@media (max-width:768px){#zittme-adminbar{left:8px;bottom:8px;padding:3px}#zittme-adminbar .zab-btn{display:none}}';
+		}
+
 		$e = function($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); };
 		// 관리 바는 어느 화면에나 붙는다. 상대 주소로 만들면 지금 보고 있는
 		// 경로 뒤에 쿼리가 붙어 엉뚱한 곳으로 간다. 사이트 기준 절대 주소를 쓴다.
@@ -461,6 +472,7 @@ class HTMLDisplayHandler
 			. '#zittme-adminbar .zab-gear:hover{background:#2a3245;color:#fff}'
 			. '#zittme-adminbar .zab-btn{border:0;background:transparent;color:#e4e7ec;font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif;font-size:13px;font-weight:600;padding:8px 14px;border-radius:18px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;line-height:1}'
 			. '#zittme-adminbar .zab-btn:hover{background:#2677e3}'
+			. $mobile_css
 			. '#zab-modal{position:fixed;inset:0;z-index:2147483001}'
 			. '#zab-modal .zab-back{position:absolute;inset:0;background:rgba(16,24,40,.35)}'
 			. '#zab-modal .zab-panel{position:absolute;right:0;top:0;bottom:0;width:min(460px,92vw);background:#fff;box-shadow:0 0 40px rgba(16,24,40,.3);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .22s ease}'
@@ -850,12 +862,16 @@ class HTMLDisplayHandler
 
 		if (!$oDocument)
 		{
+			if ($permitted && !$document_srl)
+			{
+				$this->_addItemListData();
+			}
 			return;
 		}
 
 		foreach (Context::getStructuredData() as $node)
 		{
-			if (in_array($node['@type'] ?? '', array('Article', 'BlogPosting', 'NewsArticle'), true))
+			if (in_array($node['@type'] ?? '', array('Article', 'BlogPosting', 'NewsArticle', 'QAPage'), true))
 			{
 				return;
 			}
@@ -877,6 +893,40 @@ class HTMLDisplayHandler
 			'mainEntityOfPage' => Context::getCanonicalURL() ?: Zittme\Framework\URL::getCurrentURL(),
 			'inLanguage' => $document_lang !== '' ? $document_lang : config('locale.default_lang'),
 		));
+	}
+
+	/**
+	 * Add the documents shown on a board list page as an ItemList.
+	 *
+	 * @return void
+	 */
+	function _addItemListData()
+	{
+		$current_module_info = Context::get('current_module_info');
+		$list = Context::get('document_list');
+		if (($current_module_info->module ?? '') !== 'board' || !is_array($list) || !count($list))
+		{
+			return;
+		}
+
+		$items = array();
+		foreach ($list as $oDocument)
+		{
+			if (!is_object($oDocument) || !method_exists($oDocument, 'isExists') || !$oDocument->isExists() || $oDocument->isSecret() || !$oDocument->isAccessible())
+			{
+				continue;
+			}
+			$items[] = array(
+				'@type' => 'ListItem',
+				'position' => count($items) + 1,
+				'url' => getNotEncodedFullUrl('', 'mid', $current_module_info->mid, 'document_srl', $oDocument->document_srl),
+				'name' => $oDocument->getTitleText(),
+			);
+		}
+		if (count($items))
+		{
+			Context::addStructuredData('ItemList', array('itemListElement' => $items));
+		}
 	}
 
 	/**

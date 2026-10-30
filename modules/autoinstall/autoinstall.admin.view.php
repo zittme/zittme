@@ -72,6 +72,8 @@ class AutoinstallAdminView extends Autoinstall
 		Context::set('page', $page);
 		Context::set('search_keyword', $search_keyword);
 
+		Context::set('bulk_count', 0);
+
 		// Updates tab: installed packages with a newer release available.
 		if ($type === 'updates')
 		{
@@ -85,6 +87,9 @@ class AutoinstallAdminView extends Autoinstall
 				}
 			}
 			Context::set('package_list', $list);
+			Context::set('bulk_count', count(array_filter($list, function ($package) {
+				return $package->isInstallable();
+			})));
 			Context::set('page_navigation', null);
 		}
 		else

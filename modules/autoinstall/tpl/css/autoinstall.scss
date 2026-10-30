@@ -526,6 +526,9 @@
 [data-theme="dark"] .zmst .zmst-chip-update { color: #e8b339; }
 [data-theme="dark"] .zmst .zmst-chip-paid { color: #f59f0a; }
 
+.zmst .zmst-bulk { display: flex; align-items: center; gap: 12px; margin: 0 0 16px; flex-wrap: wrap; }
+.zmst .zmst-bulk-status { font-size: 13.5px; color: var(--zm-text-sub); }
+
 .zmst .zmst-empty {
 	grid-column: 1 / -1;
 	padding: 70px 0;

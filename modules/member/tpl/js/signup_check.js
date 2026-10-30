@@ -10,9 +10,24 @@ var memberCheckObj = { target:null, value:null }
 jQuery(document).ready(memberSetEvent);
 
 function memberSetEvent() {
-	jQuery('#fo_insert_member :input')
-		.filter('[name=user_id],[name=nick_name],[name=email_address]')
-		.blur(memberCheckValue);
+	var fields = jQuery('#fo_insert_member :input').filter('[name=user_id],[name=nick_name],[name=email_address]');
+	var opt = window.zmSignupDupBtn;
+	if (!opt) {
+		fields.blur(memberCheckValue);
+		return;
+	}
+	fields.each(function() {
+		var field = this;
+		var btn = jQuery('<button type="button" class="btn x_btn memberCheckBtn" style="margin-left:6px" />').text(opt.label);
+		btn.on('click', function() {
+			if (!field.value) {
+				field.focus();
+				return;
+			}
+			memberCheckValue({ target: field });
+		});
+		jQuery(field).after(btn);
+	});
 }
 
 
@@ -40,9 +55,14 @@ function completeMemberCheckValue(data, unused, field) {
 	}
 
     if(data.message == 'success') {
-        dummy.html('').hide();
+        if (window.zmSignupDupBtn) {
+            dummy.text(window.zmSignupDupBtn.ok).css('color', 'green').show();
+        } else {
+            dummy.html('').hide();
+        }
         return;
     } else {
+		dummy.css('color', 'red');
 		dummy.html(data.message).show();
 	}
 }

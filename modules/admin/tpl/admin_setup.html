@@ -94,6 +94,17 @@
 				<span class="x_help-block">{$lang->about_front_admin_bar}</span>
 			</div>
 		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="front_admin_bar_mobile">{$lang->front_admin_bar_mobile}</label>
+			<div class="x_controls">
+				<select name="front_admin_bar_mobile" id="front_admin_bar_mobile" style="width:auto">
+					<option value="" selected="selected"|cond="!$front_admin_bar_mobile">{$lang->front_admin_bar_mobile_same}</option>
+					<option value="icon" selected="selected"|cond="$front_admin_bar_mobile == 'icon'">{$lang->front_admin_bar_mobile_icon}</option>
+					<option value="hide" selected="selected"|cond="$front_admin_bar_mobile == 'hide'">{$lang->front_admin_bar_mobile_hide}</option>
+				</select>
+				<span class="x_help-block">{$lang->about_front_admin_bar_mobile}</span>
+			</div>
+		</div>
 		<div class="x_clearfix btnArea">
 			<div class="x_pull-right">
 				<button type="submit" class="x_btn x_btn-primary">{$lang->cmd_save}</button>

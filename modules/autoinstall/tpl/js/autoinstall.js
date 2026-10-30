@@ -89,6 +89,55 @@
 			});
 		});
 
+		// 업데이트 탭: 업데이트 가능한 자료를 차례로 한 번에 갱신한다
+		$('#zmstUpdateAll').on('click', async function(e) {
+			e.preventDefault();
+			const btn = $(this);
+			if (btn.hasClass('x_btn-disabled')) {
+				return;
+			}
+			const items = $('.zmst-item[data-bulk-srl]').filter(function() { return $(this).attr('data-bulk-skip') !== 'Y'; }).toArray();
+			if (!items.length || !confirm(btn.data('confirm'))) {
+				return;
+			}
+			if (items.some(function(li) { return $(li).attr('data-bulk-paid') === 'Y'; }) && !confirm(btn.data('licenseConfirm'))) {
+				return;
+			}
+			btn.addClass('x_btn-disabled').removeClass('x_btn-primary');
+			const status = $('#zmstBulkStatus');
+			const failed = [];
+			let ok = 0;
+			for (let i = 0; i < items.length; i++) {
+				const li = $(items[i]);
+				const srl = parseInt(li.attr('data-bulk-srl'), 10);
+				const title = li.attr('data-bulk-title');
+				const prefix = '(' + (i + 1) + '/' + items.length + ') ' + title + ' - ';
+				try {
+					if (li.attr('data-bulk-paid') === 'Y') {
+						const lic = await Zittme.ajax('autoinstall.procAutoinstallAdminVerifyLicense', { 'package_srl': srl });
+						if (!lic || !lic.licensed) {
+							throw new Error('license');
+						}
+					}
+					status.text(prefix + btn.data('downloading'));
+					await Zittme.ajax('autoinstall.procAutoinstallAdminDownloadPackage', { 'package_srl': srl, 'mode': 'update' });
+					status.text(prefix + btn.data('installing'));
+					await Zittme.ajax('autoinstall.procAutoinstallAdminInstallPackage', { 'package_srl': srl, 'mode': 'update' });
+					status.text(prefix + btn.data('cleanup'));
+					await Zittme.ajax('autoinstall.procAutoinstallAdminPostInstallPackage', { 'package_srl': srl, 'mode': 'update' });
+					ok++;
+				} catch (err) {
+					failed.push(title);
+				}
+			}
+			let message = String(btn.data('done')).replace('%d', ok);
+			if (failed.length) {
+				message += '\n' + String(btn.data('failed')).replace('%s', failed.join(', '));
+			}
+			NativeAlert(message);
+			location.reload();
+		});
+
 		// Uninstall button
 		$('.autoinstall_uninstall_btn').on('click', function(e) {
 			e.preventDefault();

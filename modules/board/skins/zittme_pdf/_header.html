@@ -1,0 +1,87 @@
+<load target="board.default.css" />
+<load target="board.default.js" type="body" />
+
+{@
+	if (isset($order_type) && $order_type == 'desc'):
+		$order_type = 'asc';
+	else:
+		$order_type = 'desc';
+	endif;
+
+	$module_info->duration_new = intval($module_info->duration_new ?? 0);
+	if (!$module_info->duration_new):
+		$module_info->duration_new = 12;
+	endif;
+
+	$category_list = $category_list ?? [];
+	$cate_sub_tabs = ($module_info->sub_category_style ?? '') === 'tabs';
+	$cate_drop_list = [];
+	$cate_drop_open = 0;
+	$current_key = null;
+	if (!$cate_sub_tabs):
+		foreach ($category_list as $key => $val):
+			if (!$val->depth):
+				$cate_drop_list[$key] = $val;
+				$cate_drop_list[$key]->children = array();
+				$current_key = $key;
+			elseif ($current_key):
+				$cate_drop_list[$current_key]->children[] = $val;
+			else:
+				continue;
+			endif;
+			if ($current_key && ($category ?? 0) == $val->category_srl):
+				$cate_drop_open = $cate_drop_list[$current_key]->category_srl;
+			endif;
+		endforeach;
+	endif;
+	$cate_children = [0 => []];
+	foreach ($category_list as $key => $val):
+		$parent_key = isset($category_list[$val->parent_srl]) ? intval($val->parent_srl) : 0;
+		$cate_children[$parent_key][] = $val;
+	endforeach;
+	$cate_list = $cate_children[0];
+	$cate_path = [];
+	$cate_cursor = intval($category ?? 0);
+	while ($cate_cursor && isset($category_list[$cate_cursor]) && !in_array($cate_cursor, $cate_path)):
+		array_unshift($cate_path, $cate_cursor);
+		$cate_cursor = intval($category_list[$cate_cursor]->parent_srl);
+	endwhile;
+	$cate_sub_rows = [];
+	foreach ($cate_path as $cate_srl):
+		if (!empty($cate_children[$cate_srl])):
+			$cate_sub_rows[$cate_srl] = $cate_children[$cate_srl];
+		endif;
+	endforeach;
+}
+
+<div class="board">
+	<!--@if($m && $module_info->mobile_header_text)-->
+		{$module_info->mobile_header_text}
+	<!--@else-->
+		{$module_info->header_text}
+	<!--@end-->
+	<div class="board_header" cond="!empty($module_info->title_image) || $grant->manager">
+		<h2 cond="$module_info->title_image"><a href="{getUrl('','mid',$mid)}"><img src="{$module_info->title_image}" alt="{$module_info->title_alt}" /></a></h2>
+		<a cond="$grant->manager" class="setup" href="{getUrl('act','dispBoardAdminBoardInfo')}" title="{$lang->cmd_setup}">{$lang->cmd_setup}</a>
+	</div>
+	<!--@if(!$cate_sub_tabs)-->
+	<ul class="cTab" cond="$module_info->use_category=='Y'">
+		<li class="on"|cond="empty($category)"><a href="{getUrl('category','','page','')}">{$lang->total}</a></li>
+		<li loop="$cate_drop_list=>$key,$val" class="on"|cond="$cate_drop_open == $val->category_srl"><a href="{getUrl('category',$val->category_srl,'document_srl','', 'page', '')}">{$val->title}<!--<em cond="$val->document_count">[{$val->document_count}]</em>--></a>
+			<ul cond="count($val->children)">
+				<li loop="$val->children=>$idx,$item" class="on_"|cond="$category==$item->category_srl"><a href="{getUrl('category',$item->category_srl,'document_srl','', 'page', '')}">{$item->title}<!--<em cond="$val->document_count">[{$item->document_count}]</em>--></a></li>
+			</ul>
+		</li>
+	</ul>
+	<!--@else-->
+	<ul class="cTab cTabTabs" cond="$module_info->use_category=='Y'">
+		<li class="on"|cond="empty($category)"><a href="{getUrl('category','','page','')}">{$lang->total}</a></li>
+		<li loop="$cate_list=>$key,$val" class="on"|cond="in_array($val->category_srl, $cate_path)"><a href="{getUrl('category',$val->category_srl,'document_srl','', 'page', '')}">{$val->title}<!--<em cond="$val->document_count">[{$val->document_count}]</em>--></a></li>
+	</ul>
+	<block cond="$module_info->use_category=='Y'">
+	<ul loop="$cate_sub_rows=>$cate_parent_srl,$cate_sub_list" class="cTabSub">
+		<li class="on"|cond="($category ?? 0) == $cate_parent_srl"><a href="{getUrl('category',$cate_parent_srl,'document_srl','', 'page', '')}">{$lang->total}</a></li>
+		<li loop="$cate_sub_list=>$cate_idx,$cate_item" class="on"|cond="in_array($cate_item->category_srl, $cate_path)"><a href="{getUrl('category',$cate_item->category_srl,'document_srl','', 'page', '')}">{$cate_item->title}</a></li>
+	</ul>
+	</block>
+	<!--@end-->

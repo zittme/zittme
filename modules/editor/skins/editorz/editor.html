@@ -123,6 +123,11 @@
             </button>
             <div class="edz__pop edz__pop--menu" id="edzMorePop" hidden>
                 <button type="button" data-cmd="strikeThrough">{$lang->edz_strike}</button>
+                <button type="button" data-cmd="superscript">{$lang->edz_sup}</button>
+                <button type="button" data-cmd="subscript">{$lang->edz_sub}</button>
+                <button type="button" id="edzCodeInlineBtn">{$lang->edz_code_inline}</button>
+                <button type="button" id="edzCodeBlockBtn">{$lang->edz_code_block}</button>
+                <button type="button" id="edzSrcBtn">{$lang->edz_src}</button>
                 <button type="button" id="edzHrBtn">{$lang->edz_hr}</button>
                 <button type="button" id="edzClearBtn">{$lang->edz_clear}</button>
             </div>
@@ -142,6 +147,8 @@
          data-editor-height="{$editor_height}"
          style="min-height:{$editor_height}px<!--@if($content_paragraph_spacing && preg_match('/^[0-9.]+(px|em|rem)?$/', $content_paragraph_spacing))-->;--edz-para:{$content_paragraph_spacing}<!--@end-->">
     </div>
+
+    <textarea class="edz__src" id="edz_src_{$editor_sequence}" spellcheck="false" aria-label="{$lang->edz_src}" hidden></textarea>
 
     <div class="edz__foot"><span class="edz__hint">{$lang->edz_hint}</span><span class="edz__count">0</span></div>
 
@@ -173,6 +180,8 @@
     <div class="edz__modal edz__modal--table" hidden>
         <div class="edz__modal-box">
             <div class="edz__modal-h">{$lang->edz_table_title}</div>
+            <div class="edz__tgrid" role="grid" aria-label="{$lang->edz_table_title}"></div>
+            <div class="edz__tgrid-label" aria-live="polite">{$lang->edz_table_grid_hint}</div>
             <div class="edz__modal-fields">
                 <label class="edz__field">{$lang->edz_rows} <input type="number" class="edz__num edz__num--rows" value="3" min="1" max="30" /></label>
                 <label class="edz__field">{$lang->edz_cols} <input type="number" class="edz__num edz__num--cols" value="3" min="1" max="10" /></label>

@@ -6,6 +6,7 @@ function _getZbedInstance(editor_sequence) {
 function editorGetContent(editor_sequence) {
     // ckeditor/zitteditor 와 동일하게 raw HTML 을 그대로 반환한다.
     // .escape() 를 걸면 서버가 unescape 하지 않아 &lt;div&gt; 처럼 텍스트로 저장된다.
+    if (window.edzSyncSource) window.edzSyncSource(editor_sequence);
     var el = _getZbedInstance(editor_sequence).get(0);
     var html = (window.edzCleanHtml && el) ? window.edzCleanHtml(el) : _getZbedInstance(editor_sequence).html();
     return String(html);

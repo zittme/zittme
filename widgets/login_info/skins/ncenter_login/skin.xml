@@ -12,18 +12,18 @@
 	<title xml:lang="zh-TW">RX 通知中心登入面板</title>
 	<title xml:lang="zh-CN">RX 通知中心登录皮肤</title>
 	<title xml:lang="jp">RX 通知センターログインスキン</title>
-	<description xml:lang="ko">RX 알림센터겸용 로그인 스킨입니다.</description>
-	<description xml:lang="en">Login Skin supporting Zittme Notification Center</description>
-	<description xml:lang="vi">Giao diện đăng nhập hỗ trợ Trung tâm thông báo Zittme.</description>
+	<description xml:lang="ko">화면 아래쪽에 고정되어 나타나는 알림센터 겸용 로그인 막대입니다. 위젯을 넣은 자리 안에는 표시되지 않으니, 칸 안에 로그인 정보를 보이려면 기본 스킨을 사용하세요.</description>
+	<description xml:lang="en">A login bar fixed to the bottom of the screen that also serves as the notification center. It is not drawn inside the widget area; use the default skin to show login info in place.</description>
+	<description xml:lang="vi">Thanh đăng nhập cố định ở cuối màn hình, kiêm Trung tâm thông báo. Thanh này không hiển thị trong vùng widget; hãy dùng giao diện mặc định để hiển thị tại chỗ.</description>
 	<description xml:lang="tr">Zittme Bildirim Merkezi'ni destekleyen giriş teması</description>
 	<description xml:lang="ru">Скин входа с поддержкой центра уведомлений Zittme.</description>
 	<description xml:lang="mn">Zittme мэдэгдлийн төвийг дэмждэг нэвтрэх скин</description>
 	<description xml:lang="fr">Skin de connexion compatible avec le centre de notifications Zittme.</description>
-	<description xml:lang="es">Skin de acceso compatible con el centro de notificaciones de Zittme</description>
+	<description xml:lang="es">Barra de acceso fija en la parte inferior de la pantalla que sirve también de centro de notificaciones. No se dibuja dentro del área del widget; use el skin predeterminado para mostrarla en su lugar.</description>
 	<description xml:lang="de">Login-Skin mit Unterstützung der Zittme Benachrichtigungszentrale</description>
-	<description xml:lang="zh-TW">支援 Zittme 通知中心的登入面板。</description>
+	<description xml:lang="zh-TW">固定在畫面下方的登入列，兼作通知中心。不會顯示在小工具所在的區塊內；若要在區塊內顯示登入資訊，請使用預設面板。</description>
 	<description xml:lang="zh-CN">支持 Zittme 通知中心的登录皮肤。</description>
-	<description xml:lang="jp">Zittme 通知センターに対応したログインスキンです。</description>
+	<description xml:lang="jp">画面下部に固定表示される、通知センター兼用のログインバーです。ウィジェットを置いた場所の中には表示されません。その場所に表示するにはデフォルトスキンを使ってください。</description>
 	<version>1.0</version>
 	<date>2016-05-27</date>
 	<link>http://bjrambo.com</link>

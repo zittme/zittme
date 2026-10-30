@@ -625,6 +625,13 @@ class Router
 						break;
 					}
 				}
+				foreach (array_keys($route_info['vars'] ?? array()) as $key)
+				{
+					if ($matched && !isset($args[$key]))
+					{
+						$matched = false;
+					}
+				}
 				if ($matched)
 				{
 					self::$_route_cache[$rewrite_level][$keys_string] = $route;

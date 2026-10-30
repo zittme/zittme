@@ -30,6 +30,7 @@ class AdminMenu extends Base
 
 		$config = getModel('module')->getModuleConfig('admin');
 		Context::set('front_admin_bar', ($config->front_admin_bar ?? 'Y'));
+		Context::set('front_admin_bar_mobile', ($config->front_admin_bar_mobile ?? ''));
 		Context::set('admin_gnb_position', self::getGnbPosition());
 		Context::set('admin_logo_text', self::getLogoText());
 
@@ -83,6 +84,8 @@ class AdminMenu extends Base
 	{
 		$config = getModel('module')->getModuleConfig('admin') ?: new \stdClass;
 		$config->front_admin_bar = (Context::get('front_admin_bar') === 'Y') ? 'Y' : 'N';
+		$mobile_mode = (string)Context::get('front_admin_bar_mobile');
+		$config->front_admin_bar_mobile = in_array($mobile_mode, ['icon', 'hide'], true) ? $mobile_mode : '';
 		getController('module')->insertModuleConfig('admin', $config);
 
 		$this->setMessage('success_updated');

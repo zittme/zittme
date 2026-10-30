@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">PDF 자료실</title>
+	<title xml:lang="en">PDF Library</title>
+	<title xml:lang="ja">PDF 資料室</title>
+	<title xml:lang="vi">Thư viện PDF</title>
+	<title xml:lang="es">Biblioteca PDF</title>
+	<title xml:lang="zh-TW">PDF 資料庫</title>
+	<description xml:lang="ko">첨부한 PDF 를 글 안에서 바로 넘겨 보고, 목록에서 PDF 가 붙은 글을 알아볼 수 있는 게시판 스킨입니다. 외부 뷰어를 쓰지 않고 브라우저에 내장된 PDF 보기를 사용합니다.</description>
+	<description xml:lang="en">A board skin that shows attached PDFs inside the post and marks posts with a PDF in the list. It uses the browser's built-in PDF viewer, with no external viewer.</description>
+	<description xml:lang="ja">添付した PDF を投稿内で表示し、一覧で PDF 付きの投稿を見分けられる掲示板スキンです。外部ビューアは使わず、ブラウザ内蔵の PDF 表示を使います。</description>
+	<description xml:lang="vi">Giao diện bảng tin hiển thị PDF đính kèm ngay trong bài và đánh dấu bài có PDF trong danh sách. Dùng trình xem PDF tích hợp của trình duyệt, không dùng trình xem bên ngoài.</description>
+	<description xml:lang="es">Skin de tablero que muestra los PDF adjuntos dentro de la publicación y marca en la lista las que tienen PDF. Usa el visor de PDF del navegador, sin visores externos.</description>
+	<description xml:lang="zh-TW">可在文章內直接翻閱附件 PDF，並在列表標示附有 PDF 的文章。使用瀏覽器內建的 PDF 檢視，不依賴外部檢視器。</description>
+	<version>1.0</version>
+	<date>2026-10-30</date>
+	<author email_address="zittme-contact@zzan.me" link="https://zitt.me/">
+		<name xml:lang="ko">짠(ZZAN)</name>
+		<name xml:lang="en">ZZAN</name>
+	</author>
+	<license>LGPL v2</license>
+	<extra_vars>
+		<var name="pdf_viewer" type="select">
+			<title xml:lang="ko">글 안에서 PDF 보기</title>
+			<title xml:lang="en">View PDF inside the post</title>
+			<description xml:lang="ko">켜면 첨부된 PDF 를 글 본문 아래에서 바로 넘겨 볼 수 있습니다. 파일 설정의 내려받기 형식에서 PDF 를 인라인으로 허용해야 동작하며, 휴대폰에서는 화면 안에서 열지 못하는 기기가 있어 열기·내려받기 버튼으로 대신합니다.</description>
+			<description xml:lang="en">When on, attached PDFs open below the post body. Requires PDF to be allowed as inline in the file settings download formats. On phones, open and download buttons are shown instead.</description>
+			<options value="N">
+				<title xml:lang="ko">사용 안 함</title>
+				<title xml:lang="en">Off</title>
+			</options>
+			<options value="Y">
+				<title xml:lang="ko">사용</title>
+				<title xml:lang="en">On</title>
+			</options>
+		</var>
+		<var name="pdf_height" type="text">
+			<title xml:lang="ko">PDF 보기 높이(px)</title>
+			<title xml:lang="en">PDF viewer height (px)</title>
+			<description xml:lang="ko">비우면 720, 320에서 1600 사이로 맞춥니다.</description>
+			<description xml:lang="en">Empty: 720. Limited to 320 - 1600.</description>
+		</var>
+		<var name="pdf_badge" type="select">
+			<title xml:lang="ko">목록에 PDF 표시</title>
+			<title xml:lang="en">PDF mark in list</title>
+			<description xml:lang="ko">PDF 가 붙은 글의 제목 옆에 PDF 표시를 붙입니다. 첨부 파일이 있는 글마다 파일 목록을 읽으므로 목록이 길면 약간 느려질 수 있습니다.</description>
+			<description xml:lang="en">Adds a PDF mark next to titles of posts with a PDF. Reads the file list of each post that has attachments, so very long lists may load slightly slower.</description>
+			<options value="N">
+				<title xml:lang="ko">사용 안 함</title>
+				<title xml:lang="en">Off</title>
+			</options>
+			<options value="Y">
+				<title xml:lang="ko">사용</title>
+				<title xml:lang="en">On</title>
+			</options>
+		</var>
+		<var name="title_image" type="image">
+			<title xml:lang="ko">게시판 제목 이미지</title>
+			<title xml:lang="en">Board Title Image</title>
+			<description xml:lang="ko">작성하면 화면에 표시 됨</description>
+			<description xml:lang="en">If set, it will be displayed on screen.</description>
+		</var>
+		<var name="title_alt" type="text">
+			<title xml:lang="ko">게시판 제목 이미지 alt</title>
+			<title xml:lang="en">Board Title Image Alt Text</title>
+			<description xml:lang="ko">게시판 제목 이미지 대체 텍스트</description>
+			<description xml:lang="en">Alternative text for the board title image.</description>
+		</var>
+		<var name="sub_category_style" type="select">
+			<title xml:lang="ko">하위 분류 표시</title>
+			<title xml:lang="en">Subcategory display</title>
+			<description xml:lang="ko">하위 분류가 있는 게시판에서 하위 분류를 어떻게 보여 줄지 고릅니다. 아래 줄 탭은 여러 단계 분류를 단계마다 한 줄씩 보여 줍니다.</description>
+			<description xml:lang="en">Choose how subcategories are shown on boards that have them. Tabs on a lower row show each level of categories on its own row.</description>
+			<options value="dropdown">
+				<title xml:lang="ko">펼침 목록 (이전 방식)</title>
+				<title xml:lang="en">Expanded list (previous)</title>
+			</options>
+			<options value="tabs">
+				<title xml:lang="ko">아래 줄 탭</title>
+				<title xml:lang="en">Tabs on a lower row</title>
+			</options>
+		</var>
+	</extra_vars>
+</skin>

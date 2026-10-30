@@ -288,7 +288,7 @@ function doAddWidgetBox() {
 			'<div class="nullWidget" style="width:100%;height:100px;"></div>'+
 		'</div>'+
 	'</div>';
-	zonePageObj.innerHTML += tpl;
+	zonePageObj.insertAdjacentHTML('beforeend', tpl);
 }
 
 
