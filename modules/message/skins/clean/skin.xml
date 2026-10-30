@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skin version="0.2">
+	<title xml:lang="ko">클린 (기본)</title>
+	<title xml:lang="en">Clean (Default)</title>
+	<description xml:lang="ko">모든 사이트에서 쓰는 기본 오류·안내 화면입니다. 사이트 로고·이름·강조색을 따르고 라이트·다크 모드와 모바일을 지원합니다.</description>
+	<description xml:lang="en">Default error and notice screens. Follows the site logo, name and accent color, with light and dark modes and mobile support.</description>
+	<version>1.1.0</version>
+	<date>2026-09-28</date>
+	<author email_address="zittme-contact@zzan.me" link="https://zitt.me">
+		<name xml:lang="ko">Zittme</name>
+		<name xml:lang="en">Zittme</name>
+	</author>
+	<license>GPLv2</license>
+	<responsive>true</responsive>
+</skin>

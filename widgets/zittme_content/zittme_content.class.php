@@ -69,6 +69,9 @@ class zittme_content extends WidgetHandler
 		'mg_full' => ['cols' => [
 			['width' => 100, 'style' => 'magazine', 'count' => 5, 'more' => 'auto'],
 		]],
+		'list_full' => ['cols' => [
+			['width' => 100, 'style' => 'list', 'count' => 8, 'more' => 'auto'],
+		]],
 		'mixed_list' => ['cols' => [
 			['width' => 62, 'style' => 'mixed', 'count' => 7, 'more' => 'auto'],
 			['width' => 38, 'style' => 'list', 'count' => 8, 'more' => 'auto'],
@@ -85,6 +88,26 @@ class zittme_content extends WidgetHandler
 	{
 		$text = \Context::getLang($code);
 		return is_string($text) && $text !== '' && $text !== $code ? $text : '';
+	}
+
+	/**
+	 * 방문자별로 볼 수 있는 게시판이 달라서 캐시를 방문자 권한 묶음(그룹)별로 나눈다.
+	 * 비회원은 기존 캐시 키를 그대로 쓴다.
+	 */
+	public function getCacheVariant($args)
+	{
+		$logged = \Context::get('logged_info');
+		if (empty($logged->member_srl))
+		{
+			return '';
+		}
+		if (($logged->is_admin ?? '') === 'Y')
+		{
+			return 'a';
+		}
+		$groups = array_keys((array)($logged->group_list ?? []));
+		sort($groups);
+		return 'g' . substr(sha1(implode(',', $groups)), 0, 12);
 	}
 
 	public function proc($args)
@@ -166,7 +189,7 @@ class zittme_content extends WidgetHandler
 		}
 
 		$html = self::styleTag();
-		$html .= '<div class="zc zc-sk-' . self::$variant . '"><div class="zc-row" style="grid-template-columns:' . implode(' ', $widths) . '">';
+		$html .= '<div class="zc zc-sk-' . self::$variant . '"><div class="zc-row zc-cols-' . count($cols) . '" style="grid-template-columns:' . implode(' ', $widths) . '">';
 		foreach ($cols as $col)
 		{
 			$html .= '<div class="zc-cell">' . self::renderBlock($col) . '</div>';
@@ -244,10 +267,10 @@ class zittme_content extends WidgetHandler
 				? self::fetchComments([$module_srl], $count)
 				: self::fetchDocuments([$module_srl], $count, false);
 			$on = $i === 0 ? ' is-on' : '';
-			$tabs .= '<button type="button" class="zc-tab' . $on . '" data-zct="' . $uid . '-' . $i . '">' . escape((string)$info->browser_title) . '</button>';
+			$tabs .= '<button type="button" class="zc-tab' . $on . '" data-zct="' . $uid . '-' . $i . '">' . escape((string)$info->browser_title, false) . '</button>';
 			$panes .= '<div class="zc-pane' . $on . '" id="' . $uid . '-' . $i . '">' . self::renderItems('list', $items) . '</div>';
 			// 더보기는 판 아래가 아니라 탭 줄 오른쪽에 붙는다. 활성 탭 것만 보인다
-			$mores .= '<a class="zc-more zc-tab-more' . $on . '" data-zctm="' . $uid . '-' . $i . '" href="' . escape(getUrl('', 'mid', $info->mid)) . '">' . escape(self::lang('zc_more')) . '</a>';
+			$mores .= '<a class="zc-more zc-tab-more' . $on . '" data-zctm="' . $uid . '-' . $i . '" href="' . escape(getNotEncodedUrl('', 'mid', $info->mid)) . '">' . escape(self::lang('zc_more')) . '</a>';
 			$i++;
 		}
 		$script = '<script>(function(){var w=document.currentScript.parentNode;w.querySelectorAll(".zc-tab").forEach(function(b){b.addEventListener("click",function(){w.querySelectorAll(".zc-tab").forEach(function(x){x.classList.remove("is-on")});w.querySelectorAll(".zc-pane").forEach(function(x){x.classList.remove("is-on")});b.classList.add("is-on");var p=w.querySelector("#"+b.getAttribute("data-zct"));if(p)p.classList.add("is-on");w.querySelectorAll(".zc-tab-more").forEach(function(m){m.classList.toggle("is-on",m.getAttribute("data-zctm")===b.getAttribute("data-zct"))});});});})();</script>';
@@ -256,7 +279,7 @@ class zittme_content extends WidgetHandler
 
 	protected static function blockShell(string $title, string $more_url, string $body, string $style): string
 	{
-		$head = '<div class="zc-head"><h3>' . escape($title) . '</h3>';
+		$head = '<div class="zc-head"><h3>' . escape($title, false) . '</h3>';
 		if ($more_url !== '')
 		{
 			$head .= '<a class="zc-more" href="' . escape($more_url) . '">' . escape(self::lang('zc_more'))
@@ -335,12 +358,15 @@ class zittme_content extends WidgetHandler
 			{
 				foreach (self::allBoards() as $module_srl => $info)
 				{
-					$map[$module_srl] = $info;
+					if (self::isBrowsable($info))
+					{
+						$map[$module_srl] = $info;
+					}
 				}
 				continue;
 			}
 			$info = ModuleModel::getModuleInfoByMid($mid);
-			if ($info && !empty($info->module_srl))
+			if ($info && !empty($info->module_srl) && self::isBrowsable($info))
 			{
 				$map[(int)$info->module_srl] = $info;
 			}
@@ -366,6 +392,63 @@ class zittme_content extends WidgetHandler
 		return !($info && !empty($info->module_srl));
 	}
 
+	/**
+	 * 현재 방문자에게 목록·글 보기가 열려 있는 게시판인지 판정한다.
+	 * 상담 게시판은 제외한다. 관리자가 아니면 게시판 매니저 권한은 보지 않고 그룹 권한만 본다
+	 * (캐시가 같은 그룹의 방문자끼리 공유되므로).
+	 */
+	protected static function isBrowsable($info): bool
+	{
+		static $memo = [];
+		$module_srl = (int)($info->module_srl ?? 0);
+		if ($module_srl < 1)
+		{
+			return false;
+		}
+		$logged = Context::get('logged_info');
+		$memo_key = $module_srl . ':' . intval($logged->member_srl ?? 0);
+		if (isset($memo[$memo_key]))
+		{
+			return $memo[$memo_key];
+		}
+		$memo[$memo_key] = false;
+
+		$full = ModuleModel::getModuleInfoByModuleSrl($module_srl);
+		if (!$full || empty($full->module_srl) || ($full->consultation ?? 'N') === 'Y')
+		{
+			return false;
+		}
+		$site_module_info = Context::get('site_module_info');
+		if (isset($full->domain_srl) && $full->domain_srl > -1 && $full->domain_srl != intval($site_module_info->domain_srl ?? 0))
+		{
+			return false;
+		}
+
+		$viewer = ($logged && !empty($logged->member_srl)) ? $logged : null;
+		if ($viewer && ($viewer->is_admin ?? '') === 'Y')
+		{
+			$grant = ModuleModel::getGrant($full, $viewer);
+		}
+		else
+		{
+			$xml_info = ModuleModel::getModuleActionXml($full->module);
+			$grants = ModuleModel::getModuleGrants($module_srl);
+			if (!$grants->toBool())
+			{
+				return false;
+			}
+			$grant = new \Zittme\Modules\Module\Models\Permission(isset($xml_info->grant) ? (array)$xml_info->grant : [], $grants->data ?: [], null, $viewer);
+		}
+		foreach (['access', 'list', 'view'] as $key)
+		{
+			if (isset($grant->{$key}) && !$grant->{$key})
+			{
+				return false;
+			}
+		}
+		return $memo[$memo_key] = true;
+	}
+
 	protected static function allBoards(): array
 	{
 		static $boards = null;
@@ -376,6 +459,8 @@ class zittme_content extends WidgetHandler
 		$boards = [];
 		$obj = new stdClass;
 		$obj->module = 'board';
+		$site_module_info = \Context::get('site_module_info');
+		$obj->domain_srls = [-1, intval($site_module_info->domain_srl ?? 0)];
 		$output = executeQueryArray('module.getMidList', $obj);
 		if ($output->toBool() && is_array($output->data))
 		{
@@ -419,7 +504,7 @@ class zittme_content extends WidgetHandler
 			}
 			$items[] = [
 				'title' => $oDocument->getTitleText(60),
-				'url' => $oDocument->getPermanentUrl(),
+				'url' => html_entity_decode((string)$oDocument->getPermanentUrl(), \ENT_QUOTES),
 				'thumb' => $need_thumb ? (string)$oDocument->getThumbnail(560, 380, 'crop') : '',
 				'summary' => $need_thumb ? trim((string)$oDocument->getSummary(80)) : '',
 				'date' => $oDocument->getRegdate('m.d'),
@@ -435,7 +520,7 @@ class zittme_content extends WidgetHandler
 	{
 		$obj = new stdClass;
 		$obj->module_srl = implode(',', $module_srls);
-		$obj->list_count = $count;
+		$obj->list_count = min(60, $count * 3);
 		$obj->sort_index = 'list_order';
 		$obj->is_secret = 'N';
 		$obj->statusList = [1];
@@ -444,12 +529,27 @@ class zittme_content extends WidgetHandler
 		{
 			return [];
 		}
+		$parent_srls = [];
+		foreach ($comments as $oComment)
+		{
+			$parent_srls[(int)$oComment->get('document_srl')] = true;
+		}
+		$parents = $parent_srls ? getModel('document')->getDocuments(array_keys($parent_srls), false, false) : [];
 		$items = [];
 		foreach ($comments as $oComment)
 		{
+			$parent = $parents[(int)$oComment->get('document_srl')] ?? null;
+			if (!$parent || !$parent->isExists() || $parent->isSecret() || $parent->get('status') !== 'PUBLIC')
+			{
+				continue;
+			}
+			if (count($items) >= $count)
+			{
+				break;
+			}
 			$items[] = [
 				'title' => trim((string)$oComment->getSummary(60)),
-				'url' => (string)$oComment->getPermanentUrl(),
+				'url' => self::commentUrl($oComment),
 				'thumb' => '',
 				'summary' => '',
 				'date' => $oComment->getRegdate('m.d'),
@@ -461,6 +561,18 @@ class zittme_content extends WidgetHandler
 		return $items;
 	}
 
+	protected static function commentUrl($oComment): string
+	{
+		$comment_srl = (int)$oComment->get('comment_srl');
+		$document_srl = (int)$oComment->get('document_srl');
+		$mid = \ModuleModel::getMidByModuleSrl((int)$oComment->get('module_srl'));
+		if ($mid === '' || $document_srl <= 0)
+		{
+			return html_entity_decode((string)$oComment->getPermanentUrl(), \ENT_QUOTES);
+		}
+		return getNotEncodedFullUrl('', 'mid', $mid, 'document_srl', $document_srl, 'comment_srl', $comment_srl) . '#comment_' . $comment_srl;
+	}
+
 	protected static function moreUrl(array $col, string $first_mid): string
 	{
 		$more = trim((string)($col['more'] ?? ''));
@@ -470,7 +582,7 @@ class zittme_content extends WidgetHandler
 		}
 		if ($more === 'auto')
 		{
-			return getUrl('', 'mid', $first_mid);
+			return getNotEncodedUrl('', 'mid', $first_mid);
 		}
 		return $more;
 	}
@@ -534,6 +646,10 @@ class zittme_content extends WidgetHandler
 			. '.zc-body{flex:1;display:flex;flex-direction:column;min-height:0;}'
 			. '.zc-empty{padding:24px 0;text-align:center;font-size:13px;color:var(--zc-sub);}'
 			. '.zc-list{list-style:none;margin:0;padding:0;flex:1;}'
+			. '.zc-list{list-style:none;margin:0;padding:0;flex:1;display:flex;flex-direction:column;}'
+			. '.zc-list li{flex:0 0 auto;}'
+			. '.zc-body>.zc-list:last-child{margin-bottom:0;}'
+			. '.zc-grid{align-content:start;}'
 			. '.zc-list li+li{border-top:1px solid var(--zc-divider);}'
 			. '.zc-list a{display:flex;align-items:center;gap:8px;padding:8px 2px;text-decoration:none;color:var(--zc-ink);font-size:14px;}'
 			. '.zc-list a:hover .zc-li-title{color:var(--zc-brand);}'
@@ -591,7 +707,12 @@ class zittme_content extends WidgetHandler
 			. '.zc-more-inline:hover{color:var(--zc-brand);}'
 			. '@container (max-width: 480px){.zc-thumbs{grid-template-columns:repeat(2,1fr);}.zc-wz-thumb{flex-basis:92px;height:66px;}.zc-mg.is-lead{min-height:170px;}}'
 			. '@container (max-width: 340px){.zc-webzine a{flex-direction:column;}.zc-wz-thumb{width:100%;flex-basis:auto;height:140px;}.zc-thumbs{grid-template-columns:1fr;}.zc-magazine{grid-template-columns:1fr;}}'
-			. '@media (max-width: 960px){.zc-row{grid-template-columns:1fr 1fr !important;}}'
+			. '.zc{width:100%;box-sizing:border-box;}'
+			. '.zc-row.zc-cols-1{display:block;}'
+			. '.zc-cols-1>.zc-cell{container-type:normal;width:100%;}'
+			. '@media (max-width: 640px){.zc-cols-1 .zc-thumbs{grid-template-columns:repeat(2,1fr);}.zc-cols-1 .zc-wz-thumb{flex-basis:92px;height:66px;}.zc-cols-1 .zc-mg.is-lead{min-height:170px;}}'
+			. '@media (max-width: 380px){.zc-cols-1 .zc-webzine a{flex-direction:column;}.zc-cols-1 .zc-wz-thumb{width:100%;flex-basis:auto;height:140px;}.zc-cols-1 .zc-thumbs,.zc-cols-1 .zc-magazine{grid-template-columns:1fr;}}'
+			. '@media (max-width: 960px){.zc-row:not(.zc-cols-1){grid-template-columns:1fr 1fr !important;}}'
 			. '@media (max-width: 640px){.zc-row{grid-template-columns:1fr !important;}}'
 			// 밝기는 레이아웃(data-theme)과 코어(color_scheme)가 정한다. 기기 설정은 코어가 읽어 옮겨 준다
 			. self::darkRules(':root[data-theme="dark"] .zc,body.color_scheme_dark .zc')

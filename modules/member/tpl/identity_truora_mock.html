@@ -1,0 +1,31 @@
+<div style="max-width:420px;margin:0 auto;padding:20px 16px;font-size:14px;color:#344054;">
+	<div style="background:#fff4e5;border:1px solid #f5a524;color:#8a4b00;padding:10px 12px;border-radius:6px;margin-bottom:16px;">
+		<strong>Truora {$lang->identity_truora_mode_mock}</strong><br />
+		{$lang->about_identity_truora_mock_page}
+	</div>
+	<form action="./" method="get">
+		<input type="hidden" name="act" value="dispMemberIdentityTruoraMock" />
+		<input type="hidden" name="IDENTITY_STATE" value="{$identity_state}" />
+		<input type="hidden" name="mock_submit" value="Y" />
+		<p><label>{$lang->identity_truora_mock_outcome}<br />
+			<select name="mock_outcome" style="width:100%;">
+				<option value="success">success</option>
+				<option value="pending">pending (20s)</option>
+				<option value="declined">failure: declined</option>
+				<option value="expired">failure: expired</option>
+				<option value="canceled">failure: canceled</option>
+			</select></label></p>
+		<p><label>First name<br /><input type="text" name="mock_first_name" value="Maria" style="width:100%;" /></label></p>
+		<p><label>Last name<br /><input type="text" name="mock_last_name" value="Garcia Lopez" style="width:100%;" /></label></p>
+		<p><label>Date of birth<br /><input type="date" name="mock_date_of_birth" value="1990-05-17" style="width:100%;" /></label></p>
+		<p><label>Document number<br /><input type="text" name="mock_document_number" value="GALM900517MDFRPR09" style="width:100%;" /></label></p>
+		<p><label>Country<br /><input type="text" name="mock_country" value="MX" maxlength="2" style="width:100%;" /></label></p>
+		<p><label>Gender<br />
+			<select name="mock_gender" style="width:100%;"><option value="F">F</option><option value="M">M</option><option value="">-</option></select></label></p>
+		<p><label>Phone<br /><input type="text" name="mock_phone" value="+525512345678" style="width:100%;" /></label></p>
+		<p style="display:flex;gap:8px;margin-top:16px;">
+			<button type="submit" class="x_btn x_btn-primary" style="flex:1;">{$lang->identity_truora_mock_finish}</button>
+			<a href="{getUrl('', 'act', 'procMemberIdentityCallback', 'IDENTITY_STATE', $identity_state)}" class="x_btn" style="flex:1;text-align:center;">{$lang->cmd_cancel}</a>
+		</p>
+	</form>
+</div>

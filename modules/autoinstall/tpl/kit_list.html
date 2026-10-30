@@ -1,0 +1,90 @@
+<config autoescape="on" />
+<include target="header.html" />
+<load target="./css/kit.scss" />
+<load target="./js/kit.js" />
+
+<div class="zmst zmkit">
+	<div class="zmst-head">
+		<div class="zmst-head-titles">
+			<span class="zmst-eyebrow">STARTER KIT</span>
+			<h2 class="zmst-title">{$lang->kit_title}</h2>
+		</div>
+		<div class="zmst-account">
+			<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminIndex')}">{$lang->store}</a>
+			<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminKits', 'refresh', 'Y')}">{$lang->kit_cmd_refresh}</a>
+			<a class="zmkit-btn-primary" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminKitExport')}">{$lang->kit_export}</a>
+		</div>
+	</div>
+	<p class="zmkit-intro">{$lang->kit_intro}</p>
+
+	<h3 class="zmkit-h3">{$lang->kit_store_list}</h3>
+	<ul class="zmkit-cards">
+		<!--@foreach($kit_list as $kit)-->
+			<li class="zmkit-card">
+				<div class="zmkit-card-thumb">
+					<img cond="!empty($kit->thumbnail)" src="{$kit->thumbnail}" alt="" loading="lazy" />
+					<span cond="empty($kit->thumbnail)" class="zmkit-card-noimg">KIT</span>
+				</div>
+				<div class="zmkit-card-body">
+					<div class="zmkit-card-top">
+						<span class="zmst-version">v{$kit->last_release_version}</span>
+						<!--@if(($kit->distribution ?? 'FREE') === 'PAID')-->
+							<span class="zmst-price">&#8361;{number_format((int)($kit->price ?? 0))}</span>
+						<!--@else-->
+							<span class="zmst-price is-free">FREE</span>
+						<!--@end-->
+						<span cond="isset($kit_installed[basename($kit->install_path)])" class="zmst-chip zmst-chip-installed">{$lang->kit_installed_badge}</span>
+					</div>
+					<strong class="zmkit-card-title">{$kit->title}</strong>
+					<p class="zmkit-card-summary">{($kit->summary ?? '') ?: cut_str(trim(strip_tags($kit->description)), 140, '...')}</p>
+					<form action="./" method="post" class="zmkit-card-actions">
+						<input type="hidden" name="module" value="autoinstall" />
+						<input type="hidden" name="act" value="procAutoinstallAdminKitFetch" />
+						<input type="hidden" name="package_srl" value="{$kit->package_srl}" />
+						<button type="submit" class="zmkit-btn-primary">{$lang->kit_cmd_preview}</button>
+						<a cond="!empty($kit->demo_url)" class="zmst-btn" href="{$kit->demo_url}" target="_blank" rel="noopener">Demo</a>
+					</form>
+				</div>
+			</li>
+		<!--@end-->
+		<li cond="!count($kit_list)" class="zmkit-empty">{$lang->kit_empty}</li>
+	</ul>
+
+	<div class="zmkit-panel">
+		<h3 class="zmkit-h3">{$lang->kit_upload}</h3>
+		<form action="./" method="post" enctype="multipart/form-data" class="zmkit-upload">
+			<input type="hidden" name="module" value="autoinstall" />
+			<input type="hidden" name="act" value="procAutoinstallAdminKitUpload" />
+			<input type="file" name="kit_file" accept=".zip,application/zip" required />
+			<button type="submit" class="zmst-btn">{$lang->kit_cmd_preview}</button>
+		</form>
+		<p class="zmkit-help">{$lang->kit_upload_hint}</p>
+	</div>
+
+	<div class="zmkit-panel">
+		<h3 class="zmkit-h3">{$lang->kit_history}</h3>
+		<table class="zmkit-table" cond="count($kit_jobs)">
+			<thead>
+				<tr><th>{$lang->kit_col_name}</th><th>{$lang->kit_col_release}</th><th>{$lang->status}</th><th>{$lang->date}</th><th></th></tr>
+			</thead>
+			<tbody>
+				<!--@foreach($kit_jobs as $job)-->
+					<tr>
+						<td><strong>{$job->title}</strong> <span class="zmkit-muted">{$job->kit_id}</span></td>
+						<td>v{$job->kit_version}</td>
+						<td><span class="zmkit-status is-{$job->status}">{$lang->kit_status[$job->status] ?? $job->status}</span></td>
+						<td>{zdate($job->regdate, 'Y-m-d H:i')}</td>
+						<td class="zmkit-right">
+							<!--@if($job->status === 'ready')-->
+								<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminKitPreview', 'job_srl', $job->job_srl)}">{$lang->kit_cmd_preview}</a>
+							<!--@else-->
+								<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminKitJob', 'job_srl', $job->job_srl)}">{$lang->kit_cmd_view}</a>
+							<!--@end-->
+						</td>
+					</tr>
+				<!--@end-->
+			</tbody>
+		</table>
+		<p cond="!count($kit_jobs)" class="zmkit-empty">{$lang->kit_history_empty}</p>
+	</div>
+</div>

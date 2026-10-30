@@ -66,6 +66,8 @@ class Naver extends Base
 		$userInfo->sns_name = $profile['nickname'] ?: $profile['name'];
 		$userInfo->sns_email = $profile['email'] ?? '';
 		$userInfo->sns_profile_image = $profile['profile_image'] ?? '';
+		// Naver only returns an email address it has verified.
+		$userInfo->sns_email_verified = $userInfo->sns_email !== '';
 
 		return $userInfo;
 	}

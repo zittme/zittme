@@ -50,6 +50,9 @@ class zittme_commerce extends WidgetHandler
 	protected static $variant = 'default';
 	protected static $new_hours = 72;
 	protected static $show_price = true;
+	protected static $grade_discount = false;
+	protected static $show_off_badge = false;
+	protected static $show_grade_price = false;
 	protected static $show_badge = true;
 	protected static $show_soldout = true;
 	protected static $carousel_auto = false;
@@ -84,6 +87,20 @@ class zittme_commerce extends WidgetHandler
 			|| file_exists(\RX_BASEDIR . 'modules/commerce/models/Item.php');
 	}
 
+	/**
+	 * 회원 등급가를 보여 주는 설정이면 로그인한 방문자에게는 위젯 캐시를 쓰지 않는다.
+	 * 등급가가 들어간 출력이 다른 방문자에게 재사용되는 것을 막는다.
+	 */
+	public function getCacheVariant($args)
+	{
+		if (trim((string)($args->show_grade_price ?? 'N')) !== 'Y')
+		{
+			return '';
+		}
+		$logged = \Context::get('logged_info');
+		return !empty($logged->member_srl) ? false : '';
+	}
+
 	public function proc($args)
 	{
 		if (!self::hasCommerce())
@@ -100,6 +117,8 @@ class zittme_commerce extends WidgetHandler
 		self::$new_hours = $new_hours > 0 ? $new_hours : 72;
 		self::$show_price = trim((string)($args->show_price ?? 'Y')) !== 'N';
 		self::$show_badge = trim((string)($args->show_badge ?? 'Y')) !== 'N';
+		self::$show_off_badge = trim((string)($args->show_off_badge ?? 'N')) === 'Y';
+		self::$show_grade_price = trim((string)($args->show_grade_price ?? 'N')) === 'Y';
 		self::$show_soldout = trim((string)($args->show_soldout ?? 'Y')) !== 'N';
 		self::$carousel_auto = trim((string)($args->carousel_auto ?? 'N')) === 'Y';
 		$speed = trim((string)($args->carousel_speed ?? 'normal'));
@@ -235,7 +254,7 @@ class zittme_commerce extends WidgetHandler
 			$tabs .= '<button type="button" class="zm-tab' . $on . '" data-zmt="' . $uid . '-' . $i . '">' . escape(self::userLang($cat->title)) . '</button>';
 			$panes .= '<div class="zm-pane' . $on . '" id="' . $uid . '-' . $i . '">' . self::renderItems('grid', $items, $shop, 2) . '</div>';
 			// 더보기는 판 아래가 아니라 탭 줄 오른쪽에 붙는다. 활성 탭 것만 보인다
-			$mores .= '<a class="zm-more zm-tab-more' . $on . '" data-zmtm="' . $uid . '-' . $i . '" href="' . escape(getUrl('', 'mid', $shop->mid, 'v', 'list', 'category', $cat->category_srl)) . '">' . escape(self::lang('zx_more')) . '</a>';
+			$mores .= '<a class="zm-more zm-tab-more' . $on . '" data-zmtm="' . $uid . '-' . $i . '" href="' . escape(getNotEncodedUrl('', 'mid', $shop->mid, 'v', 'list', 'category', $cat->category_srl)) . '">' . escape(self::lang('zx_more')) . '</a>';
 			$i++;
 		}
 		$script = '<script>(function(){var w=document.currentScript.parentNode;w.querySelectorAll(".zm-tab").forEach(function(b){b.addEventListener("click",function(){w.querySelectorAll(".zm-tab").forEach(function(x){x.classList.remove("is-on")});w.querySelectorAll(".zm-pane").forEach(function(x){x.classList.remove("is-on")});b.classList.add("is-on");var p=w.querySelector("#"+b.getAttribute("data-zmt"));if(p)p.classList.add("is-on");w.querySelectorAll(".zm-tab-more").forEach(function(m){m.classList.toggle("is-on",m.getAttribute("data-zmtm")===b.getAttribute("data-zmt"))});});});})();</script>';
@@ -276,7 +295,12 @@ class zittme_commerce extends WidgetHandler
 						$out .= self::card($it, $shop);
 					}
 				}
-				$out .= '</div></div>';
+				$out .= '</div>';
+				if ($auto)
+				{
+					$out .= '<script>(function(){var c=document.currentScript.parentNode,t=0;function p(){clearTimeout(t);c.classList.add("is-paused")}function r(){clearTimeout(t);t=setTimeout(function(){c.classList.remove("is-paused")},1500)}c.addEventListener("touchstart",p,{passive:true});c.addEventListener("touchend",r,{passive:true});c.addEventListener("touchcancel",r,{passive:true});})();</script>';
+				}
+				$out .= '</div>';
 				return $out;
 			case 'list':
 				$out = '<ul class="zm-list">';
@@ -326,7 +350,7 @@ class zittme_commerce extends WidgetHandler
 
 	protected static function itemUrl(object $it, object $shop): string
 	{
-		return getUrl('', 'mid', $shop->mid, 'act', 'dispCommerceItem', 'item_srl', (int)$it->item_srl);
+		return getNotEncodedUrl('', 'mid', $shop->mid, 'act', 'dispCommerceItem', 'item_srl', (int)$it->item_srl);
 	}
 
 	protected static function soldoutCover(object $it): string
@@ -344,13 +368,58 @@ class zittme_commerce extends WidgetHandler
 		{
 			return '';
 		}
-		$price = (int)($it->price ?? 0);
-		$sale = (int)($it->sale_price ?? 0);
+		[$price, $sale, $graded] = self::prices($it);
+		if ($graded > 0)
+		{
+			$now = ($sale > 0 && $sale < $price) ? $sale : $price;
+			return '<span class="zm-price"><s>' . escape(shop_money($now)) . '</s><strong>' . escape(shop_money($graded)) . '</strong></span>';
+		}
 		if ($sale > 0 && $sale < $price)
 		{
-			return '<span class="zm-price"><s>' . escape(shop_money($price)) . '</s><strong>' . escape(shop_money($sale)) . '</strong></span>';
+			$off = self::$show_off_badge ? (int)round(($price - $sale) / $price * 100) : 0;
+			return '<span class="zm-price"><s>' . escape(shop_money($price)) . '</s><strong>' . escape(shop_money($sale)) . '</strong>' . ($off > 0 ? '<em class="zm-off">' . $off . '%</em>' : '') . '</span>';
 		}
 		return '<span class="zm-price"><strong>' . escape(shop_money($price > 0 ? $price : $sale)) . '</strong></span>';
+	}
+
+	/**
+	 * @return array{0: int, 1: int, 2: int}
+	 */
+	protected static function prices(object $it): array
+	{
+		if (isset($it->zm_prices))
+		{
+			return $it->zm_prices;
+		}
+		$price = (int)($it->price ?? 0);
+		$sale = (int)($it->sale_price ?? 0);
+		$grade_price = 0;
+		$item_class = '\Zittme\Modules\Commerce\Models\Item';
+		if (class_exists($item_class) && method_exists($item_class, 'displayPrices'))
+		{
+			$disp = $item_class::displayPrices($it, '');
+			$price = (int)$disp['price'];
+			$sale = (int)$disp['sale_price'];
+			$effective = (int)$disp['effective'];
+			$grade_class = '\Zittme\Modules\Commerce\Models\Grade';
+			if (self::$show_grade_price && ($it->grade_discount ?? 'Y') !== 'N' && $effective > 0 && method_exists($grade_class, 'discountFor') && method_exists($grade_class, 'applyDiscount'))
+			{
+				if (self::$grade_discount === false)
+				{
+					$logged = \Context::get('logged_info');
+					self::$grade_discount = (int)($logged->member_srl ?? 0) > 0 ? $grade_class::discountFor((int)$logged->member_srl) : null;
+				}
+				if (self::$grade_discount)
+				{
+					$graded = $grade_class::applyDiscount($effective, self::$grade_discount);
+					if ($graded < $effective)
+					{
+						$grade_price = $graded;
+					}
+				}
+			}
+		}
+		return $it->zm_prices = [$price, $sale, $grade_price];
 	}
 
 	protected static function badges(object $it): string
@@ -381,11 +450,14 @@ class zittme_commerce extends WidgetHandler
 		{
 			$out .= '<span class="zm-badge">NEW</span>';
 		}
-		$sale = (int)($it->sale_price ?? 0);
-		$price = (int)($it->price ?? 0);
-		if ($sale > 0 && $price > 0 && $sale < $price)
+		if (!self::$show_off_badge)
 		{
-			$out .= '<span class="zm-badge">' . floor((($price - $sale) / $price) * 100) . '%</span>';
+			$sale = (int)($it->sale_price ?? 0);
+			$price = (int)($it->price ?? 0);
+			if ($sale > 0 && $price > 0 && $sale < $price)
+			{
+				$out .= '<span class="zm-badge">' . floor((($price - $sale) / $price) * 100) . '%</span>';
+			}
 		}
 		return $out !== '' ? '<span class="zm-badges">' . $out . '</span>' : '';
 	}
@@ -612,7 +684,7 @@ class zittme_commerce extends WidgetHandler
 		$key = (string)($col['key'] ?? '');
 		if ($source === 'category' && (int)$key > 0)
 		{
-			return getUrl('', 'mid', $shop->mid, 'v', 'list', 'category', (int)$key);
+			return getNotEncodedUrl('', 'mid', $shop->mid, 'v', 'list', 'category', (int)$key);
 		}
 		if ($source === 'promotion')
 		{
@@ -621,16 +693,16 @@ class zittme_commerce extends WidgetHandler
 				: \Zittme\Modules\Commerce\Models\Promotion::get(0, $key);
 			if ($promo && !empty($promo->slug))
 			{
-				return getUrl('', 'mid', $shop->mid, 'v', 'promo', 'p', $promo->slug);
+				return getNotEncodedUrl('', 'mid', $shop->mid, 'v', 'promo', 'p', $promo->slug);
 			}
-			return getUrl('', 'mid', $shop->mid, 'v', 'list');
+			return getNotEncodedUrl('', 'mid', $shop->mid, 'v', 'list');
 		}
 		if (in_array($source, ['newest', 'popular', 'sale', 'recommend'], true))
 		{
 			$f = $source === 'newest' ? 'new' : $source;
-			return getUrl('', 'mid', $shop->mid, 'v', 'list', 'f', $f);
+			return getNotEncodedUrl('', 'mid', $shop->mid, 'v', 'list', 'f', $f);
 		}
-		return getUrl('', 'mid', $shop->mid, 'v', 'list');
+		return getNotEncodedUrl('', 'mid', $shop->mid, 'v', 'list');
 	}
 
 	protected static function guideBox(): string
@@ -694,17 +766,20 @@ class zittme_commerce extends WidgetHandler
 			. '.zm-price{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px;}'
 			. '.zm-price s{font-size:13px;font-weight:500;color:#9aa1ab;}'
 			. '.zm-price strong{font-size:16px;font-weight:800;color:var(--zm-ink);}'
+			. '.zm-price .zm-off{font-style:normal;font-size:14px;font-weight:800;color:#e5484d;}'
 			. '.zm-soldout{position:absolute;left:0;right:0;top:0;aspect-ratio:1/1;border-radius:10px;display:grid;place-items:center;background:rgba(255,255,255,.55);color:var(--zm-sub);font-size:15px;font-weight:800;}'
 			. '.zm-carousel{overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;padding-bottom:6px;flex:1;}'
 			. '.zm-carousel-track{display:flex;gap:16px;}'
 			. '.zm-carousel-track .zm-card{flex:0 0 178px;}'
 			. '.zm-carousel.is-auto{overflow:hidden;}'
-			. '.zm-carousel.is-auto .zm-carousel-track{width:max-content;animation:zmMarquee linear infinite;}'
-			. '.zm-carousel.is-auto.sp-slow .zm-carousel-track{animation-duration:60s;}'
-			. '.zm-carousel.is-auto.sp-normal .zm-carousel-track{animation-duration:40s;}'
-			. '.zm-carousel.is-auto.sp-fast .zm-carousel-track{animation-duration:22s;}'
-			. '.zm-carousel.is-auto:hover .zm-carousel-track,.zm-carousel.is-auto:focus-within .zm-carousel-track{animation-play-state:paused;}'
-			. '@keyframes zmMarquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}'
+			. '.zm-carousel.is-auto .zm-carousel-track{width:max-content;will-change:transform;-webkit-backface-visibility:hidden;backface-visibility:hidden;-webkit-animation:zmMarquee 40s linear infinite;animation:zmMarquee 40s linear infinite;}'
+			. '.zm-carousel.is-auto.sp-slow .zm-carousel-track{-webkit-animation-duration:60s;animation-duration:60s;}'
+			. '.zm-carousel.is-auto.sp-normal .zm-carousel-track{-webkit-animation-duration:40s;animation-duration:40s;}'
+			. '.zm-carousel.is-auto.sp-fast .zm-carousel-track{-webkit-animation-duration:22s;animation-duration:22s;}'
+			. '.zm-carousel.is-auto.is-paused .zm-carousel-track{-webkit-animation-play-state:paused;animation-play-state:paused;}'
+			. '@media (hover: hover) and (pointer: fine){.zm-carousel.is-auto:hover .zm-carousel-track,.zm-carousel.is-auto:focus-within .zm-carousel-track{-webkit-animation-play-state:paused;animation-play-state:paused;}}'
+			. '@-webkit-keyframes zmMarquee{from{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0);}to{-webkit-transform:translate3d(-50%,0,0);transform:translate3d(-50%,0,0);}}'
+			. '@keyframes zmMarquee{from{transform:translate3d(0,0,0);}to{transform:translate3d(-50%,0,0);}}'
 			. '@media (prefers-reduced-motion: reduce){.zm-carousel.is-auto{overflow-x:auto;}.zm-carousel.is-auto .zm-carousel-track{animation:none;width:auto;}}'
 			. '.zm-list{list-style:none;margin:0;padding:0;flex:1;}'
 			. '.zm-list li+li{border-top:1px solid var(--zm-divider);}'

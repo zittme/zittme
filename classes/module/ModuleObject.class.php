@@ -786,6 +786,11 @@ class ModuleObject extends BaseObject
 			else
 			{
 				$template_path = Zittme\Framework\Theme::resolveSkinPath($this->module_path, $mskin, 'm.skins');
+				if (!Zittme\Framework\Storage::exists($template_path) && Zittme\Framework\Theme::split($mskin))
+				{
+					// Responsive theme skins live under skins/, not m.skins/.
+					$template_path = Zittme\Framework\Theme::resolveSkinPath($this->module_path, $mskin, 'skins');
+				}
 				if (!Zittme\Framework\Storage::exists($template_path))
 				{
 					$template_path = sprintf("%sm.skins/%s/", $this->module_path, 'default');

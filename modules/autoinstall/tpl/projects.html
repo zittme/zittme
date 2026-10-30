@@ -16,6 +16,9 @@
 					<strong>{$zittme_account->nick_name}</strong>
 				</span>
 				<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminDisconnect', 'from', 'experts')}">{$lang->store_disconnect_account}</a>
+			<!--@elseif($zittme_store_consent !== 'Y')-->
+				<span class="zmst-consent-note">{$lang->store_consent_needed}</span>
+				<a class="zmst-btn zmst-btn-outline" href="{$zittme_consent_url}">{$lang->cmd_store_consent_settings}</a>
 			<!--@else-->
 				<a class="zmst-btn zmst-btn-outline" href="{$zittme_connect_url}">
 					<img src="{\RX_BASEURL}common/img/logo.png" alt="" />{$lang->store_connect_account}

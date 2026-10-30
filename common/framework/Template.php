@@ -209,7 +209,8 @@ class Template
 	public function setCachePath(?string $cache_path = null)
 	{
 		$clean_path = str_replace('../', '__parentdir/', $this->relative_path);
-		$this->cache_path = $cache_path ?? (\RX_BASEDIR . 'files/cache/template/' . $clean_path . '.compiled.php');
+		// The version is part of the name so that an upgrade never reuses a result compiled by another version.
+		$this->cache_path = $cache_path ?? (\RX_BASEDIR . 'files/cache/template/' . $clean_path . '.compiled-' . preg_replace('/[^0-9a-z]/i', '', \ZITTME_VERSION) . '.php');
 		if ($this->exists)
 		{
 			Debug::addFilenameAlias($this->absolute_path, $this->cache_path);

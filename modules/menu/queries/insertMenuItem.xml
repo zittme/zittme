@@ -14,6 +14,7 @@
         <column name="is_shortcut" var="is_shortcut" notnull="notnull" default="N" />
         <column name="open_window" var="open_window" />
         <column name="expand" var="expand" />
+        <column name="is_hidden" var="is_hidden" />
         <column name="normal_btn" var="normal_btn" />
         <column name="hover_btn" var="hover_btn" />
         <column name="active_btn" var="active_btn" />

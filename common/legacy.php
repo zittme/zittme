@@ -288,6 +288,14 @@ function getUrl(): string
 	else
 	{
 		$url = Context::getRequestUri();
+		if(Zittme\Framework\Router::getLangPrefixLevel() >= 2)
+		{
+			$lang_prefix = Zittme\Framework\Router::getLangPrefix(Context::getLangType());
+			if($lang_prefix !== '')
+			{
+				$url = rtrim($url, '/') . '/' . $lang_prefix;
+			}
+		}
 	}
 
 	return $url;
@@ -311,6 +319,14 @@ function getNotEncodedUrl(): string
 	else
 	{
 		$url = Context::getRequestUri();
+		if(Zittme\Framework\Router::getLangPrefixLevel() >= 2)
+		{
+			$lang_prefix = Zittme\Framework\Router::getLangPrefix(Context::getLangType());
+			if($lang_prefix !== '')
+			{
+				$url = rtrim($url, '/') . '/' . $lang_prefix;
+			}
+		}
 	}
 
 	return $url;

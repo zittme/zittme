@@ -84,6 +84,36 @@
 			<description xml:lang="zh-CN">论坛标题图片的替代文字</description>
 			<description xml:lang="en">Alternative text for the board title image.</description>
         </var>
+        <var name="sub_category_style" type="select">
+            <title xml:lang="ko">하위 분류 표시</title>
+            <title xml:lang="jp">下位分類の表示</title>
+            <title xml:lang="vi">Hiển thị chuyên mục con</title>
+            <title xml:lang="es">Mostrar subcategorías</title>
+            <title xml:lang="zh-TW">子分類顯示方式</title>
+            <title xml:lang="en">Subcategory display</title>
+			<description xml:lang="ko">하위 분류가 있는 게시판에서 하위 분류를 어떻게 보여 줄지 고릅니다. 아래 줄 탭은 여러 단계 분류를 단계마다 한 줄씩 보여 줍니다.</description>
+			<description xml:lang="jp">下位分類がある掲示板で、下位分類の見せ方を選びます。下の行のタブは、複数段階の分類を段階ごとに1行ずつ表示します。</description>
+			<description xml:lang="vi">Chọn cách hiển thị chuyên mục con trên bảng tin có chuyên mục con. Thẻ ở hàng dưới hiển thị mỗi cấp chuyên mục trên một hàng.</description>
+			<description xml:lang="es">Elige cómo se muestran las subcategorías en los foros que las tienen. Las pestañas en una fila inferior muestran cada nivel en su propia fila.</description>
+			<description xml:lang="zh-TW">選擇有子分類的討論板如何顯示子分類。下方列分頁會將多層分類每一層各顯示一列。</description>
+			<description xml:lang="en">Choose how subcategories are shown on boards that have them. Tabs on a lower row show each level of categories on its own row.</description>
+            <options value="dropdown">
+                <title xml:lang="ko">펼침 목록 (이전 방식)</title>
+                <title xml:lang="jp">展開リスト（従来の方式）</title>
+                <title xml:lang="vi">Danh sách mở rộng (như trước)</title>
+                <title xml:lang="es">Lista desplegada (anterior)</title>
+                <title xml:lang="zh-TW">展開清單（原本方式）</title>
+                <title xml:lang="en">Expanded list (previous)</title>
+            </options>
+            <options value="tabs">
+                <title xml:lang="ko">아래 줄 탭</title>
+                <title xml:lang="jp">下の行のタブ</title>
+                <title xml:lang="vi">Thẻ ở hàng dưới</title>
+                <title xml:lang="es">Pestañas en una fila inferior</title>
+                <title xml:lang="zh-TW">下方列分頁</title>
+                <title xml:lang="en">Tabs on a lower row</title>
+            </options>
+        </var>
     </extra_vars>
 </skin>
 

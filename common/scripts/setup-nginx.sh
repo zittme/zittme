@@ -136,11 +136,23 @@ while i < len(body_lines):
     out.append(line)
     i += 1
 
-# 마지막 닫는 중괄호 앞에 include 삽입
-for k in range(len(out) - 1, -1, -1):
-    if out[k].strip().startswith('}') or out[k].strip() == '}':
-        out.insert(k, '    include snippets/zittme.conf; #[zittme-setup]\n')
+# 정규식 location 은 먼저 쓴 것이 이기므로, files/ 아래 PHP 차단이 듣게
+# 최상위 PHP location 이 있으면 그 앞에, 없으면 마지막 닫는 중괄호 앞에 include 삽입
+inc = '    include snippets/zittme.conf; #[zittme-setup]\n'
+inserted = False
+depth = 0
+for k, line in enumerate(out):
+    code = re.sub(r'#.*', '', line)
+    if depth == 1 and re.match(r'^\s*location\s+~\*?\s+\S*\\\.ph', code):
+        out.insert(k, inc)
+        inserted = True
         break
+    depth += code.count('{') - code.count('}')
+if not inserted:
+    for k in range(len(out) - 1, -1, -1):
+        if out[k].strip().startswith('}') or out[k].strip() == '}':
+            out.insert(k, inc)
+            break
 
 lines[s:e+1] = out
 with open(path, 'w', encoding='utf-8') as fp:

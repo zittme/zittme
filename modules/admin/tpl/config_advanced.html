@@ -156,6 +156,133 @@
 			</div>
 		</div>
 		<div class="x_control-group">
+			<label class="x_control-label">{$lang->lang_prefix}</label>
+			<div class="x_controls">
+				<label for="lang_prefix_y" class="x_inline">
+					<input type="radio" name="lang_prefix" id="lang_prefix_y" value="Y" checked="checked"|cond="$lang_prefix" disabled="disabled"|cond="!$lang_prefix_available" />
+					{$lang->cmd_yes}
+				</label>
+				<label for="lang_prefix_n" class="x_inline">
+					<input type="radio" name="lang_prefix" id="lang_prefix_n" value="N" checked="checked"|cond="!$lang_prefix" disabled="disabled"|cond="!$lang_prefix_available" />
+					{$lang->cmd_no}
+				</label>
+				<br />
+				<p class="x_help-block">{$lang->about_lang_prefix}</p>
+				<p class="x_help-block" cond="!$lang_prefix_available" style="color:#c0392b;">{$lang->about_lang_prefix_requires_rewrite}</p>
+				<p class="x_help-block" cond="$lang_prefix_conflict" style="color:#c0392b;">{$lang->about_lang_prefix_conflict}: {$lang_prefix_conflict}</p>
+				<p class="x_help-block" cond="$lang_prefix_redirect">{$lang->about_lang_prefix_redirect}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->sitemap_xml}</label>
+			<div class="x_controls">
+				<label for="sitemap_enabled_y" class="x_inline">
+					<input type="radio" name="sitemap_enabled" id="sitemap_enabled_y" value="Y" checked="checked"|cond="$sitemap_enabled" />
+					{$lang->cmd_yes}
+				</label>
+				<label for="sitemap_enabled_n" class="x_inline">
+					<input type="radio" name="sitemap_enabled" id="sitemap_enabled_n" value="N" checked="checked"|cond="!$sitemap_enabled" />
+					{$lang->cmd_no}
+				</label>
+				<br />
+				<p class="x_help-block">{$lang->about_sitemap_xml}</p>
+				<p class="x_help-block" cond="$sitemap_file_exists" style="color:#c0392b;">{$lang->about_sitemap_file_exists}</p>
+				<label for="sitemap_documents">{$lang->sitemap_documents}</label>
+				<input type="number" name="sitemap_documents" id="sitemap_documents" value="{$sitemap_documents}" min="0" max="5000" />
+				<p class="x_help-block">{$lang->about_sitemap_documents}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->indexnow}</label>
+			<div class="x_controls">
+				<label for="indexnow_enabled_y" class="x_inline">
+					<input type="radio" name="indexnow_enabled" id="indexnow_enabled_y" value="Y" checked="checked"|cond="$indexnow_enabled" />
+					{$lang->cmd_yes}
+				</label>
+				<label for="indexnow_enabled_n" class="x_inline">
+					<input type="radio" name="indexnow_enabled" id="indexnow_enabled_n" value="N" checked="checked"|cond="!$indexnow_enabled" />
+					{$lang->cmd_no}
+				</label>
+				<br />
+				<p class="x_help-block">{$lang->about_indexnow}</p>
+				<p class="x_help-block" cond="$indexnow_enabled && $indexnow_key">{$lang->indexnow_key}: {$indexnow_key}.txt</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->ai_crawlers}</label>
+			<div class="x_controls">
+				<label for="ai_answer" class="x_inline">
+					<input type="checkbox" name="ai_answer" id="ai_answer" value="Y" checked="checked"|cond="$ai_answer" />
+					{$lang->ai_answer}
+				</label>
+				<label for="ai_search" class="x_inline">
+					<input type="checkbox" name="ai_search" id="ai_search" value="Y" checked="checked"|cond="$ai_search" />
+					{$lang->ai_search}
+				</label>
+				<label for="ai_train" class="x_inline">
+					<input type="checkbox" name="ai_train" id="ai_train" value="Y" checked="checked"|cond="$ai_train" />
+					{$lang->ai_train}
+				</label>
+				<br />
+				<p class="x_help-block">{$lang->about_ai_crawlers}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->manage_robots}</label>
+			<div class="x_controls">
+				<label for="robots_enabled_y" class="x_inline">
+					<input type="radio" name="robots_enabled" id="robots_enabled_y" value="Y" checked="checked"|cond="$robots_enabled" />
+					{$lang->cmd_yes}
+				</label>
+				<label for="robots_enabled_n" class="x_inline">
+					<input type="radio" name="robots_enabled" id="robots_enabled_n" value="N" checked="checked"|cond="!$robots_enabled" />
+					{$lang->cmd_no}
+				</label>
+				<br />
+				<p class="x_help-block">{$lang->about_manage_robots}</p>
+				<label for="robots_sitemap" class="x_inline">
+					<input type="checkbox" name="robots_sitemap" id="robots_sitemap" value="Y" checked="checked"|cond="$robots_sitemap" />
+					{$lang->robots_sitemap}
+				</label>
+				<textarea name="robots_custom" id="robots_custom" rows="6" class="x_full-width" style="font-family:Consolas,Menlo,monospace;">{$robots_custom}</textarea>
+				<p class="x_help-block">{$lang->about_robots_custom}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->llms_txt}</label>
+			<div class="x_controls">
+				<label for="llms_txt_y" class="x_inline">
+					<input type="radio" name="llms_txt" id="llms_txt_y" value="Y" checked="checked"|cond="$llms_txt" />
+					{$lang->cmd_yes}
+				</label>
+				<label for="llms_txt_n" class="x_inline">
+					<input type="radio" name="llms_txt" id="llms_txt_n" value="N" checked="checked"|cond="!$llms_txt" />
+					{$lang->cmd_no}
+				</label>
+				<br />
+				<p class="x_help-block">{$lang->about_llms_txt}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->seo_head_extras}</label>
+			<div class="x_controls">
+				<label for="seo_structured_data" class="x_inline">
+					<input type="checkbox" name="seo_structured_data" id="seo_structured_data" value="Y" checked="checked"|cond="$seo_structured_data" />
+					{$lang->seo_structured_data}
+				</label>
+				<label for="seo_pagination_links" class="x_inline">
+					<input type="checkbox" name="seo_pagination_links" id="seo_pagination_links" value="Y" checked="checked"|cond="$seo_pagination_links" />
+					{$lang->seo_pagination_links}
+				</label>
+				<label for="seo_canonical" class="x_inline">
+					<input type="checkbox" name="seo_canonical" id="seo_canonical" value="Y" checked="checked"|cond="$seo_canonical" />
+					{$lang->seo_canonical}
+				</label>
+				<br />
+				<p class="x_help-block">{$lang->about_seo_head_extras}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
 			<label class="x_control-label" for="default_timezone">{$lang->timezone}</label>
 			<div class="x_controls">
 				<select name="default_timezone">

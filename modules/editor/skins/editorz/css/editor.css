@@ -11,11 +11,35 @@
   --edz-accent:var(--edz-accent-set, var(--point-color, var(--hr-brand, var(--zm-brand, var(--rx-point-color, #2f6b4a)))));
   --edz-accent-soft:color-mix(in srgb, var(--edz-accent) 11%, var(--edz-bg));
   --edz-bg:#fff;--edz-surface-2:#f8f9fb;--edz-border:#e8eaef;--edz-text:#15171c;--edz-sub:#5d646f;
-  position:relative;border:1px solid var(--edz-border);border-radius:12px;overflow:hidden;background:var(--edz-bg);}
-.edz.dark{--edz-bg:#171a21;--edz-surface-2:#1d212a;--edz-border:#262b34;--edz-text:#eceef3;--edz-sub:#a4abb8;
-  --edz-accent-soft:color-mix(in srgb, var(--edz-accent) 22%, var(--edz-bg));}
+  position:relative;border:1px solid var(--edz-border);border-radius:12px;transition:border-color .15s,box-shadow .15s;}
+.edz:focus-within{border-color:var(--edz-accent);box-shadow:0 0 0 3px var(--edz-accent-soft);}
+/* 다크 토큰: 중립 회색이 아니라 사이트 포인트색(--edz-accent)을 소량 섞은
+   "브랜드 틴트 다크". 초록 테마면 초록빛 다크, 파랑 테마면 파랑빛 다크가 된다. */
+.edz.dark{
+  --edz-bg:color-mix(in srgb, var(--edz-accent) 10%, #12151b);
+  --edz-surface-2:color-mix(in srgb, var(--edz-accent) 13%, #171b22);
+  --edz-border:color-mix(in srgb, var(--edz-accent) 20%, #232833);
+  --edz-text:#eceef3;--edz-sub:#a7aeba;
+  --edz-accent-soft:color-mix(in srgb, var(--edz-accent) 26%, #12151b);}
 
-.edz__tool{display:flex;align-items:center;gap:3px;padding:8px 10px;border-bottom:1px solid var(--edz-border);flex-wrap:wrap;background:var(--edz-bg);}
+/* 밝은 화면인지 어두운 화면인지는 JS 가 글이 놓이는 자리의 실제 글자색을 보고 data-edz-scheme 에 적는다.
+   레이아웃이 밝기를 따로 정하지 않아 기기 설정만 어두운 경우에도 툴바와 본문이 어긋나지 않는다. */
+.edz[data-edz-scheme="dark"]{
+  --edz-bg:color-mix(in srgb, var(--edz-accent) 10%, #12151b);
+  --edz-surface-2:color-mix(in srgb, var(--edz-accent) 13%, #171b22);
+  --edz-border:color-mix(in srgb, var(--edz-accent) 20%, #232833);
+  --edz-text:#eceef3;--edz-sub:#a7aeba;
+  --edz-accent-soft:color-mix(in srgb, var(--edz-accent) 26%, #12151b);}
+.edz[data-edz-scheme="light"]{
+  --edz-bg:#fff;--edz-surface-2:#f8f9fb;--edz-border:#e8eaef;--edz-text:#15171c;--edz-sub:#5d646f;
+  --edz-accent-soft:color-mix(in srgb, var(--edz-accent) 11%, var(--edz-bg));}
+
+.edz__tool{display:flex;align-items:center;gap:3px;padding:8px 10px;border-bottom:1px solid var(--edz-border);flex-wrap:wrap;background:var(--edz-bg);position:sticky;top:0;z-index:25;border-radius:11px 11px 0 0;}
+@media (max-width:640px){
+  .edz__tool{padding:6px 8px;gap:2px;}
+  .edz__btn,.edz__colorbtn,.edz__sel{min-width:38px;height:38px;}
+  .edz__div{display:none;}
+}
 .edz__btn{min-width:32px;height:32px;padding:0 7px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--edz-sub);cursor:pointer;font-weight:800;font-size:14px;border:0;background:none;}
 .edz__btn:hover{background:var(--edz-surface-2);color:var(--edz-text);}
 .edz__btn--ins{color:var(--edz-accent);}
@@ -50,6 +74,16 @@
 .edz__colorbar--hi{background:#fff3b0;}
 #edzHiliteBtn{flex-direction:column;gap:1px;}
 
+/* 이모지 팝오버 */
+.edz__pop--emoji{flex-direction:column;gap:8px;padding:10px;width:268px;max-width:268px;}
+.edz__emoji-tabs{display:flex;gap:2px;width:100%;border-bottom:1px solid var(--edz-border);padding-bottom:6px;}
+.edz__emoji-tab{flex:1;height:30px;border:0;background:none;border-radius:7px;font-size:16px;line-height:1;cursor:pointer;padding:0;}
+.edz__emoji-tab:hover{background:var(--edz-surface-2);}
+.edz__emoji-tab.is-on{background:var(--edz-accent-soft);}
+.edz__emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:1px;width:100%;max-height:196px;overflow-y:auto;}
+.edz__emoji{height:30px;border:0;background:none;border-radius:6px;font-size:18px;line-height:1;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;}
+.edz__emoji:hover{background:var(--edz-surface-2);}
+
 /* 메뉴형 팝오버 (본문/대제목/소제목) */
 .edz__pop--menu{flex-direction:column;gap:2px;padding:6px;min-width:118px;}
 .edz__pop--menu button{display:block;width:100%;text-align:left;padding:8px 10px;border:0;background:none;border-radius:7px;font-size:13.5px;color:var(--edz-text);cursor:pointer;font-family:inherit;}
@@ -57,22 +91,28 @@
 .edz__mi-h2{font-size:16px;font-weight:800;}
 .edz__mi-h3{font-size:14px;font-weight:700;}
 
-.edz__body{padding:16px;min-height:200px;font-size:16px;line-height:1.8;color:var(--edz-text);outline:0;}
-.edz__body:empty::before{content:'내용을 입력하세요…';color:var(--edz-sub);}
-.edz__body h2{font-size:21px;font-weight:800;margin:8px 0 12px;}
-.edz__body h3{font-size:18px;font-weight:800;margin:6px 0 10px;}
-.edz__body p{margin:0 0 12px;}
-.edz__body blockquote{margin:12px 0;padding:10px 16px;border-left:3px solid var(--edz-accent);background:var(--edz-surface-2);color:var(--edz-sub);}
-.edz__body a{color:var(--edz-accent);text-decoration:underline;}
-.edz__body hr{border:0;border-top:1px solid var(--edz-border);margin:18px 0;}
-.edz__body ul{padding-left:22px;margin:0 0 12px;}
-.edz__body img{max-width:100%;height:auto;}
+/* 아이콘 드롭다운 버튼(정렬·목록) */
+.edz__btn--menu{min-width:auto;gap:1px;padding:0 4px 0 6px;}
+.edz__menu-caret{opacity:.55;}
+/* 아이콘+라벨 메뉴 항목 */
+.edz__pop--icons{min-width:150px;}
+.edz__pop--icons button{display:flex !important;align-items:center;gap:9px;}
+.edz__pop--icons button svg{flex:0 0 auto;color:var(--edz-sub);}
+
+.edz__body{padding:16px;min-height:200px;outline:0;}
+.edz__body:empty::before,.edz__body>p:only-child:has(>br:only-child)::before{content:attr(data-placeholder);color:var(--edz-sub);pointer-events:none;}
+.edz__body>p:only-child:has(>br:only-child){position:relative;}
+.edz__body>p:only-child:has(>br:only-child)::before{position:absolute;left:0;top:0;}
+.edz__body p{margin:0 0 var(--edz-para,0);}
+.edz__foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 14px;border-top:1px solid var(--edz-border);background:var(--edz-surface-2);font-size:12px;color:var(--edz-sub);}
+.edz__count{font-variant-numeric:tabular-nums;white-space:nowrap;}
+.edz__body.is-drop{background:var(--edz-accent-soft);outline:2px dashed var(--edz-accent);outline-offset:-6px;}
+.edz__btn:focus-visible,.edz__sel:focus-visible,.edz__colorbtn:focus-visible,.edz__pop--menu button:focus-visible,.edz__modal-ok:focus-visible,.edz__modal-cancel:focus-visible{outline:2px solid var(--edz-accent);outline-offset:1px;}
+.edz__pop:not([hidden]){animation:edz-pop .12s ease-out;}
+@keyframes edz-pop{from{opacity:0;transform:translateY(-4px) scale(.98);}to{opacity:1;transform:none;}}
+@media (prefers-reduced-motion:reduce){.edz__pop:not([hidden]){animation:none;}.edz{transition:none;}}
+@media (max-width:640px){.edz__hint{display:none;}}
 .edz__body img.edz-img-selected{outline:2px solid var(--edz-accent,#3d6bff);outline-offset:2px;border-radius:2px;}
-.edz__body table.edz-table{border-collapse:collapse;width:100%;table-layout:fixed;margin:12px 0;}
-.edz__body table.edz-table td{border:1px solid var(--edz-border);padding:8px 10px;min-width:30px;vertical-align:top;word-break:break-word;}
-/* 반응형 16:9 임베드 (YouTube 등) — PC/모바일 비율 유지 */
-.edz-embed{position:relative;width:100%;padding-top:56.25%;margin:12px 0;border-radius:10px;overflow:hidden;background:#000;}
-.edz-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
 
 /* 표 편집 플로팅 툴바 */
 .edz__ttool{position:absolute;z-index:30;display:flex;align-items:center;gap:3px;padding:5px 7px;background:var(--edz-bg);border:1px solid var(--edz-border);border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.16);}
@@ -105,11 +145,33 @@
 .edz__vurl:focus{border-color:var(--edz-accent);}
 .edz__vplat{margin-top:8px;font-size:12px;font-weight:700;color:var(--edz-accent);}
 .edz__vpreview{margin-top:12px;}
-.edz__vpreview .edz-embed{margin:0;}
+.edz__vpreview iframe{display:block;}
 .edz__verr{margin-top:10px;font-size:12.5px;color:var(--edz-accent);font-weight:700;}
 .edz__modal-ok[disabled]{opacity:.5;cursor:not-allowed;}
 .edz__modal-ok[disabled]:hover{filter:none;}
 
+/* 링크 레이어 — URL 입력 + 옵션 체크박스 */
+.edz__modal--link .edz__modal-box{width:min(420px,92%);}
+.edz__lurl{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--edz-border);border-radius:9px;background:var(--edz-surface-2);font:inherit;font-size:13.5px;color:var(--edz-text);outline:0;}
+.edz__lurl:focus{border-color:var(--edz-accent);}
+.edz__lopt{display:flex;align-items:center;gap:7px;margin-top:11px;font-size:13px;font-weight:600;color:var(--edz-sub);cursor:pointer;user-select:none;}
+.edz__lopt input{width:15px;height:15px;accent-color:var(--edz-accent);cursor:pointer;}
+.edz__lerr{margin-top:10px;}
+
 
 /* 파일 첨부(xeUploader)는 코어 기본 스타일(jquery.fileupload.css + ckeditor/file_upload.html)을
    그대로 사용한다. editorZ 는 별도 재스킨하지 않아 코어에 탑재된 파일첨부 UI 와 동일하게 보인다. */
+
+/* 파일첨부 드롭존 안정화:
+   코어 기본은 호버 시 안내문구(dropzone-message)를 숨기고 용량제한(upload_info)을
+   대신 보여주는데, 그 display 토글 때문에 flex 아이템이 빠졌다 들어오며 칸 높이가
+   흔들렸다. 용량제한을 호버와 무관하게 버튼 옆에 늘 함께 표시해 토글을 없앤다. */
+.edz .xefu-dropzone p.xefu-dropzone-message,
+.edz .xefu-dropzone:hover p.xefu-dropzone-message{display:inline-block !important;flex:0 1 auto !important;min-width:0 !important;}
+.edz .xefu-dropzone p.upload_info,
+.edz .xefu-dropzone:hover p.upload_info{display:inline-block !important;flex:0 0 auto !important;margin:0 0 0 8px !important;font-size:12px;color:var(--edz-sub);opacity:.7;white-space:nowrap;}
+.edz .xefu-dropzone .allowed_filetypes_container{display:none !important;}
+.edz .xefu-dropzone{padding-left:14px !important;padding-right:14px !important;}
+/* 첨부영역(점선 박스)이 에디터 좌우 끝까지 꽉 차 본문(16px)보다 넓어 보이던 것 →
+   컨테이너에 좌우 바깥 여백을 줘 본문 텍스트와 같은 라인에 맞춘다. */
+.edz .xefu-container{margin:4px 16px 14px !important;}

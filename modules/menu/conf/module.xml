@@ -3,10 +3,41 @@
 	<grants />
 	<actions>
 		<action name="dispMenuMenu" type="mobile" />
+		<action name="sitemap" type="view" standalone="true" />
+		<action name="llms" type="view" standalone="true" />
 		
 		<action name="dispMenuAdminSiteMap" type="view" admin_index="true" menu_name="siteMap" menu_index="true" />
 		<action name="dispMenuAdminSiteDesign" type="view" menu_name="siteDesign" menu_index="true" />
-		
+		<action name="dispMenuAdminSiteEditor" class="Controllers\SiteEditor" menu_name="siteEditor" menu_index="true" />
+		<action name="getMenuAdminEditorState" class="Controllers\SiteEditor" />
+		<action name="getMenuAdminEditorCheckMid" class="Controllers\SiteEditor" />
+		<action name="procMenuAdminEditorSaveItem" class="Controllers\SiteEditor" />
+		<action name="procMenuAdminEditorRestoreItems" class="Controllers\SiteEditor" />
+		<action name="procMenuAdminEditorBindSlot" class="Controllers\SiteEditor" />
+		<action name="procMenuAdminEditorSaveSitemap" class="Controllers\SiteEditor" />
+		<action name="procMenuAdminEditorDeleteSitemap" class="Controllers\SiteEditor" />
+		<action name="getMenuAdminEditorGrants" class="Controllers\SiteEditor" />
+		<action name="getMenuAdminEditorKindCheck" class="Controllers\SiteEditor" />
+		<action name="procMenuAdminEditorChangeKind" class="Controllers\SiteEditor" />
+		<action name="procMenuAdminEditorRevertKind" class="Controllers\SiteEditor" />
+		<action name="procMenuAdminEditorSetSitemapSite" class="Controllers\SiteEditor" />
+		<action name="procMenuAdminEditorRevertRows" class="Controllers\SiteEditor" />
+		<action name="procMenuAdminEditorSaveSeo" class="Controllers\SiteEditorSites" />
+		<action name="procMenuAdminEditorSaveSitemapSeo" class="Controllers\SiteEditorSites" />
+		<action name="procMenuAdminEditorSaveOptions" class="Controllers\SiteEditorSites" />
+		<action name="procMenuAdminEditorSetModuleSite" class="Controllers\SiteEditorSites" />
+		<action name="getMenuAdminEditorThemes" class="Controllers\SiteEditorSites" />
+		<action name="procMenuAdminEditorApplyTheme" class="Controllers\SiteEditorSites" />
+		<action name="procMenuAdminEditorRevertTheme" class="Controllers\SiteEditorSites" />
+		<action name="procMenuAdminEditorCopyToSite" class="Controllers\SiteEditorSites" />
+		<action name="procMenuAdminEditorRemoveCopy" class="Controllers\SiteEditorSites" />
+		<action name="procMenuAdminEditorCreateSite" class="Controllers\SiteEditorSites" />
+		<action name="procMenuAdminEditorRemoveSite" class="Controllers\SiteEditorSites" />
+		<action name="procMenuAdminEditorRemoveSiteHome" class="Controllers\SiteEditorSites" />
+		<action name="getMenuAdminEditorOverview" class="Controllers\SiteEditorSites" />
+		<action name="getMenuAdminEditorRowSnapshot" class="Controllers\SiteEditorSites" />
+		<action name="procMenuAdminEditorRestoreRows" class="Controllers\SiteEditorSites" />
+
 		<action name="getMenuAdminSiteMap" type="model" />
 		<action name="getMenuAdminItemInfo" type="model" />
 		<action name="getMenuAdminTplInfo" type="model" />
@@ -53,6 +84,14 @@
 			<title xml:lang="vi">Menu Editor</title>
 			<title xml:lang="mn">Menu Editor</title>
 			<title xml:lang="tr">Menu Editor</title>
+		</menu>
+		<menu name="siteEditor">
+			<title xml:lang="ko">사이트 제작/편집</title>
+			<title xml:lang="en">Site builder</title>
+			<title xml:lang="ja">サイト作成・編集</title>
+			<title xml:lang="vi">Tạo &amp; sửa trang web</title>
+			<title xml:lang="es">Creador del sitio</title>
+			<title xml:lang="zh-TW">網站建立／編輯</title>
 		</menu>
 		<menu name="siteDesign">
 			<title xml:lang="en">Site Design</title>

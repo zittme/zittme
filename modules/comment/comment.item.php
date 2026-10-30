@@ -933,7 +933,7 @@ class CommentItem extends BaseObject
 					{
 						Zittme\Framework\Storage::protectDirectory(\RX_BASEDIR . 'files/cache/tmp');
 					}
-					FileHandler::getRemoteFile($target_src, $tmp_file);
+					FileHandler::getRemoteFile($target_src, $tmp_file, null, 3, 'GET', null, [], [], [], ['block_private' => true]);
 					if (!Zittme\Framework\Storage::exists($tmp_file))
 					{
 						continue;

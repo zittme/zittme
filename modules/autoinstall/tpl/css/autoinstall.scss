@@ -715,3 +715,35 @@
 	.zmst .zmst-thumb { width: 84px; height: 84px; border-radius: 20px; }
 	.zmst .zmst-head { align-items: flex-start; }
 }
+
+/* 유료 자료 라이선스 현황 + 설치 시 재검증 결과 */
+.zmst .zmst-license-box { padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(38, 119, 227, .35); background: rgba(38, 119, 227, .06); font-size: 13.5px; }
+.zmst .zmst-license-title { display: block; margin-bottom: 8px; font-size: 14px; }
+.zmst .zmst-license-grid { display: grid; grid-template-columns: 110px 1fr; gap: 4px 12px; margin: 0; }
+.zmst .zmst-license-grid dt { opacity: .7; }
+.zmst .zmst-license-grid dd { margin: 0; word-break: break-all; }
+.zmst .zmst-license-grid code { font-size: 13px; font-weight: 700; letter-spacing: .04em; }
+.zmst .zmst-license-result { margin: 10px 0 0; padding-top: 10px; border-top: 1px dashed rgba(38, 119, 227, .35); font-weight: 700; }
+.zmst .zmst-license-result.is-ok { color: #1a7f37; }
+.zmst .zmst-license-result.is-fail { color: #e5484d; }
+[data-theme="dark"] .zmst .zmst-license-box { background: rgba(38, 119, 227, .14); }
+[data-theme="dark"] .zmst .zmst-license-result.is-ok { color: #6fd18b; }
+
+/* 스토어 정보 전송 동의 */
+.zmst .zmst-consent { max-width: 760px; padding: 22px 24px; border: 1px solid var(--zm-border); border-radius: 14px; background: var(--zm-bg); font-size: 14px; line-height: 1.65; }
+.zmst .zmst-consent-lead { margin: 0 0 16px; font-size: 15px; font-weight: 700; }
+.zmst .zmst-consent-grid { display: grid; grid-template-columns: 120px 1fr; gap: 10px 16px; margin: 0; }
+.zmst .zmst-consent-grid dt { font-weight: 700; color: var(--zm-text-sub); }
+.zmst .zmst-consent-grid dd { margin: 0; word-break: break-word; }
+.zmst .zmst-consent-grid ul { margin: 0; padding: 0; list-style: none; }
+.zmst .zmst-consent-grid code { font-size: 12.5px; }
+.zmst .zmst-consent-state { margin: 18px 0 10px; }
+.zmst .zmst-consent-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; }
+.zmst .zmst-consent-actions form { margin: 0; }
+.zmst .zmst-consent-foot { margin: 14px 0 0; font-size: 12.5px; color: var(--zm-text-sub); }
+.zmst .zmst-consent-note { font-size: 12.5px; color: var(--zm-text-sub); }
+@media (max-width: 640px) {
+	.zmst .zmst-consent { padding: 16px; }
+	.zmst .zmst-consent-grid { grid-template-columns: 1fr; gap: 4px; }
+	.zmst .zmst-consent-grid dd { margin-bottom: 8px; }
+}

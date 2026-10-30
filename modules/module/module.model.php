@@ -1622,6 +1622,10 @@ class ModuleModel extends Module
 				$namespaces = config('namespaces') ?? [];
 				foreach ($module_action_info->namespaces ?? [] as $name)
 				{
+					if (preg_match('/^Zittme\\\\/i', $name))
+					{
+						continue;
+					}
 					if(!isset($namespaces['mapping'][$name]))
 					{
 						$info->need_update = true;
@@ -1879,11 +1883,48 @@ class ModuleModel extends Module
 	}
 
 	/**
+	 * Get the default design of the site being visited, when that site has
+	 * its own design file (files/site_design/design_d{domain_srl}.php).
+	 *
+	 * Returns null on the default site, on admin actions, and on any site
+	 * without such a file, so that files/site_design/design_0.php is used.
+	 *
+	 * @return object|null
+	 */
+	public static function getDomainDesignInfo()
+	{
+		static $cache = array();
+
+		$site_module_info = Context::get('site_module_info');
+		$domain_srl = intval($site_module_info->domain_srl ?? 0);
+		if ($domain_srl <= 0 || ($site_module_info->is_default_domain ?? 'N') === 'Y' || stripos(strval(Context::get('act')), 'admin') !== false)
+		{
+			return null;
+		}
+		if (!array_key_exists($domain_srl, $cache))
+		{
+			$designInfo = null;
+			$designInfoFile = RX_BASEDIR . 'files/site_design/design_d' . $domain_srl . '.php';
+			if (is_readable($designInfoFile))
+			{
+				include $designInfoFile;
+			}
+			$cache[$domain_srl] = is_object($designInfo) ? $designInfo : null;
+		}
+		return $cache[$domain_srl];
+	}
+
+	/**
 	 * Get default skin name
 	 */
 	public static function getModuleDefaultSkin($module_name, $skin_type = 'P', $site_srl = 0, $updateCache = true)
 	{
 		$target = ($skin_type == 'M') ? 'mskin' : 'skin';
+		$domainDesignInfo = self::getDomainDesignInfo();
+		if ($domainDesignInfo && !empty($domainDesignInfo->module->{$module_name}->{$target}))
+		{
+			return $domainDesignInfo->module->{$module_name}->{$target};
+		}
 		$designInfoFile = RX_BASEDIR.'files/site_design/design_0.php';
 		if(is_readable($designInfoFile))
 		{

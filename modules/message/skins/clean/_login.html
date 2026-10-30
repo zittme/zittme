@@ -1,0 +1,39 @@
+@version(2)
+<form class="mx-login" action="{{ getUrl('', 'act', 'procMemberLogin') }}" method="post">
+	@csrf
+	<input type="hidden" name="module" value="member" />
+	<input type="hidden" name="act" value="procMemberLogin" />
+	<input type="hidden" name="success_return_url" value="{{ $mx->return_url }}" />
+	<input type="hidden" name="xe_validator_id" value="modules/message/skins/clean/login" />
+	@if (!empty($XE_VALIDATOR_MESSAGE) && ($XE_VALIDATOR_ID ?? '') === 'modules/message/skins/clean/login')
+		<p class="mx-alert" role="alert">{{ $XE_VALIDATOR_MESSAGE }}</p>
+	@endif
+	<label class="mx-field">
+		@if (($member_config->identifier ?? '') === 'email_address')
+			<span class="mx-label">{{ $lang->email_address }}</span>
+			<input class="mx-input" type="email" name="user_id" autocomplete="username" required />
+		@else
+			<span class="mx-label">{{ $lang->user_id }}</span>
+			<input class="mx-input" type="text" name="user_id" autocomplete="username" required />
+		@endif
+	</label>
+	<label class="mx-field">
+		<span class="mx-label">{{ $lang->password }}</span>
+		<input class="mx-input" type="password" name="password" autocomplete="current-password" required />
+	</label>
+	@if (SpamfilterModel::isCaptchaEnabled('login'))
+		<div class="mx-captcha">{!! SpamfilterModel::getCaptcha('login') !!}</div>
+	@endif
+	<label class="mx-check">
+		<input type="checkbox" name="keep_signed" value="Y" />
+		<span>{{ $lang->keep_signed }}</span>
+	</label>
+	<button type="submit" class="mx-btn mx-btn--primary mx-btn--block">{{ $lang->cmd_login }}</button>
+	@if ($mx->type === 'login')
+		<p class="mx-login-links">
+			<a href="{{ getUrl('', 'act', 'dispMemberFindAccount') }}">{{ $lang->cmd_find_member_account }}</a>
+			<span aria-hidden="true">·</span>
+			<a href="{{ getUrl('', 'act', 'dispMemberSignUpForm') }}">{{ $lang->cmd_signup }}</a>
+		</p>
+	@endif
+</form>

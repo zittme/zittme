@@ -14,9 +14,12 @@
 	--zm-brand: #2677e3;
 	--zm-brand-dark: #1b5fc0;
 	--zm-brand-soft: #e8f1fd;
+	--zm-brand-ink: #1c68d0;     /* 연한 바탕 위 파란 글자 */
+	--zm-brand-solid: #1d6bd6;   /* 흰 글자를 얹는 파란 바탕 */
 	--zm-ink: #3d4451;
 	--zm-ink-soft: #6b7280;
 	--zm-ink-faint: #9aa2af;
+	--zm-ink-footer: #5f6673;
 	--zm-line: #e5e9f0;
 	--zm-bg: #f4f7fb;
 	--zm-card: #ffffff;
@@ -48,6 +51,8 @@
 @media (prefers-color-scheme: dark) {
 	:root:not([data-zm-theme="light"]):not([data-theme="light"]) {
 		--zm-brand-soft: rgba(38, 119, 227, 0.18);
+		--zm-brand-ink: #6ba3f4;
+		--zm-ink-footer: #9aa4b5;
 		--zm-ink: #e2e6ee;
 		--zm-ink-soft: #9aa4b5;
 		--zm-ink-faint: #6b7484;
@@ -69,6 +74,8 @@
 }
 :root[data-zm-theme="dark"] {
 	--zm-brand-soft: rgba(38, 119, 227, 0.18);
+	--zm-brand-ink: #6ba3f4;
+	--zm-ink-footer: #9aa4b5;
 	--zm-ink: #e2e6ee;
 	--zm-ink-soft: #9aa4b5;
 	--zm-ink-faint: #6b7484;
@@ -107,6 +114,8 @@
    관리자에서 직접 고른 data-zm-theme 이 있으면 그쪽이 우선이다. */
 :root[data-theme="dark"]:not([data-zm-theme="light"]) {
 	--zm-brand-soft: rgba(38, 119, 227, 0.18);
+	--zm-brand-ink: #6ba3f4;
+	--zm-ink-footer: #9aa4b5;
 	--zm-ink: #e2e6ee;
 	--zm-ink-soft: #9aa4b5;
 	--zm-ink-faint: #6b7484;
@@ -184,6 +193,17 @@ html, body, * { scrollbar-width: thin; scrollbar-color: var(--zm-input-border) t
 .x ::placeholder { color: var(--zm-ink-faint); }
 
 .x .skipNav { position: absolute; left: -9999px; }
+.x .skipNav a { color: var(--zm-brand-ink); }
+.x .skipNav:focus-within {
+	left: 12px;
+	top: 8px;
+	z-index: 1000;
+	padding: 8px 14px;
+	background: var(--zm-surface);
+	border: 1px solid var(--zm-line);
+	border-radius: var(--zm-radius-sm);
+	box-shadow: var(--zm-shadow);
+}
 
 /* ═══════════════ 1. Top Navigation ═══════════════ */
 
@@ -269,8 +289,8 @@ html, body, * { scrollbar-width: thin; scrollbar-color: var(--zm-input-border) t
 	font-size: 14px;
 	white-space: nowrap;
 }
-.x .topnav > ul > li > a:hover { background: var(--zm-brand-soft); color: var(--zm-brand-dark); }
-.x .topnav > ul > li.active > a { color: var(--zm-brand); background: var(--zm-brand-soft); }
+.x .topnav > ul > li > a:hover { background: var(--zm-brand-soft); color: var(--zm-brand-ink); }
+.x .topnav > ul > li.active > a { color: var(--zm-brand-ink); background: var(--zm-brand-soft); }
 
 /* 드롭다운 — top:100% + 투명 border로 시각적 간격을 만들어 호버 갭 없음 */
 .x .topnav ul.sub {
@@ -303,8 +323,8 @@ html, body, * { scrollbar-width: thin; scrollbar-color: var(--zm-input-border) t
 	color: var(--zm-ink);
 	font-size: 13.5px;
 }
-.x .topnav ul.sub a:hover { background: var(--zm-brand-soft); color: var(--zm-brand-dark); }
-.x .topnav ul.sub li.active_ > a, .x .topnav ul.sub li.active > a { color: var(--zm-brand); font-weight: 700; }
+.x .topnav ul.sub a:hover { background: var(--zm-brand-soft); color: var(--zm-brand-ink); }
+.x .topnav ul.sub li.active_ > a, .x .topnav ul.sub li.active > a { color: var(--zm-brand-ink); font-weight: 700; }
 .x .topnav ul.sub form.remove { display: inline; }
 .x .topnav ul.sub .x_close { position: absolute; right: 8px; top: 7px; }
 
@@ -365,7 +385,7 @@ html, body, * { scrollbar-width: thin; scrollbar-color: var(--zm-input-border) t
 .x .header .zm-svc-expert:hover { background: #2b313d; }
 /* 오른쪽 — 스토어 (기존 브랜드색 유지) */
 .x .header .zm-svc-store {
-	background: var(--zm-brand);
+	background: var(--zm-brand-solid);
 	padding-left: 20px;
 	clip-path: polygon(14px 0, 100% 0, 100% 100%, 0 100%);
 }
@@ -1505,7 +1525,7 @@ html[lang="mn"] .x .g11n.active > [disabled] { background-image: url(../img/flag
 	padding: 18px 24px 32px;
 	border-top: 1px solid var(--zm-line);
 	font-size: 12.5px;
-	color: var(--zm-ink-faint);
+	color: var(--zm-ink-footer);
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
@@ -1514,15 +1534,15 @@ html[lang="mn"] .x .g11n.active > [disabled] { background-image: url(../img/flag
 }
 .x .footer p { margin: 0; }
 .x .footer .vr { color: var(--zm-line); margin: 0 4px; }
-.x .footer a, .x .footer .x_btn-link { color: var(--zm-ink-soft); font-size: 12.5px; }
-.x .footer a:hover, .x .footer .x_btn-link:hover { color: var(--zm-brand); }
+.x .footer a, .x .footer .x_btn-link { color: var(--zm-ink-footer); font-size: 12.5px; }
+.x .footer a:hover, .x .footer .x_btn-link:hover { color: var(--zm-brand-ink); }
 .x .footer .goto-site {
 	display: inline-flex;
 	align-items: center;
 	gap: 6px;
 	padding: 8px 16px;
 	border-radius: var(--zm-radius-sm);
-	background: var(--zm-brand);
+	background: var(--zm-brand-solid);
 	color: #fff !important;
 	font-weight: 700;
 	font-size: 13px;

@@ -22,6 +22,13 @@ class pollWidget extends WidgetHandler
 		$oPollModel = getModel('poll');
 		$poll_data = $oPollModel->_getPollinfo($args->poll_srl);
 
+		// A missing or deleted poll has no data for the skin to render
+		if (!$poll_data || !isset($poll_data->poll))
+		{
+			$message = $poll_data && $poll_data->getMessage() ? $poll_data->getMessage() : lang('poll_no_poll_or_deleted_poll');
+			return '<div class="rx_poll_default_wrap">' . escape($message) . '</div>';
+		}
+
 		// Set a path of the template skin (values of skin, colorset settings)
 		$tpl_path = sprintf('%sskins/%s', $this->widget_path, $args->skin);
 		$tpl_file = 'pollview';

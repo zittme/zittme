@@ -14,9 +14,37 @@
 				return;
 			}
 
+			// 유료(라이선스) 자료: 검증을 위해 도메인·버전을 zitt.me 로 보낸다는 사실을 알리고 동의를 받는다
+			const licenseConfirm = btn.data('licenseConfirm');
+			if (licenseConfirm && !confirm(licenseConfirm)) {
+				return;
+			}
+
 			// Disable button while processing
 			btn.addClass('x_btn-disabled').removeClass('x_btn-primary');
 			btn.data('originalText', btn.text());
+
+			// Step 0: 유료 자료는 설치 직전에 라이선스를 다시 검증하고 결과를 화면에 남긴다
+			if (licenseConfirm) {
+				btn.text(btn.data('verifying'));
+				const result = $('#zmst_license_result');
+				result.removeClass('is-ok is-fail').text(btn.data('verifying')).show();
+				const res0 = await Zittme.ajax('autoinstall.procAutoinstallAdminVerifyLicense', {
+					'package_srl': parseInt(btn.data('packageSrl'), 10)
+				}).catch(function(err) {
+					result.addClass('is-fail').text(err.message);
+					NativeAlert(err.message);
+					btn.removeClass('x_btn-disabled').addClass('x_btn-primary');
+					btn.text(btn.data('originalText'));
+				});
+				if (!res0 || res0.message !== 'success' || !res0.licensed) {
+					return;
+				}
+				result.addClass('is-ok').text(
+					btn.data('verified') + ' · ' + res0.key_masked + ' · ' + res0.domain
+					+ (res0.active_date ? ' · ' + res0.active_date : '')
+				);
+			}
 
 			// Step 1: download
 			btn.text(btn.data('downloading'));

@@ -35,6 +35,8 @@ class AutoinstallAdminView extends Autoinstall
 		// zitt.me account link status (shared by store and expert screens)
 		Context::set('zittme_account', Zittme\Modules\Autoinstall\Models\Account::get());
 		Context::set('zittme_connect_url', Zittme\Modules\Autoinstall\Models\Account::getConnectUrl());
+		Context::set('zittme_store_consent', Zittme\Modules\Autoinstall\Models\Account::getConsent());
+		Context::set('zittme_consent_url', Zittme\Modules\Autoinstall\Models\Account::getConsentUrl());
 
 		// Set package types for the view, with appropriate translations.
 		$package_types = [];
@@ -54,6 +56,15 @@ class AutoinstallAdminView extends Autoinstall
 	 */
 	public function dispAutoinstallAdminIndex()
 	{
+		// The first visit after the update asks once whether store information may be sent.
+		if (Zittme\Modules\Autoinstall\Models\Account::getConsent() === '' && empty(ModuleModel::getModuleConfig('autoinstall')->store_consent_shown))
+		{
+			$config = ModuleModel::getModuleConfig('autoinstall') ?: new stdClass;
+			$config->store_consent_shown = date('YmdHis');
+			ModuleController::getInstance()->insertModuleConfig('autoinstall', $config);
+			return $this->dispAutoinstallAdminConsent();
+		}
+
 		$type = trim(Context::get('type') ?? 'featured');
 		$page = intval(Context::get('page')) ?: 1;
 		$search_keyword = escape(trim(Context::get('search_keyword') ?? ''), false);
@@ -270,8 +281,20 @@ class AutoinstallAdminView extends Autoinstall
 	 */
 	public function dispAutoinstallAdminEnterService()
 	{
-		$to = Context::get('to') === 'expert' ? 'expert' : 'store';
-		$this->setRedirectUrl(Zittme\Modules\Autoinstall\Models\Account::getEnterUrl($to));
+		$to = (string)Context::get('to');
+		if (!in_array($to, ['store', 'expert', 'purchase'], true))
+		{
+			$to = 'store';
+		}
+		$package_srl = $to === 'purchase' ? intval(Context::get('package_srl')) : 0;
+
+		// 구매는 zitt.me 계정이 있어야 한다. 연결이 안 돼 있으면 연결(로그인)부터 시킨다.
+		if ($to === 'purchase' && !Zittme\Modules\Autoinstall\Models\Account::get())
+		{
+			$this->setRedirectUrl(Zittme\Modules\Autoinstall\Models\Account::getConnectUrl());
+			return;
+		}
+		$this->setRedirectUrl(Zittme\Modules\Autoinstall\Models\Account::getEnterUrl($to, $package_srl));
 	}
 
 	/**
@@ -296,7 +319,21 @@ class AutoinstallAdminView extends Autoinstall
 		Context::set('package', $package);
 		Context::set('type', $package->type);
 		Context::set('update_info', $package->getUpdateInfo());
+		// 유료 자료 안내는 zitt.me 계정 연결 여부에 따라 달라진다
+		Context::set('zittme_account', Zittme\Modules\Autoinstall\Models\Account::get());
+		Context::set('zittme_connect_url', Zittme\Modules\Autoinstall\Models\Account::getConnectUrl());
 
 		$this->setTemplateFile('package_detail');
+	}
+
+	/**
+	 * Ask whether the account token and the domains of this installation may be sent to zitt.me.
+	 */
+	public function dispAutoinstallAdminConsent()
+	{
+		Context::set('consent_domains', Zittme\Modules\Autoinstall\Models\Account::getSiteDomains());
+		Context::set('consent_has_account', Zittme\Modules\Autoinstall\Models\Account::getStored() !== null);
+		Context::set('consent_date', strval(ModuleModel::getModuleConfig('autoinstall')->store_consent_date ?? ''));
+		$this->setTemplateFile('consent');
 	}
 }

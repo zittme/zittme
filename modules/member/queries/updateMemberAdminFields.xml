@@ -1,0 +1,15 @@
+<query id="updateMemberAdminFields" action="update">
+	<tables>
+		<table name="member" />
+	</tables>
+	<columns>
+		<column name="description" var="description" />
+		<column name="limit_date" var="limit_date" />
+		<column name="denied" var="denied" />
+		<column name="status" var="status" />
+		<column name="extra_vars" var="extra_vars" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="member_srl" var="member_srl" notnull="notnull" filter="number" />
+	</conditions>
+</query>

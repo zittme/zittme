@@ -51,7 +51,7 @@ abstract class Base
 
 	protected function generateState(): string
 	{
-		$state = md5(microtime() . mt_rand());
+		$state = \Zittme\Framework\Security::getRandom(32, 'hex');
 		$_SESSION['member_sns_auth']['state'] = $state;
 		return $state;
 	}

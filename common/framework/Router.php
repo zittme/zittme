@@ -21,6 +21,20 @@ class Router
 			'vars' => ['act' => 'word'],
 			'priority' => 0,
 		),
+		'sitemap.xml' => array(
+			'regexp' => '#^sitemap\.xml$#',
+			'vars' => [],
+			'extra_vars' => ['module' => 'menu', 'act' => 'sitemap'],
+			'enabled_by' => 'seo.sitemap',
+			'priority' => 0,
+		),
+		'llms.txt' => array(
+			'regexp' => '#^llms\.txt$#',
+			'vars' => [],
+			'extra_vars' => ['module' => 'menu', 'act' => 'llms'],
+			'enabled_by' => 'seo.llms_txt',
+			'priority' => 0,
+		),
 		'$mid' => array(
 			'regexp' => '#^(?<mid>[a-zA-Z0-9_-]+)/?$#',
 			'vars' => ['mid' => 'any'],
@@ -89,6 +103,8 @@ class Router
 	protected static $_global_forwarded_cache = array();
 	protected static $_internal_forwarded_cache = array();
 	protected static $_route_cache = array();
+	protected static $_lang_prefix_cache = null;
+	protected static $_lang_prefix_level = null;
 
 	/**
 	 * Return the currently configured rewrite level.
@@ -107,6 +123,115 @@ class Router
 			$level = Config::get('use_rewrite') ? 1 : 0;
 		}
 		return intval($level);
+	}
+
+	/**
+	 * Return the currently configured language prefix level.
+	 *
+	 * 0 = None
+	 * 1 = Recognize language prefixes, but redirect them to the unprefixed URL
+	 * 2 = Full language prefix support
+	 *
+	 * Language prefixes require full rewrite support.
+	 *
+	 * @return int
+	 */
+	public static function getLangPrefixLevel(): int
+	{
+		if (self::$_lang_prefix_level !== null)
+		{
+			return self::$_lang_prefix_level;
+		}
+
+		$level = 0;
+		if (self::getRewriteLevel() >= 2)
+		{
+			if (Config::get('url.lang_prefix'))
+			{
+				$level = 2;
+			}
+			elseif (Config::get('url.lang_prefix_redirect'))
+			{
+				$level = 1;
+			}
+		}
+		return self::$_lang_prefix_level = $level;
+	}
+
+	/**
+	 * Return the list of language codes that are used as a URL prefix.
+	 *
+	 * The default language is excluded because it uses unprefixed URLs.
+	 *
+	 * @return array
+	 */
+	public static function getLangPrefixes(): array
+	{
+		if (self::$_lang_prefix_cache !== null)
+		{
+			return self::$_lang_prefix_cache;
+		}
+
+		$result = array();
+		$default_lang = Config::get('locale.default_lang');
+		foreach (Config::get('locale.enabled_lang') ?: array() as $lang)
+		{
+			if ($lang !== $default_lang)
+			{
+				$result[$lang] = true;
+			}
+		}
+		return self::$_lang_prefix_cache = $result;
+	}
+
+	/**
+	 * Check the path that remains after a language prefix is removed.
+	 *
+	 * Returns null if the path starts with a slash or backslash, because
+	 * it could be read as a protocol-relative URL when used in a redirect.
+	 *
+	 * @param string $path
+	 * @return ?string
+	 */
+	public static function cleanLangRedirectPath(string $path): ?string
+	{
+		if ($path !== '' && ($path[0] === '/' || $path[0] === '\\'))
+		{
+			return null;
+		}
+		return $path;
+	}
+
+	/**
+	 * Return the URL prefix for the given language, or an empty string.
+	 *
+	 * @param string $lang
+	 * @return string
+	 */
+	public static function getLangPrefix(string $lang): string
+	{
+		return isset(self::getLangPrefixes()[$lang]) ? $lang : '';
+	}
+
+	/**
+	 * Check whether a prefix is reserved and cannot be used as a module ID.
+	 *
+	 * Language codes are reserved only while language prefixes are in use.
+	 *
+	 * @param string $prefix
+	 * @return bool
+	 */
+	public static function isReservedPrefix(string $prefix): bool
+	{
+		if (isset(self::$_except_prefixes[$prefix]))
+		{
+			return true;
+		}
+		if (self::getLangPrefixLevel() > 0)
+		{
+			return in_array($prefix, Config::get('locale.enabled_lang') ?: array(), true);
+		}
+		return false;
 	}
 
 	/**
@@ -142,6 +267,51 @@ class Router
 		{
 			$result->setRouteStatus(404);
 			return $result;
+		}
+
+		// Separate the language prefix from the rest of the URL.
+		$lang_prefix_level = self::getLangPrefixLevel();
+		if ($lang_prefix_level > 0)
+		{
+			$slashpos = strpos($url, '/');
+			$prefix = ($slashpos === false) ? $url : substr($url, 0, $slashpos);
+			if (isset(self::getLangPrefixes()[$prefix]))
+			{
+				$url = ($slashpos === false) ? '' : substr($url, $slashpos + 1);
+				if (self::cleanLangRedirectPath($url) === null)
+				{
+					$result->setRouteStatus(404);
+					return $result;
+				}
+				$result->url = $url;
+				if ($lang_prefix_level >= 2)
+				{
+					$result->setRouteOption('lang_prefix', $prefix);
+				}
+				else
+				{
+					$result->setRouteOption('lang_prefix_redirect', $url);
+				}
+				if ($url === '')
+				{
+					return $result;
+				}
+			}
+			elseif ($prefix === Config::get('locale.default_lang') && in_array($prefix, Config::get('locale.enabled_lang') ?: array(), true) && !(($module_info = \ModuleModel::getModuleInfoByMid($prefix)) && $module_info->module))
+			{
+				$url = ($slashpos === false) ? '' : substr($url, $slashpos + 1);
+				if (self::cleanLangRedirectPath($url) === null)
+				{
+					$result->setRouteStatus(404);
+					return $result;
+				}
+				$result->url = $url;
+				$result->setRouteOption('lang_prefix_redirect', $url);
+				if ($url === '')
+				{
+					return $result;
+				}
+			}
 		}
 
 		// Try to detect the prefix. This might be $mid.
@@ -267,6 +437,10 @@ class Router
 		// Try XE-compatible global routes.
 		foreach (self::$_global_routes as $route_info)
 		{
+			if (isset($route_info['enabled_by']) && !Config::get($route_info['enabled_by']))
+			{
+				continue;
+			}
 			if (preg_match($route_info['regexp'], $url, $matches))
 			{
 				$matches = array_filter($matches, 'is_string', \ARRAY_FILTER_USE_KEY);
@@ -426,9 +600,41 @@ class Router
 		// Try XE-compatible global routes.
 		if ($rewrite_level >= 1)
 		{
+			// Static routes with extra_vars only apply when every extra var is given and matches.
+			$static_routes = array();
+			$dynamic_routes = array();
+			foreach (self::$_global_routes as $route => $route_info)
+			{
+				if (!empty($route_info['extra_vars']))
+				{
+					$static_routes[$route] = $route_info;
+				}
+				else
+				{
+					$dynamic_routes[$route] = $route_info;
+				}
+			}
+			foreach ($static_routes as $route => $route_info)
+			{
+				$matched = true;
+				foreach ($route_info['extra_vars'] as $key => $val)
+				{
+					if (!isset($args[$key]) || $args[$key] !== $val)
+					{
+						$matched = false;
+						break;
+					}
+				}
+				if ($matched)
+				{
+					self::$_route_cache[$rewrite_level][$keys_string] = $route;
+					return self::_insertRouteVars($route, array_diff_key($args, $route_info['extra_vars']));
+				}
+			}
+
 			if (!isset($args['act']) || ($args['act'] === 'rss' || $args['act'] === 'atom'))
 			{
-				$result = self::_getBestMatchingRoute(self::$_global_routes, $args);
+				$result = self::_getBestMatchingRoute($dynamic_routes, $args);
 				if ($result !== false)
 				{
 					self::$_route_cache[$rewrite_level][$keys_string] = $result;

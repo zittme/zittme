@@ -49,6 +49,7 @@ class Context
 	public $meta_tags = array();
 	public $meta_images = array();
 	public $opengraph_metadata = array();
+	public $structured_data = array();
 	public $canonical_url = '';
 
 	/**
@@ -257,16 +258,66 @@ class Context
 			exit;
 		}
 
+		// Redirect language prefixes to the unprefixed URL if they are no longer in use.
+		$lang_prefix_redirect = self::$_current_request->getRouteOption('lang_prefix_redirect');
+		if ($lang_prefix_redirect !== null && PHP_SAPI !== 'cli' && in_array($_SERVER['REQUEST_METHOD'] ?? 'GET', array('GET', 'HEAD'), true))
+		{
+			$query = strstr(RX_REQUEST_URL, '?');
+			$target = RX_BASEURL . $lang_prefix_redirect . ($query ?: '');
+			if (Zittme\Framework\Router::cleanLangRedirectPath($lang_prefix_redirect) !== null && Zittme\Framework\URL::isInternalURL($target))
+			{
+				self::redirect($target, 301);
+				exit;
+			}
+		}
+
 		// Load language support.
 		$enabled_langs = self::loadLangSelected();
 		$set_lang_cookie = false;
 		self::set('lang_supported', $enabled_langs);
 
-		if (!empty($site_module_info->settings->language) && !empty($site_module_info->settings->force_language))
+		// Redirect the legacy language query string to the language prefix.
+		if (PHP_SAPI !== 'cli' && Zittme\Framework\Router::getLangPrefixLevel() >= 2 && ($l = (string)self::get('l')) !== '' && isset($enabled_langs[$l]) && in_array($_SERVER['REQUEST_METHOD'] ?? 'GET', array('GET', 'HEAD'), true))
+		{
+			$target_prefix = Zittme\Framework\Router::getLangPrefix($l);
+			if ($target_prefix !== (string)self::$_current_request->getRouteOption('lang_prefix') && Zittme\Framework\Router::cleanLangRedirectPath(self::$_current_request->url) !== null)
+			{
+				$path = self::$_current_request->url;
+				$query = array();
+				parse_str(ltrim(strstr(RX_REQUEST_URL, '?') ?: '', '?'), $query);
+				unset($query['l']);
+				if ($path === '' && $query && ($short_path = Zittme\Framework\Router::getURL($query, Zittme\Framework\Router::getRewriteLevel())) !== '' && strncmp($short_path, 'index.php', 9) !== 0)
+				{
+					$path = $short_path;
+					$query = array();
+				}
+				$target = RX_BASEURL .
+					($target_prefix === '' ? $path : ($target_prefix . ($path === '' ? '' : ('/' . $path)))) .
+					($query ? ('?' . http_build_query($query)) : '');
+				if (Zittme\Framework\URL::isInternalURL($target))
+				{
+					self::redirect($target, 301);
+					exit;
+				}
+			}
+		}
+
+		$lang_prefix = self::$_current_request->getRouteOption('lang_prefix');
+		if ($lang_prefix && isset($enabled_langs[$lang_prefix]))
+		{
+			$lang_type = $lang_prefix;
+			$set_lang_cookie = ($_COOKIE['lang_type'] ?? '') !== $lang_type;
+		}
+		elseif (!empty($site_module_info->settings->language) && !empty($site_module_info->settings->force_language))
 		{
 			$lang_type = $site_module_info->settings->language;
 		}
-		elseif ($lang_type = self::get('l'))
+		elseif (Zittme\Framework\Router::getLangPrefixLevel() >= 2 && self::getRequestMethod() === 'GET' && !(string)self::get('l') && isset($enabled_langs[config('locale.default_lang')]))
+		{
+			$lang_type = config('locale.default_lang');
+			$set_lang_cookie = ($_COOKIE['lang_type'] ?? '') !== $lang_type;
+		}
+		elseif (is_string($l_param = self::get('l')) && ($lang_type = $l_param))
 		{
 			if($_COOKIE['lang_type'] !== $lang_type)
 			{
@@ -1862,11 +1913,32 @@ class Context
 			$force_rewrite_level = 0;
 		}
 
+		// Take the language out of the query string and use it as a prefix
+		$lang_prefix = '';
+		if(!$domain && ($force_rewrite_level ?: $rewrite_level) >= 2 && Zittme\Framework\Router::getLangPrefixLevel() >= 2)
+		{
+			$lang_prefix = Zittme\Framework\Router::getLangPrefix(isset($get_vars['l']) && is_string($get_vars['l']) ? $get_vars['l'] : self::getLangType());
+		}
+
 		// organize URL
 		$query = '';
 		if(count($get_vars) > 0)
 		{
+			$get_vars_without_lang = $get_vars;
+			unset($get_vars_without_lang['l']);
+			$query = Zittme\Framework\Router::getURL($lang_prefix === '' ? $get_vars : $get_vars_without_lang, $force_rewrite_level ?: $rewrite_level);
+		}
+
+		// Fall back to the query string if the URL cannot be shortened
+		if($lang_prefix !== '' && strncmp($query, 'index.php', 9) === 0)
+		{
+			$get_vars['l'] = $lang_prefix;
 			$query = Zittme\Framework\Router::getURL($get_vars, $force_rewrite_level ?: $rewrite_level);
+			$lang_prefix = '';
+		}
+		if($lang_prefix !== '')
+		{
+			$query = $lang_prefix . ($query === '' ? '' : ('/' . $query));
 		}
 
 		// If using SSL always
@@ -3041,6 +3113,92 @@ class Context
 		{
 			self::$_instance->opengraph_metadata[] = array($name, $content);
 		}
+	}
+
+	/**
+	 * Add a structured data (JSON-LD) node.
+	 *
+	 * Empty values are discarded. All nodes are combined into a single
+	 * script element by getStructuredDataScript().
+	 *
+	 * @param string $type
+	 * @param array $data
+	 * @return void
+	 */
+	public static function addStructuredData($type, array $data)
+	{
+		$data = self::_filterStructuredData($data);
+		if (!$type || !count($data))
+		{
+			return;
+		}
+		self::$_instance->structured_data[] = array_merge(array('@type' => $type), $data);
+	}
+
+	/**
+	 * Remove empty values from a structured data node.
+	 *
+	 * @param array $data
+	 * @return array
+	 */
+	protected static function _filterStructuredData(array $data): array
+	{
+		$result = array();
+		foreach ($data as $key => $val)
+		{
+			if (is_array($val))
+			{
+				$val = self::_filterStructuredData($val);
+			}
+			elseif (is_string($val))
+			{
+				// Titles come back HTML-escaped, but JSON strings carry plain text.
+				$val = html_entity_decode($val, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+			}
+			if ($val === null || $val === '' || $val === array())
+			{
+				continue;
+			}
+			$result[$key] = $val;
+		}
+		return $result;
+	}
+
+	/**
+	 * Get structured data nodes.
+	 *
+	 * @return array
+	 */
+	public static function getStructuredData(): array
+	{
+		return self::$_instance->structured_data;
+	}
+
+	/**
+	 * Get the structured data as a script element, or an empty string.
+	 *
+	 * @return string
+	 */
+	public static function getStructuredDataScript(): string
+	{
+		$nodes = self::$_instance->structured_data;
+		if (!count($nodes))
+		{
+			return '';
+		}
+
+		$graph = array('@context' => 'https://schema.org');
+		if (count($nodes) === 1)
+		{
+			$graph = array_merge($graph, $nodes[0]);
+		}
+		else
+		{
+			$graph['@graph'] = $nodes;
+		}
+
+		$json = json_encode($graph, \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES | \JSON_HEX_TAG | \JSON_HEX_AMP);
+		return $json === false ? '' : ('<script type="application/ld+json">' . $json . '</script>');
 	}
 
 	/**

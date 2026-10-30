@@ -1,0 +1,104 @@
+@version(2)
+@if (!empty($mx))
+<div class="mx mx--{{ $mx->type }}" role="main" style="--mx-btn: {{ $mx->colors->button }}; --mx-btn-hover: {{ $mx->colors->button_hover }}; --mx-on-btn: {{ $mx->colors->on_button }}; --mx-accent: {{ $mx->colors->accent }}; --mx-link-l: {{ $mx->colors->link }}; --mx-link-d: {{ $mx->colors->link_dark }};">
+	<div class="mx-wrap">
+		@if ($mx->logo_url || $mx->site_title !== '')
+		<header class="mx-brand">
+			<a class="mx-brand-link" href="{{ $mx->home_url }}">
+				@if ($mx->logo_url)
+					<img class="mx-brand-logo" src="{{ $mx->logo_url }}" alt="" />
+				@endif
+				<span class="mx-brand-name">{!! $mx->site_title !!}</span>
+			</a>
+		</header>
+		@endif
+
+		<section class="mx-card" aria-labelledby="mx-title">
+			<div class="mx-icon" aria-hidden="true">
+				@include('_icon')
+			</div>
+			@if (in_array($mx->type, ['notfound', 'server', 'maintenance', 'badrequest']))
+				<p class="mx-code">{{ $mx->status }}</p>
+			@endif
+			<h1 class="mx-title" id="mx-title">{!! $mx->title !!}</h1>
+			@if ($mx->type !== 'notice')
+				<p class="mx-desc">{!! $mx->desc !!}</p>
+			@endif
+			@if ($mx->reason)
+				<p class="mx-reason">{!! $mx->reason !!}</p>
+			@endif
+
+			@if ($mx->type === 'login')
+				@include('_login')
+			@endif
+
+			<div class="mx-actions">
+				@if ($mx->type === 'login')
+					<a class="mx-btn mx-btn--ghost" href="{{ $mx->home_url }}">{{ $lang->mx_btn_home }}</a>
+				@elseif ($mx->type === 'maintenance' || $mx->type === 'server')
+					<button type="button" class="mx-btn mx-btn--primary" onclick="location.reload()">{{ $lang->mx_btn_retry }}</button>
+					@if ($mx->type === 'server')
+						<a class="mx-btn mx-btn--ghost" href="{{ $mx->home_url }}">{{ $lang->mx_btn_home }}</a>
+					@endif
+				@elseif ($mx->type === 'security')
+					<button type="button" class="mx-btn mx-btn--primary" onclick="if (history.length &gt; 1) { history.back(); } else { location.href = this.getAttribute('data-home'); }" data-home="{{ $mx->home_url }}">{{ $lang->mx_btn_back }}</button>
+					<a class="mx-btn mx-btn--ghost" href="{{ $mx->home_url }}">{{ $lang->mx_btn_home }}</a>
+				@else
+					<a class="mx-btn mx-btn--primary" href="{{ $mx->home_url }}">{{ $lang->mx_btn_home }}</a>
+					<button type="button" class="mx-btn mx-btn--ghost" onclick="if (history.length &gt; 1) { history.back(); } else { location.href = this.getAttribute('data-home'); }" data-home="{{ $mx->home_url }}">{{ $lang->mx_btn_back }}</button>
+				@endif
+				@if ($mx->type === 'denied' && $mx->is_logged)
+					<a class="mx-btn mx-btn--ghost" href="{{ getUrl('', 'act', 'dispMemberLogout') }}">{{ $lang->mx_btn_switch_account }}</a>
+				@endif
+			</div>
+
+			@if ($mx->contact_url && in_array($mx->type, ['denied', 'server', 'maintenance', 'security', 'badrequest']))
+				<p class="mx-contact">{{ $lang->mx_contact_lead }} <a href="{{ $mx->contact_url }}">{{ $lang->mx_btn_contact }}</a></p>
+			@endif
+
+			@if ($mx->type === 'maintenance' && !$mx->is_logged)
+				<details class="mx-fold mx-fold--login">
+					<summary>{{ $lang->msg_administrator_login }}</summary>
+					@include('_login')
+				</details>
+			@endif
+
+			@if ($mx->detail)
+				<details class="mx-fold mx-fold--debug">
+					<summary>{{ $lang->mx_admin_detail }}</summary>
+					<p class="mx-fold-note">{{ $lang->mx_admin_detail_note }}</p>
+					<dl class="mx-debug">
+						<dt>HTTP</dt><dd>{{ $mx->detail->status }}</dd>
+						@if ($mx->detail->message)
+							<dt>{{ $lang->mx_debug_message }}</dt><dd>{!! $mx->detail->message !!}</dd>
+						@endif
+						@if ($mx->detail->detail)
+							<dt>{{ $lang->mx_debug_detail }}</dt><dd><code>{!! $mx->detail->detail !!}</code></dd>
+						@endif
+						@if ($mx->detail->help)
+							<dt>{{ $lang->mx_debug_help }}</dt><dd>{!! $mx->detail->help !!}</dd>
+						@endif
+						@if ($mx->detail->location)
+							<dt>{{ $lang->mx_debug_location }}</dt><dd><code>{!! $mx->detail->location !!}</code></dd>
+						@endif
+						<dt>{{ $lang->mx_debug_request }}</dt><dd><code>{!! $mx->detail->request !!}</code></dd>
+						<dt>{{ $lang->mx_debug_time }}</dt><dd>{{ $mx->detail->time }}</dd>
+					</dl>
+				</details>
+			@endif
+		</section>
+
+		@if ($mx->show_powered)
+			<footer class="mx-foot">Powered by <a href="https://zitt.me" rel="noopener" target="_blank">zittme</a></footer>
+		@endif
+	</div>
+</div>
+@else
+<div class="mx">
+	<div class="mx-wrap">
+		<section class="mx-card">
+			<h1 class="mx-title">{!! $system_message ?? '' !!}</h1>
+		</section>
+	</div>
+</div>
+@endif

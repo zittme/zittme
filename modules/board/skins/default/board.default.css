@@ -157,6 +157,56 @@
 	font-weight: bold;
 	color: #3912b3;
 }
+.board ul.cTab:has(+ .cTabSub) {
+	margin-bottom: 0;
+}
+.board ul.cTabSub {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 4px 0;
+	clear: both;
+	margin: 0 0 35px 0;
+	padding: 8px 0;
+	list-style: none;
+	border-bottom: 1px solid #e0e0e0;
+	line-height: 20px;
+}
+.board ul.cTabSub:has(+ .cTabSub) {
+	margin-bottom: 0;
+}
+.board ul.cTabSub + ul.cTabSub {
+	padding-left: 15px;
+	background: rgba(127, 127, 127, .08);
+}
+.board .cTabSub li {
+	float: none;
+	display: block;
+	margin: 0;
+	padding: 0 12px;
+	border-right: 1px solid #d0d0d0;
+}
+.board .cTabSub li:last-child {
+	border-right: 0;
+}
+.board .cTabSub li a {
+	font-size: 12px;
+	text-decoration: none;
+	color: #666;
+}
+.board .cTabSub li.on a {
+	font-weight: bold;
+	color: #3912b3;
+}
+[data-theme="dark"] .board .cTabSub li a {
+	color: #b4b4b4;
+}
+[data-theme="dark"] .board .cTabSub li.on a {
+	color: #c7b8ff;
+}
+[data-theme="dark"] .board .cTab.cTabTabs li.on a {
+	color: #fff;
+}
 /* Board List */
 /* list.html */
 .board_list {
@@ -1143,3 +1193,4 @@
 	color: #333;
 	background-color: #e6e6e6;
 }
+.read_footer .zm-share { clear: both; margin: 16px 15px; }

@@ -1,0 +1,124 @@
+.zm-share {
+	--zm-share-size: 40px;
+	--zm-share-gap: 8px;
+	--zm-share-line: rgba(127, 127, 127, 0.3);
+	--zm-share-fill: rgba(127, 127, 127, 0.08);
+	--zm-share-focus: #2677e3;
+	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--zm-share-gap) 12px;
+	margin: 24px 0;
+	padding: 0;
+	color: inherit;
+	font-size: 14px;
+	line-height: 1.4;
+}
+@supports (color: color-mix(in srgb, red 50%, transparent)) {
+	.zm-share {
+		--zm-share-line: color-mix(in srgb, currentColor 20%, transparent);
+		--zm-share-fill: color-mix(in srgb, currentColor 6%, transparent);
+	}
+}
+.zm-share[hidden] { display: none; }
+.zm-share__label {
+	font-weight: 600;
+	opacity: 0.72;
+}
+.zm-share .zm-share__list {
+	display: flex !important;
+	flex-direction: row !important;
+	flex-wrap: wrap !important;
+	gap: var(--zm-share-gap) !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	list-style: none !important;
+}
+.zm-share .zm-share__list > li {
+	display: block;
+	width: auto !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	list-style: none !important;
+	border: 0 !important;
+	background: none !important;
+}
+.zm-share .zm-share__list > li[hidden] { display: none !important; }
+.zm-share__list > li::before,
+.zm-share__list > li::marker { content: none; }
+.zm-share .zm-share__btn {
+	box-sizing: border-box;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--zm-share-size) !important;
+	height: var(--zm-share-size) !important;
+	min-width: 0 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 1px solid var(--zm-share-line);
+	border-radius: 50% !important;
+	background: var(--zm-share-fill);
+	color: inherit;
+	font: inherit;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color .15s, border-color .15s, color .15s;
+	-webkit-tap-highlight-color: transparent;
+}
+.zm-share .zm-share__btn:focus-visible {
+	outline: 2px solid var(--zm-share-focus);
+	outline-offset: 2px;
+}
+.zm-share__icon {
+	display: block;
+	width: 20px;
+	height: 20px;
+	flex: none;
+}
+.zm-share .zm-share__btn:hover { border-color: transparent; }
+.zm-share .zm-share__btn--native:hover,
+.zm-share .zm-share__btn--copy:hover,
+.zm-share .zm-share__btn--email:hover { background: #4b5563; color: #fff; }
+.zm-share .zm-share__btn--kakao:hover { background: #fee500; color: #191919; }
+.zm-share .zm-share__btn--facebook:hover { background: #1877f2; color: #fff; }
+.zm-share .zm-share__btn--x:hover { background: #000; color: #fff; }
+.zm-share .zm-share__btn--naver:hover { background: #03c75a; color: #fff; }
+.zm-share .zm-share__btn--band:hover { background: #06c755; color: #fff; }
+.zm-share .zm-share__btn--line:hover { background: #06c755; color: #fff; }
+.zm-share .zm-share__btn--threads:hover { background: #000; color: #fff; }
+.zm-share__toast {
+	position: fixed;
+	left: 50%;
+	bottom: 24px;
+	z-index: 1000;
+	max-width: calc(100vw - 32px);
+	padding: 8px 12px;
+	border-radius: 8px;
+	background: #1f2937;
+	color: #fff;
+	font-size: 13px;
+	text-align: center;
+	opacity: 0;
+	visibility: hidden;
+	transform: translate(-50%, 8px);
+	transition: opacity .2s, transform .2s, visibility 0s .2s;
+	pointer-events: none;
+}
+.zm-share__toast.is-shown {
+	opacity: 1;
+	visibility: visible;
+	transform: translate(-50%, 0);
+	transition: opacity .2s, transform .2s;
+}
+@media (pointer: coarse) {
+	.zm-share { --zm-share-size: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+	.zm-share .zm-share__btn,
+	.zm-share__toast { transition: none; }
+}
+@media print {
+	.zm-share { display: none; }
+}

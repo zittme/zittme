@@ -266,6 +266,10 @@ Zittme.isSameHost = function(url) {
  * @return void
  */
 Zittme.redirectToUrl = function(url, delay) {
+	const scheme = (typeof url === 'string') ? url.replace(/[\u0000-\u0020]/g, '').match(/^([a-zA-Z][a-zA-Z0-9+.-]*):/) : null;
+	if (typeof url !== 'string' || (scheme && !/^https?$/i.test(scheme[1]))) {
+		return;
+	}
 	const callback = function() {
 		if (Zittme.isCurrentUrl(url)) {
 			window.location.href = url;

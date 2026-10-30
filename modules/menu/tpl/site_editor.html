@@ -1,0 +1,9 @@
+<config autoescape="on" />
+<load target="css/site_editor.css" />
+<load target="js/site_editor.js" />
+<div class="zse" id="zse">
+	<noscript><p class="zse-noscript">{$lang->site_editor_noscript}</p></noscript>
+</div>
+<script>
+	window.ZSE_BOOT = {$site_editor_boot|noescape};
+</script>

@@ -177,12 +177,33 @@ class Base extends \ModuleObject
 			}
 		}
 
+		// The site group opens the site editor directly. Its default screens are
+		// reached from inside the editor, so only items added by others stay in the drop-down.
+		$gnb_display_list = (array)$menu->list;
+		foreach ($gnb_display_list as $parentKey => $parentMenu)
+		{
+			if (strpos(html_entity_decode(strval($parentMenu['menu_name_key'] ?? ''), ENT_QUOTES), "menu_gnb['menu']") === false)
+			{
+				continue;
+			}
+			$gnb_display_list[$parentKey]['href'] = 'index.php?module=admin&act=dispMenuAdminSiteEditor';
+			$gnb_display_list[$parentKey]['list'] = array_filter((array)($parentMenu['list'] ?? []), function($child) {
+				return !preg_match("/menu_gnb_sub\['(siteMap|siteDesign|siteEditor)'\]/", html_entity_decode(strval($child['menu_name_key'] ?? ''), ENT_QUOTES));
+			});
+			if ($currentAct && strpos($currentAct, 'dispMenuAdminSiteEditor') === 0)
+			{
+				$parentSrl = $parentKey;
+			}
+			break;
+		}
+
 		// Get list of favorite
 		$output = FavoriteModel::getFavorites(true);
 		Context::set('favorite_list', $output->get('favoriteList'));
 
 		Context::set('subMenuTitle', $subMenuTitle);
 		Context::set('gnbUrlList', $menu->list);
+		Context::set('gnb_display_list', $gnb_display_list);
 		Context::set('parentSrl', $parentSrl);
 		Context::set('gnb_title_info', $gnbTitleInfo ?? null);
 		Context::addBrowserTitle($subMenuTitle);

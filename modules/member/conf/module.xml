@@ -83,6 +83,8 @@
 		<action name="dispMemberIdentityGate" type="view" standalone="true" meta-noindex="true" />
 		<action name="procMemberIdentityResetPassword" type="controller" method="POST" />
 		<action name="procMemberIdentityCallback" type="controller" method="GET|POST" check-csrf="false" standalone="true" meta-noindex="true" />
+		<action name="procMemberIdentityWebhook" type="controller" method="POST" check-csrf="false" standalone="true" meta-noindex="true" />
+		<action name="dispMemberIdentityTruoraMock" type="view" standalone="true" meta-noindex="true" />
 
 		<action name="procMemberRegisterDevice" class="Controllers\Device" route="device/register" standalone="true" />
 		<action name="procMemberLoginWithDevice" class="Controllers\Device" route="device/login" standalone="true" />
@@ -107,6 +109,19 @@
 		<action name="getMemberAdminColorset" type="model" />
 		<action name="getMemberAdminInsertJoinForm" type="model" />
 		<action name="getMemberAdminIPCheck" type="model" />
+		<action name="getMemberAdminListJson" class="Controllers\AdminConsole" />
+		<action name="getMemberAdminQuickCounts" class="Controllers\AdminConsole" />
+		<action name="getMemberAdminDetail" class="Controllers\AdminConsole" />
+		<action name="procMemberAdminUpdateMemberGroups" class="Controllers\AdminConsole" />
+		<action name="procMemberAdminUpdateMemberFields" class="Controllers\AdminConsole" />
+		<action name="procMemberAdminRevokeLogins" class="Controllers\AdminConsole" />
+		<action name="getMemberAdminGroups" class="Controllers\AdminConsole" />
+		<action name="getMemberAdminGroupUsage" class="Controllers\AdminConsole" />
+		<action name="getMemberAdminFileBox" class="Controllers\AdminConsole" />
+		<action name="getMemberAdminSettings" class="Controllers\AdminConsole" />
+		<action name="getMemberAdminSignupPreview" class="Controllers\AdminConsole" />
+		<action name="getMemberAdminNickLog" class="Controllers\AdminConsole" />
+		<action name="procMemberAdminSaveConfigKeys" class="Controllers\AdminConsole" />
 
 		<action name="procMemberAdminInsert" type="controller" ruleset="insertAdminMember" />
 		<action name="procMemberAdminDelete" type="controller" />

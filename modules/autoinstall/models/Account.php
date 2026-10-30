@@ -26,12 +26,68 @@ class Account
 	public const REVOKE_URL = 'https://zitt.me/index.php?module=store&act=procStoreConnectRevoke';
 	public const EXCHANGE_URL = 'https://zitt.me/index.php?module=store&act=procStoreConnectExchange';
 
+	/** 스토어 정보 전송 동의 화면 */
+	public const CONSENT_ACT = 'dispAutoinstallAdminConsent';
+
 	/**
-	 * 저장된 연결 정보. 연결 전이면 null.
+	 * 스토어 정보 전송 동의 상태. 'Y' 동의, 'N' 동의 안 함, '' 아직 고르지 않음.
+	 */
+	public static function getConsent(): string
+	{
+		$config = \ModuleModel::getModuleConfig('autoinstall');
+		$value = (string)($config->store_consent ?? '');
+		return in_array($value, ['Y', 'N'], true) ? $value : '';
+	}
+
+	/**
+	 * 계정 토큰과 이 설치의 도메인 목록을 zitt.me 로 보내도 되는지.
+	 */
+	public static function hasConsent(): bool
+	{
+		return self::getConsent() === 'Y';
+	}
+
+	/**
+	 * 동의 상태 저장.
+	 */
+	public static function setConsent(bool $agreed): void
+	{
+		$config = \ModuleModel::getModuleConfig('autoinstall') ?: new \stdClass;
+		$config->store_consent = $agreed ? 'Y' : 'N';
+		$config->store_consent_date = date('YmdHis');
+		\ModuleController::getInstance()->insertModuleConfig('autoinstall', $config);
+		\Zittme\Framework\Cache::clearGroup('autoinstall');
+	}
+
+	/**
+	 * 동의 화면 주소.
+	 */
+	public static function getConsentUrl(): string
+	{
+		return getNotEncodedUrl('', 'module', 'admin', 'act', self::CONSENT_ACT);
+	}
+
+	/**
+	 * 저장된 연결 정보. 연결 전이거나 정보 전송에 동의하지 않았으면 null.
+	 * 동의가 없으면 토큰을 꺼내지 않으므로 어떤 요청에도 토큰이 실리지 않는다.
 	 *
 	 * @return ?object {token, nick_name, domain, connected_at}
 	 */
 	public static function get(): ?object
+	{
+		if (!self::hasConsent())
+		{
+			return null;
+		}
+		return self::getStored();
+	}
+
+	/**
+	 * 동의와 상관없이 이 사이트에 저장된 연결 정보.
+	 *
+	 * @return ?object
+	 */
+	public static function getStored(): ?object
 	{
 		$config = \ModuleModel::getModuleConfig('autoinstall');
 		$account = $config->zittme_account ?? null;
@@ -103,6 +159,12 @@ class Account
 	 */
 	public static function getConnectUrl(): string
 	{
+		// 정보 전송에 동의하기 전에는 연결 대신 동의 화면으로 보낸다
+		if (!self::hasConsent())
+		{
+			return self::getConsentUrl();
+		}
+
 		// 승인 후 이 주소로 되돌아온다. 팝업 없이 같은 탭에서 오간다.
 		$return_url = getNotEncodedFullUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminConnectCallback');
 
@@ -134,7 +196,7 @@ class Account
 	 */
 	public static function exchangeCode(string $code, string $state): bool
 	{
-		if (!preg_match('/^[a-f0-9]{32}$/', $code))
+		if (!self::hasConsent() || !preg_match('/^[a-f0-9]{32}$/', $code))
 		{
 			return false;
 		}
@@ -174,11 +236,16 @@ class Account
 	 * 스토어/전문가로 자동 로그인 상태로 이동할 주소.
 	 * 서버간 호출로 1회용 티켓을 받아 온다. 실패하면 그냥 공개 주소를 돌려준다.
 	 *
-	 * @param string $to 'store' | 'expert'
+	 * @param string $to 'store' | 'expert' | 'purchase'
+	 * @param int $package_srl purchase 일 때 구매할 자료
 	 */
-	public static function getEnterUrl(string $to): string
+	public static function getEnterUrl(string $to, int $package_srl = 0): string
 	{
 		$fallback = ($to === 'expert') ? 'https://zitt.me/expert' : 'https://zitt.me/store';
+		if ($to === 'purchase' && $package_srl > 0)
+		{
+			$fallback = 'https://zitt.me/store/package/' . $package_srl;
+		}
 		$account = self::get();
 		if (!$account)
 		{
@@ -190,13 +257,15 @@ class Account
 			$request = HTTP::post(self::TICKET_URL, [
 				'token' => $account->token,
 				'to' => $to,
+				'package_srl' => $package_srl,
 			], [], [], ['timeout' => 5]);
 			if ($request->getStatusCode() !== 200)
 			{
 				return $fallback;
 			}
 			$response = json_decode((string)$request->getBody()->getContents());
-			return (!empty($response->enter_url)) ? (string)$response->enter_url : $fallback;
+			$enter_url = Package::safeLink($response->enter_url ?? '');
+			return $enter_url !== '' ? $enter_url : $fallback;
 		}
 		catch (\Throwable $e)
 		{
@@ -211,6 +280,31 @@ class Account
 	{
 		$host = parse_url(getFullSiteUrl(), \PHP_URL_HOST);
 		return strtolower((string)$host);
+	}
+
+	/**
+	 * 시스템 설정(도메인 설정)에 등록된 이 사이트의 도메인 전부. 기본 도메인이 맨 앞.
+	 *
+	 * 라이선스 도메인 검사는 이 목록과 대조한다. 멀티도메인 사이트는 어느 도메인으로
+	 * 라이선스를 등록했든 같은 설치본이므로 하나만 맞으면 된다.
+	 *
+	 * @return array<string>
+	 */
+	public static function getSiteDomains(): array
+	{
+		$domains = [self::getSiteDomain()];
+		try
+		{
+			$output = \ModuleModel::getAllDomains(100, 1);
+			foreach ($output->data ?? [] as $row)
+			{
+				$domains[] = strtolower(trim((string)($row->domain ?? '')));
+			}
+		}
+		catch (\Throwable $e)
+		{
+		}
+		return array_values(array_unique(array_filter($domains, 'strlen')));
 	}
 
 	/** 연결 대기 값 보관 위치 (웹에서 읽히지 않도록 nginx 에서 막는다) */

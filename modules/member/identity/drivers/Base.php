@@ -66,7 +66,22 @@ abstract class Base
 	abstract public function confirm(array $post): array;
 
 	/**
+	 * Extract the state ticket and the provider transaction id from the
+	 * callback request. An empty tid means the user cancelled.
+	 *
+	 * @return array ['state'=>string, 'tid'=>string]
+	 */
+	public function parseCallback(array $request): array
+	{
+		return [
+			'state' => (string)($request['IDENTITY_STATE'] ?? ''),
+			'tid' => trim((string)($request['TID'] ?? '')),
+		];
+	}
+
+	/**
 	 * Absolute URL (with scheme+domain) for a member-module action.
+
 	 */
 	public static function buildActionUrl(string $act, array $extra = []): string
 	{

@@ -115,10 +115,6 @@ class Danal extends Base
 			];
 		}
 
-		// 어떤 필드가 오는지 확인용 — 개인정보인 값은 남기지 않고 키 이름만 기록한다.
-		// (전화번호 필드명을 확정한 뒤 이 줄은 제거할 것)
-		error_log('[identity/danal] CONFIRM fields: ' . implode(',', array_keys($response)));
-
 		// SEX: 1 = male, 0 = female
 		$sex_raw = (string)($response['SEX'] ?? '');
 		$sex = $sex_raw === '1' ? 'M' : ($sex_raw === '0' ? 'F' : '');

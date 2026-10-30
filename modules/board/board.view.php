@@ -403,6 +403,9 @@ class BoardView extends Board
 		$oDocument->add('apparent_module_srl', $this->module_srl);
 		Context::set('oDocument', $oDocument);
 
+		// share buttons
+		Zittme\Modules\Board\Models\Share::prepareView($this->module_info, $oDocument);
+
 		/**
 		 * add javascript filters
 		 */

@@ -29,7 +29,18 @@ class MessageAdminView extends Message
 		Context::set('mskin_list', $mskin_list);
 
 		// Get configurations (using module model object)
-		$config = $oModuleModel->getModuleConfig('message');
+		$config = $oModuleModel->getModuleConfig('message') ?: new stdClass;
+		if (empty($config->skin))
+		{
+			$config->skin = MessageView::DEFAULT_SKIN;
+			$config->mskin = $config->mskin ?? '/USE_RESPONSIVE/';
+		}
+		$config->mskin = $config->mskin ?? '/USE_RESPONSIVE/';
+		$config->accent_color =MessageView::normalizeColor(strval($config->accent_color ?? '')) ?: MessageView::DEFAULT_ACCENT;
+		foreach (['show_logo' => 'Y', 'logo_url' => '', 'contact_url' => '', 'maintenance_message' => '', 'show_powered' => 'N'] as $key => $default)
+		{
+			$config->$key = $config->$key ?? $default;
+		}
 		Context::set('config',$config);
 
 		// Set a template file

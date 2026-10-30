@@ -326,6 +326,11 @@ table tr td.error_description {
 	background: rgba(229, 72, 77, 0.08);
 	border: 1px solid rgba(229, 72, 77, 0.25);
 }
+/* keep the line breaks of a message that explains a cause and quotes the original */
+.x #content .message p {
+	white-space: pre-line;
+	margin: 0;
+}
 .x #content .message.info, .x #content .message.update {
 	color: var(--zm-brand-dark);
 	background: var(--zm-brand-soft);

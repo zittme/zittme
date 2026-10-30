@@ -32,12 +32,8 @@ class Installer
 			Storage::delete($temp_filename);
 		}
 
-		// Make the download request.
-		$headers = [
-			'Accept' => 'application/json',
-			'User-Agent' => sprintf('Autoinstall Rhymix/%s PHP/%s (%s)', \RX_VERSION, \PHP_VERSION, \PHP_OS_FAMILY),
-		];
-		$request = HTTP::download($download_url, $temp_filename, 'GET', null, $headers, [], ['timeout' => 20]);
+		// Make the download request. 유료 자료는 연결 계정 토큰으로 라이선스를 확인받는다.
+		$request = Package::downloadFile($download_url, $temp_filename, 20);
 		if ($request->getStatusCode() !== 200)
 		{
 			return new BaseObject(-1, 'msg_autoinstall_download_failed');

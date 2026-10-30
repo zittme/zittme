@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<widget version="0.1">
+<widget version="0.2">
 	<title xml:lang="ko">통합 커머스 위젯</title>
 	<title xml:lang="en">Unified Commerce Widget</title>
 	<description xml:lang="ko">
@@ -13,8 +13,8 @@
 		Choose what to show once - newest, popular, on sale, recommended, a category, a promotion, or specific items - and the page keeps itself up to date.
 		Pick a display: grid, carousel, list, feature card, or category tabs. One row can be split into up to four slots, each showing something different.
 	</description>
-	<version>0.2.0</version>
-	<date>2026-08-31</date>
+	<version>0.2.1</version>
+	<date>2026-09-15</date>
 	<author email_address="contact@zzan.me" link="https://zzan.me/">
 		<name xml:lang="ko">ZZAN Studio</name>
 		<name xml:lang="en">ZZAN Studio</name>
@@ -73,6 +73,32 @@
 			<name xml:lang="en">Show badges</name>
 			<options><value>Y</value><name xml:lang="ko">보임</name><name xml:lang="en">Show</name></options>
 			<options><value>N</value><name xml:lang="ko">감춤</name><name xml:lang="en">Hide</name></options>
+		</var>
+		<var id="show_off_badge" type="select">
+			<name xml:lang="ko">할인율 표시 위치</name>
+			<name xml:lang="en">Discount rate position</name>
+			<name xml:lang="ja">割引率の表示位置</name>
+			<name xml:lang="vi">Vị trí hiển thị mức giảm giá</name>
+			<name xml:lang="es">Posición del porcentaje de descuento</name>
+			<name xml:lang="zh-TW">折扣率顯示位置</name>
+			<options><value>N</value><name xml:lang="ko">뱃지 줄 (이전 방식)</name><name xml:lang="en">In the badge row (previous)</name><name xml:lang="ja">バッジの列（従来どおり）</name><name xml:lang="vi">Trong hàng huy hiệu (như trước)</name><name xml:lang="es">En la fila de insignias (anterior)</name><name xml:lang="zh-TW">徽章列（原本方式）</name></options>
+			<options><value>Y</value><name xml:lang="ko">가격 옆 빨간 글씨</name><name xml:lang="en">Next to the price, in red</name><name xml:lang="ja">価格の横に赤字で</name><name xml:lang="vi">Cạnh giá, chữ đỏ</name><name xml:lang="es">Junto al precio, en rojo</name><name xml:lang="zh-TW">價格旁紅字</name></options>
+		</var>
+		<var id="show_grade_price" type="select">
+			<name xml:lang="ko">회원 등급가 표시</name>
+			<name xml:lang="en">Member grade price</name>
+			<name xml:lang="ja">会員等級価格の表示</name>
+			<name xml:lang="vi">Hiển thị giá theo hạng thành viên</name>
+			<name xml:lang="es">Precio por nivel de miembro</name>
+			<name xml:lang="zh-TW">顯示會員等級價</name>
+			<description xml:lang="ko">커머스에서 등급 할인을 쓰는 경우, 로그인한 회원에게 등급 할인이 적용된 가격을 보여 줍니다.</description>
+			<description xml:lang="en">If the shop uses grade discounts, logged-in members see the price with their grade discount applied.</description>
+			<description xml:lang="ja">ショップで等級割引を使う場合、ログイン中の会員に等級割引後の価格を表示します。</description>
+			<description xml:lang="vi">Nếu cửa hàng dùng giảm giá theo hạng, thành viên đã đăng nhập sẽ thấy giá sau khi giảm.</description>
+			<description xml:lang="es">Si la tienda usa descuentos por nivel, los miembros con sesión iniciada ven el precio con su descuento.</description>
+			<description xml:lang="zh-TW">商店使用等級折扣時，已登入會員會看到套用等級折扣後的價格。</description>
+			<options><value>N</value><name xml:lang="ko">감춤</name><name xml:lang="en">Hide</name><name xml:lang="ja">表示しない</name><name xml:lang="vi">Ẩn</name><name xml:lang="es">Ocultar</name><name xml:lang="zh-TW">隱藏</name></options>
+			<options><value>Y</value><name xml:lang="ko">보임</name><name xml:lang="en">Show</name><name xml:lang="ja">表示する</name><name xml:lang="vi">Hiện</name><name xml:lang="es">Mostrar</name><name xml:lang="zh-TW">顯示</name></options>
 		</var>
 		<var id="show_soldout" type="select">
 			<name xml:lang="ko">품절 상품</name>

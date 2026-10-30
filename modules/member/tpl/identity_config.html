@@ -137,6 +137,62 @@
 		</div>
 	</fieldset>
 
+	<fieldset style="margin-bottom:24px;">
+		<legend style="font-weight:bold;">Truora ({$lang->identity_truora_legend})</legend>
+		<p class="x_help-block" style="margin-bottom:12px;">{$lang->about_identity_truora}</p>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->identity_truora_mode}</label>
+			<div class="x_controls">
+				<label class="x_inline"><input type="radio" name="identity_truora_mode" value="live" checked="checked"|cond="$config->identity_truora_mode !== 'mock'" /> {$lang->identity_truora_mode_live}</label>
+				<label class="x_inline"><input type="radio" name="identity_truora_mode" value="mock" checked="checked"|cond="$config->identity_truora_mode === 'mock'" /> {$lang->identity_truora_mode_mock}</label>
+				<p class="x_help-block">{$lang->about_identity_truora_mode}</p>
+				<p cond="$config->identity_truora_mode === 'mock' && $config->identity_provider === 'truora' && $config->identity_enable === 'Y'" class="x_help-block" style="color:#e5484d;font-weight:bold;">{$lang->identity_truora_mock_warning}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="identity_truora_api_key">API key</label>
+			<div class="x_controls">
+				<input type="password" id="identity_truora_api_key" name="identity_truora_api_key" value="" placeholder="{$config->identity_truora_api_key !== '' ? $lang->identity_truora_secret_saved : ''}" class="x_input-xlarge" autocomplete="new-password" />
+				<p class="x_help-block">{$lang->about_identity_truora_api_key}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="identity_truora_flow_id">Flow ID</label>
+			<div class="x_controls">
+				<input type="text" id="identity_truora_flow_id" name="identity_truora_flow_id" value="{$config->identity_truora_flow_id}" class="x_input-xlarge" autocomplete="off" placeholder="IPF..." />
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="identity_truora_countries">{$lang->identity_truora_countries}</label>
+			<div class="x_controls">
+				<input type="text" id="identity_truora_countries" name="identity_truora_countries" value="{$config->identity_truora_countries}" class="x_input-large" placeholder="MX,CO,PE,CL" />
+				<p class="x_help-block">{$lang->about_identity_truora_countries}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="identity_truora_ttl">{$lang->identity_truora_ttl}</label>
+			<div class="x_controls">
+				<input type="number" id="identity_truora_ttl" name="identity_truora_ttl" value="{$config->identity_truora_ttl}" min="5" max="2880" style="width:90px;" />
+				<p class="x_help-block">{$lang->about_identity_truora_ttl}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="identity_truora_webhook_secret">{$lang->identity_truora_webhook_secret}</label>
+			<div class="x_controls">
+				<input type="password" id="identity_truora_webhook_secret" name="identity_truora_webhook_secret" value="" placeholder="{$config->identity_truora_webhook_secret !== '' ? $lang->identity_truora_secret_saved : ''}" class="x_input-xlarge" autocomplete="new-password" />
+				<p class="x_help-block">{$lang->about_identity_truora_webhook_secret}</p>
+				<label class="x_inline"><input type="checkbox" name="identity_truora_clear_secrets" value="Y" /> {$lang->identity_truora_clear_secrets}</label>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->identity_truora_webhook_url}</label>
+			<div class="x_controls">
+				<input type="text" readonly value="{$identity_webhook_url}" class="x_input-xlarge" onclick="this.select();" />
+				<p class="x_help-block">{$lang->about_identity_truora_webhook_url}</p>
+			</div>
+		</div>
+	</fieldset>
+
 	<div class="x_clearfix btnArea">
 		<span class="x_pull-right"><input class="x_btn x_btn-primary" type="submit" value="{$lang->cmd_save}" /></span>
 	</div>

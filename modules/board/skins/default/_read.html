@@ -61,6 +61,7 @@
 				<!--@end-->
 			</span>
 			<a class="document_{$oDocument->document_srl} action" href="#popup_menu_area" onclick="return false">{$lang->cmd_document_do}</a>
+			<!--@if(($module_info->share_use ?? 'N') !== 'Y')-->
 			<ul class="sns">
 				<li class="twitter link"><a href="https://twitter.com/">Twitter</a></li>
 				<li class="facebook link"><a href="https://www.facebook.com/">Facebook</a></li>
@@ -83,7 +84,9 @@
 					});
 				});
 			</script>
+			<!--@end-->
 		</div>
+		{$board_share|noescape}
 		<div class="sign" cond="$module_info->display_sign!='N'&&($oDocument->getProfileImage()||$oDocument->getSignature())">
 			<img cond="$oDocument->getProfileImage()" src="{$oDocument->getProfileImage()}" alt="Profile" class="pf" />
 			<div cond="$oDocument->getSignature()" class="tx">{$oDocument->getSignature()}</div>

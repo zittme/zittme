@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<widget version="0.3.1">
+<widget version="0.2">
 	<title xml:lang="ko">통합 콘텐츠 위젯</title>
 	<title xml:lang="en">Unified Content Widget</title>
 	<description xml:lang="ko">
@@ -9,8 +9,8 @@
 	<description xml:lang="en">
 		One widget renders one responsive row of 1-4 content slots (list/webzine/thumbnail/magazine/tab). Stack rows to build a front page.
 	</description>
-	<version>0.3.2</version>
-	<date>2026-08-20</date>
+	<version>0.3.5</version>
+	<date>2026-09-15</date>
 	<author email_address="contact@zzan.me" link="https://zzan.me/">
 		<name xml:lang="ko">ZZAN Studio</name>
 		<name xml:lang="en">ZZAN Studio</name>
@@ -34,6 +34,7 @@
 			<options><value>wz_full</value><name xml:lang="ko">웹진 한 줄 (100)</name><name xml:lang="en">Webzine, full row (100)</name></options>
 			<options><value>thumb_full</value><name xml:lang="ko">섬네일 그리드 한 줄 (100)</name><name xml:lang="en">Thumbnail grid, full row (100)</name></options>
 			<options><value>mg_full</value><name xml:lang="ko">매거진 한 줄 (100)</name><name xml:lang="en">Magazine, full row (100)</name></options>
+			<options><value>list_full</value><name xml:lang="ko">목록 한 줄 (100)</name><name xml:lang="en">List, full row (100)</name></options>
 			<options><value>mixed_list</value><name xml:lang="ko">혼합(웹진+목록) 62 + 목록 38</name><name xml:lang="en">Mixed (webzine + list) 62 + List 38</name></options>
 			<options><value>custom</value><name xml:lang="ko">직접 구성 (아래 폭 비율/슬롯 형태 사용)</name><name xml:lang="en">Custom (use the width ratio and slot styles below)</name></options>
 		</var>

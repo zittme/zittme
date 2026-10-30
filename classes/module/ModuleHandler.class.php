@@ -373,7 +373,7 @@ class ModuleHandler extends Handler
 		if(isset($xml_info->action->{$this->act}))
 		{
 			$allowedMethodList = explode('|', $xml_info->action->{$this->act}->method);
-			if(!in_array($_SERVER['REQUEST_METHOD'], $allowedMethodList))
+			if(!in_array($_SERVER['REQUEST_METHOD'] === 'HEAD' ? 'GET' : $_SERVER['REQUEST_METHOD'], $allowedMethodList))
 			{
 				return self::_createErrorMessage(-1, 'msg_method_not_allowed', 405);
 			}
@@ -553,7 +553,7 @@ class ModuleHandler extends Handler
 
 				// SECISSUE also check REQUEST_METHOD for forwarded actions
 				$allowedMethodList = explode('|', $xml_info->action->{$this->act}->method);
-				if(!in_array($_SERVER['REQUEST_METHOD'], $allowedMethodList))
+				if(!in_array($_SERVER['REQUEST_METHOD'] === 'HEAD' ? 'GET' : $_SERVER['REQUEST_METHOD'], $allowedMethodList))
 				{
 					return self::_createErrorMessage(-1, 'msg_method_not_allowed', 405);
 				}

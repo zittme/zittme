@@ -34,6 +34,7 @@ class Base
 	 */
 	public static $supported_providers = [
 		'danal',
+		'truora',
 	];
 
 	/**
@@ -58,6 +59,12 @@ class Base
 			$config->identity_danal_cpid = $config->identity_danal_cpid ?? '';
 			$config->identity_danal_cppwd = $config->identity_danal_cppwd ?? '';
 			$config->identity_danal_charset = $config->identity_danal_charset ?? 'UTF-8';
+			$config->identity_truora_mode = ($config->identity_truora_mode ?? 'live') === 'mock' ? 'mock' : 'live';
+			$config->identity_truora_api_key = $config->identity_truora_api_key ?? '';
+			$config->identity_truora_flow_id = $config->identity_truora_flow_id ?? '';
+			$config->identity_truora_countries = $config->identity_truora_countries ?? '';
+			$config->identity_truora_webhook_secret = $config->identity_truora_webhook_secret ?? '';
+			$config->identity_truora_ttl = (int)($config->identity_truora_ttl ?? 30) ?: 30;
 
 			self::$config = $config;
 		}
@@ -273,6 +280,20 @@ class Base
 	}
 
 	/**
+	 * Whether a confirmed result is already stored under the ticket (e.g. by a
+	 * provider webhook before the browser returned).
+	 */
+	public static function hasTicketResult(string $state): bool
+	{
+		if (!preg_match('/^[a-f0-9]{32}$/', $state))
+		{
+			return false;
+		}
+		$data = json_decode((string)\FileHandler::readFile(self::ticketPath($state)), true);
+		return is_array($data) && !empty($data['ci']) && !empty($data['stored_at']) && (time() - $data['stored_at']) <= self::TICKET_TTL;
+	}
+
+	/**
 	 * Claim a ticket into the CURRENT session and apply member policies
 	 * (CI duplicate / re-verify same-person / persist). Returns
 	 * ['success'=>bool, 'message'=>string].
@@ -360,8 +381,11 @@ class Base
 				$identityModel->saveForMember($member_srl, $result);
 			}
 
-			// 나이 기준 그룹 편입 (관리자가 규칙을 켠 경우에만)
-			self::applyAgeGroups($member_srl, (string)($result['birthday'] ?? ''));
+			// 나이 기준 그룹 편입 (관리자가 규칙을 켠 경우에만, 시험용 목업 인증은 제외)
+			if (!Drivers\Truora::isMockCi((string)$result['ci']))
+			{
+				self::applyAgeGroups($member_srl, (string)($result['birthday'] ?? ''));
+			}
 		}
 
 		return ['success' => true, 'message' => lang('identity_success')];

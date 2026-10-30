@@ -3,6 +3,7 @@
 namespace Zittme\Framework\Themes;
 
 use Zittme\Framework\Cache;
+use Zittme\Framework\DB;
 use Zittme\Framework\Storage;
 use Zittme\Framework\Theme;
 
@@ -197,6 +198,24 @@ class Applier
 			}
 		}
 
+		// Responsive theme (view mode R): mobile uses the same layout and skins as PC
+		// unless the theme names a separate mobile layout or skin.
+		if ($info->apply->view_mode === 'R')
+		{
+			if (!$info->apply->mlayout && !empty($designInfo->layout_srl))
+			{
+				$designInfo->mlayout_srl = $designInfo->layout_srl;
+			}
+			foreach ($info->apply->skins as $item)
+			{
+				$module = $designInfo->module->{$item->module};
+				if (empty($module->mskin) || !self::hasMobileSkinFor($info, $item->module))
+				{
+					$module->mskin = Theme::combine($theme_name, $item->name);
+				}
+			}
+		}
+
 		self::writeDefaultDesignFile($designInfo);
 		self::applyConfigSkins($info, $theme_name);
 	}
@@ -214,6 +233,7 @@ class Applier
 	{
 		$config_skin_modules = ['member', 'communication', 'message', 'ncenterlite'];
 
+		$named = [];
 		foreach (['skins' => 'skin', 'mskins' => 'mskin'] as $key => $column)
 		{
 			foreach ($info->apply->{$key} as $item)
@@ -222,18 +242,60 @@ class Applier
 				{
 					continue;
 				}
+				$named[$item->module][$column] = true;
 				$config = \ModuleModel::getModuleConfig($item->module) ?: new \stdClass;
 				$config->{$column} = Theme::combine($theme_name, $item->name);
-				try
+				self::saveModuleConfig($item->module, $config);
+			}
+		}
+
+		// A skin of the previous theme that the new theme does not replace
+		// goes back to the module default, so that no screen keeps the old theme.
+		foreach ($config_skin_modules as $module)
+		{
+			$config = \ModuleModel::getModuleConfig($module);
+			if (!is_object($config))
+			{
+				continue;
+			}
+			$changed = false;
+			foreach (['skin', 'mskin'] as $column)
+			{
+				if (isset($named[$module][$column]) || empty($config->{$column}))
 				{
-					\ModuleController::getInstance()->insertModuleConfig($item->module, $config);
+					continue;
 				}
-				catch (\Throwable $e)
+				$split = Theme::split(strval($config->{$column}));
+				if ($split && $split['theme'] !== $theme_name)
 				{
-					// Outside a web request the module controller is unavailable;
-					// the design default still covers fresh installations.
+					unset($config->{$column});
+					$changed = true;
 				}
 			}
+			if ($changed)
+			{
+				self::saveModuleConfig($module, $config);
+			}
+		}
+	}
+
+	/**
+	 * Save a module config, ignoring the case where no module controller is
+	 * available (outside a web request the design default still covers fresh
+	 * installations).
+	 *
+	 * @param string $module
+	 * @param object $config
+	 * @return void
+	 */
+	protected static function saveModuleConfig(string $module, object $config): void
+	{
+		try
+		{
+			\ModuleController::getInstance()->insertModuleConfig($module, $config);
+		}
+		catch (\Throwable $e)
+		{
 		}
 	}
 
@@ -380,20 +442,66 @@ class Applier
 			}
 		}
 
+		$theme_layouts = [];
 		$layout_output = executeQueryArray('layout.getLayoutList', new \stdClass);
 		foreach (($layout_output->data ?? []) as $layout)
 		{
 			if (strpos((string)($layout->layout ?? ''), $prefix) === 0)
 			{
-				$usage[] = (object)[
-					'layout_srl' => (int)$layout->layout_srl,
-					'title' => $layout->title,
-					'column' => 'layout',
-				];
+				$theme_layouts[(int)$layout->layout_srl] = $layout;
+			}
+		}
+
+		if (count($theme_layouts))
+		{
+			$assigned = self::getAssignedLayoutSrls(array_keys($theme_layouts));
+			foreach ($theme_layouts as $layout_srl => $layout)
+			{
+				if (isset($assigned[$layout_srl]))
+				{
+					$usage[] = (object)[
+						'layout_srl' => $layout_srl,
+						'title' => $layout->title,
+						'column' => 'layout',
+					];
+				}
 			}
 		}
 
 		return $usage;
+	}
+
+	/**
+	 * Of the given layout instances, find those assigned to a module or a site.
+	 * A layout that nothing refers to does not block removing its theme.
+	 *
+	 * @param array $layout_srls
+	 * @return array layout_srl => true
+	 */
+	protected static function getAssignedLayoutSrls(array $layout_srls): array
+	{
+		$list = implode(',', array_map('intval', $layout_srls));
+		$queries = [
+			"SELECT layout_srl, mlayout_srl FROM modules WHERE layout_srl IN ($list) OR mlayout_srl IN ($list)",
+			"SELECT default_layout_srl AS layout_srl, default_mlayout_srl AS mlayout_srl FROM domains WHERE default_layout_srl IN ($list) OR default_mlayout_srl IN ($list)",
+		];
+
+		$assigned = [];
+		$db = DB::getInstance();
+		foreach ($queries as $query)
+		{
+			foreach ($db->query($query)->fetchAll() as $row)
+			{
+				foreach ([(int)$row->layout_srl, (int)$row->mlayout_srl] as $srl)
+				{
+					if ($srl && in_array($srl, $layout_srls))
+					{
+						$assigned[$srl] = true;
+					}
+				}
+			}
+		}
+		return $assigned;
 	}
 
 	/**
@@ -480,6 +588,25 @@ class Applier
 	 * @param array $exclude
 	 * @return void
 	 */
+	/**
+	 * Whether the theme declares a separate mobile skin for a module.
+	 *
+	 * @param object $info
+	 * @param string $module
+	 * @return bool
+	 */
+	protected static function hasMobileSkinFor(object $info, string $module): bool
+	{
+		foreach ($info->apply->mskins as $mitem)
+		{
+			if ($mitem->module === $module)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	protected static function applyViewMode(object $info, string $theme_name, int $domain_srl, array $exclude): void
 	{
 		if ($info->apply->view_mode !== 'R')

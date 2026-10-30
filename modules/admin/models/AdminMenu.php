@@ -104,6 +104,7 @@ class AdminMenu
 		if (!$output->menu_srl)
 		{
 			self::createXeAdminMenu();
+			self::addNewAdminMenu();
 			$output = $oMenuAdminModel->getMenuByTitle(self::ADMIN_MENU_NAME);
 		}
 		else
@@ -347,6 +348,7 @@ class AdminMenu
 	 */
 	/**
 	 * 'module.menuName' => sibling key to insert directly above.
+	 * A sibling key starting with '>' inserts directly below it instead.
 	 *
 	 * Siblings are used instead of group keys because group names differ by
 	 * installation age ('advanced' vs 'extensions', see _getOldGnbKey), while
@@ -421,6 +423,11 @@ class AdminMenu
 		{
 			list($module_name, $menu_name) = explode('.', $key);
 			$sibling_key = self::ADDED_MENU_ITEMS[$key];
+			$insert_below = strncmp($sibling_key, '>', 1) === 0;
+			if ($insert_below)
+			{
+				$sibling_key = substr($sibling_key, 1);
+			}
 
 			// Already present: mark as handled so it is not retried.
 			if (in_array($menu_name, $existing, true))
@@ -454,6 +461,16 @@ class AdminMenu
 			$args->url = getUrl('', 'module', 'admin', 'act', $index_act);
 			// Higher listorder sorts first; one above the sibling places it directly on top.
 			$args->listorder = intval($sibling->listorder) + 1;
+			if ($insert_below)
+			{
+				// Make room right under the sibling, the same way a menu item move does.
+				$shift = new \stdClass;
+				$shift->menu_srl = $menu_srl;
+				$shift->parent_srl = intval($sibling->parent_srl);
+				$shift->listorder = intval($sibling->listorder) - 1;
+				executeQuery('menu.updateMenuItemListorder', $shift);
+				$args->listorder = intval($sibling->listorder) - 1;
+			}
 			if (executeQuery('menu.insertMenuItem', $args)->toBool())
 			{
 				$added[] = $key;

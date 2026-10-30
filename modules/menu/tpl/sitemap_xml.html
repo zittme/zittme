@@ -1,0 +1,15 @@
+@version(2)
+@php echo '<' . '?xml version="1.0" encoding="UTF-8"?' . '>' . "\n"; @endphp
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+@foreach ($sitemap_urls as $entry)
+	<url>
+		<loc>{{ $entry['loc'] }}</loc>
+@if ($entry['lastmod'])
+		<lastmod>{{ $entry['lastmod'] }}</lastmod>
+@endif
+@foreach ($entry['alternates'] ?? [] as $alternate_lang => $alternate_url)
+		<xhtml:link rel="alternate" hreflang="{{ $alternate_lang }}" href="{{ $alternate_url }}" />
+@endforeach
+	</url>
+@endforeach
+</urlset>

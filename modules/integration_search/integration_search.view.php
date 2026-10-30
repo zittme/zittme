@@ -69,7 +69,7 @@ class integration_searchView extends integration_search
 		{
 			if(!$config->mskin || $config->mskin === '/USE_RESPONSIVE/')
 			{
-				$template_path = sprintf('%sskins/%s/', $this->module_path, $config->skin);
+				$template_path = \Zittme\Framework\Theme::resolveSkinPath($this->module_path, (string)$config->skin, 'skins') . '/';
 				if(!is_dir($template_path) || !$config->skin)
 				{
 					$template_path = sprintf('%sskins/%s/', $this->module_path, 'default');
@@ -78,7 +78,7 @@ class integration_searchView extends integration_search
 			}
 			else
 			{
-				$template_path = sprintf('%sm.skins/%s/', $this->module_path, $config->mskin);
+				$template_path = \Zittme\Framework\Theme::resolveSkinPath($this->module_path, (string)$config->mskin, 'm.skins') . '/';
 				if(!is_dir($template_path) || !$config->mskin)
 				{
 					$template_path = sprintf('%sm.skins/%s/', $this->module_path, 'default');
@@ -93,7 +93,7 @@ class integration_searchView extends integration_search
 		}
 		else
 		{
-			$template_path = sprintf('%sskins/%s/', $this->module_path, $config->skin);
+			$template_path = \Zittme\Framework\Theme::resolveSkinPath($this->module_path, (string)$config->skin, 'skins') . '/';
 			if(!is_dir($template_path) || !$config->skin)
 			{
 				$template_path = sprintf('%sskins/%s/', $this->module_path, 'default');

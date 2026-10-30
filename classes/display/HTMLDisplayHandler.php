@@ -193,6 +193,15 @@ class HTMLDisplayHandler
 			}
 		}
 
+		// Error pages carry no canonical, alternate or structured data
+		$is_error_page = intval($oModule->getHttpStatusCode()) >= 400;
+
+		// Set the canonical URL (OpenGraph sets it too when enabled)
+		if (config('seo.canonical') === true && Context::get('module') !== 'admin' && !$is_error_page)
+		{
+			$this->_setCanonicalURL();
+		}
+
 		// Add OpenGraph and Twitter metadata
 		if (config('seo.og_enabled') && Context::get('module') !== 'admin')
 		{
@@ -201,6 +210,24 @@ class HTMLDisplayHandler
 			{
 				$this->_addTwitterMetadata();
 			}
+		}
+
+		// Add alternate links for the other languages
+		if (Zittme\Framework\Router::getLangPrefixLevel() >= 2 && Context::get('module') !== 'admin' && !$is_error_page)
+		{
+			$this->_addHreflangMetadata(Context::getCanonicalURL() ?: Zittme\Framework\URL::getCurrentURL());
+		}
+
+		// Add structured data
+		if (config('seo.structured_data') === true && Context::get('module') !== 'admin' && !$is_error_page)
+		{
+			$this->_addStructuredData();
+		}
+
+		// Add prev and next links for a paginated list
+		if (config('seo.pagination_links') === true && Context::get('module') !== 'admin' && !$is_error_page)
+		{
+			$this->_addPaginationLinks();
 		}
 
 		// set icon
@@ -383,7 +410,9 @@ class HTMLDisplayHandler
 		}
 
 		$e = function($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); };
-		$admin_url = getNotEncodedUrl('', 'module', 'admin');
+		// 관리 바는 어느 화면에나 붙는다. 상대 주소로 만들면 지금 보고 있는
+		// 경로 뒤에 쿼리가 붙어 엉뚱한 곳으로 간다. 사이트 기준 절대 주소를 쓴다.
+		$admin_url = getNotEncodedFullUrl('', 'module', 'admin');
 		$mid = Context::get('mid');
 		$buttons = '';
 
@@ -395,11 +424,11 @@ class HTMLDisplayHandler
 			// 관리 폼이 그려져 테마 색과 뒤섞인다.
 			if($minfo->module === 'board')
 			{
-				$mod_url = getNotEncodedUrl('', 'module', 'admin', 'act', 'dispBoardAdminBoardInfo', 'module_srl', $minfo->module_srl);
+				$mod_url = getNotEncodedFullUrl('', 'module', 'admin', 'act', 'dispBoardAdminBoardInfo', 'module_srl', $minfo->module_srl);
 			}
 			else if($minfo->module === 'page')
 			{
-				$mod_url = getNotEncodedUrl('', 'module', 'admin', 'act', 'dispPageAdminInfo', 'module_srl', $minfo->module_srl);
+				$mod_url = getNotEncodedFullUrl('', 'module', 'admin', 'act', 'dispPageAdminInfo', 'module_srl', $minfo->module_srl);
 			}
 			if($mod_url)
 			{
@@ -412,7 +441,7 @@ class HTMLDisplayHandler
 		$layout_srl = ($minfo && !empty($minfo->layout_srl)) ? $minfo->layout_srl : 0;
 		if($layout_srl)
 		{
-			$lurl = getNotEncodedUrl('', 'module', 'layout', 'act', 'dispLayoutAdminModifyForm', 'layout_srl', $layout_srl);
+			$lurl = getNotEncodedFullUrl('', 'module', 'layout', 'act', 'dispLayoutAdminModifyForm', 'layout_srl', $layout_srl);
 			$buttons .= '<button type="button" class="zab-btn" data-zab-open="' . $e($lurl) . '">레이아웃 설정</button>';
 		}
 
@@ -587,6 +616,345 @@ class HTMLDisplayHandler
 	}
 
 	/**
+	 * Determine and set the canonical URL of the current page.
+	 *
+	 * @return void
+	 */
+	function _setCanonicalURL()
+	{
+		if (Context::getCanonicalURL())
+		{
+			return;
+		}
+
+		$current_module_info = Context::get('current_module_info');
+		$site_module_info = Context::get('site_module_info');
+		$document_srl = Context::get('document_srl');
+
+		if ($document_srl && isset($current_module_info->mid))
+		{
+			$canonical_url = getNotEncodedFullUrl('', 'mid', $current_module_info->mid, 'document_srl', $document_srl);
+		}
+		elseif (($page = Context::get('page')) > 1 && $this->_isPageBeyondEnd($page))
+		{
+			$canonical_url = getNotEncodedFullUrl('', 'mid', $current_module_info->mid);
+		}
+		elseif ($page > 1)
+		{
+			$canonical_url = getNotEncodedFullUrl('', 'mid', $current_module_info->mid, 'page', $page);
+		}
+		elseif (isset($current_module_info->module_srl) && $current_module_info->module_srl == ($site_module_info->module_srl ?? 0))
+		{
+			$canonical_url = getNotEncodedFullUrl('');
+		}
+		elseif (Zittme\Framework\Router::getRewriteLevel() === 2 && Context::getCurrentRequest()->url !== '')
+		{
+			$canonical_url = Zittme\Framework\URL::getCurrentDomainURL(\RX_BASEURL . preg_replace('/\?.*$/', '', \RX_REQUEST_URL));
+		}
+		else
+		{
+			$canonical_url = getNotEncodedFullUrl('', 'mid', $current_module_info->mid ?? '');
+		}
+
+		Context::setCanonicalURL($canonical_url);
+	}
+
+	/**
+	 * Check whether the requested page lies past the last page of a list.
+	 *
+	 * @param int $page
+	 * @return bool
+	 */
+	function _isPageBeyondEnd($page)
+	{
+		$navigation = Context::get('page_navigation');
+		return config('seo.canonical') === true && is_object($navigation) && !empty($navigation->total_page) && $page > $navigation->total_page;
+	}
+
+	/**
+	 * Extract a plain text summary from document content.
+	 *
+	 * strip_tags() leaves the contents of style and script elements behind,
+	 * so those are removed before the tags are stripped.
+	 *
+	 * @param object $oDocument
+	 * @param int $length
+	 * @return string
+	 */
+	function _getPlainTextSummary($oDocument, $length = 200)
+	{
+		$content = preg_replace('!<(style|script)\b[^>]*>.*?</\1>!is', ' ', (string)$oDocument->get('content'));
+		$content = preg_replace('!(</p>|</div>|</li>|</td>|</th>|</tr>|</h[1-6]>|<br)!i', ' $1', $content);
+		$content = trim(utf8_normalize_spaces(html_entity_decode(strip_tags($content))));
+		return cut_str($content, $length, '...');
+	}
+
+	/**
+	 * Add the path from the site home to the current page.
+	 *
+	 * @param string $site_title
+	 * @param string $site_url
+	 * @param object|null $oDocument
+	 * @return void
+	 */
+	function _addBreadcrumbData($site_title, $site_url, $oDocument = null)
+	{
+		$current_module_info = Context::get('current_module_info');
+		$site_module_info = Context::get('site_module_info');
+		if (!isset($current_module_info->mid))
+		{
+			return;
+		}
+
+		$items = array();
+		$items[] = array(
+			'@type' => 'ListItem',
+			'name' => $site_title !== '' ? $site_title : Zittme\Framework\URL::getCurrentDomain(),
+			'item' => $site_url,
+		);
+
+		$is_site_index = isset($current_module_info->module_srl) &&
+			$current_module_info->module_srl == ($site_module_info->module_srl ?? 0);
+		if (!$is_site_index)
+		{
+			$items[] = array(
+				'@type' => 'ListItem',
+				'name' => trim((string)Context::replaceUserLang($current_module_info->browser_title ?? '')) ?: $current_module_info->mid,
+				'item' => getNotEncodedFullUrl('', 'mid', $current_module_info->mid),
+			);
+		}
+
+		if ($oDocument)
+		{
+			$items[] = array(
+				'@type' => 'ListItem',
+				'name' => $oDocument->getTitleText(),
+				'item' => Context::getCanonicalURL() ?: Zittme\Framework\URL::getCurrentURL(),
+			);
+		}
+
+		if (($current_module_info->module ?? '') === 'page')
+		{
+			$unique_items = array();
+			foreach ($items as $item)
+			{
+				if (!count($unique_items) || end($unique_items)['name'] !== $item['name'])
+				{
+					$unique_items[] = $item;
+				}
+			}
+			$items = $unique_items;
+		}
+
+		if (count($items) < 2)
+		{
+			return;
+		}
+
+		foreach ($items as $key => $item)
+		{
+			$items[$key]['position'] = $key + 1;
+		}
+
+		Context::addStructuredData('BreadcrumbList', array('itemListElement' => $items));
+	}
+
+	/**
+	 * Add prev and next links for a paginated list.
+	 *
+	 * @return void
+	 */
+	function _addPaginationLinks()
+	{
+		$navigation = Context::get('page_navigation');
+		if (!is_object($navigation) || !isset($navigation->total_page) || $navigation->total_page < 2)
+		{
+			return;
+		}
+
+		$current_page = max(1, intval($navigation->cur_page ?? 1));
+		$mid = Context::get('mid');
+		if (!$mid || Context::get('document_srl') || $current_page > $navigation->total_page)
+		{
+			return;
+		}
+
+		if ($current_page > 1)
+		{
+			$prev = $current_page - 1;
+			Context::addLink($prev > 1 ? getNotEncodedFullUrl('', 'mid', $mid, 'page', $prev) : getNotEncodedFullUrl('', 'mid', $mid, 'page', ''), 'prev');
+		}
+		if ($current_page < $navigation->total_page)
+		{
+			Context::addLink(getNotEncodedFullUrl('', 'mid', $mid, 'page', $current_page + 1), 'next');
+		}
+	}
+
+	/**
+	 * Add structured data (JSON-LD) for the current page.
+	 *
+	 * @return void
+	 */
+	function _addStructuredData()
+	{
+		$site_title = trim((string)Context::getSiteTitle());
+		$site_url = Context::getDefaultUrl(null, \RX_SSL);
+		$lang_type = Context::getLangType();
+		if (Zittme\Framework\Router::getLangPrefixLevel() >= 2 && ($lang_prefix = Zittme\Framework\Router::getLangPrefix($lang_type)) !== '')
+		{
+			$site_url = rtrim($site_url, '/') . '/' . $lang_prefix;
+		}
+
+		// A node without a name is not usable, so the site title is required.
+		if ($site_title !== '')
+		{
+			Context::addStructuredData('WebSite', array(
+				'name' => $site_title,
+				'url' => $site_url,
+				'inLanguage' => $lang_type,
+			));
+			Context::addStructuredData('Organization', array(
+				'name' => $site_title,
+				'url' => $site_url,
+			));
+		}
+
+		// The menu may leave out its own structured data.
+		$current_module_info = Context::get('current_module_info');
+		if (!empty($current_module_info->module_srl) && Zittme\Modules\Menu\Models\Exposure::isStructuredOff($current_module_info))
+		{
+			return;
+		}
+
+		// Add metadata about the document being viewed.
+		$oDocument = null;
+		$document_srl = Context::get('document_srl');
+		$grant = Context::get('grant');
+		$permitted = isset($grant->access) ? $grant->access : false;
+		if (isset($grant->view) && !$grant->view)
+		{
+			$permitted = false;
+		}
+		if ($document_srl && $permitted)
+		{
+			$found = Context::get('oDocument') ?: DocumentModel::getDocument($document_srl, false, false);
+			if (is_object($found) && $found->document_srl == $document_srl &&
+				(!method_exists($found, 'isExists') || $found->isExists()) &&
+				!(method_exists($found, 'isSecret') && $found->isSecret()))
+			{
+				$oDocument = $found;
+			}
+		}
+
+		$this->_addBreadcrumbData($site_title, $site_url, $oDocument);
+
+		if (!$oDocument)
+		{
+			return;
+		}
+
+		foreach (Context::getStructuredData() as $node)
+		{
+			if (in_array($node['@type'] ?? '', array('Article', 'BlogPosting', 'NewsArticle'), true))
+			{
+				return;
+			}
+		}
+
+		$images = Context::getMetaImages();
+		$image_url = $images ? Zittme\Framework\URL::getCurrentDomainURL(\RX_BASEURL . $images[0]['filepath']) : $this->_getFirstContentImage($oDocument);
+		$document_lang = trim((string)$oDocument->get('lang_code'));
+		Context::addStructuredData('Article', array(
+			'headline' => $oDocument->getTitleText(),
+			'description' => $this->_getPlainTextSummary($oDocument),
+			'datePublished' => $oDocument->getRegdateDT(),
+			'dateModified' => $oDocument->getUpdateDT(),
+			'author' => array(
+				'@type' => 'Person',
+				'name' => $oDocument->getNickName(),
+			),
+			'image' => $image_url,
+			'mainEntityOfPage' => Context::getCanonicalURL() ?: Zittme\Framework\URL::getCurrentURL(),
+			'inLanguage' => $document_lang !== '' ? $document_lang : config('locale.default_lang'),
+		));
+	}
+
+	/**
+	 * Get the address of the first image in the content of a document.
+	 *
+	 * @param object $oDocument
+	 * @return string
+	 */
+	function _getFirstContentImage($oDocument)
+	{
+		if (!preg_match('!<img\b[^>]*?\bsrc\s*=\s*(["\'])(.*?)\1!is', (string)$oDocument->get('content'), $matches))
+		{
+			return '';
+		}
+
+		$src = trim(html_entity_decode($matches[2]));
+		if ($src === '' || strncasecmp($src, 'data:', 5) === 0)
+		{
+			return '';
+		}
+		if (preg_match('!^https?://!i', $src))
+		{
+			return $src;
+		}
+		if (strncmp($src, '//', 2) === 0)
+		{
+			return (\RX_SSL ? 'https:' : 'http:') . $src;
+		}
+		return Zittme\Framework\URL::getCurrentDomainURL($src[0] === '/' ? $src : (\RX_BASEURL . preg_replace('!^(\./)+!', '', $src)));
+	}
+
+	/**
+	 * Add alternate link tags for each enabled language.
+	 *
+	 * @param string $canonical_url
+	 * @return void
+	 */
+	function _addHreflangMetadata($canonical_url)
+	{
+		$parsed = parse_url(htmlspecialchars_decode($canonical_url ?: ''));
+		if (!isset($parsed['scheme']) || !isset($parsed['host']))
+		{
+			return;
+		}
+
+		$base = \RX_BASEURL;
+		$path = $parsed['path'] ?? '/';
+		if (strpos($path, $base) === 0)
+		{
+			$path = substr($path, strlen($base));
+		}
+
+		$prefixes = Zittme\Framework\Router::getLangPrefixes();
+		$slashpos = strpos($path, '/');
+		$first_segment = ($slashpos === false) ? $path : substr($path, 0, $slashpos);
+		if (isset($prefixes[$first_segment]))
+		{
+			$path = ($slashpos === false) ? '' : substr($path, $slashpos + 1);
+		}
+
+		$origin = $parsed['scheme'] . '://' . $parsed['host'] . (isset($parsed['port']) ? (':' . $parsed['port']) : '');
+		$query = isset($parsed['query']) ? ('?' . $parsed['query']) : '';
+		$default_lang = config('locale.default_lang');
+
+		foreach (array_merge(array($default_lang), array_keys($prefixes)) as $lang)
+		{
+			$prefix = ($lang === $default_lang) ? '' : $lang;
+			$separator = ($prefix !== '' && $path !== '') ? '/' : '';
+			$url = $origin . $base . $prefix . $separator . $path . $query;
+			Context::addHtmlHeader(sprintf('<link rel="alternate" hreflang="%s" href="%s" />', escape($lang), escape($url)));
+			if ($lang === $default_lang)
+			{
+				Context::addHtmlHeader(sprintf('<link rel="alternate" hreflang="x-default" href="%s" />', escape($url)));
+			}
+		}
+	}
+
+	/**
 	 * Add OpenGraph metadata tags.
 	 *
 	 * @return void
@@ -638,7 +1006,7 @@ class HTMLDisplayHandler
 		{
 			if ($page_type === 'article' && $permitted && config('seo.og_extract_description'))
 			{
-				$description = trim(utf8_normalize_spaces($oDocument->getContentText(200)));
+				$description = $this->_getPlainTextSummary($oDocument);
 			}
 			else
 			{
@@ -655,30 +1023,7 @@ class HTMLDisplayHandler
 		}
 		if (!isset($og_data['og:url']) || !Context::getCanonicalURL())
 		{
-			if ($page_type === 'article')
-			{
-				$canonical_url = getNotEncodedFullUrl('', 'mid', $current_module_info->mid, 'document_srl', $document_srl);
-			}
-			elseif (($page = Context::get('page')) > 1)
-			{
-				$canonical_url = getNotEncodedFullUrl('', 'mid', $current_module_info->mid, 'page', $page);
-			}
-			elseif (isset($current_module_info->module_srl) && $current_module_info->module_srl == ($site_module_info->module_srl ?? 0))
-			{
-				$canonical_url = getNotEncodedFullUrl('');
-			}
-			else
-			{
-				if (Zittme\Framework\Router::getRewriteLevel() === 2 && Context::getCurrentRequest()->url !== '')
-				{
-					$canonical_url = Zittme\Framework\URL::getCurrentDomainURL(\RX_BASEURL . preg_replace('/\?.*$/', '', \RX_REQUEST_URL));
-				}
-				else
-				{
-					$canonical_url = getNotEncodedFullUrl('', 'mid', $current_module_info->mid);
-				}
-			}
-			Context::setCanonicalURL($canonical_url);
+			$this->_setCanonicalURL();
 		}
 
 		// Add metadata about the locale.
@@ -694,7 +1039,11 @@ class HTMLDisplayHandler
 		}
 
 		// Add image.
-		if ($document_images = Context::getMetaImages())
+		if ($document_srl && !$permitted)
+		{
+			$document_images = null;
+		}
+		elseif ($document_images = Context::getMetaImages())
 		{
 			// pass
 		}

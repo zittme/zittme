@@ -543,10 +543,10 @@ class FileHandler
 	 * @param string $target_type If $target_type is set (gif, jpg, png, bmp), result image will be saved as target type
 	 * @param string $thumbnail_type Thumbnail type(crop, ratio, stretch, fill, center)
 	 * @param int $quality Compression ratio (0~100)
-	 * @param int $rotate Rotation degrees (0~360)
+	 * @param int|null $rotate Rotation degrees (0~360). If null, the EXIF orientation of a JPEG source is applied
 	 * @return bool TRUE: success, FALSE: failed
 	 */
-	public static function createImageFile($source_file, $target_file, $resize_width = 0, $resize_height = 0, $target_type = '', $thumbnail_type = 'fill', $quality = 100, $rotate = 0)
+	public static function createImageFile($source_file, $target_file, $resize_width = 0, $resize_height = 0, $target_type = '', $thumbnail_type = 'fill', $quality = 100, $rotate = null)
 	{
 		// check params
 		if (($source_file = self::exists($source_file)) === FALSE)
@@ -595,10 +595,17 @@ class FileHandler
 			$target_type = 'jpg';
 		}
 
+		// Follow the EXIF orientation unless a rotation was requested
+		if ($rotate === null)
+		{
+			$rotate = $type === 'jpg' ? intval(self::checkImageRotation($source_file)) : 0;
+		}
+
 		// Automatically set resize_height if it is 'auto'
 		if ($resize_height === 'auto')
 		{
-			$resize_height = round($resize_width / ($width / $height));
+			$swapped = $rotate == 90 || $rotate == 270;
+			$resize_height = round($resize_width / ($swapped ? $height / $width : $width / $height));
 		}
 
 		// Check memory usage

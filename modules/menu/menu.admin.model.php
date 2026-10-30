@@ -704,11 +704,11 @@ class MenuAdminModel extends Menu
 				$menu['setup_index_act'] = $moduleInfo->default_index_act;
 			}
 
-			if($menu['is_shortcut'] == 'N')
+			if($menu['is_shortcut'] == 'N' && $midInfo)
 			{
 				foreach($start_module as $start_module_info)
 				{
-					if($midInfo && $midInfo->mid == $start_module_info->mid)
+					if($midInfo->mid == $start_module_info->mid)
 					{
 						$menu['is_start_module'] = true;
 						$menu['is_start_module_of'] = $start_module_info->domain;
@@ -722,8 +722,8 @@ class MenuAdminModel extends Menu
 			}
 
 			// setting layout srl for layout management
-			$menu['layout_srl'] = $midInfo ? $midInfo->layout_srl : -1;
-			$menu['browser_title'] = $midInfo ? $midInfo->browser_title : '';
+			$menu['layout_srl'] = $midInfo->layout_srl ?? null;
+			$menu['browser_title'] = $midInfo->browser_title ?? null;
 		}
 		if(count($menu['list']) > 0)
 		{

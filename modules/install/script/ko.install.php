@@ -164,7 +164,7 @@ foreach($skinTypes as $key => $dir)
 	}
 }
 $designInfo->module->board->skin = 'heritage_xedition|@|heritage_xedition';
-$designInfo->module->editor->skin = 'zitteditor';
+$designInfo->module->editor->skin = file_exists(RX_BASEDIR . 'modules/editor/skins/editorz/editor.html') ? 'editorz' : 'zitteditor';
 // member / communication skins
 $designInfo->module->member = new stdClass();
 $designInfo->module->member->skin = 'heritage_xedition|@|heritage_xedition';

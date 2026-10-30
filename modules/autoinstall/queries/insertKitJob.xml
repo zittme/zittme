@@ -1,0 +1,22 @@
+<query id="insertKitJob" action="insert">
+	<tables>
+		<table name="autoinstall_kit_jobs" />
+	</tables>
+	<columns>
+		<column name="job_srl" var="job_srl" filter="number" notnull="notnull" />
+		<column name="kit_id" var="kit_id" notnull="notnull" />
+		<column name="kit_version" var="kit_version" notnull="notnull" />
+		<column name="title" var="title" notnull="notnull" />
+		<column name="package_srl" var="package_srl" default="0" />
+		<column name="source" var="source" default="store" />
+		<column name="work_dir" var="work_dir" notnull="notnull" />
+		<column name="signature" var="signature" default="" />
+		<column name="options" var="options" />
+		<column name="state" var="state" />
+		<column name="status" var="status" default="ready" />
+		<column name="message" var="message" />
+		<column name="member_srl" var="member_srl" default="0" />
+		<column name="regdate" var="regdate" default="curdate()" />
+		<column name="last_update" var="last_update" default="curdate()" />
+	</columns>
+</query>

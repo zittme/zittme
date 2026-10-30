@@ -283,7 +283,8 @@ class Package
 	 */
 	public function isInstallable(string $check_type = 'all'): bool
 	{
-		if (!preg_match('/^free_(auto|unverified)$/', $this->install_type))
+		// 무료 자료와, 이 사이트 도메인에 라이선스를 활성화한 유료 자료(paid_licensed)만 바로 설치한다.
+		if (!preg_match('/^(free_(auto|unverified)|paid_licensed)$/', (string)$this->install_type))
 		{
 			return false;
 		}
@@ -449,10 +450,7 @@ class Package
 
 		// Fetch the latest package information.
 		$detail_url = sprintf(self::PACKAGE_DETAIL_URL, $package_srl);
-		$headers = [
-			'Accept' => 'application/json',
-			'User-Agent' => sprintf('Autoinstall Rhymix/%s PHP/%s (%s)', \RX_VERSION, \PHP_VERSION, \PHP_OS_FAMILY),
-		];
+		$headers = self::getApiHeaders();
 		$request = HTTP::get($detail_url, null, $headers, [], ['timeout' => 20]);
 		if ($request->getStatusCode() !== 200)
 		{
@@ -485,8 +483,107 @@ class Package
 		}
 
 		// Store in the cache and return.
-		Cache::set($cache_key, $package, 3600, true);
+		// 유료 자료는 구매·도메인 등록 직후 설치 가능 여부가 바뀌므로 짧게만 캐시한다.
+		$ttl = (strpos((string)$package->install_type, 'paid') === 0 && Account::get()) ? 60 : 3600;
+		Cache::set($cache_key, $package, $ttl, true);
 		return $package;
+	}
+
+	/**
+	 * zitt.me 스토어 API 요청 헤더. 관리자가 정보 전송에 동의했고 계정이 연결돼 있을 때만
+	 * 토큰과 도메인을 함께 보내 유료 자료의 라이선스(이 사이트 도메인) 판정을 받는다.
+	 * 목록 요청에는 보내지 않는다($with_account = false).
+	 *
+	 * @param bool $with_account
+	 * @return array
+	 */
+	public static function getApiHeaders(bool $with_account = true): array
+	{
+		$headers = [
+			'Accept' => 'application/json',
+			'User-Agent' => sprintf('Autoinstall Rhymix/%s PHP/%s (%s)', \RX_VERSION, \PHP_VERSION, \PHP_OS_FAMILY),
+		];
+		$account = $with_account ? Account::get() : null;
+		if ($account && !empty($account->token))
+		{
+			$headers['Authorization'] = 'Bearer ' . $account->token;
+			// 시스템 설정의 도메인 전부. 스토어는 이 중 하나가 라이선스 도메인과 맞으면 통과시킨다.
+			$headers['X-Zittme-Domains'] = implode(',', Account::getSiteDomains());
+		}
+		return $headers;
+	}
+
+	/**
+	 * Whether a URL is an https address on a host that may receive the account token and domain list.
+	 */
+	public static function isStoreUrl(string $url): bool
+	{
+		$parts = parse_url($url);
+		if (!$parts || strtolower($parts['scheme'] ?? '') !== 'https' || empty($parts['host']) || isset($parts['user']) || isset($parts['pass']))
+		{
+			return false;
+		}
+		$allowed = ['zitt.me', 'www.zitt.me', 'api.zitt.me'];
+		$site = config('autoinstall.store_site');
+		if (is_string($site) && ($site_host = parse_url($site, \PHP_URL_HOST)))
+		{
+			$allowed[] = strtolower($site_host);
+		}
+		return in_array(strtolower($parts['host']), $allowed, true);
+	}
+
+	/**
+	 * A link given by the store, returned only if it is https on zitt.me, a subdomain of it, or the configured store site.
+	 */
+	public static function safeLink($url): string
+	{
+		$url = is_string($url) ? trim($url) : '';
+		if ($url === '' || self::isStoreUrl($url))
+		{
+			return $url;
+		}
+		$parts = parse_url($url);
+		if (!$parts || strtolower($parts['scheme'] ?? '') !== 'https' || empty($parts['host']) || isset($parts['user']) || isset($parts['pass']))
+		{
+			return '';
+		}
+		return preg_match('/\.zitt\.me$/i', $parts['host']) ? $url : '';
+	}
+
+	/**
+	 * Download a file over https. Account headers go only to store hosts, and every redirect is checked again.
+	 *
+	 * @return \Psr\Http\Message\ResponseInterface
+	 */
+	public static function downloadFile(string $url, string $dest, int $timeout = 20)
+	{
+		$request = null;
+		for ($i = 0; $i < 4; $i++)
+		{
+			if (!preg_match('!^https://!i', $url))
+			{
+				$request = null;
+				break;
+			}
+			$headers = self::getApiHeaders(self::isStoreUrl($url));
+			$request = HTTP::download($url, $dest, 'GET', null, $headers, [], ['timeout' => $timeout, 'allow_redirects' => false]);
+			$status = $request->getStatusCode();
+			if ($status < 300 || $status >= 400)
+			{
+				return $request;
+			}
+			$location = trim($request->getHeaderLine('Location'));
+			if ($location === '')
+			{
+				break;
+			}
+			$url = (string)\GuzzleHttp\Psr7\UriResolver::resolve(new \GuzzleHttp\Psr7\Uri($url), new \GuzzleHttp\Psr7\Uri($location));
+		}
+		if (Storage::exists($dest))
+		{
+			Storage::delete($dest);
+		}
+		return $request ?: new \Zittme\Framework\Helpers\HTTPHelper(new \Exception('Invalid download URL'));
 	}
 
 	/**

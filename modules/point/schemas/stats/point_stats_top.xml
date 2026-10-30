@@ -1,0 +1,6 @@
+<table name="point_stats_top">
+	<column name="week" type="char" size="8" notnull="notnull" unique="unique_week_member" />
+	<column name="member_srl" type="number" size="11" notnull="notnull" unique="unique_week_member" />
+	<column name="earned" type="bignumber" notnull="notnull" default="0" />
+	<index name="idx_week_earned" columns="week,earned" />
+</table>

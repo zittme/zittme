@@ -517,9 +517,23 @@
 		});
 	}
 
+	// #gz 또는 #gz-N 해시로 진입하면 첫 갤러리를 자동으로 연다 (공유용 딥링크)
+	function openFromHash() {
+		var m = /^#gz(?:-([0-9]+))?$/.exec(location.hash || '');
+		if (!m) { return; }
+		var container = document.querySelector(CONTAINER_SELECTOR);
+		if (!container) { return; }
+		var thumbs = collect(container);
+		if (!thumbs.length) { return; }
+		var idx = Math.min(thumbs.length - 1, Math.max(0, (parseInt(m[1], 10) || 1) - 1));
+		open(thumbs, idx, thumbs[idx]);
+	}
+
 	if (document.readyState === 'loading') {
 		document.addEventListener('DOMContentLoaded', init);
 	} else {
 		init();
 	}
+	if (document.readyState === 'complete') { openFromHash(); }
+	else { window.addEventListener('load', openFromHash); }
 })();

@@ -46,6 +46,12 @@ class Menu extends ModuleObject
 			return true;
 		}
 
+		// 2026. 10. 15 add column is_hidden
+		if(!$oDB->isColumnExists('menu_item', 'is_hidden'))
+		{
+			return true;
+		}
+
 		return false;
 	}
 
@@ -73,6 +79,12 @@ class Menu extends ModuleObject
 		if(!$oDB->isColumnExists('menu_item', 'class'))
 		{
 			$oDB->addColumn('menu_item', 'class', 'varchar', 250, null, false, 'icon');
+		}
+
+		// 2026. 10. 15 add column is_hidden
+		if(!$oDB->isColumnExists('menu_item', 'is_hidden'))
+		{
+			$oDB->addColumn('menu_item', 'is_hidden', 'char', 1, 'N', true, 'expand');
 		}
 	}
 

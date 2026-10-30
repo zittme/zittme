@@ -4,6 +4,7 @@
 	<actions>
 		<action name="dispAutoinstallAdminIndex" type="view" menu_name="easyInstall" menu_index="true" admin_index="true" />
 		<action name="dispAutoinstallAdminPackageDetail" type="view" menu_name="easyInstall" />
+		<action name="procAutoinstallAdminVerifyLicense" type="controller" />
 		<action name="procAutoinstallAdminDownloadPackage" type="controller" />
 		<action name="procAutoinstallAdminInstallPackage" type="controller" />
 		<action name="procAutoinstallAdminPostInstallPackage" type="controller" />
@@ -19,6 +20,21 @@
 		<action name="dispAutoinstallAdminConnectCallback" type="view" menu_name="easyInstall" />
 		<action name="dispAutoinstallAdminDisconnect" type="view" menu_name="easyInstall" />
 		<action name="dispAutoinstallAdminEnterService" type="view" menu_name="easyInstall" />
+		<action name="dispAutoinstallAdminConsent" type="view" menu_name="easyInstall" />
+		<action name="procAutoinstallAdminSetConsent" type="controller" />
+		<action name="dispAutoinstallAdminKits" class="Controllers\Kit" menu-name="easyInstall" permission="root" />
+		<action name="dispAutoinstallAdminKitPreview" class="Controllers\Kit" menu-name="easyInstall" permission="root" />
+		<action name="dispAutoinstallAdminKitJob" class="Controllers\Kit" menu-name="easyInstall" permission="root" />
+		<action name="dispAutoinstallAdminKitExport" class="Controllers\Kit" menu-name="easyInstall" permission="root" />
+		<action name="dispAutoinstallAdminKitExportDownload" class="Controllers\Kit" permission="root" />
+		<action name="procAutoinstallAdminKitFetch" class="Controllers\Kit" permission="root" />
+		<action name="procAutoinstallAdminKitUpload" class="Controllers\Kit" permission="root" />
+		<action name="procAutoinstallAdminKitStart" class="Controllers\Kit" permission="root" />
+		<action name="procAutoinstallAdminKitRun" class="Controllers\Kit" permission="root" />
+		<action name="procAutoinstallAdminKitRemove" class="Controllers\Kit" permission="root" />
+		<action name="procAutoinstallAdminKitDiscard" class="Controllers\Kit" permission="root" />
+		<action name="procAutoinstallAdminKitExportStart" class="Controllers\Kit" permission="root" />
+		<action name="procAutoinstallAdminKitExportRun" class="Controllers\Kit" permission="root" />
 		<!-- For backward compatibility only -->
 		<action name="getAutoinstallAdminMenuPackageList" type="model" />
 		<action name="getAutoinstallAdminLayoutPackageList" type="model" />

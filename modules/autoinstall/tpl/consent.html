@@ -1,0 +1,62 @@
+<config autoescape="on" />
+
+<include target="header.html" />
+
+<div class="zmst">
+	<div class="zmst-head">
+		<div class="zmst-head-titles">
+			<span class="zmst-eyebrow">STORE</span>
+			<h2 class="zmst-title">{$lang->store_consent_title}</h2>
+		</div>
+	</div>
+
+	<div class="zmst-consent">
+		<p class="zmst-consent-lead">{$lang->store_consent_lead}</p>
+		<dl class="zmst-consent-grid">
+			<dt>{$lang->store_consent_what}</dt>
+			<dd>
+				<ul>
+					<li>{$lang->store_consent_what_token}</li>
+					<li>{$lang->store_consent_what_domains}<!--@if(count($consent_domains))-->: <code>{implode(', ', $consent_domains)}</code><!--@end--></li>
+				</ul>
+			</dd>
+			<dt>{$lang->store_consent_why}</dt>
+			<dd>{$lang->store_consent_why_desc}</dd>
+			<dt>{$lang->store_consent_where}</dt>
+			<dd>{$lang->store_consent_where_desc}</dd>
+			<dt>{$lang->store_consent_without}</dt>
+			<dd>{$lang->store_consent_without_desc}</dd>
+		</dl>
+
+		<p class="zmst-consent-state">
+			<!--@if($zittme_store_consent === 'Y')-->
+				<strong>{$lang->store_consent_state_y}</strong>
+			<!--@elseif($zittme_store_consent === 'N')-->
+				<strong>{$lang->store_consent_state_n}</strong>
+			<!--@else-->
+				<strong>{$lang->store_consent_state_none}</strong>
+			<!--@end-->
+			<span cond="$consent_date">({zdate($consent_date, 'Y.m.d H:i')})</span>
+		</p>
+		<p class="zmst-notice" cond="$consent_has_account && $zittme_store_consent !== 'Y'">{$lang->store_consent_stored_account}</p>
+
+		<div class="zmst-consent-actions">
+			<form action="./" method="post">
+				<input type="hidden" name="module" value="autoinstall" />
+				<input type="hidden" name="act" value="procAutoinstallAdminSetConsent" />
+				<input type="hidden" name="consent" value="Y" />
+				<input type="hidden" name="success_return_url" value="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminIndex')}" />
+				<button type="submit" class="zmst-btn zmst-btn-primary">{$lang->cmd_store_consent_agree}</button>
+			</form>
+			<form action="./" method="post">
+				<input type="hidden" name="module" value="autoinstall" />
+				<input type="hidden" name="act" value="procAutoinstallAdminSetConsent" />
+				<input type="hidden" name="consent" value="N" />
+				<input type="hidden" name="success_return_url" value="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminIndex')}" />
+				<button type="submit" class="zmst-btn">{$lang->cmd_store_consent_disagree}</button>
+			</form>
+			<a cond="$consent_has_account && $zittme_store_consent !== 'Y'" class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminDisconnect')}">{$lang->cmd_store_consent_forget_account}</a>
+		</div>
+		<p class="zmst-consent-foot">{$lang->store_consent_change_later}</p>
+	</div>
+</div>

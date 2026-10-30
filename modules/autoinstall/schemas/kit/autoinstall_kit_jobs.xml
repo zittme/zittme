@@ -1,0 +1,17 @@
+<table name="autoinstall_kit_jobs">
+	<column name="job_srl" type="bigint" notnull="notnull" primary_key="primary_key" />
+	<column name="kit_id" type="varchar" size="40" notnull="notnull" index="idx_kit_id" />
+	<column name="kit_version" type="varchar" size="20" notnull="notnull" />
+	<column name="title" type="varchar" size="250" notnull="notnull" />
+	<column name="package_srl" type="bigint" notnull="notnull" default="0" />
+	<column name="source" type="varchar" size="20" notnull="notnull" default="store" />
+	<column name="work_dir" type="varchar" size="250" notnull="notnull" />
+	<column name="signature" type="varchar" size="20" notnull="notnull" default="" />
+	<column name="options" type="text" />
+	<column name="state" type="text" />
+	<column name="status" type="varchar" size="20" notnull="notnull" default="ready" index="idx_status" />
+	<column name="message" type="text" />
+	<column name="member_srl" type="bigint" notnull="notnull" default="0" />
+	<column name="regdate" type="char" size="14" index="idx_regdate" />
+	<column name="last_update" type="char" size="14" />
+</table>

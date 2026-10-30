@@ -25,6 +25,45 @@ class installController extends install
 	}
 
 	/**
+	 * Database error numbers that have a known cause.
+	 */
+	protected static $_db_error_causes = array(
+		1044 => 'msg_db_error_no_grant',
+		1045 => 'msg_db_error_denied',
+		1049 => 'msg_db_error_no_database',
+		1698 => 'msg_db_error_denied',
+		2002 => 'msg_db_error_unreachable',
+		2003 => 'msg_db_error_unreachable',
+		2005 => 'msg_db_error_unknown_host',
+	);
+
+	/**
+	 * Explain a database driver message, keeping the original for support.
+	 *
+	 * @param string $message
+	 * @return BaseObject
+	 */
+	protected function _explainDBError(string $message): BaseObject
+	{
+		$cause = '';
+		if (preg_match('/\[([0-9]{4})\]/', $message, $matches))
+		{
+			$errno = (int)$matches[1];
+			if (isset(self::$_db_error_causes[$errno]))
+			{
+				$cause = lang(self::$_db_error_causes[$errno]);
+			}
+		}
+
+		if ($cause === '')
+		{
+			$cause = lang('msg_dbconnect_failed');
+		}
+
+		return new BaseObject(-1, $cause . "\n\n" . lang('msg_db_error_original') . "\n" . $message);
+	}
+
+	/**
 	 * @brief division install step... DB Config temp file create
 	 */
 	function procDBConfig()
@@ -50,11 +89,18 @@ class installController extends install
 		));
 
 		// Check connection to the DB.
-		$oDB = DB::getInstance();
-		$output = $oDB->getError();
-		if (!$output->toBool() || !$oDB->getHandle())
+		try
 		{
-			return $output;
+			$oDB = DB::getInstance();
+			$output = $oDB->getError();
+			if (!$output->toBool() || !$oDB->getHandle())
+			{
+				return $this->_explainDBError($output->getMessage());
+			}
+		}
+		catch (\Throwable $e)
+		{
+			return $this->_explainDBError($e->getMessage());
 		}
 
 		// Check MySQL server capabilities.

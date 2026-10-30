@@ -72,6 +72,21 @@ class Editor extends ModuleObject
 		$oEditorController->insertComponent('image_gallery', false);
 		$oEditorController->insertComponent('poll_maker', true);
 
+		// Fresh installs start with editorZ. Sites that already have the editor module keep their settings.
+		if (file_exists(\RX_BASEDIR . 'modules/editor/skins/editorz/editor.html'))
+		{
+			$config = (object)self::$default_editor_config;
+			$config->editor_skin = 'editorz';
+			$config->editor_colorset = 'light';
+			$config->mobile_editor_skin = 'editorz';
+			$config->mobile_editor_colorset = 'light';
+			$config->comment_editor_skin = 'editorz';
+			$config->comment_editor_colorset = 'light';
+			$config->mobile_comment_editor_skin = 'editorz';
+			$config->mobile_comment_editor_colorset = 'light';
+			getController('module')->insertModuleConfig('editor', $config);
+		}
+
 		// Create a directory to use in the editor module
 		FileHandler::makeDir('./files/cache/editor');
 	}

@@ -12,6 +12,9 @@
 	xe.lang.deleteImageMark = '{$lang->msg_delete_extend_form}';
 	xe.lang.deleteImageName = '{$lang->msg_delete_extend_form}';
 </script>
+<div cond="!empty($social_temp_email)" class="message info">
+	<p>{$lang->about_social_temp_email} <a href="{getUrl('act','dispMemberModifyEmailAddress')}">{$lang->cmd_modify_member_email_address}</a></p>
+</div>
 <div cond="!empty($identity_locked)" style="display:flex;gap:8px;align-items:flex-start;margin:0 0 14px;padding:11px 14px;border-radius:9px;background:rgba(38,119,227,.09);color:#2677e3;font-size:13px;line-height:1.6;">
 	<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex:0 0 auto;margin-top:2px;"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
 	<span>{$lang->identity_locked_notice}</span>

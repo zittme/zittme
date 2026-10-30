@@ -272,6 +272,41 @@
 		</div>
 	</section>
 	<section class="section">
+		<h1>{$lang->board_share_settings}</h1>
+		{@ $share_config = Zittme\Modules\Board\Models\Share::getConfig($module_info ?: new stdClass) }
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->board_share_use}</label>
+			<div class="x_controls">
+				<label class="x_inline" for="share_use_Y"><input type="radio" name="share_use" id="share_use_Y" value="Y" checked="checked"|cond="$share_config->use" /> {$lang->cmd_yes}</label>
+				<label class="x_inline" for="share_use_N"><input type="radio" name="share_use" id="share_use_N" value="N" checked="checked"|cond="!$share_config->use" /> {$lang->cmd_no}</label>
+				<p class="x_help-block">{$lang->about_board_share_use}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->board_share_channels}</label>
+			<div class="x_controls">
+				<!--@foreach(Zittme\Modules\Board\Models\Share::CHANNELS as $share_channel)-->
+				<label class="x_inline" for="share_channel_{$share_channel}"><input type="checkbox" name="share_channels[]" id="share_channel_{$share_channel}" value="{$share_channel}" checked="checked"|cond="in_array($share_channel, $share_config->channels)" /> {lang('board_share_via_' . $share_channel)}</label>
+				<!--@end-->
+				<p class="x_help-block">{$lang->about_board_share_channels}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="share_kakao_key">{$lang->board_share_kakao_key}</label>
+			<div class="x_controls">
+				<input type="text" name="share_kakao_key" id="share_kakao_key" value="{$share_config->kakao_key}" maxlength="32" autocomplete="off" spellcheck="false" />
+				<p class="x_help-block">{$lang->about_board_share_kakao_key}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">{$lang->board_share_auto}</label>
+			<div class="x_controls">
+				<label class="x_inline" for="share_auto"><input type="checkbox" name="share_auto" id="share_auto" value="Y" checked="checked"|cond="$share_config->auto" /> {$lang->board_share_auto_label}</label>
+				<p class="x_help-block">{$lang->about_board_share_auto}</p>
+			</div>
+		</div>
+	</section>
+	<section class="section">
 		<h1>{$lang->subtitle_advanced}</h1>
 		<div class="x_control-group">
 			<label class="x_control-label">{$lang->consultation}</label>
@@ -443,7 +478,7 @@
 				<label class="x_inline"><input type="checkbox" name="" value="" checked="checked" disabled="disabled" /> {$document_status_list['PUBLIC']}</label>
 				<block loop="$document_status_list => $key, $value">
 					<block cond="$key != 'PRIVATE' && $key != 'TEMP' && $key != 'PUBLIC'">
-						<label class="x_inline" for="{$key}"><input type="checkbox" name="use_status[]" id="{$key}" value="{$key}" checked="checked"|cond="@in_array($key, $module_info->use_status) || ($key == 'PUBLIC' && !$module_srl)" /> {$value}</label>
+						<label class="x_inline" for="{$key}"><input type="checkbox" name="use_status[]" id="{$key}" value="{$key}" checked="checked"|cond="@in_array($key, (array)($module_info->use_status ?? [])) || ($key == 'PUBLIC' && !$module_srl)" /> {$value}</label>
 					</block>
 				</block>
 				<p class="x_help-block">{$lang->about_use_status}</p>

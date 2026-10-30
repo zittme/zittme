@@ -1,0 +1,76 @@
+<config autoescape="on" />
+<include target="header.html" />
+<load target="./css/kit.scss" />
+<load target="./js/kit.js" />
+
+<div class="zmst zmkit">
+	<div class="zmst-head">
+		<div class="zmst-head-titles">
+			<span class="zmst-eyebrow">STARTER KIT</span>
+			<h2 class="zmst-title">{$kit_job->title} <small class="zmkit-ver">v{$kit_job->kit_version}</small></h2>
+		</div>
+		<div class="zmst-account">
+			<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminKits')}">{$lang->kit_cmd_back}</a>
+		</div>
+	</div>
+
+	<div class="zmkit-panel zmkit-progress" id="zmkitProgress"
+		data-job-srl="{$kit_job->job_srl}"
+		data-status="{$kit_job->status}"
+		data-autorun="{$kit_job->status === 'running' ? 'Y' : 'N'}"
+		data-step-names="{json_encode($lang->kit_step)}"
+		data-msg-done="{$lang->kit_done}"
+		data-msg-failed="{$lang->kit_failed}"
+		data-msg-removed="{$lang->kit_removed}"
+		data-msg-rolledback="{$lang->kit_rolledback}"
+		data-msg-removing="{$lang->kit_removing}"
+		data-confirm-remove="{$lang->kit_remove_confirm}"
+		data-confirm-rollback="{$lang->kit_rollback_confirm}">
+		<div class="zmkit-progress-head">
+			<h3 class="zmkit-h3">{$lang->kit_progress_title}</h3>
+			<span class="zmkit-status is-{$kit_job->status}" id="zmkitStatus">{$lang->kit_status[$kit_job->status] ?? $kit_job->status}</span>
+		</div>
+		<div class="zmkit-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{round(100 * $kit_progress['step_index'] / $kit_progress['step_count'])}">
+			<span style="width:{round(100 * $kit_progress['step_index'] / $kit_progress['step_count'])}%"></span>
+		</div>
+		<p class="zmkit-step" id="zmkitStep">{$lang->kit_step[$kit_progress['step']] ?? $kit_progress['step']}</p>
+		<ol class="zmkit-steps">
+			<!--@foreach($kit_steps as $i => $step)-->
+				<li class="{$i < $kit_progress['step_index'] ? 'is-done' : ($i == $kit_progress['step_index'] ? 'is-current' : '')}" data-step="{$step}">{$lang->kit_step[$step]}</li>
+			<!--@end-->
+		</ol>
+		<p class="zmkit-error" id="zmkitError" hidden="hidden"|cond="!$kit_job->message">{$kit_progress['message']}</p>
+		<p class="zmkit-help" cond="in_array($kit_job->status, ['running', 'failed'])">{$lang->kit_progress_hint}</p>
+
+		<div class="zmkit-actions">
+			<button type="button" class="zmkit-btn-primary" data-kit-resume cond="in_array($kit_job->status, ['failed', 'running'])">{$lang->kit_cmd_resume}</button>
+			<a class="zmkit-btn-primary" href="{getUrl('')}" target="_blank" cond="$kit_job->status === 'done'">{$lang->kit_open_site}</a>
+			<button type="button" class="zmst-btn" data-kit-remove="remove" cond="in_array($kit_job->status, ['done', 'failed', 'running', 'removing'])">{$lang->kit_cmd_remove}</button>
+			<button type="button" class="zmkit-btn-danger" data-kit-remove="rollback" cond="in_array($kit_job->status, ['done', 'failed', 'running', 'removing', 'removed'])">{$lang->kit_cmd_rollback}</button>
+			<form action="./" method="post" cond="in_array($kit_job->status, ['removed', 'rolledback'])">
+				<input type="hidden" name="module" value="autoinstall" />
+				<input type="hidden" name="act" value="procAutoinstallAdminKitDiscard" />
+				<input type="hidden" name="job_srl" value="{$kit_job->job_srl}" />
+				<button type="submit" class="zmst-btn">{$lang->kit_cmd_discard}</button>
+			</form>
+		</div>
+	</div>
+
+	<div class="zmkit-panel" cond="count($kit_counts_rollback)">
+		<h3 class="zmkit-h3">{$lang->kit_journal}</h3>
+		<ul class="zmkit-stats">
+			<!--@foreach($kit_counts_rollback as $kind => $count)-->
+				<li><strong>{$count}</strong><span>{$lang->kit_kind[$kind] ?? $kind}</span></li>
+			<!--@end-->
+		</ul>
+	</div>
+
+	<div class="zmkit-panel" cond="!empty($kit_job->options->kept)">
+		<h3 class="zmkit-h3">{$lang->kit_kept}</h3>
+		<ul class="zmkit-list">
+			<!--@foreach($kit_job->options->kept as $kept)-->
+				<li><code>{$kept}</code></li>
+			<!--@end-->
+		</ul>
+	</div>
+</div>

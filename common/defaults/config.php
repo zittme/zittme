@@ -129,6 +129,9 @@ return array(
 		'og_extract_hashtags' => false,
 		'og_use_nick_name' => false,
 		'og_use_timestamps' => false,
+		'canonical' => false,
+		'structured_data' => false,
+		'pagination_links' => false,
 	),
 	'mediafilter' => array(
 		'whitelist' => array(),

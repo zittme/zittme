@@ -12,12 +12,16 @@
 		<div class="zmst-account" id="zmstAccount">
 			<!--@if($store_last_update_check)--><span class="zmst-last-check">{sprintf($lang->store_last_checked, zdate(date('YmdHis', $store_last_update_check), 'm.d H:i'))}</span><!--@end-->
 			<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminIndex', 'refresh', 'Y')}">{$lang->store_refresh_list}</a>
+			<a class="zmst-btn" cond="$zittme_store_consent === 'Y'" href="{$zittme_consent_url}">{$lang->cmd_store_consent_settings}</a>
 			<!--@if($zittme_account)-->
 				<span class="zmst-account-name">
 					<img src="{\RX_BASEURL}common/img/logo.png" alt="" />
 					<strong>{$zittme_account->nick_name}</strong>
 				</span>
 				<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminDisconnect')}">{$lang->store_disconnect_account}</a>
+			<!--@elseif($zittme_store_consent !== 'Y')-->
+				<span class="zmst-consent-note">{$lang->store_consent_needed}</span>
+				<a class="zmst-btn zmst-btn-outline" href="{$zittme_consent_url}">{$lang->cmd_store_consent_settings}</a>
 			<!--@else-->
 				<!--// 같은 탭에서 zitt.me 승인 화면으로 갔다가 되돌아온다 (팝업 없음) -->
 				<a class="zmst-btn zmst-btn-outline" href="{$zittme_connect_url}">
@@ -40,6 +44,7 @@
 			<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminIndex', 'type', $_type)}" class="on"|cond="$type == $_type">{$_typename}</a>
 		<!--@endforeach-->
 		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminIndex', 'type', 'updates')}" class="zmst-cat-updates on"|cond="$type == 'updates'">{$lang->tab_updates}</a>
+		<a href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminKits')}" class="zmst-cat-kits">{$lang->kit_title}</a>
 	</nav>
 
 	<!--// Updates tab with nothing to update -->
@@ -78,7 +83,7 @@
 							<!--@else-->
 								<span class="zmst-chip zmst-chip-installed">{$lang->installed}</span>
 							<!--@end-->
-						<!--@elseif(($package->extra_vars->distribution ?? 'FREE') === 'PAID')-->
+						<!--@elseif(($package->extra_vars->distribution ?? 'FREE') === 'PAID' && $package->install_type !== 'paid_licensed')-->
 							<span class="zmst-chip zmst-chip-paid">{$lang->store_purchase_required}</span>
 						<!--@elseif($package->isInstallable('minimal'))-->
 							<span class="zmst-install" title="{$lang->autoinstallable}">

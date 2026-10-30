@@ -20,7 +20,14 @@
 		</div>
 		<div class="x_control-group">
 			<label for="db_user" class="x_control-label">{$lang->db_userid}</label>
-			<div class="x_controls"><input name="db_user" type="text" id="db_user" class="focus" required /></div>
+			<div class="x_controls">
+				<input name="db_user" type="text" id="db_user" class="focus" placeholder="{$lang->db_userid_placeholder}" required />
+				<p class="install_help">{$lang->db_userid_desc}</p>
+				<details class="install_help">
+					<summary>{$lang->db_create_user_title}</summary>
+					<pre style="white-space:pre-wrap;">{$lang->db_create_user_sql}</pre>
+				</details>
+			</div>
 		</div>
 		<div class="x_control-group">
 			<label for="db_pass" class="x_control-label">{$lang->db_password}</label>
@@ -28,7 +35,10 @@
 		</div>
 		<div class="x_control-group">
 			<label for="db_database" class="x_control-label">{$lang->db_name}</label>
-			<div class="x_controls"><input name="db_database" type="text" id="db_database" required /></div>
+			<div class="x_controls">
+				<input name="db_database" type="text" id="db_database" placeholder="{$lang->db_name_placeholder}" required />
+				<p class="install_help">{$lang->db_name_desc}</p>
+			</div>
 		</div>
 		<div class="x_control-group">
 			<label for="db_prefix" class="x_control-label">{$lang->db_table_prefix}</label>

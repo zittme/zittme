@@ -31,7 +31,7 @@
 				var cur = 'auto';
 				try { cur = localStorage.getItem('zm-admin-theme') || 'auto'; } catch(e) {}
 				$('[data-zm-theme-set]').css('font-weight','normal').css('color','');
-				$('[data-zm-theme-set="' + cur + '"]').css('font-weight','700').css('color','var(--zm-brand)');
+				$('[data-zm-theme-set="' + cur + '"]').css('font-weight','700').css('color','var(--zm-brand-ink)');
 			}
 			$('[data-zm-theme-set]').on('click', function(){
 				var v = $(this).data('zm-theme-set');

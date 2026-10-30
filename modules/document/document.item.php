@@ -966,7 +966,7 @@ class DocumentItem extends BaseObject
 
 	function getExtraVarsValue($key)
 	{
-		$extra_vals = unserialize($this->get('extra_vars'));
+		$extra_vals = unserialize($this->get('extra_vars'), ['allowed_classes' => ['stdClass']]);
 		return $extra_vals->$key;
 	}
 
@@ -1274,7 +1274,7 @@ class DocumentItem extends BaseObject
 					{
 						Zittme\Framework\Storage::protectDirectory(\RX_BASEDIR . 'files/cache/tmp');
 					}
-					FileHandler::getRemoteFile($target_src, $tmp_file);
+					FileHandler::getRemoteFile($target_src, $tmp_file, null, 3, 'GET', null, [], [], [], ['block_private' => true]);
 					if (!Zittme\Framework\Storage::exists($tmp_file))
 					{
 						continue;

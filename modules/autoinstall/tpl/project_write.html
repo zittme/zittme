@@ -17,9 +17,13 @@
 	<!--@if(!$zittme_account)-->
 		<!--// 등록은 연결된 계정 이름으로 올라간다 -->
 		<p class="zmst-notice is-error">{$lang->msg_autoinstall_connect_required}</p>
+		<!--@if($zittme_store_consent !== 'Y')-->
+		<p><span class="zmst-consent-note">{$lang->store_consent_needed}</span> <a class="zmst-btn zmst-btn-outline" href="{$zittme_consent_url}">{$lang->cmd_store_consent_settings}</a></p>
+		<!--@else-->
 		<p><a class="zmst-btn zmst-btn-outline" href="{$zittme_connect_url}">
 			<img src="{\RX_BASEURL}common/img/logo.png" alt="" />{$lang->store_connect_account}
 		</a></p>
+		<!--@end-->
 	<!--@else-->
 		<p class="zmst-notice">{sprintf($lang->msg_project_posts_as, $zittme_account->nick_name)}</p>
 

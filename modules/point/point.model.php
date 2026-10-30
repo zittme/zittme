@@ -102,6 +102,30 @@ class PointModel extends Point
 	}
 
 	/**
+	 * Store a balance that was just written, without reading it back from the DB.
+	 *
+	 * @param int $member_srl
+	 * @param int $point
+	 * @return void
+	 */
+	public static function setCachedPoint($member_srl, $point)
+	{
+		$member_srl = abs(intval($member_srl));
+		$point = intval($point);
+		self::$_member_point_cache[$member_srl] = $point;
+
+		if (Zittme\Framework\Cache::getDriverName() !== 'dummy')
+		{
+			Zittme\Framework\Cache::set(sprintf('member:point:%d', $member_srl), $point);
+		}
+		else
+		{
+			$cache_path = sprintf(RX_BASEDIR . 'files/member_extra_info/point/%s', getNumberingPath($member_srl));
+			Zittme\Framework\Storage::write(sprintf('%s/%d.cache.txt', $cache_path, $member_srl), $point);
+		}
+	}
+
+	/**
 	 * @brief Get the level
 	 */
 	public static function getLevel($point, $level_step)
@@ -201,14 +225,18 @@ class PointModel extends Point
 		$args->is_denied = Context::get('is_denied')=='Y'?'Y':'';
 		$args->selected_group_srl = Context::get('selected_group_srl');
 
-		$search_target = Context::get('search_target');
-		$search_keyword = Context::get('search_keyword');
+		$search_target = trim((string)Context::get('search_target'));
+		$search_keyword = trim((string)Context::get('search_keyword'));
 
-		// if search keyword is emtpy, show all list
+		// Without a keyword, only the group filter applies.
 		if(!$search_keyword)
 		{
-			unset($args->is_admin, $args->is_denied, $args->selected_group_srl);
-			$search_target = null;
+			unset($args->is_admin, $args->is_denied);
+			$search_target = '';
+		}
+		if(!intval($args->selected_group_srl ?? 0))
+		{
+			unset($args->selected_group_srl);
 		}
 
 		if($search_target && $search_keyword)
@@ -232,10 +260,22 @@ class PointModel extends Point
 					$args->s_email_address = $search_keyword;
 					break;
 				case 'regdate' :
-					$args->s_regdate = $search_keyword;
+					$args->s_regdate = preg_replace('/[^0-9]/', '', $search_keyword);
+					break;
+				case 'regdate_more' :
+					$args->s_regdate_more = str_pad(preg_replace('/[^0-9]/', '', $search_keyword), 14, '0');
+					break;
+				case 'regdate_less' :
+					$args->s_regdate_less = str_pad(preg_replace('/[^0-9]/', '', $search_keyword), 14, '9');
 					break;
 				case 'last_login' :
-					$args->s_last_login = $search_keyword;
+					$args->s_last_login = preg_replace('/[^0-9]/', '', $search_keyword);
+					break;
+				case 'last_login_more' :
+					$args->s_last_login_more = str_pad(preg_replace('/[^0-9]/', '', $search_keyword), 14, '0');
+					break;
+				case 'last_login_less' :
+					$args->s_last_login_less = str_pad(preg_replace('/[^0-9]/', '', $search_keyword), 14, '9');
 					break;
 				case 'extra_vars' :
 					$args->s_extra_vars = $search_keyword;
@@ -243,7 +283,7 @@ class PointModel extends Point
 			}
 		}
 		// If there is a selected_group_srl, change the "query id" (for table join)
-		if(isset($args->selected_group_srl) && $args->selected_group_srl)
+		if(!empty($args->selected_group_srl))
 		{
 			$query_id = 'point.getMemberListWithinGroup';
 		}

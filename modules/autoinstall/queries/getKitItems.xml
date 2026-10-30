@@ -1,0 +1,16 @@
+<query id="getKitItems" action="select">
+	<tables>
+		<table name="autoinstall_kit_items" />
+	</tables>
+	<columns>
+		<column name="*" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="job_srl" var="job_srl" filter="number" notnull="notnull" />
+		<condition operation="equal" column="kind" var="kind" pipe="and" />
+	</conditions>
+	<navigation>
+		<index var="sort_index" default="item_srl" order="asc" />
+		<list_count var="list_count" default="100000" />
+	</navigation>
+</query>

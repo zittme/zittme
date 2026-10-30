@@ -125,7 +125,8 @@ class DisplayHandler extends Handler
 		}
 
 		// Print robot headers.
-		if (isset($oModule->module_info->robots_tag) && $oModule->module_info->robots_tag === 'noindex')
+		if ((isset($oModule->module_info->robots_tag) && $oModule->module_info->robots_tag === 'noindex') ||
+			(!empty($oModule->module_info->module_srl) && Zittme\Modules\Menu\Models\Exposure::isNoindex($oModule->module_info)))
 		{
 			header('X-Robots-Tag: noindex');
 		}

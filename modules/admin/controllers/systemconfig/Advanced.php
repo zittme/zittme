@@ -8,7 +8,9 @@ use Zittme\Framework\Cache;
 use Zittme\Framework\Config;
 use Zittme\Framework\DateTime;
 use Zittme\Framework\Exception;
+use Zittme\Framework\IndexNow;
 use Zittme\Framework\Lang;
+use Zittme\Framework\Robots;
 use Zittme\Framework\Router;
 use Zittme\Modules\Admin\Controllers\Base;
 
@@ -90,6 +92,37 @@ class Advanced extends Base
 		Context::set('default_lang', Config::get('locale.default_lang'));
 		Context::set('enabled_lang', Config::get('locale.enabled_lang'));
 		Context::set('auto_select_lang', Config::get('locale.auto_select_lang'));
+
+		// Language prefix
+		Context::set('lang_prefix', Config::get('url.lang_prefix'));
+		Context::set('lang_prefix_redirect', Config::get('url.lang_prefix_redirect'));
+		Context::set('lang_prefix_available', Router::getRewriteLevel() >= 2);
+		// Sitemap
+		Context::set('sitemap_enabled', Config::get('seo.sitemap'));
+		Context::set('sitemap_documents', intval(Config::get('seo.sitemap_documents')));
+		Context::set('sitemap_file_exists', file_exists(\RX_BASEDIR . 'sitemap.xml'));
+
+		// IndexNow
+		Context::set('indexnow_enabled', Config::get('seo.indexnow'));
+		Context::set('indexnow_key', Config::get('seo.indexnow_key'));
+
+		// robots.txt and AI crawlers
+		$robots_enabled = Config::get('seo.robots');
+		Context::set('robots_enabled', $robots_enabled);
+		Context::set('robots_custom', $robots_enabled ? Config::get('seo.robots_custom') : Robots::read());
+		Context::set('robots_sitemap', Config::get('seo.robots_sitemap') !== false);
+		Context::set('ai_train', Config::get('seo.ai_train'));
+		Context::set('ai_answer', Config::get('seo.ai_answer') !== false);
+		Context::set('ai_search', Config::get('seo.ai_search') !== false);
+		Context::set('llms_txt', Config::get('seo.llms_txt'));
+		Context::set('seo_structured_data', Config::get('seo.structured_data') === true);
+		Context::set('seo_pagination_links', Config::get('seo.pagination_links') === true);
+		Context::set('seo_canonical', Config::get('seo.canonical') === true);
+
+		Context::set('lang_prefix_conflict', implode(', ', $this->_getLangPrefixConflicts(
+			Config::get('locale.enabled_lang') ?: array(),
+			Config::get('locale.default_lang')
+		)));
 
 		// Default time zone
 		Context::set('timezones', DateTime::getTimezoneList());
@@ -178,14 +211,14 @@ server {
 
     client_max_body_size 100M;
 
-    # PHP 처리 (include보다 먼저 선언해야 함)
+    # Zittme 공식 짧은 주소(rewrite) + 보안 차단 규칙
+    # 정규식 location 은 먼저 쓴 것이 이기므로 PHP 처리보다 앞에 둬야 files/ 아래 PHP 차단이 듣는다
+    include snippets/zittme.conf;
+
     location ~ \\.php$ {
         include snippets/fastcgi-php.conf;
         fastcgi_pass {$fastcgi_pass};
     }
-
-    # Zittme 공식 짧은 주소(rewrite) + 보안 차단 규칙
-    include snippets/zittme.conf;
 }
 CONF;
 	}
@@ -304,6 +337,60 @@ CONF;
 		Config::set('locale.auto_select_lang', $vars->auto_select_lang === 'Y');
 		Config::set('locale.default_timezone', $vars->default_timezone);
 
+		// Language prefix
+		$lang_prefix_before = (bool)Config::get('url.lang_prefix');
+		$lang_prefix_after = ($vars->lang_prefix === 'Y');
+		if ($lang_prefix_after)
+		{
+			if (intval($vars->use_rewrite) < 2)
+			{
+				throw new Exception('about_lang_prefix_requires_rewrite');
+			}
+			if ($this->_getLangPrefixConflicts($enabled_lang, $vars->default_lang))
+			{
+				throw new Exception('about_lang_prefix_conflict');
+			}
+		}
+		Config::set('url.lang_prefix', $lang_prefix_after);
+		if ($lang_prefix_before && !$lang_prefix_after)
+		{
+			Config::set('url.lang_prefix_redirect', true);
+		}
+
+		// Sitemap
+		Config::set('seo.sitemap', ($vars->sitemap_enabled ?? '') === 'Y');
+		Config::set('seo.sitemap_documents', max(0, min(5000, intval($vars->sitemap_documents ?? 0))));
+
+		// robots.txt and AI crawlers. These are checkboxes: an unchecked box is not submitted at all.
+		Config::set('seo.ai_train', ($vars->ai_train ?? '') === 'Y');
+		Config::set('seo.ai_answer', ($vars->ai_answer ?? '') === 'Y');
+		Config::set('seo.ai_search', ($vars->ai_search ?? '') === 'Y');
+		Config::set('seo.robots_sitemap', ($vars->robots_sitemap ?? '') === 'Y');
+		Config::set('seo.llms_txt', ($vars->llms_txt ?? '') === 'Y');
+		Config::set('seo.structured_data', ($vars->seo_structured_data ?? '') === 'Y');
+		Config::set('seo.pagination_links', ($vars->seo_pagination_links ?? '') === 'Y');
+		Config::set('seo.canonical', ($vars->seo_canonical ?? '') === 'Y');
+
+		$robots_enabled = (($vars->robots_enabled ?? '') === 'Y');
+		Config::set('seo.robots', $robots_enabled);
+		Config::set('seo.robots_custom', utf8_trim($vars->robots_custom ?? ''));
+		if ($robots_enabled && !Robots::write())
+		{
+			throw new Exception('msg_failed_to_write_robots');
+		}
+
+		// IndexNow
+		$indexnow_enabled = (($vars->indexnow_enabled ?? '') === 'Y');
+		Config::set('seo.indexnow', $indexnow_enabled);
+		if ($indexnow_enabled)
+		{
+			IndexNow::getKey();
+			if (!IndexNow::writeKeyFile())
+			{
+				throw new Exception('msg_failed_to_write_indexnow_key');
+			}
+		}
+
 		// Proxy
 		$proxy = trim($vars->outgoing_proxy ?? '');
 		if ($proxy !== '' && !preg_match('!^(https?|socks)://.+!', $proxy))
@@ -331,7 +418,62 @@ CONF;
 			throw new Exception('msg_failed_to_save_config');
 		}
 
+		\Zittme\Modules\Menu\Models\Exposure::flushSitemapCache(false, true);
+
 		$this->setMessage('success_updated');
 		$this->setRedirectUrl(Context::get('success_return_url') ?: getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAdminConfigAdvanced'));
+	}
+
+	/**
+	 * Return the list of module IDs that collide with a language prefix.
+	 *
+	 * @param array $enabled_lang
+	 * @param string $default_lang
+	 * @return array
+	 */
+	protected function _getLangPrefixConflicts($enabled_lang, $default_lang): array
+	{
+		$result = array();
+		foreach ($enabled_lang ?: array() as $lang)
+		{
+			if ($lang !== $default_lang && $this->_isLangPrefixTaken((string)$lang))
+			{
+				$result[] = $lang;
+			}
+		}
+		return $result;
+	}
+
+	/**
+	 * Check whether a language code used as a URL prefix collides with an existing path.
+	 *
+	 * Language codes may contain a hyphen (zh-TW), which a module ID never does,
+	 * so only codes that can also be module IDs are looked up as module IDs.
+	 *
+	 * @param string $lang
+	 * @return bool
+	 */
+	protected function _isLangPrefixTaken(string $lang): bool
+	{
+		if (!preg_match('/^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$/i', $lang))
+		{
+			return true;
+		}
+
+		$lower = strtolower($lang);
+		$dirs = array_map('strtolower', \FileHandler::readDir(\RX_BASEDIR));
+		$dirs[] = 'rss';
+		$dirs[] = 'atom';
+		$dirs[] = 'api';
+		if (in_array($lower, $dirs, true) || Context::isReservedWord($lower))
+		{
+			return true;
+		}
+
+		if (preg_match('/^[a-z][a-z0-9_]+$/i', $lang))
+		{
+			return \ModuleModel::isIDExists($lang);
+		}
+		return false;
 	}
 }

@@ -1345,14 +1345,15 @@ class MemberController extends Member
 		$member_srl = $this->user->member_srl;
 		$member_info = MemberModel::getMemberInfoByMemberSrl($member_srl);
 
-		// Verify the current password
-		if (!MemberModel::isValidPassword($member_info->password, $current_password, $member_srl))
+		// Social-only members have no password hash, so there is no current password to verify.
+		$has_password = !empty($member_info->password);
+		if ($has_password && !MemberModel::isValidPassword($member_info->password, $current_password, $member_srl))
 		{
 			throw new Zittme\Framework\Exception('invalid_current_password');
 		}
 
 		// Check if a new password is as same as the previous password
-		if ($current_password === $password)
+		if ($has_password && $current_password === $password)
 		{
 			throw new Zittme\Framework\Exception('invalid_new_password');
 		}
@@ -1498,6 +1499,29 @@ class MemberController extends Member
 	}
 
 	/**
+	 * Whether a user-supplied URL is safe to redirect to: a relative path or an
+	 * http(s) URL on this site. Scheme-only forms such as "https:example.com"
+	 * and control characters are rejected.
+	 */
+	public static function isSafeRedirectUrl(string $url): bool
+	{
+		if ($url === '' || strlen($url) > 2000 || preg_match('/[\x00-\x1f\x7f<>"\']/', $url))
+		{
+			return false;
+		}
+		$normalized = str_replace('\\', '/', $url);
+		if (preg_match('!^[a-zA-Z][a-zA-Z0-9+.-]*:!', $normalized) && !preg_match('!^https?://!i', $normalized))
+		{
+			return false;
+		}
+		if (preg_match('!\b(javascript:|on\w+\s*=)!i', $normalized))
+		{
+			return false;
+		}
+		return \Zittme\Framework\URL::isInternalURL($url);
+	}
+
+	/**
 	 * Social login: redirect the visitor to the provider's authorization page.
 	 *
 	 * @return void|BaseObject
@@ -1520,14 +1544,14 @@ class MemberController extends Member
 		// Remember where to return after login. Prefer an explicit internal
 		// redirect param, otherwise the referring page (but never the callback).
 		$redirect = (string)Context::get('redirect');
-		if($redirect !== '' && \Zittme\Framework\URL::isInternalURL($redirect))
+		if($redirect !== '' && self::isSafeRedirectUrl($redirect))
 		{
 			$_SESSION['member_sns_auth']['referer'] = $redirect;
 		}
 		else
 		{
 			$referer = $_SERVER['HTTP_REFERER'] ?? '';
-			if($referer && strpos($referer, 'procMemberSnsCallback') === false)
+			if($referer && strpos($referer, 'procMemberSnsCallback') === false && self::isSafeRedirectUrl($referer))
 			{
 				$_SESSION['member_sns_auth']['referer'] = $referer;
 			}
@@ -1666,10 +1690,17 @@ class MemberController extends Member
 			$existMember = MemberModel::getMemberInfoByEmailAddress($userInfo->sns_email);
 			if($existMember && $existMember->member_srl)
 			{
-				$canAutoLink = ($userInfo->sns_type === 'google') || !empty($userInfo->sns_email_verified);
+				$canAutoLink = !empty($userInfo->sns_email_verified);
 				if(!$canAutoLink)
 				{
 					return $this->_snsAlertAndBack('msg_email_already_exists');
+				}
+
+				// A password account may have been registered by someone else with this address
+				// unless sign-up e-mail confirmation was on; make its owner log in to link.
+				if(!empty($existMember->password) && MemberModel::getMemberConfig()->enable_confirm !== 'Y')
+				{
+					return $this->_snsAlertAndBack('msg_sns_login_to_link');
 				}
 
 				$oAccountModel->insertAccount([
@@ -1697,6 +1728,15 @@ class MemberController extends Member
 		}
 
 		// New signup — create a password-less member (social-only account).
+		$member_config = MemberModel::getMemberConfig();
+		if($member_config->enable_join !== 'Y' && (empty($member_config->enable_join_key) || empty($_SESSION['signup_allowed'])))
+		{
+			return $this->_snsAlertAndBack('msg_signup_disabled');
+		}
+		if(\Zittme\Modules\Member\Identity\Base::isEnabled() && \Zittme\Modules\Member\Identity\Base::getConfig()->identity_signup_required === 'Y')
+		{
+			return $this->_snsAlertAndBack('msg_sns_signup_identity_required');
+		}
 		$member_srl = $this->_snsCreateMember($userInfo, $access_token);
 		if($member_srl instanceof BaseObject)
 		{
@@ -1727,6 +1767,17 @@ class MemberController extends Member
 			throw new Zittme\Framework\Exceptions\InvalidRequest;
 		}
 
+		// Unlinking the only login method of a social-only member would lock them out.
+		$member_info = MemberModel::getMemberInfoByMemberSrl($logged_info->member_srl);
+		if($member_info && empty($member_info->password))
+		{
+			$linked = \Zittme\Modules\Member\Social\AccountModel::getInstance()->getAccountsByMemberSrl($logged_info->member_srl);
+			if(count($linked) <= 1)
+			{
+				throw new Zittme\Framework\Exception('msg_sns_unlink_set_password');
+			}
+		}
+
 		\Zittme\Modules\Member\Social\AccountModel::getInstance()->deleteAccount($logged_info->member_srl, $service);
 
 		$this->setMessage('success_deleted');
@@ -1743,7 +1794,12 @@ class MemberController extends Member
 		// user cancelled at the provider (BackURL).
 		// The provider may strip extra return-URL parameters, so treat a missing TID
 		// as cancellation instead of relying on the cancel flag alone.
-		if(Context::get('IDENTITY_CANCEL') === 'Y' || (empty($_POST['TID']) && empty($_GET['TID'])))
+		$driver = \Zittme\Modules\Member\Identity\Base::getDriver();
+		$request = array_merge($_GET, $_POST);
+		$parsed = $driver ? $driver->parseCallback($request) : ['state' => '', 'tid' => ''];
+		$state = (string)$parsed['state'];
+
+		if(Context::get('IDENTITY_CANCEL') === 'Y' || $parsed['tid'] === '')
 		{
 			$this->_identityPopupFinish(false, lang('identity_cancelled'));
 		}
@@ -1758,15 +1814,22 @@ class MemberController extends Member
 		// would mint a new one and invalidate the opener's CSRF tokens.
 		// Correlation + result hand-off use the file ticket store instead;
 		// the opener claims the ticket into its own session afterwards.
-		$state = (string)Context::get('IDENTITY_STATE');
+		if(\Zittme\Modules\Member\Identity\Base::hasTicketResult($state))
+		{
+			$this->_identityPopupFinish(true, lang('identity_success'), ['ticket' => $state, 'name' => '']);
+		}
 		if(!\Zittme\Modules\Member\Identity\Base::isTicketValid($state))
 		{
 			$this->_identityPopupFinish(false, lang('msg_invalid_request'));
 		}
 
-		$driver = \Zittme\Modules\Member\Identity\Base::getDriver();
-		$result = $driver ? $driver->confirm($_POST) : ['success' => false, 'message' => 'driver missing'];
+		$request['IDENTITY_STATE'] = $state;
+		$result = $driver->confirm($request);
 
+		if(!empty($result['pending']))
+		{
+			$this->_identityPopupPending($result['message'] ?? lang('identity_failed'));
+		}
 		if(empty($result['success']))
 		{
 			$this->_identityPopupFinish(false, $result['message'] ?? lang('identity_failed'));
@@ -1870,6 +1933,11 @@ class MemberController extends Member
 			throw new Zittme\Framework\Exception('msg_identity_required');
 		}
 
+		if(\Zittme\Modules\Member\Identity\Drivers\Truora::isMockCi((string)$verified['ci']))
+		{
+			throw new Zittme\Framework\Exception('identity_no_account');
+		}
+
 		$record = \Zittme\Modules\Member\Identity\IdentityModel::getInstance()->getByCi((string)$verified['ci']);
 		if(!$record)
 		{
@@ -1892,10 +1960,86 @@ class MemberController extends Member
 			return $output;
 		}
 
+		// A reset must end every session and auto-login key issued before it
+		executeQuery('member.deleteAutologin', (object)array('member_srl' => $args->member_srl));
+		$validity_info = Zittme\Framework\Session::getValidityInfo($args->member_srl);
+		$validity_info->invalid_before = time();
+		Zittme\Framework\Session::setValidityInfo($args->member_srl, $validity_info);
+
 		\Zittme\Modules\Member\Identity\Base::clearVerified();
 
 		$this->setMessage('identity_password_changed');
 		$this->setRedirectUrl(getNotEncodedUrl('', 'act', 'dispMemberLoginForm'));
+	}
+
+	/**
+	 * Provider webhook (server-to-server). The driver verifies the signature
+	 * and re-fetches every referenced process from the provider API; only then
+	 * is a successful result stored under its ticket. Session-free.
+	 */
+	function procMemberIdentityWebhook()
+	{
+		if (!headers_sent())
+		{
+			header_remove('Set-Cookie');
+			header('Content-Type: application/json; charset=UTF-8');
+		}
+
+		$driver = \Zittme\Modules\Member\Identity\Base::isEnabled() ? \Zittme\Modules\Member\Identity\Base::getDriver() : null;
+		if (!$driver || !method_exists($driver, 'handleWebhook'))
+		{
+			http_response_code(404);
+			echo '{"ok":false}';
+			Context::close();
+			exit;
+		}
+
+		$body = (string)file_get_contents('php://input', false, null, 0, 65536);
+		$outcome = $driver->handleWebhook($body);
+		if (empty($outcome['valid']))
+		{
+			http_response_code(401);
+			echo '{"ok":false}';
+			Context::close();
+			exit;
+		}
+
+		$stored = 0;
+		foreach ($outcome['results'] as $state => $result)
+		{
+			if (!empty($result['success']) && !empty($result['ci'])
+				&& \Zittme\Modules\Member\Identity\Base::isTicketValid((string)$state))
+			{
+				\Zittme\Modules\Member\Identity\Base::storeTicketResult((string)$state, $result);
+				$stored++;
+			}
+		}
+
+		http_response_code(200);
+		echo json_encode(['ok' => true, 'stored' => $stored]);
+		Context::close();
+		exit;
+	}
+
+	/**
+	 * The provider has not finished the result yet: keep the popup open with a
+	 * retry button instead of closing it.
+	 */
+	private function _identityPopupPending($message)
+	{
+		if (!headers_sent())
+		{
+			header_remove('Set-Cookie');
+		}
+		header('Content-Type: text/html; charset=UTF-8');
+		$text = htmlspecialchars((string)$message, ENT_QUOTES, 'UTF-8');
+		$retry = htmlspecialchars(lang('identity_truora_retry'), ENT_QUOTES, 'UTF-8');
+		echo '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' . $text . '</title></head><body>';
+		echo '<p style="text-align:center;padding:40px 16px 16px;font-size:14px;color:#667085;">' . $text . '</p>';
+		echo '<p style="text-align:center;"><button type="button" onclick="location.reload();" style="padding:10px 20px;font-size:14px;">' . $retry . '</button></p>';
+		echo '</body></html>';
+		Context::close();
+		exit;
 	}
 
 	/**

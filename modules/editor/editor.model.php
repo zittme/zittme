@@ -177,6 +177,10 @@ class EditorModel extends Editor
 		{
 			$option->editor_colorset = 'moono-lisa';
 		}
+		if ($option->editor_skin === 'editorz' && !in_array($option->editor_colorset, array('light', 'dark')))
+		{
+			$option->editor_colorset = 'light';
+		}
 		// 반응형 뷰 사이트는 리디자인 에디터(zittEditor)를 기본으로 쓴다.
 		// 명시적으로 다른 스킨을 고른 경우는 존중하고, 구 기본값(ckeditor)일 때만 승격한다.
 		if ($option->editor_skin === 'ckeditor' && Mobile::isResponsiveView()

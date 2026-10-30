@@ -1,0 +1,12 @@
+<config autoescape="on" />
+<load target="css/member_console.css" />
+<load target="js/member_console.js" />
+<load target="js/member_console_groups.js" />
+<load target="js/member_console_form.js" />
+<load target="js/member_console_settings.js" />
+<div class="zmc" id="zmc">
+	<noscript><p class="zmc-noscript">{$lang->member_admin_noscript}</p></noscript>
+</div>
+<script>
+	window.ZMC_BOOT = {$member_console_boot|noescape};
+</script>

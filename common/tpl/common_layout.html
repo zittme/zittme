@@ -67,6 +67,7 @@
 @foreach (Context::getOpenGraphData() as $og_metadata)
 <meta property="{{ $og_metadata['property'] }}" content="{{ $og_metadata['content'] }}" />
 @endforeach
+{!! Context::getStructuredDataScript() !!}
 {!! Context::getHtmlHeader() !!}
 </head>
 

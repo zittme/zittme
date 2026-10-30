@@ -1,0 +1,8 @@
+<table name="point_stats_daily">
+	<column name="ymd" type="char" size="8" notnull="notnull" unique="unique_ymd_reason" />
+	<column name="reason_code" type="varchar" size="40" notnull="notnull" unique="unique_ymd_reason" />
+	<column name="earned" type="bignumber" notnull="notnull" default="0" />
+	<column name="spent" type="bignumber" notnull="notnull" default="0" />
+	<column name="cnt_plus" type="number" size="11" notnull="notnull" default="0" />
+	<column name="cnt_minus" type="number" size="11" notnull="notnull" default="0" />
+</table>

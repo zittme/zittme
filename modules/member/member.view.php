@@ -34,7 +34,7 @@ class MemberView extends Member
 		$referer_url = Context::get('referer_url') ?: ($_SERVER['HTTP_REFERER'] ?? '');
 
 		// Check if the referer is an internal URL.
-		$is_valid_referer = !empty($referer_url) && Zittme\Framework\URL::isInternalURL($referer_url);
+		$is_valid_referer = !empty($referer_url) && MemberController::isSafeRedirectUrl($referer_url);
 
 		// Check if the referer is the login or signup page, to prevent redirect loops.
 		if (preg_match('!\b(dispMemberLoginForm|dispMemberSignUpForm|dispMemberFindAccount|dispMemberResendAuthMail|procMember)!', $referer_url))
@@ -496,6 +496,9 @@ class MemberView extends Member
 		$columnList = array('member_srl', 'user_id', 'user_name', 'nick_name', 'email_address', 'find_account_answer', 'homepage', 'blog', 'birthday', 'allow_mailing');
 		$member_info = MemberModel::getMemberInfoByMemberSrl($member_srl, 0, $columnList);
 		$member_info->signature = MemberModel::getSignature($member_srl);
+
+		// Social-only members with a placeholder address get a hint to set a real one.
+		Context::set('social_temp_email', !$member_info->password && preg_match('/@(sns|social-login)\.local$/i', (string)$member_info->email_address));
 		Context::set('member_info', $member_info);
 
 		$formTags = getAdminView('member')->_getMemberInputTag($member_info);
@@ -908,6 +911,9 @@ class MemberView extends Member
 
 		$columnList = array('member_srl', 'user_id');
 		$member_info = MemberModel::getMemberInfoByMemberSrl($member_srl, 0, $columnList);
+
+		// Social-only members have no current password to confirm; the skin hides the field.
+		Context::set('no_password_member', $member_info && !$member_info->password);
 		Context::set('member_info',$member_info);
 
 		if($memberConfig->identifier == 'user_id')
@@ -1002,9 +1008,7 @@ class MemberView extends Member
 
 		// same-site return URL only (prevents open redirect)
 		$return_url = (string)Context::get('return_url');
-		$parsed = parse_url($return_url);
-		$current_host = \Zittme\Framework\URL::getCurrentDomain(true);
-		if ($return_url === '' || (isset($parsed['host']) && !hash_equals(strtolower($current_host), strtolower($parsed['host']))))
+		if ($return_url === '' || !MemberController::isSafeRedirectUrl($return_url))
 		{
 			$return_url = getNotEncodedFullUrl('', 'mid', '', 'act', '');
 		}
@@ -1051,7 +1055,7 @@ class MemberView extends Member
 		// is the gate itself and would be discarded.
 		if (!$is_member)
 		{
-			$_SESSION['member_auth_referer'] = $return_url;
+			$_SESSION['member_auth_referer'] = escape($return_url);
 		}
 		Context::set('identity_login_url', getNotEncodedUrl('', 'act', 'dispMemberLoginForm'));
 
@@ -1097,12 +1101,50 @@ class MemberView extends Member
 		{
 			Context::set('identity_start_url', $result['start_url']);
 			Context::set('identity_params', $result['params']);
+			Context::set('identity_method', ($result['method'] ?? 'post') === 'get' ? 'get' : 'post');
 		}
 
 		$this->setLayoutPath('./common/tpl');
 		$this->setLayoutFile('popup_layout');
 		$this->setTemplatePath($this->module_path.'tpl');
 		$this->setTemplateFile('identity_verify');
+	}
+
+	/**
+	 * Truora mock mode: local stand-in for the hosted verification flow.
+	 * Available only while the active provider is Truora in mock mode.
+	 */
+	function dispMemberIdentityTruoraMock()
+	{
+		$config = \Zittme\Modules\Member\Identity\Base::getConfig();
+		$driver = \Zittme\Modules\Member\Identity\Base::getDriver();
+		if (!\Zittme\Modules\Member\Identity\Base::isEnabled() || $config->identity_provider !== 'truora' || !$driver || !$driver->isMock() || !\Zittme\Modules\Member\Identity\Drivers\Truora::isMockAllowed())
+		{
+			throw new Zittme\Framework\Exceptions\FeatureDisabled;
+		}
+
+		$state = (string)Context::get('IDENTITY_STATE');
+		if (!\Zittme\Modules\Member\Identity\Base::isTicketValid($state))
+		{
+			throw new Zittme\Framework\Exceptions\InvalidRequest;
+		}
+
+		if (Context::get('mock_submit') === 'Y')
+		{
+			$input = [];
+			foreach (['outcome', 'first_name', 'last_name', 'date_of_birth', 'document_number', 'country', 'gender', 'phone'] as $key)
+			{
+				$input[$key] = (string)Context::get('mock_' . $key);
+			}
+			$this->setRedirectUrl($driver->mockCreate($state, $input));
+			return;
+		}
+
+		Context::set('identity_state', $state);
+		$this->setLayoutPath('./common/tpl');
+		$this->setLayoutFile('popup_layout');
+		$this->setTemplatePath($this->module_path.'tpl');
+		$this->setTemplateFile('identity_truora_mock');
 	}
 
 	/**

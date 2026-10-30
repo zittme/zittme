@@ -47,7 +47,7 @@
 			<!--@if($package->isInstalled())-->
 				<!--@if($update_info->update_available)-->
 					<!--@if($package->isInstallable())-->
-						<a class="zmst-btn zmst-btn-primary autoinstall_update_btn type_{$package->install_type}" href="#" data-package-srl="{$package->package_srl}" data-downloading="{$lang->msg_autoinstall_downloading}" data-installing="{$lang->msg_autoinstall_installing}" data-cleanup="{$lang->msg_autoinstall_cleanup}" data-complete="{$lang->msg_autoinstall_success_updated}">{$lang->cmd_autoinstall_update_available}</a>
+						<a class="zmst-btn zmst-btn-primary autoinstall_update_btn type_{$package->install_type}" href="#" data-package-srl="{$package->package_srl}" data-downloading="{$lang->msg_autoinstall_downloading}" data-installing="{$lang->msg_autoinstall_installing}" data-cleanup="{$lang->msg_autoinstall_cleanup}" data-complete="{$lang->msg_autoinstall_success_updated}" data-license-confirm="{$package->install_type === 'paid_licensed' ? $lang->msg_autoinstall_paid_license_confirm : ''}" data-verifying="{$lang->msg_autoinstall_license_verifying}" data-verified="{$lang->msg_autoinstall_license_verified}">{$lang->cmd_autoinstall_update_available}</a>
 					<!--@else-->
 						<span class="zmst-btn is-disabled">{$lang->cmd_autoinstall_not_updatable}</span>
 					<!--@end-->
@@ -56,7 +56,10 @@
 				<!--@end-->
 				<a class="zmst-btn autoinstall_uninstall_btn" href="#" data-package-srl="{$package->package_srl}" data-confirm="{$lang->msg_autoinstall_confirm_uninstall}">{$lang->cmd_autoinstall_uninstall}</a>
 			<!--@elseif($package->isInstallable())-->
-				<a class="zmst-btn zmst-btn-primary autoinstall_install_btn type_{$package->install_type}" href="#" data-package-srl="{$package->package_srl}" data-downloading="{$lang->msg_autoinstall_downloading}" data-installing="{$lang->msg_autoinstall_installing}" data-cleanup="{$lang->msg_autoinstall_cleanup}" data-complete="{$lang->msg_autoinstall_success_installed}">{$lang->cmd_autoinstall_install}</a>
+				<a class="zmst-btn zmst-btn-primary autoinstall_install_btn type_{$package->install_type}" href="#" data-package-srl="{$package->package_srl}" data-downloading="{$lang->msg_autoinstall_downloading}" data-installing="{$lang->msg_autoinstall_installing}" data-cleanup="{$lang->msg_autoinstall_cleanup}" data-complete="{$lang->msg_autoinstall_success_installed}" data-license-confirm="{$package->install_type === 'paid_licensed' ? $lang->msg_autoinstall_paid_license_confirm : ''}" data-verifying="{$lang->msg_autoinstall_license_verifying}" data-verified="{$lang->msg_autoinstall_license_verified}">{$lang->cmd_autoinstall_install}</a>
+			<!--@elseif($package->install_type === 'paid')-->
+				<!--// 유료 자료: 연결 계정으로 자동 로그인해 구매 화면을 팝업으로 연다. 계정이 없으면 연결(로그인)부터. -->
+				<a class="zmst-btn zmst-btn-primary zmst-buy-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminEnterService', 'to', 'purchase', 'package_srl', $package->package_srl)}" target="zittme_purchase" onclick="var w=window.open(this.href,'zittme_purchase','width=1080,height=860,scrollbars=yes,resizable=yes');if(w){w.focus();return false;}">{$lang->cmd_autoinstall_buy_on_store}</a>
 			<!--@else-->
 				<span class="zmst-btn is-disabled">{$lang->cmd_autoinstall_install}</span>
 			<!--@end-->
@@ -67,7 +70,31 @@
 
 	<!--// 설치 불가 사유 / 주의 안내 -->
 	<div class="zmst-notices">
-		<!--@if(!$package->isInstallable())-->
+		<!--@if($package->install_type === 'paid_licensed')-->
+			<!--// 라이선스 현황 — 무엇으로 통과했는지 보여 준다. 설치 버튼을 누르면 다시 검증한 결과가 아래 줄에 찍힌다 -->
+			<div class="zmst-license-box">
+				<strong class="zmst-license-title">{$lang->msg_autoinstall_license_status}</strong>
+				<dl class="zmst-license-grid">
+					<dt>{$lang->cmd_autoinstall_license_key}</dt><dd><code>{$package->extra_vars->license_info->key_masked ?? ''}</code></dd>
+					<dt>{$lang->cmd_autoinstall_license_domain}</dt><dd>{$package->extra_vars->license_info->domain ?? ''}</dd>
+					<dt>{$lang->cmd_autoinstall_license_active_date}</dt><dd>{$package->extra_vars->license_info->active_date ?? ''}</dd>
+					<dt>{$lang->cmd_autoinstall_license_checked_domains}</dt><dd>{implode(', ', (array)($package->extra_vars->license_info->checked_domains ?? []))}</dd>
+				</dl>
+				<p class="zmst-license-result" id="zmst_license_result" style="display:none"></p>
+			</div>
+			<p class="zmst-notice">{$lang->msg_autoinstall_paid_licensed_notice}</p>
+		<!--@end-->
+		<!--@if($package->install_type === 'paid')-->
+			<!--@if($zittme_account)-->
+				<p class="zmst-notice">{$lang->msg_autoinstall_paid_notice}</p>
+			<!--@else-->
+				<!--@if($zittme_store_consent !== 'Y')-->
+				<p class="zmst-notice is-error">{$lang->msg_autoinstall_paid_consent_notice} <a href="{$zittme_consent_url}">{$lang->cmd_store_consent_settings}</a></p>
+				<!--@else-->
+				<p class="zmst-notice is-error">{$lang->msg_autoinstall_paid_connect_notice} <a href="{$zittme_connect_url}">{$lang->store_connect_account}</a></p>
+				<!--@end-->
+			<!--@end-->
+		<!--@elseif(!$package->isInstallable())-->
 			<!--@if(!$package->checkInstallEnvironment())-->
 				<p class="zmst-notice is-error">{$lang->msg_autoinstall_not_installable_environment}</p>
 			<!--@elseif(!$package->checkInstallPermissions())-->

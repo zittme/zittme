@@ -64,6 +64,12 @@ class BoardAdminController extends Board {
 		if($args->anonymous_except_admin != 'Y') $args->anonymous_except_admin = 'N';
 		if($args->consultation != 'Y') $args->consultation = 'N';
 
+		// Share settings
+		$args->share_use = ($args->share_use ?? 'N') === 'Y' ? 'Y' : 'N';
+		$args->share_auto = ($args->share_auto ?? 'N') === 'Y' ? 'Y' : 'N';
+		$args->share_channels = implode(',', Zittme\Modules\Board\Models\Share::sanitizeChannels(is_array($args->share_channels ?? null) ? $args->share_channels : [])) ?: 'none';
+		$args->share_kakao_key = Zittme\Modules\Board\Models\Share::sanitizeKakaoKey($args->share_kakao_key ?? '');
+
 		// Protection settings
 		if ($args->protect_content != 'Y') $args->protect_content = 'N';
 		if ($args->protect_document_regdate === 'Y')
@@ -196,6 +202,15 @@ class BoardAdminController extends Board {
 		if(!in_array($args->order_type, array('asc', 'desc')))
 		{
 			$args->order_type = 'asc';
+		}
+
+		$current_info = ModuleModel::getModuleInfoByModuleSrl($args->module_srl);
+		foreach (['share_use', 'share_auto', 'share_channels', 'share_kakao_key'] as $share_key)
+		{
+			if (!isset($args->{$share_key}) && isset($current_info->{$share_key}))
+			{
+				$args->{$share_key} = $current_info->{$share_key};
+			}
 		}
 
 		$oModuleController = getController('module');

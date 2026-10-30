@@ -1,0 +1,92 @@
+<config autoescape="on" />
+<include target="header.html" />
+<load target="./css/kit.scss" />
+<load target="./js/kit.js" />
+{@ $c = $kit_choices}
+
+<div class="zmst zmkit">
+	<div class="zmst-head">
+		<div class="zmst-head-titles">
+			<span class="zmst-eyebrow">STARTER KIT</span>
+			<h2 class="zmst-title">{$lang->kit_export_title}</h2>
+		</div>
+		<div class="zmst-account">
+			<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminKits')}">{$lang->kit_cmd_back}</a>
+		</div>
+	</div>
+	<p class="zmkit-intro">{$lang->kit_export_intro}</p>
+
+	<form id="zmkitExport" class="zmkit-form"
+		data-step-names="{json_encode($lang->kit_export_step)}"
+		data-download-url="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminKitExportDownload')}">
+		<div class="zmkit-panel">
+			<h3 class="zmkit-h3">{$lang->kit_export_basic}</h3>
+			<div class="zmkit-grid">
+				<label class="zmkit-field"><span>{$lang->kit_export_id}</span><input type="text" name="kit_id" required pattern="[a-z][a-z0-9_]+" minlength="2" maxlength="40" placeholder="hairsalon" /><small>{$lang->kit_export_id_hint}</small></label>
+				<label class="zmkit-field"><span>{$lang->kit_export_version}</span><input type="text" name="kit_version" required pattern="\d+\.\d+\.\d+" value="1.0.0" /></label>
+				<label class="zmkit-field"><span>{$lang->kit_export_title_ko}</span><input type="text" name="title_ko" required /></label>
+				<label class="zmkit-field"><span>{$lang->kit_export_title_en}</span><input type="text" name="title_en" required /></label>
+				<label class="zmkit-field zmkit-wide"><span>{$lang->kit_export_desc_ko}</span><textarea name="description_ko" rows="2"></textarea></label>
+				<label class="zmkit-field zmkit-wide"><span>{$lang->kit_export_desc_en}</span><textarea name="description_en" rows="2"></textarea></label>
+				<label class="zmkit-field"><span>{$lang->kit_export_author}</span><input type="text" name="author" /></label>
+			</div>
+		</div>
+
+		<div class="zmkit-panel">
+			<h3 class="zmkit-h3">{$lang->kit_export_modules}</h3>
+			<div class="zmkit-checks">
+				<!--@foreach($c->modules as $row)-->
+					<label class="zmkit-check"><input type="checkbox" name="module_srls[]" value="{$row['module_srl']}" checked="checked"|cond="$row['module'] !== 'zittme_pay'" /> <span><code>/{$row['mid']}</code> {$row['module']} <em>{$row['browser_title']}</em></span></label>
+				<!--@end-->
+			</div>
+		</div>
+
+		<div class="zmkit-panel">
+			<h3 class="zmkit-h3">{$lang->kit_export_menus}</h3>
+			<div class="zmkit-checks">
+				<!--@foreach($c->menus as $row)-->
+					<label class="zmkit-check"><input type="checkbox" name="menu_srls[]" value="{$row['menu_srl']}" /> <span>{$row['title']} <em>{sprintf($lang->kit_export_items, $row['items'])}</em></span></label>
+				<!--@end-->
+			</div>
+			<h3 class="zmkit-h3">{$lang->kit_export_layouts}</h3>
+			<p class="zmkit-help">{$lang->kit_export_layouts_hint}</p>
+			<div class="zmkit-checks">
+				<!--@foreach($c->layouts as $row)-->
+					<label class="zmkit-check"><input type="checkbox" name="layout_srls[]" value="{$row['layout_srl']}" /> <span>{$row['title']} <em>{$row['layout']}</em></span></label>
+				<!--@end-->
+			</div>
+		</div>
+
+		<div class="zmkit-panel">
+			<h3 class="zmkit-h3">{$lang->kit_export_content}</h3>
+			<label class="zmkit-check"><input type="checkbox" name="include_documents" value="Y" checked="checked" /> <span>{$lang->kit_export_documents}</span></label>
+			<label class="zmkit-check"><input type="checkbox" name="include_doc_fields" value="Y" /> <span>{$lang->kit_export_doc_fields}</span></label>
+			<label class="zmkit-check"><input type="checkbox" name="include_comments" value="Y" /> <span>{$lang->kit_export_comments}</span></label>
+			<label class="zmkit-check"><input type="checkbox" name="include_media" value="Y" checked="checked" /> <span>{$lang->kit_export_media}</span></label>
+			<h3 class="zmkit-h3" cond="count($c->importers)">{$lang->kit_export_module_data}</h3>
+			<div class="zmkit-checks">
+				<!--@foreach($c->importers as $module => $info)-->
+					<label class="zmkit-check"><input type="checkbox" name="module_data[]" value="{$module}" checked="checked" /> <span>{$info['title']} <em>{implode(', ', $info['tables'])}</em></span></label>
+				<!--@end-->
+			</div>
+			<h3 class="zmkit-h3">{$lang->kit_export_locales}</h3>
+			<div class="zmkit-checks">
+				<!--@foreach($c->locales as $locale)-->
+					<label class="zmkit-check"><input type="checkbox" name="locales[]" value="{$locale}" checked="checked" /> <span>{$locale}</span></label>
+				<!--@end-->
+			</div>
+		</div>
+
+		<div class="zmkit-panel zmkit-progress" id="zmkitExportProgress" hidden>
+			<div class="zmkit-bar"><span style="width:0%"></span></div>
+			<p class="zmkit-step" data-export-step></p>
+			<p class="zmkit-error" data-export-error hidden></p>
+			<p class="zmkit-help" data-export-done hidden>{$lang->kit_export_done}</p>
+			<a class="zmkit-btn-primary" data-export-download hidden href="#">{$lang->kit_export_download}</a>
+		</div>
+
+		<div class="zmkit-actions">
+			<button type="submit" class="zmkit-btn-primary">{$lang->kit_export_run}</button>
+		</div>
+	</form>
+</div>

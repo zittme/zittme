@@ -109,6 +109,7 @@ class ModuleAdminController extends Module
 			$mid = trim($args->{"mid_".$i});
 			if(!$mid) continue;
 			if(!preg_match("/^[a-zA-Z]([a-zA-Z0-9_]*)$/i", $mid)) throw new Zittme\Framework\Exception('msg_limit_mid');
+			if(Zittme\Framework\Router::isReservedPrefix($mid)) throw new Zittme\Framework\Exception('msg_module_name_reserved');
 			$browser_title = $args->{"browser_title_".$i};
 			if(!$mid) continue;
 			if($mid && !$browser_title) $browser_title = $mid;

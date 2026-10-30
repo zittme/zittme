@@ -62,6 +62,115 @@ class Point extends ModuleObject
 	}
 
 	/**
+	 * Forget the configuration cached by getConfig().
+	 */
+	public static function resetConfigCache()
+	{
+		self::$_config = null;
+	}
+
+	/**
+	 * Tables added by the ledger.
+	 */
+	protected static $_ledger_tables = array('point_ledger', 'point_daily');
+
+	/**
+	 * Check whether the ledger tables still need to be created.
+	 *
+	 * @return bool
+	 */
+	public function checkLedgerTables()
+	{
+		$oDB = DB::getInstance();
+		foreach (self::$_ledger_tables as $table_name)
+		{
+			if (!$oDB->isTableExists($table_name))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Create the empty ledger tables.
+	 *
+	 * Recording does not start here. It starts only when an administrator turns
+	 * it on (ledger_ready), so updating the module does not change what is stored.
+	 * The schemas live in a subdirectory so that the module is not reported as
+	 * needing installation while the tables do not exist yet.
+	 *
+	 * @return BaseObject
+	 */
+	public function installLedgerTables()
+	{
+		$oDB = DB::getInstance();
+		foreach (self::$_ledger_tables as $table_name)
+		{
+			if (!$oDB->isTableExists($table_name))
+			{
+				$output = $oDB->createTable(\RX_BASEDIR . 'modules/point/schemas/ledger/' . $table_name . '.xml');
+				if (!$output->toBool())
+				{
+					return $output;
+				}
+			}
+		}
+		return new BaseObject;
+	}
+
+	/**
+	 * Start or stop recording point changes in the ledger.
+	 *
+	 * @param bool $enabled
+	 * @return BaseObject
+	 */
+	public function setLedgerRecording($enabled)
+	{
+		if ($enabled)
+		{
+			$output = $this->installLedgerTables();
+			if (!$output->toBool())
+			{
+				return $output;
+			}
+		}
+
+		$config = ModuleModel::getModuleConfig('point');
+		$config = is_object($config) ? $config : new stdClass;
+		$value = $enabled ? 'Y' : 'N';
+		if (($config->ledger_ready ?? 'N') === $value)
+		{
+			return new BaseObject;
+		}
+		$config->ledger_ready = $value;
+		$output = getController('module')->insertModuleConfig('point', $config);
+		self::$_config = null;
+		return $output;
+	}
+
+	/**
+	 * Show or hide the member menu link to the "My points" page.
+	 *
+	 * @param bool $enabled
+	 * @return void
+	 */
+	public function syncMemberMenuTrigger($enabled)
+	{
+		$oModuleModel = getModel('module');
+		$oModuleController = getController('module');
+		$exists = $oModuleModel->getTrigger('moduleHandler.init', 'point', 'controller', 'triggerAddMemberMenu', 'after');
+		if ($enabled && !$exists)
+		{
+			$oModuleController->insertTrigger('moduleHandler.init', 'point', 'controller', 'triggerAddMemberMenu', 'after');
+		}
+		elseif (!$enabled && $exists)
+		{
+			$oModuleController->deleteTrigger('moduleHandler.init', 'point', 'controller', 'triggerAddMemberMenu', 'after');
+		}
+	}
+
+	/**
 	 * Check triggers.
 	 *
 	 * @return bool
@@ -143,8 +252,12 @@ class Point extends ModuleObject
 		$config->blamed = 0;
 		$config->voted_comment = 0;
 		$config->blamed_comment = 0;
+		$config->first_document_point = 0;
+		$config->first_document_revert = 'N';
 
-		// Save module config.
+		// Save module config. Point history stays off until an administrator turns it on.
+		$this->installLedgerTables();
+		$config->ledger_ready = 'N';
 		getController('module')->insertModuleConfig('point', $config);
 
 		// Create a directory to store points information.
@@ -156,11 +269,16 @@ class Point extends ModuleObject
 	 */
 	function checkUpdate()
 	{
+		if ($this->checkLedgerTables())
+		{
+			return true;
+		}
 		$config = $this->getConfig();
 		if ($config->able_module === 'Y')
 		{
 			return $this->checkTriggers();
 		}
+		return false;
 	}
 
 	/**
@@ -168,7 +286,19 @@ class Point extends ModuleObject
 	 */
 	function moduleUpdate()
 	{
-		return $this->registerTriggers();
+		$output = $this->installLedgerTables();
+		if (!$output->toBool())
+		{
+			return $output;
+		}
+
+		$config = $this->getConfig();
+		if (is_object($config) && ($config->able_module ?? 'N') === 'Y')
+		{
+			$this->registerTriggers();
+			$this->syncMemberMenuTrigger(($config->mypage_enabled ?? 'N') === 'Y');
+		}
+		return new BaseObject;
 	}
 
 	/**

@@ -242,7 +242,14 @@ class Storage
 		$filename = rtrim($filename, '/\\');
 		if (@is_file($filename) && @is_readable($filename))
 		{
-			return @include $filename;
+			try
+			{
+				return @include $filename;
+			}
+			catch (\ParseError $e)
+			{
+				return false;
+			}
 		}
 		else
 		{

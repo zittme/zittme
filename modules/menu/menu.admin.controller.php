@@ -453,6 +453,55 @@ class MenuAdminController extends Menu
 	}
 
 	/**
+	 * Check that a menu address has no control characters or template syntax.
+	 * @param mixed $url
+	 * @return bool
+	 */
+	public static function isSafeMenuUrl($url)
+	{
+		$url = strval($url);
+		return strlen($url) <= 1000 && !preg_match('/[\x00-\x1f\x7f$`{}]/', $url);
+	}
+
+	/**
+	 * Check that a menu_item row sent back by the editor holds ordinary values.
+	 * Only the columns present in the row are examined.
+	 * @param array $row
+	 * @return bool
+	 */
+	public static function isSafeMenuRow($row)
+	{
+		if (!is_array($row))
+		{
+			return false;
+		}
+		if (isset($row['url']) && !self::isSafeMenuUrl($row['url']))
+		{
+			return false;
+		}
+		foreach (['normal_btn', 'hover_btn', 'active_btn'] as $key)
+		{
+			$value = strval($row[$key] ?? '');
+			if ($value !== '' && (!preg_match('#^\./files/attach/menu_button/[0-9A-Za-z_./-]+$#', $value) || strpos($value, '..') !== false))
+			{
+				return false;
+			}
+		}
+		if (isset($row['group_srls']) && !preg_match('/^(-?\d+(,-?\d+)*)?$/', strval($row['group_srls'])))
+		{
+			return false;
+		}
+		foreach (['is_shortcut', 'open_window', 'expand', 'is_hidden'] as $key)
+		{
+			if (isset($row[$key]) && !in_array(strval($row[$key]), ['Y', 'N', ''], true))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Add an item to the menu, simple version
 	 * @return void
 	 */
@@ -468,6 +517,12 @@ class MenuAdminController extends Menu
 		if(!$request->parent_srl || !$request->menu_name)
 		{
 			throw new Zittme\Framework\Exceptions\InvalidRequest;
+		}
+
+		if(mb_strlen(strval($request->menu_name), 'UTF-8') > 250)
+		{
+			Context::loadLang(\RX_BASEDIR . 'modules/menu/lang');
+			return new BaseObject(-1, lang('menu.site_editor_name_too_long'));
 		}
 
 		$this->_setMenuSrl($request->parent_srl, $request->menu_srl);
@@ -527,7 +582,7 @@ class MenuAdminController extends Menu
 		$oDB->begin();
 
 		// type is url
-		if (preg_match('!^([a-z]+:(//|[a-z0-9_-])|\.{0,2}/)!i', $request->shortcut_target))
+		if (preg_match('!^([a-z]+:(//|[a-z0-9_-])|\.{0,2}/)!i', $request->shortcut_target) && self::isSafeMenuUrl($request->shortcut_target))
 		{
 			// set menu variable
 			$args = new stdClass();
@@ -741,7 +796,7 @@ class MenuAdminController extends Menu
 		if($itemInfo->is_shortcut == 'Y')
 		{
 			// type is url
-			if (preg_match('!^([a-z]+:(//|[a-z0-9_-])|\.{0,2}/)!i', $request->shortcut_target))
+			if (preg_match('!^([a-z]+:(//|[a-z0-9_-])|\.{0,2}/)!i', $request->shortcut_target) && self::isSafeMenuUrl($request->shortcut_target))
 			{
 				$args->url = $request->shortcut_target;
 			}
@@ -1831,6 +1886,7 @@ class MenuAdminController extends Menu
 	{
 		// Return if there is no information when creating the xml file
 		if(!$menu_srl) return;
+		Zittme\Modules\Menu\Models\Exposure::flushSitemapCache();
 		// Specify the name of the cache file
 		$xml_file = sprintf(RX_BASEDIR . "files/cache/menu/%d.xml.php", $menu_srl);
 		$php_file = sprintf(RX_BASEDIR . "files/cache/menu/%d.php", $menu_srl);
@@ -1916,10 +1972,12 @@ class MenuAdminController extends Menu
 			'%s; ' . PHP_EOL .
 			'$menu->list = array(%s); ' . PHP_EOL .
 			'if(!$is_admin) { recurciveExposureCheck($menu->list); }' . PHP_EOL .
+			'%s' .
 			'Context::set("included_menu", $menu); ?' . '>' . PHP_EOL,
 			$header_script,
 			$php_output['name'],
-			$php_output['buff']
+			$php_output['buff'],
+			empty($php_output['has_hidden']) ? '' : ('if(Context::get("module") !== "admin") { $_hide_menu = function(&$list) use (&$_hide_menu) { foreach($list as $key => $val) { if(!empty($val["is_hidden"])) { unset($list[$key]); continue; } if(!empty($val["list"]) && is_array($val["list"])) { $_hide_menu($list[$key]["list"]); } } }; $_hide_menu($menu->list); }' . PHP_EOL)
 		);
 		// Save File
 		FileHandler::writeFile($xml_file, $xml_buff);
@@ -1969,7 +2027,7 @@ class MenuAdminController extends Menu
 			$desc = preg_replace('/(\$user_lang)-&gt;(userLang[0-9]+)/', '$1->$2', $desc);
 			if(preg_match('/^([0-9a-zA-Z\_\-]+)$/', $node->url))
 			{
-				$href = "getSiteUrl('$domain', '','mid','$node->url')";
+				$href = sprintf('getSiteUrl(%s, \'\', \'mid\', %s)', var_export((string)$domain, true), var_export((string)$node->url, true));
 			}
 			else
 			{
@@ -2085,7 +2143,7 @@ class MenuAdminController extends Menu
 			{
 				if(preg_match('/^\{\$lang->menu_gnb(?:_sub)?\[\'([a-z0-9_]+)\'\]\}$/i', $val))
 				{
-					$name_arr_str .= sprintf('"%s"=>"%s",', $key, $val);
+					$name_arr_str .= sprintf('%s=>"%s",', var_export((string)$key, true), $val);
 				}
 				else
 				{
@@ -2097,6 +2155,11 @@ class MenuAdminController extends Menu
 			// If url value is not empty in the current node, put the value into an array url_list
 			if($node->url) $child_output['url_list'][] = $node->url;
 			$output['url_list'] = array_merge($output['url_list'], $child_output['url_list']);
+			$is_hidden = ($node->is_hidden ?? 'N') === 'Y';
+			if($is_hidden || !empty($child_output['has_hidden']))
+			{
+				$output['has_hidden'] = true;
+			}
 			// If node->group_srls value exists
 			if($node->group_srls)
 			{
@@ -2117,7 +2180,7 @@ class MenuAdminController extends Menu
 			$desc = preg_replace('/(\$user_lang)-&gt;(userLang[0-9]+)/', '$1->$2', $desc);
 			if(preg_match('/^([0-9a-zA-Z\_\-]+)$/i', $node->url))
 			{
-				$href = "getSiteUrl('$domain', '','mid','$node->url')";
+				$href = sprintf('getSiteUrl(%s, \'\', \'mid\', %s)', var_export((string)$domain, true), var_export((string)$node->url, true));
 			}
 			else
 			{
@@ -2131,23 +2194,23 @@ class MenuAdminController extends Menu
 
 			foreach($child_output['url_list'] as $key =>$val)
 			{
-				$child_output['url_list'][$key] = addslashes($val);
+				$child_output['url_list'][$key] = var_export((string)$val, true);
 			}
 
-			$selected = '"'.implode('","',$child_output['url_list']).'"';
+			$selected = implode(',', $child_output['url_list']);
 			$child_buff = $child_output['buff'];
 			$expand = $node->expand;
 
 			$normal_btn = $node->normal_btn;
-			if($normal_btn && strncasecmp('./files/attach/menu_button', $normal_btn, 26) === 0) $normal_btn = escape($normal_btn);
+			if($normal_btn && preg_match('#^\./files/attach/menu_button/[0-9A-Za-z_./-]+$#', $normal_btn) && strpos($normal_btn, '..') === false) $normal_btn = escape($normal_btn);
 			else $normal_btn = '';
 
 			$hover_btn = $node->hover_btn;
-			if($hover_btn && strncasecmp('./files/attach/menu_button', $hover_btn, 26) === 0) $hover_btn = escape($hover_btn);
+			if($hover_btn && preg_match('#^\./files/attach/menu_button/[0-9A-Za-z_./-]+$#', $hover_btn) && strpos($hover_btn, '..') === false) $hover_btn = escape($hover_btn);
 			else $hover_btn = '';
 
 			$active_btn = $node->active_btn;
-			if($active_btn && strncasecmp('./files/attach/menu_button', $active_btn, 26) === 0) $active_btn = escape($active_btn);
+			if($active_btn && preg_match('#^\./files/attach/menu_button/[0-9A-Za-z_./-]+$#', $active_btn) && strpos($active_btn, '..') === false) $active_btn = escape($active_btn);
 			else $active_btn = '';
 
 			$group_srls = $node->group_srls;
@@ -2217,6 +2280,11 @@ class MenuAdminController extends Menu
 				$link_active,
 				$link
 			);
+
+			if($is_hidden)
+			{
+				$attribute .= ',"is_hidden" => true' . PHP_EOL;
+			}
 
 			// Generate buff data
 			$output['buff'] .= sprintf('%d => array(%s),', $node->menu_item_srl, $attribute) . PHP_EOL;

@@ -429,6 +429,22 @@ class WidgetController extends Widget
 			$widget_cache = intval(floatval($widget_cache) * 60);
 		}
 
+		// Widgets whose output depends on the viewer can vary the cache key or opt out of caching.
+		$cache_variant = '';
+		if ($widget_cache || $ignore_cache)
+		{
+			$oVariantWidget = $this->getWidgetObject($widget);
+			if (is_object($oVariantWidget) && method_exists($oVariantWidget, 'getCacheVariant'))
+			{
+				$cache_variant = $oVariantWidget->getCacheVariant($args);
+				if ($cache_variant === false)
+				{
+					$ignore_cache = false;
+					$widget_cache = 0;
+				}
+			}
+		}
+
 		// If widget cache is disabled, just execute the widget and return the result.
 		if(!$ignore_cache && !$widget_cache)
 		{
@@ -452,6 +468,10 @@ class WidgetController extends Widget
 
 		// If cached data exists, return it.
 		$cache_key = 'widget_cache:' . $widget_sequence . ':' . $lang_type;
+		if (is_string($cache_variant) && $cache_variant !== '')
+		{
+			$cache_key .= ':' . $cache_variant;
+		}
 		$cache_data = Zittme\Framework\Cache::get($cache_key);
 		if (is_object($cache_data) && isset($cache_data->assets))
 		{

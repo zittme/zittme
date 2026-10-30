@@ -1,0 +1,6 @@
+<table name="point_daily">
+	<column name="member_srl" type="number" size="11" notnull="notnull" unique="unique_member_day_reason" />
+	<column name="ymd" type="char" size="8" notnull="notnull" unique="unique_member_day_reason" />
+	<column name="reason_code" type="varchar" size="40" notnull="notnull" unique="unique_member_day_reason" />
+	<column name="earned" type="number" size="11" notnull="notnull" default="0" />
+</table>

@@ -1,7 +1,7 @@
 <!-- 본인인증 시작: provider 인증창으로 자동 전송 (popup) -->
 <block cond="!empty($identity_error)">
 	<div style="padding:32px 20px;text-align:center;font-size:14px;color:#e5484d;">
-		{$identity_error}
+		{$identity_error|escape}
 	</div>
 	<div style="text-align:center;padding-bottom:24px;">
 		<button type="button" onclick="window.close();" class="x_btn">{$lang->cmd_close}</button>
@@ -11,8 +11,8 @@
 	<div style="padding:40px 20px;text-align:center;font-size:14px;color:#667085;">
 		{$lang->identity_redirecting}
 	</div>
-	<form id="identityStart" action="{$identity_start_url}" method="post">
-		<input type="hidden" loop="$identity_params => $key, $val" name="{$key}" value="{$val}" />
+	<form id="identityStart" action="{$identity_start_url|escape}" method="{$identity_method ?: 'post'}">
+		<input type="hidden" loop="$identity_params => $key, $val" name="{$key|escape}" value="{$val|escape}" />
 	</form>
 	<script>
 		document.getElementById('identityStart').submit();

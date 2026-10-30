@@ -946,6 +946,8 @@ class DocumentController extends Document
 
 		$obj->updated_file_count = $attachOutput->get('updated_file_count');
 		ModuleHandler::triggerCall('document.insertDocument', 'after', $obj);
+		Zittme\Framework\IndexNow::addDocument($obj);
+		Zittme\Modules\Menu\Models\Exposure::flushSitemapCache(true);
 		if ($is_publish)
 		{
 			ModuleHandler::triggerCall('document.publishDocument', 'after', $obj);
@@ -1412,6 +1414,8 @@ class DocumentController extends Document
 
 		// Call a trigger (after)
 		ModuleHandler::triggerCall('document.updateDocument', 'after', $obj);
+		Zittme\Framework\IndexNow::addDocument($obj);
+		Zittme\Modules\Menu\Models\Exposure::flushSitemapCache(true);
 		if ($is_publish)
 		{
 			ModuleHandler::triggerCall('document.publishDocument', 'after', $obj);
@@ -1487,6 +1491,10 @@ class DocumentController extends Document
 		$trigger_obj->isEmptyTrash = $isEmptyTrash ? true : false;
 		$output = ModuleHandler::triggerCall('document.deleteDocument', 'before', $trigger_obj);
 		if(!$output->toBool()) return $output;
+
+		// The URL cannot be built once the document is gone
+		Zittme\Framework\IndexNow::addDocument($trigger_obj);
+		Zittme\Modules\Menu\Models\Exposure::flushSitemapCache(true);
 
 		// Check if the document exists
 		if(!$isEmptyTrash)
@@ -1685,6 +1693,7 @@ class DocumentController extends Document
 		$obj->regdate = $oDocument->get('regdate');
 		$obj->last_update = $oDocument->get('last_update');
 		ModuleHandler::triggerCall('document.moveDocumentToTrash', 'after', $obj);
+		Zittme\Modules\Menu\Models\Exposure::flushSitemapCache(true);
 
 		// commit
 		$oDB->commit();

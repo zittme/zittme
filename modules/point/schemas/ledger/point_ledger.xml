@@ -1,0 +1,19 @@
+<table name="point_ledger">
+	<column name="ledger_srl" type="bignumber" notnull="notnull" primary_key="primary_key" auto_increment="auto_increment" />
+	<column name="member_srl" type="number" size="11" notnull="notnull" index="idx_member_regdate" />
+	<column name="wallet" type="varchar" size="10" notnull="notnull" default="point" />
+	<column name="type" type="varchar" size="20" notnull="notnull" />
+	<column name="amount" type="number" size="11" notnull="notnull" default="0" />
+	<column name="balance_after" type="number" size="11" notnull="notnull" default="0" />
+	<column name="remaining" type="number" size="11" notnull="notnull" default="0" />
+	<column name="expires_at" type="char" size="14" />
+	<column name="status" type="varchar" size="10" notnull="notnull" default="done" />
+	<column name="reason_code" type="varchar" size="40" />
+	<column name="memo" type="varchar" size="250" />
+	<column name="ref_type" type="varchar" size="40" />
+	<column name="ref_srl" type="bignumber" />
+	<column name="idem_key" type="varchar" size="100" unique="unique_idem_key" />
+	<column name="actor_srl" type="number" size="11" notnull="notnull" default="0" />
+	<column name="ipaddress" type="varchar" size="60" />
+	<column name="regdate" type="char" size="14" notnull="notnull" index="idx_member_regdate" />
+</table>

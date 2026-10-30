@@ -74,281 +74,141 @@ class MemberAdminView extends Member
 	}
 
 	/**
+	 * Open the member administration screen. Old addresses of the member
+	 * list, groups, signup form and settings keep working and open the
+	 * same place in the new screen.
+	 *
+	 * @param string $screen
+	 * @param array $initial
+	 * @return bool false when redirected to the admin address
+	 */
+	protected function _openConsole($screen, array $initial = array())
+	{
+		if (Context::get('module') !== 'admin')
+		{
+			$params = ['', 'module', 'admin'];
+			foreach ($_GET as $key => $value)
+			{
+				if (is_scalar($value) && !in_array($key, ['module', 'mid', 'vid'], true))
+				{
+					$params[] = $key;
+					$params[] = $value;
+				}
+			}
+			$this->setRedirectUrl(getNotEncodedUrl(...$params));
+			return false;
+		}
+		\Zittme\Modules\Member\Controllers\AdminConsole::render($this, $screen, $initial);
+		return true;
+	}
+
+	/**
+	 * Settings screen at one category.
+	 *
+	 * @param string $category
+	 * @param array $initial
+	 * @return void
+	 */
+	protected function _openSettings($category, array $initial = array())
+	{
+		$requested = strval(Context::get('cat'));
+		if (in_array($requested, ['join', 'login', 'social', 'terms', 'profile', 'features', 'design', 'adv'], true))
+		{
+			$category = $requested;
+		}
+		$initial['cat'] = $category;
+		$this->_openConsole('settings', $initial);
+	}
+
+	/**
 	 * display member list
 	 *
 	 * @return void
 	 */
 	function dispMemberAdminList()
 	{
-		$oMemberAdminModel = getAdminModel('member');
-		$oMemberModel = getModel('member');
-		$output = $oMemberAdminModel->getMemberList();
-
-		$filter_type = Context::get('filter_type');
-		global $lang;
-		switch($filter_type)
-		{
-			case 'super_admin' : Context::set('filter_type_title', $lang->cmd_show_super_admin_member);break;
-			case 'site_admin' : Context::set('filter_type_title', $lang->cmd_show_site_admin_member);break;
-			default : Context::set('filter_type_title', $lang->cmd_show_all_member);break;
-		}
-		// retrieve list of groups for each member
-		if($output->data)
-		{
-			foreach($output->data as $key => $member)
-			{
-				$output->data[$key]->group_list = $oMemberModel->getMemberGroups($member->member_srl,0);
-				$output->data[$key]->profile_image = $oMemberModel->getProfileImage($member->member_srl);
-			}
-		}
-
-		// 본인인증 여부 (한 번의 벌크 조회 — 페이지 내 회원만)
-		$identity_map = array();
-		if($output->data)
-		{
-			$member_srls = array();
-			foreach($output->data as $member)
-			{
-				$member_srls[] = (int)$member->member_srl;
-			}
-			$identity_output = executeQueryArray('member.getMemberIdentitiesInMemberSrls', (object)array('member_srls' => $member_srls));
-			if($identity_output->toBool() && $identity_output->data)
-			{
-				foreach($identity_output->data as $row)
-				{
-					$identity_map[(int)$row->member_srl] = $row;
-				}
-			}
-		}
-		Context::set('identity_map', $identity_map);
-		Context::set('identity_feature_on', \Zittme\Modules\Member\Identity\Base::getConfig()->identity_enable === 'Y');
-		$config = $this->memberConfig;
-		$memberIdentifiers = array(
-			'user_id' => 'user_id',
-			'email_address' => 'email_address',
-			'phone_number' => 'phone_number',
-			'user_name' => 'user_name',
-			'nick_name' => 'nick_name'
-		);
-		$usedIdentifiers = array();
-
-		if(is_array($config->signupForm))
-		{
-			foreach($config->signupForm as $signupItem)
-			{
-				if(!count($memberIdentifiers)) break;
-				if(in_array($signupItem->name, $memberIdentifiers) && ($signupItem->required || $signupItem->isUse))
-				{
-					unset($memberIdentifiers[$signupItem->name]);
-					$usedIdentifiers[$signupItem->name] = $lang->{$signupItem->name};
-				}
-			}
-		}
-
-		Context::set('total_count', $output->total_count);
-		Context::set('total_page', $output->total_page);
-		Context::set('page', $output->page);
-		Context::set('filter_type', $filter_type);
-		Context::set('selected_group_srl', Context::get('selected_group_srl'));
-		Context::set('sort_index', Context::get('sort_index'));
-		Context::set('member_config', $oMemberModel->getMemberConfig());
-		Context::set('member_list', $output->data);
-		Context::set('usedIdentifiers', $usedIdentifiers);
-		Context::set('page_navigation', $output->page_navigation);
-		Context::set('profileImageConfig', $config->profile_image);
-
-		$security = new Security();
-		$security->encodeHTML('member_list..user_name', 'member_list..nick_name', 'member_list..group_list..');
-		$security->encodeHTML('search_target', 'search_keyword');
-
-		$this->setTemplateFile('member_list');
+		$initial = \Zittme\Modules\Member\Models\ConsoleQuery::fromLegacyParams(Context::getRequestVars());
+		$this->_openConsole('list', $initial);
 	}
 
 	/**
-	 * Set the default config.
+	 * Member settings (old "default" tab).
 	 *
 	 * @return void
 	 */
 	public function dispMemberAdminConfig()
 	{
-		// Get supported password algorithms.
-		$oDB = DB::getInstance();
-		$column_info = $oDB->getColumnInfo('member', 'password');
-		$password_maxlength = intval($column_info->size);
-		$password_algos = Zittme\Framework\Password::getSupportedAlgorithms();
-		if ($password_maxlength < 128 && isset($password_algos['argon2id']))
-		{
-			$password_algos['argon2id'] = false;
-		}
-		if ($password_maxlength < 128 && isset($password_algos['sha512']))
-		{
-			$password_algos['sha512'] = false;
-		}
-		if ($password_maxlength < 64 && isset($password_algos['sha256']))
-		{
-			$password_algos['sha256'] = false;
-		}
-		Context::set('password_hashing_algos', $password_algos);
-
-		$this->setTemplateFile('default_config');
+		$this->_openSettings('join');
 	}
 
 	/**
-	 * Set the features config.
+	 * Member settings (old "features" tab).
 	 *
 	 * @return void
 	 */
 	public function dispMemberAdminFeaturesConfig()
 	{
-		$this->setTemplateFile('features_config');
+		$this->_openSettings('features');
 	}
 
 	/**
-	 * Set the agreements config.
+	 * Member settings (old "agreements" tab).
 	 *
 	 * @return void
 	 */
 	public function dispMemberAdminAgreementsConfig()
 	{
-		$this->setTemplateFile('agreements_config');
+		$this->_openSettings('terms');
 	}
 
+	/**
+	 * Signup form (old "signup" tab).
+	 *
+	 * @return void
+	 */
 	public function dispMemberAdminSignUpConfig()
 	{
-		$config = $this->memberConfig;
-
-		$oMemberModel = getModel('member');
-		// retrieve skins of editor
-		$oEditorModel = getModel('editor');
-		Context::set('editor_skin_list', $oEditorModel->getEditorSkinList());
-
-		// get an editor
-		$option = new stdClass;
-		$option->primary_key_name = 'temp_srl';
-		$option->content_key_name = 'agreement';
-		$option->allow_fileupload = false;
-		$option->enable_autosave = false;
-		$option->enable_default_component = true;
-		$option->enable_component = false;
-		$option->resizable = true;
-		$option->height = 300;
-		$option->editor_toolbar_hide = 'Y';
-		Context::set('editor', $oEditorModel->getEditor(0, $option));
-
-		$userIdInfo = null;
-		$signupForm = $config->signupForm;
-		foreach($signupForm as $val)
-		{
-			if($val->name == 'user_id')
-			{
-				$userIdInfo = $val;
-				break;
-			}
-		}
-
-		$oSecurity = new Security();
-		if($userIdInfo && $userIdInfo->isUse)
-		{
-			// get denied ID list
-			Context::set('useUserID', 1);
-			$denied_list = $oMemberModel->getDeniedIDs();
-			Context::set('deniedIDs', $denied_list);
-			$oSecurity->encodeHTML('deniedIDs..user_id');
-		}
-
-		// get denied NickName List
-		$deniedNickNames = $oMemberModel->getDeniedNickNames();
-		Context::set('deniedNickNames', $deniedNickNames);
-		$oSecurity->encodeHTML('deniedNickNames..nick_name');
-
-		//get managed Email Hosts
-		$managedEmailHost = $oMemberModel->getManagedEmailHosts();
-		Context::set('managedEmailHost', $managedEmailHost);
-		$oSecurity->encodeHTML('managedEmailHost..email_host');
-
-		// Get country calling code list
-		$country_list = Zittme\Framework\i18n::listCountries(Context::get('lang_type') === 'ko' ? Zittme\Framework\i18n::SORT_NAME_KOREAN : Zittme\Framework\i18n::SORT_NAME_ENGLISH);
-		Context::set('country_list', $country_list);
-		if(!$config->phone_number_default_country && Context::get('lang_type') === 'ko')
-		{
-			$config->phone_number_default_country = 'KOR';
-		}
-
-		$this->setTemplateFile('signup_config');
+		$this->_openConsole('form');
 	}
 
+	/**
+	 * Member settings (old "login" tab).
+	 *
+	 * @return void
+	 */
 	public function dispMemberAdminLoginConfig()
 	{
-		$this->setTemplateFile('login_config');
+		$this->_openSettings('login');
 	}
 
+	/**
+	 * Member settings (old "social login" tab).
+	 *
+	 * @return void
+	 */
 	public function dispMemberAdminSnsLoginConfig()
 	{
-		// Normalised member config (sns_* keys defaulted) so the template never
-		// touches undefined properties on a never-configured site.
-		$config = \Zittme\Modules\Member\Social\Base::getConfig();
-		$callback_base = \Zittme\Modules\Member\Social\Drivers\Base::buildCallbackUrl('');
-
-		// Pre-build per-service rows to avoid dynamic property access in the template.
-		$services = array();
-		foreach(\Zittme\Modules\Member\Social\Base::$supported_services as $service)
-		{
-			$row = new stdClass();
-			$row->name = $service;
-			$row->enable = $config->{'sns_' . $service . '_enable'};
-			$row->client_id = $config->{$service . '_client_id'};
-			$row->client_secret = $config->{$service . '_client_secret'};
-			$row->callback_url = $callback_base . $service;
-			$services[] = $row;
-		}
-
-		Context::set('config', $config);
-		Context::set('sns_services', $services);
-		$this->setTemplateFile('sns_login_config');
+		$this->_openSettings('social');
 	}
 
+	/**
+	 * Member settings (old "identity verification" tab).
+	 *
+	 * @return void
+	 */
 	public function dispMemberAdminIdentityConfig()
 	{
-		// Normalised member config (identity_* keys defaulted).
-		$config = \Zittme\Modules\Member\Identity\Base::getConfig();
-		$callback_url = \Zittme\Modules\Member\Identity\Drivers\Base::buildActionUrl('procMemberIdentityCallback');
-
-		Context::set('config', $config);
-		Context::set('identity_providers', \Zittme\Modules\Member\Identity\Base::$supported_providers);
-		Context::set('identity_callback_url', $callback_url);
-
-		// site module list for the adult-gate target selection
-		$mid_list = ModuleModel::getMidList(null, array('mid', 'module', 'browser_title'));
-		Context::set('identity_mid_list', $mid_list ?: array());
-
-		// 나이 기준 편입 규칙을 걸 수 있는 회원 그룹 목록
-		Context::set('identity_group_list', MemberModel::getGroups() ?: array());
-
-		$this->setTemplateFile('identity_config');
+		$this->_openSettings('social', ['anchor' => 'identity']);
 	}
 
+	/**
+	 * Member settings (old "design" tab).
+	 *
+	 * @return void
+	 */
 	public function dispMemberAdminDesignConfig()
 	{
-		$oModuleModel = getModel('module');
-		// Get a layout list
-		$oLayoutModel = getModel('layout');
-		$layout_list = $oLayoutModel->getLayoutList();
-
-		Context::set('layout_list', $layout_list);
-
-		$mlayout_list = $oLayoutModel->getLayoutList(0, 'M');
-
-		Context::set('mlayout_list', $mlayout_list);
-
-		// list of skins for member module
-		$skin_list = $oModuleModel->getSkins($this->module_path);
-		Context::set('skin_list', $skin_list);
-
-		// list of skins for member module
-		$mskin_list = $oModuleModel->getSkins($this->module_path, 'm.skins');
-		Context::set('mskin_list', $mskin_list);
-
-		$this->setTemplateFile('design_config');
+		$this->_openSettings('design');
 	}
 
 	/**
@@ -827,50 +687,32 @@ class MemberAdminView extends Member
 	 */
 	function dispMemberAdminGroupList()
 	{
-		$oModuleModel = getModel('module');
-		$output = $oModuleModel->getModuleFileBoxList();
-		Context::set('fileBoxList', $output->data);
-
-		$this->setTemplateFile('group_list');
+		$this->_openConsole('groups', ['group' => intval(Context::get('group_srl'))]);
 	}
 
 	/**
-	 * Display an admin page for memebr join forms
+	 * Signup form with one extra item open (or a new one).
 	 *
 	 * @return void
 	 */
-	function dispMemberAdminInsertJoinForm() {
-		// Get the value of join_form
-		$member_join_form_srl = Context::get('member_join_form_srl');
-		if($member_join_form_srl)
-		{
-			$oMemberModel = getModel('member');
-			$join_form = $oMemberModel->getJoinForm($member_join_form_srl);
-
-			if(!$join_form) Context::set('member_join_form_srl','',true);
-			else
-			{
-				Context::set('join_form', $join_form);
-				$security = new Security();
-				$security->encodeHTML('join_form..');
-			}
-
-		}
-		$this->setTemplateFile('insert_join_form');
+	function dispMemberAdminInsertJoinForm()
+	{
+		$this->_openConsole('form', ['join_form' => intval(Context::get('member_join_form_srl'))]);
 	}
 
+	/**
+	 * Nickname change log, in the advanced settings.
+	 *
+	 * @return void
+	 */
 	function dispMemberAdminNickNameLog()
 	{
-		$page = Context::get('page');
-		$output = getModel('member')->getMemberModifyNicknameLog($page);
-
-		Context::set('total_count', $output->total_count);
-		Context::set('total_page', $output->total_page);
-		Context::set('page', $output->page);
-		Context::set('nickname_list', $output->data);
-		Context::set('page_navigation', $output->page_navigation);
-
-		$this->setTemplateFile('nick_name_log');
+		$this->_openSettings('adv', [
+			'anchor' => 'nick_log',
+			'nick_page' => max(1, intval(Context::get('page'))),
+			'nick_target' => strval(Context::get('search_target') ?? ''),
+			'nick_keyword' => strval(Context::get('search_keyword') ?? ''),
+		]);
 	}
 }
 /* End of file member.admin.view.php */

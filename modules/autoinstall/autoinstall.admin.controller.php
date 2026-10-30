@@ -58,10 +58,61 @@ class AutoinstallAdminController extends Autoinstall
 
 
 	/**
+	 * zitt.me 스토어 정보 전송 동의 저장. 동의하지 않으면 토큰·도메인을 보내지 않는다.
+	 */
+	public function procAutoinstallAdminSetConsent()
+	{
+		$agreed = Context::get('consent') === 'Y';
+		Zittme\Modules\Autoinstall\Models\Account::setConsent($agreed);
+
+		$this->setMessage('success_updated');
+		$this->setRedirectUrl(Context::get('success_return_url') ?: getNotEncodedUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminIndex'));
+	}
+
+	/**
 	 * Download package
 	 *
 	 * @return void
 	 */
+	/**
+	 * 유료 자료 라이선스 검증 — 설치 직전에 zitt.me 에 이 사이트 도메인으로 다시 묻는다.
+	 *
+	 * 캐시를 버리고 새로 조회해, 화면이 오래됐어도 지금 상태로 판정한다.
+	 * 결과(가려진 키·통과한 도메인·활성화일)를 그대로 돌려줘 사용자가 확인할 수 있게 한다.
+	 */
+	public function procAutoinstallAdminVerifyLicense()
+	{
+		$package_srl = intval(Context::get('package_srl'));
+		if (!$package_srl)
+		{
+			return new BaseObject(-1, 'msg_autoinstall_invalid_package_srl');
+		}
+		if (!Zittme\Modules\Autoinstall\Models\Account::hasConsent())
+		{
+			return new BaseObject(-1, 'msg_autoinstall_paid_consent_notice');
+		}
+		Zittme\Framework\Cache::delete(sprintf('autoinstall:package_detail:%d', $package_srl));
+		$package = Zittme\Modules\Autoinstall\Models\Package::getPackageDetail($package_srl);
+		if (!$package)
+		{
+			return new BaseObject(-1, 'msg_autoinstall_package_not_found');
+		}
+
+		$is_paid = ($package->extra_vars->distribution ?? 'FREE') === 'PAID';
+		$licensed = $package->install_type === 'paid_licensed';
+		$this->add('paid', $is_paid);
+		$this->add('licensed', $licensed);
+		$this->add('checked_domains', Zittme\Modules\Autoinstall\Models\Account::getSiteDomains());
+		if ($is_paid && !$licensed)
+		{
+			return new BaseObject(-1, 'msg_autoinstall_license_invalid');
+		}
+		$license = $package->extra_vars->license_info ?? null;
+		$this->add('key_masked', (string)($license->key_masked ?? ''));
+		$this->add('domain', (string)($license->domain ?? ''));
+		$this->add('active_date', (string)($license->active_date ?? ''));
+	}
+
 	public function procAutoinstallAdminDownloadPackage()
 	{
 		// Validate package status

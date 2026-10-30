@@ -172,19 +172,11 @@ class MemberAdminController extends Member
 
 		if(!$output->toBool()) return $output;
 
-		// Invalidate sessions if denied or limited
-		if ($args->denied === 'Y' || $args->limited >= date('Ymd'))
+		// Invalidate sessions, saved logins and auth mail if denied or limited
+		$is_limited = !empty($args->limit_date) && substr(strval($args->limit_date), 0, 8) >= date('Ymd');
+		if ($args->denied === 'Y' || $is_limited)
 		{
-			$validity_info = Zittme\Framework\Session::getValidityInfo($args->member_srl);
-			$validity_info->invalid_before = time();
-			Zittme\Framework\Session::setValidityInfo($args->member_srl, $validity_info);
-			executeQuery('member.deleteAutologin', ['member_srl' => $args->member_srl]);
-		}
-
-		// Invalidate auth mail if denied or limited
-		if ($args->denied === 'Y' || $args->limited >= date('Ymd'))
-		{
-			executeQuery('member.deleteAuthMail', ['member_srl' => $args->member_srl]);
+			\Zittme\Modules\Member\Controllers\AdminConsole::endLogins(intval($args->member_srl));
 		}
 
 		// Save Signature
@@ -364,7 +356,7 @@ class MemberAdminController extends Member
 		// default setting end
 		$this->setMessage('success_updated');
 
-		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispMemberAdminDefaultConfig');
+		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispMemberAdminConfig');
 		$this->setRedirectUrl($returnUrl);
 	}
 
@@ -470,7 +462,7 @@ class MemberAdminController extends Member
 
 		$args->limit_day = (int)$args->limit_day;
 		$args->limit_day_description = escape(trim(utf8_clean($args->limit_day_description)));
-		if($args->emailhost_check != 'allowed' && $args->emailhost_check != 'prohibited') $args->emailhost_check == 'allowed';
+		if($args->emailhost_check != 'allowed' && $args->emailhost_check != 'prohibited') $args->emailhost_check = 'allowed';
 
 		$args->special_phone_number = preg_replace('/[^0-9]/', '', $args->special_phone_number);
 		$args->special_phone_code = preg_replace('/[^0-9]/', '', $args->special_phone_code);
@@ -729,6 +721,26 @@ class MemberAdminController extends Member
 		$args->identity_danal_cppwd = trim((string)Context::get('identity_danal_cppwd'));
 		$charset = strtoupper(trim((string)Context::get('identity_danal_charset')));
 		$args->identity_danal_charset = in_array($charset, ['UTF-8', 'EUC-KR'], true) ? $charset : 'UTF-8';
+
+		// Truora: secrets are never echoed back to the form; an empty field keeps the stored value.
+		$current = \Zittme\Modules\Member\Identity\Base::getConfig();
+		$args->identity_truora_mode = Context::get('identity_truora_mode') === 'mock' ? 'mock' : 'live';
+		$truora_key = trim((string)Context::get('identity_truora_api_key'));
+		$args->identity_truora_api_key = $truora_key !== '' ? $truora_key : $current->identity_truora_api_key;
+		$truora_secret = trim((string)Context::get('identity_truora_webhook_secret'));
+		$args->identity_truora_webhook_secret = $truora_secret !== '' ? $truora_secret : $current->identity_truora_webhook_secret;
+		if (Context::get('identity_truora_clear_secrets') === 'Y')
+		{
+			$args->identity_truora_api_key = '';
+			$args->identity_truora_webhook_secret = '';
+		}
+		$args->identity_truora_flow_id = preg_replace('/[^A-Za-z0-9_-]/', '', (string)Context::get('identity_truora_flow_id'));
+		$countries = array_filter(array_map('trim', explode(',', strtoupper((string)Context::get('identity_truora_countries')))), function($code) {
+			return (bool)preg_match('/^[A-Z]{2}$/', $code);
+		});
+		$args->identity_truora_countries = implode(',', array_unique($countries));
+		$ttl = (int)Context::get('identity_truora_ttl');
+		$args->identity_truora_ttl = ($ttl >= 5 && $ttl <= 2880) ? $ttl : 30;
 
 		// 본인인증을 켜면 인증으로 채워지는 회원 필드(이름·생년월일·휴대폰)를
 		// 가입 항목에서 자동 사용 + 비공개로 설정한다.
@@ -1083,7 +1095,7 @@ class MemberAdminController extends Member
 
 		$this->setMessage('success_registed');
 
-		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispMemberAdminJoinFormList');
+		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispMemberAdminSignUpConfig');
 		$this->setRedirectUrl($returnUrl);
 	}
 
@@ -1194,6 +1206,10 @@ class MemberAdminController extends Member
 							{
 								$oDB->rollback();
 								return $output;
+							}
+							if($args->denied === 'Y')
+							{
+								\Zittme\Modules\Member\Controllers\AdminConsole::endLogins(intval($member_srl));
 							}
 						}
 						$this->setMessage('success_updated');
@@ -1351,7 +1367,7 @@ class MemberAdminController extends Member
 
 		$this->add('user_ids', implode(',',$success_ids));
 
-		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispMemberAdminDeniedIDList');
+		$returnUrl = Context::get('success_return_url') ? Context::get('success_return_url') : getNotEncodedUrl('', 'module', 'admin', 'act', 'dispMemberAdminSignUpConfig');
 		$this->setRedirectUrl($returnUrl);
 	}
 

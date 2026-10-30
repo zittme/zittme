@@ -12,7 +12,15 @@ class Message extends ModuleObject
 	 */
 	function moduleInstall()
 	{
-
+		// New installations use the clean skin. Existing sites keep the skin they had.
+		$config = ModuleModel::getModuleConfig('message');
+		if (!is_object($config) || empty($config->skin))
+		{
+			$config = is_object($config) ? $config : new stdClass;
+			$config->skin = 'clean';
+			$config->mskin = '/USE_RESPONSIVE/';
+			ModuleController::getInstance()->insertModuleConfig('message', $config);
+		}
 	}
 
 	/**

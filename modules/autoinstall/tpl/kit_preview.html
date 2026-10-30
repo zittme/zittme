@@ -1,0 +1,104 @@
+<config autoescape="on" />
+<include target="header.html" />
+<load target="./css/kit.scss" />
+<load target="./js/kit.js" />
+{@ $p = $kit_preview}
+{@ $m = $p->manifest}
+
+<div class="zmst zmkit">
+	<div class="zmst-head">
+		<div class="zmst-head-titles">
+			<span class="zmst-eyebrow">STARTER KIT</span>
+			<h2 class="zmst-title">{$p->title} <small class="zmkit-ver">v{$m->version}</small></h2>
+		</div>
+		<div class="zmst-account">
+			<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminKits')}">{$lang->kit_cmd_back}</a>
+		</div>
+	</div>
+	<p class="zmkit-intro">{$p->description}</p>
+
+	<div class="zmkit-badges">
+		<span class="zmkit-sig is-{$p->signature}">{$lang->kit_signature[$p->signature] ?? $p->signature}</span>
+		<span class="zmkit-muted">{$lang->kit_requires_core} {$m->requires->core ?? '-'}</span>
+		<span class="zmkit-muted" cond="!empty($m->author)">{$m->author}</span>
+	</div>
+
+	<div class="zmkit-blockers" cond="count($p->blockers)">
+		<!--@foreach($p->blockers as $blocker)-->
+			<p>{$lang->kit_blocker[$blocker] ?? $blocker}</p>
+		<!--@end-->
+	</div>
+
+	<div class="zmkit-panel">
+		<h3 class="zmkit-h3">{$lang->kit_section_packages}</h3>
+		<table class="zmkit-table">
+			<thead>
+				<tr><th>{$lang->kit_col_type}</th><th>{$lang->kit_col_name}</th><th>{$lang->kit_col_version}</th><th>{$lang->kit_col_installed}</th><th>{$lang->kit_col_action}</th></tr>
+			</thead>
+			<tbody>
+				<!--@foreach($p->packages as $row)-->
+					<tr>
+						<td>{lang('autoinstall.typename.' . $row->req->type)}</td>
+						<td><strong>{$row->store ? $row->store->title : basename($row->req->install_path)}</strong> <span class="zmkit-muted">{$row->req->install_path}</span></td>
+						<td>{$row->req->version ?: '-'}</td>
+						<td>{$row->local->version ?: '-'}</td>
+						<td>
+							<span class="zmkit-action is-{$row->action}">{$lang->kit_pkg_action[$row->action]}</span>
+							<span cond="$row->paid" class="zmkit-muted">{$lang->kit_pkg_paid}</span>
+							<!--@if(!$row->licensed && !empty($row->store->extra_vars->store_url))-->
+								<a class="zmst-btn" href="{$row->store->extra_vars->store_url}" target="_blank" rel="noopener">{$lang->kit_pkg_need_license}</a>
+							<!--@end-->
+						</td>
+					</tr>
+				<!--@end-->
+				<tr cond="!count($p->packages)"><td colspan="5" class="zmkit-muted">-</td></tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div class="zmkit-panel">
+		<h3 class="zmkit-h3">{$lang->kit_section_add}</h3>
+		<ul class="zmkit-stats">
+			<li><strong>{count($p->modules)}</strong><span>{$lang->kit_add['modules']}</span></li>
+			<li><strong>{count($p->menus)}</strong><span>{$lang->kit_add['menus']}</span></li>
+			<li><strong>{count($p->layouts)}</strong><span>{$lang->kit_add['layouts']}</span></li>
+			<li><strong>{(int)($p->stats->documents ?? 0)}</strong><span>{$lang->kit_add['documents']}</span></li>
+			<li><strong>{(int)($p->stats->files ?? 0)}</strong><span>{$lang->kit_add['files']}</span></li>
+			<li><strong>{(int)($p->stats->media ?? 0)}</strong><span>{$lang->kit_add['media']}</span></li>
+			<li><strong>{$p->lang_new + $p->lang_renamed}</strong><span>{$lang->kit_add['lang']}</span></li>
+		</ul>
+		<table class="zmkit-table">
+			<thead><tr><th>mid</th><th>{$lang->kit_col_type}</th><th>{$lang->kit_col_name}</th></tr></thead>
+			<tbody>
+				<!--@foreach($p->modules as $mod)-->
+					<tr>
+						<td>
+							<code>/{$mod->new_mid}</code>
+							<span cond="$mod->renamed" class="zmkit-note">{sprintf($lang->kit_mid_renamed, '/' . $mod->new_mid)}</span>
+						</td>
+						<td>{$mod->module}</td>
+						<td>{$mod->title}</td>
+					</tr>
+				<!--@end-->
+			</tbody>
+		</table>
+		<ul class="zmkit-list" cond="count($p->module_data)">
+			<!--@foreach($p->module_data as $md)-->
+				<li>{$lang->kit_add['module_data']}: <strong>{$md->module}</strong> {sprintf($lang->kit_rows, $md->rows)}</li>
+			<!--@end-->
+		</ul>
+		<p class="zmkit-help" cond="$p->lang_renamed">{sprintf($lang->kit_lang_renamed, $p->lang_renamed)}</p>
+	</div>
+
+	<form class="zmkit-panel" id="zmkitStart" data-job-srl="{$kit_job->job_srl}" data-job-url="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminKitJob', 'job_srl', $kit_job->job_srl)}">
+		<h3 class="zmkit-h3">{$lang->kit_section_change}</h3>
+		<label class="zmkit-check" cond="$p->can_set_front"><input type="checkbox" name="set_front" value="Y" /> <span>{$lang->kit_opt_front}</span></label>
+		<label class="zmkit-check" cond="count($p->locales_missing)"><input type="checkbox" name="enable_locales" value="Y" checked="checked" /> <span>{sprintf($lang->kit_opt_locales, implode(', ', $p->locales_missing))}</span></label>
+		<label class="zmkit-check" cond="count($p->site_skins)"><input type="checkbox" name="apply_site_skins" value="Y" /> <span>{$lang->kit_opt_skins}</span></label>
+		<p class="zmkit-help">{$lang->kit_opt_note}</p>
+		<div class="zmkit-actions">
+			<button type="submit" class="zmkit-btn-primary" disabled="disabled"|cond="count($p->blockers)">{$lang->kit_cmd_install}</button>
+			<a class="zmst-btn" href="{getUrl('', 'module', 'admin', 'act', 'dispAutoinstallAdminKits')}">{$lang->cmd_cancel}</a>
+		</div>
+	</form>
+</div>

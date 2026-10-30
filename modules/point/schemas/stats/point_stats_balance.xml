@@ -1,0 +1,4 @@
+<table name="point_stats_balance">
+	<column name="bucket" type="number" size="11" notnull="notnull" primary_key="primary_key" />
+	<column name="cnt" type="number" size="11" notnull="notnull" default="0" />
+</table>

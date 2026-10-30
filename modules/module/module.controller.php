@@ -384,6 +384,12 @@ class ModuleController extends Module
 			return $output;
 		}
 
+		// Check whether the module name is reserved
+		if(Zittme\Framework\Router::isReservedPrefix($args->mid))
+		{
+			return new BaseObject(-1, 'msg_module_name_reserved');
+		}
+
 		// Check whether the module name already exists
 		if(ModuleModel::isIDExists($args->mid, $args->module))
 		{
@@ -512,6 +518,10 @@ class ModuleController extends Module
 
 		// Check whether the module name already exists
 		$module_info = ModuleModel::getModuleInfoByModuleSrl($args->module_srl);
+		if($args->mid !== $module_info->mid && Zittme\Framework\Router::isReservedPrefix($args->mid))
+		{
+			return new BaseObject(-1, 'msg_module_name_reserved');
+		}
 		if($args->mid !== $module_info->mid && ModuleModel::isIDExists($args->mid))
 		{
 			if ($args->module !== $args->mid)

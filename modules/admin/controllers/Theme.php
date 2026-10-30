@@ -5,6 +5,9 @@ namespace Zittme\Modules\Admin\Controllers;
 use Context;
 use Zittme\Framework\Themes\Applier;
 use Zittme\Framework\Themes\Installer;
+use Zittme\Modules\Menu\Controllers\SiteEditorSites;
+use Zittme\Modules\Menu\Models\SiteDesign;
+use Zittme\Modules\Menu\Models\SiteTheme;
 
 /**
  * Installed theme management: list, detail, and removal.
@@ -129,7 +132,22 @@ class Theme extends Base
 		$domain_srl = intval(Context::get('domain_srl'));
 		$exclude = (array)(Context::get('exclude') ?: []);
 
-		$output = Applier::apply($name, $domain_srl, $exclude);
+		// A site other than the default one gets its own design file and
+		// layout instance, so that the default site does not change.
+		$site_info = $domain_srl > 0 ? \ModuleModel::getSiteInfo($domain_srl) : null;
+		if ($site_info && ($site_info->is_default_domain ?? 'N') !== 'Y')
+		{
+			$old_layout = SiteDesign::hasOwn($domain_srl) ? intval(SiteDesign::read($domain_srl)->layout_srl ?? 0) : 0;
+			$output = SiteTheme::applyToSite($name, $domain_srl, $exclude, strval($site_info->domain));
+			if ($output->ok)
+			{
+				SiteEditorSites::carrySlots($old_layout, intval($output->layout_srl));
+			}
+		}
+		else
+		{
+			$output = Applier::apply($name, $domain_srl, $exclude);
+		}
 		if (!$output->ok)
 		{
 			throw new \Zittme\Framework\Exception($output->message ?: 'msg_theme_not_found');

@@ -67,7 +67,7 @@ function completeInsertDeniedID(ret_obj) {
 
     alert(message);
 
-    var url = current_url.setQuery('act','dispMemberAdminDeniedIDList');
+    var url = current_url.setQuery('act','dispMemberAdminSignUpConfig');
     location.href = url;
 }
 
@@ -89,7 +89,7 @@ function completeUpdateJoinForm(ret_obj) {
 
     alert(message);
 
-    var url = current_url.setQuery('act','dispMemberAdminJoinFormList');
+    var url = current_url.setQuery('act','dispMemberAdminSignUpConfig');
 
     location.href = url;
 }
@@ -102,7 +102,7 @@ function completeInsertJoinForm(ret_obj) {
 
     alert(message);
 
-    var url = current_url.setQuery('act','dispMemberAdminJoinFormList');
+    var url = current_url.setQuery('act','dispMemberAdminSignUpConfig');
 
     location.href = url;
 }
@@ -279,58 +279,6 @@ function doDeleteImageMark(member_srl) {
 		function(){jQuery('#image_marktag').remove()},
 		['error','message','tpl']
 	);
-}
-
-
-
-/* 그룹 일괄 변경 */
-function doManageMemberGroup() {
-    var fo_obj = get_by_id("member_fo");
-    var member_srl = new Array();
-
-    if(typeof(fo_obj.cart.length)=='undefined') {
-        if(fo_obj.cart.checked) member_srl[member_srl.length] = fo_obj.cart.value;
-    } else {
-        var length = fo_obj.cart.length;
-        for(var i=0;i<length;i++) {
-            if(fo_obj.cart[i].checked) member_srl[member_srl.length] = fo_obj.cart[i].value;
-        }
-    }
-
-    if(member_srl.length<1) return;
-
-    var url = './?module=member&act=dispMemberAdminManageGroup&member_srls='+member_srl.join(',');
-    winopen(url, 'manageMemberGroup','scrollbars=no,width=400,height=500,toolbars=no');
-}
-
-/* 그룹 일괄 변경 후 */
-function completeUpdateMemberGroup(ret_obj) {
-    alert(ret_obj['message']);
-    opener.location.href = opener.current_url;
-    window.close();
-}
-
-
-/* 일괄 삭제 */
-function doDeleteMembers() {
-    var carts = get_by_id('member_fo').elements['cart'], member_srls = [], i, c, url;
-
-	if(!is_def(carts.length)) carts = [carts];
-	for(i=0,c=carts.length; i < c; i++) {
-		if(carts[i].checked) member_srls.push(carts[i].value);
-	}
-	if(member_srls.length < 1) return;
-
-	url = './?module=member&act=dispMemberAdminDeleteMembers&member_srls=' + member_srls.join(',');
-
-    winopen(url, 'deleteMembers','scrollbars=no,width=400,height=500,toolbars=no');
-}
-
-/* 일괄 삭제 후 */
-function completeDeleteMembers(ret_obj) {
-    alert(ret_obj['message']);
-    opener.location.href = opener.current_url;
-    window.close();
 }
 
 jQuery(function($) {

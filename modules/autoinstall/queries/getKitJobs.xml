@@ -1,0 +1,16 @@
+<query id="getKitJobs" action="select">
+	<tables>
+		<table name="autoinstall_kit_jobs" />
+	</tables>
+	<columns>
+		<column name="*" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="kit_id" var="kit_id" />
+		<condition operation="in" column="status" var="status" pipe="and" />
+	</conditions>
+	<navigation>
+		<index var="sort_index" default="job_srl" order="desc" />
+		<list_count var="list_count" default="50" />
+	</navigation>
+</query>

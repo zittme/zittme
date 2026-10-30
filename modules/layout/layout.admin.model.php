@@ -107,6 +107,12 @@ class LayoutAdminModel extends Layout
 	public function getSiteDefaultLayout($viewType = 'P')
 	{
 		$target = ($viewType == 'M') ? 'mlayout_srl' : 'layout_srl';
+		$domainDesignInfo = ModuleModel::getDomainDesignInfo();
+		if ($domainDesignInfo)
+		{
+			$layout_srl = intval($domainDesignInfo->{$target} ?? 0);
+			return ($layout_srl && getModel('layout')->getLayout($layout_srl)) ? $layout_srl : 0;
+		}
 		$designInfoFile = RX_BASEDIR . 'files/site_design/design_0.php';
 		if(FileHandler::exists($designInfoFile)) include($designInfoFile);
 

@@ -1,4 +1,5 @@
 <load target="js/point_admin.js" />
+{@ $reset_module_srls = preg_replace('/[^0-9,]/', '', strval(!empty($module_config['module_srl']) ? $module_config['module_srl'] : ($module_srls ?? ''))) }
 <section class="section">
 	<h1>{$lang->point}</h1>
 	<form action="./" method="post" id="fo_point" class="x_form-horizontal">
@@ -116,7 +117,7 @@
 			</div>
 		</div>
 		<div class="x_clearfix btnArea">
-			<button class="x_btn x_btn-warning x_pull-left" type="button" onclick="doPointReset('{$module_config['module_srl']?$module_config['module_srl']:$module_srls}')">{$lang->cmd_reset}</button>
+			<button class="x_btn x_btn-warning x_pull-left" type="button" onclick="doPointReset('{$reset_module_srls}')">{$lang->cmd_reset}</button>
 			<span class="x_pull-right">
 				<input class="x_btn x_btn-primary" type="submit" value="{$lang->cmd_save}">
 			</span>

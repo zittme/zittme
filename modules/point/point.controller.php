@@ -13,10 +13,36 @@ class PointController extends Point
 	protected $_original;
 
 	/**
+	 * While above zero, writing and deleting posts, comments and files does not change points.
+	 */
+	protected static $_trigger_pause = 0;
+
+	/**
 	 * @brief Initialization
 	 */
 	public function init()
 	{
+	}
+
+	/**
+	 * Stop the content triggers from changing points, for content that the site
+	 * itself imports (for example a starter kit) rather than a member writing it.
+	 *
+	 * @return void
+	 */
+	public static function pauseContentTriggers()
+	{
+		self::$_trigger_pause++;
+	}
+
+	/**
+	 * Undo one pauseContentTriggers() call.
+	 *
+	 * @return void
+	 */
+	public static function resumeContentTriggers()
+	{
+		self::$_trigger_pause = max(0, self::$_trigger_pause - 1);
 	}
 
 	/**
@@ -87,6 +113,10 @@ class PointController extends Point
 	 */
 	public function triggerInsertDocument($obj)
 	{
+		if (self::$_trigger_pause)
+		{
+			return;
+		}
 		$module_srl = $obj->module_srl;
 		$member_srl = abs($obj->member_srl);
 		if (!$module_srl || !$member_srl)
@@ -121,6 +151,62 @@ class PointController extends Point
 		{
 			$this->setPoint($member_srl, $diff, 'plus', 'insert_document');
 		}
+
+		$this->giveFirstDocumentBonus($member_srl, intval($obj->document_srl));
+	}
+
+	/**
+	 * Give the one-time bonus for a member's first published document.
+	 */
+	public function giveFirstDocumentBonus($member_srl, $document_srl)
+	{
+		$config = $this->getConfig();
+		$bonus = intval($config->first_document_point ?? 0);
+		if ($bonus <= 0 || !$member_srl || !Zittme\Modules\Point\Models\Config::isLedgerReady())
+		{
+			return;
+		}
+
+		$idem_key = 'point:first_document:' . $member_srl;
+		if (Zittme\Modules\Point\Models\Ledger::peekIdemKey($idem_key))
+		{
+			return;
+		}
+		Zittme\Modules\Point\Services\PointService::earn($member_srl, $bonus, 'first_document', [
+			'idem_key' => $idem_key,
+			'ref_type' => 'document',
+			'ref_srl' => $document_srl,
+			'apply_limit' => false,
+		]);
+	}
+
+	/**
+	 * Take back the first document bonus when that document is deleted, if configured.
+	 */
+	public function revertFirstDocumentBonus($member_srl, $document_srl)
+	{
+		$config = $this->getConfig();
+		if (($config->first_document_revert ?? 'N') !== 'Y' || !$member_srl || !$document_srl || !Zittme\Modules\Point\Models\Config::isLedgerReady())
+		{
+			return;
+		}
+
+		$row = Zittme\Modules\Point\Models\Ledger::peekIdemKey('point:first_document:' . $member_srl);
+		if (!$row || intval($row->ref_srl) !== intval($document_srl) || intval($row->amount) <= 0)
+		{
+			return;
+		}
+		Zittme\Modules\Point\Models\Ledger::write([
+			'member_srl' => $member_srl,
+			'delta' => -intval($row->amount),
+			'type' => 'spend',
+			'reason_code' => 'first_document_revert',
+			'note' => 'first_document_revert',
+			'policy' => Zittme\Modules\Point\Models\Ledger::POLICY_CLAMP,
+			'idem_key' => 'point:first_document_revert:' . $member_srl,
+			'ref_type' => 'document',
+			'ref_srl' => $document_srl,
+		]);
 	}
 
 	/**
@@ -144,6 +230,10 @@ class PointController extends Point
 	 */
 	public function triggerAfterUpdateDocument($obj)
 	{
+		if (self::$_trigger_pause)
+		{
+			return;
+		}
 		if ($this->_original)
 		{
 			$module_srl = $this->_original->get('module_srl');
@@ -164,9 +254,11 @@ class PointController extends Point
 		$diff = 0;
 
 		// Add points for the document, only if the document is being updated from TEMP to another status such as PUBLIC.
+		$published = false;
 		if ($obj->status !== DocumentModel::getConfigStatus('temp') && $this->_original->get('status') === DocumentModel::getConfigStatus('temp'))
 		{
 			$diff += PointModel::getModulePointConfig($module_srl, 'insert_document');
+			$published = true;
 		}
 
 		// Add points for attached files.
@@ -180,6 +272,10 @@ class PointController extends Point
 		if ($diff != 0)
 		{
 			$this->setPoint($member_srl, $diff, 'plus', 'update_document');
+		}
+		if ($published)
+		{
+			$this->giveFirstDocumentBonus($member_srl, intval($obj->document_srl ?: $this->_original->document_srl));
 		}
 
 		// Remove the reference to the original document.
@@ -199,6 +295,10 @@ class PointController extends Point
 	 */
 	public function triggerDeleteDocument($obj)
 	{
+		if (self::$_trigger_pause)
+		{
+			return;
+		}
 		$module_srl = $obj->module_srl;
 		$member_srl = abs($obj->member_srl);
 		if (!$module_srl || !$member_srl)
@@ -208,6 +308,11 @@ class PointController extends Point
 		if ($obj->isEmptyTrash)
 		{
 			return;
+		}
+
+		if ($obj->status !== DocumentModel::getConfigStatus('temp'))
+		{
+			$this->revertFirstDocumentBonus($member_srl, intval($obj->document_srl));
 		}
 
 		// Return if disabled
@@ -250,6 +355,10 @@ class PointController extends Point
 	 */
 	public function triggerInsertComment($obj, $mode = 'insert')
 	{
+		if (self::$_trigger_pause)
+		{
+			return;
+		}
 		$module_srl = $obj->module_srl;
 		$member_srl = abs($obj->member_srl);
 		if (!$module_srl || !$member_srl)
@@ -307,6 +416,10 @@ class PointController extends Point
 	 */
 	public function triggerDeleteComment($obj)
 	{
+		if (self::$_trigger_pause)
+		{
+			return;
+		}
 		$module_srl = $obj->module_srl;
 		$member_srl = abs($obj->member_srl);
 		if (!$module_srl || !$member_srl)
@@ -374,6 +487,10 @@ class PointController extends Point
 	 */
 	public function triggerDeleteFile($obj)
 	{
+		if (self::$_trigger_pause)
+		{
+			return;
+		}
 		$module_srl = $obj->module_srl;
 		$member_srl = abs($obj->member_srl);
 		if (!$module_srl || !$member_srl || $obj->isvalid !== 'Y')
@@ -657,7 +774,22 @@ class PointController extends Point
 	}
 
 	/**
+	 * Add the "My points" link to the member menu.
+	 */
+	public function triggerAddMemberMenu($obj)
+	{
+		if (Context::get('is_logged') && Zittme\Modules\Point\Models\Config::isMyPageEnabled())
+		{
+			MemberController::addMemberMenu('dispPointMyPoint', 'point.cmd_view_my_point');
+		}
+	}
+
+	/**
 	 * Set or update points for a member.
+	 *
+	 * Kept for compatibility. New code should use
+	 * Zittme\Modules\Point\Services\PointService, which refuses to spend
+	 * more than the balance and supports idempotency keys.
 	 *
 	 * @param int $member_srl
 	 * @param int $point
@@ -667,7 +799,6 @@ class PointController extends Point
 	 */
 	public static function setPoint($member_srl, $point, $mode = 'update', $note = '')
 	{
-		// Normalize parameters
 		$member_srl = abs($member_srl);
 		$point = intval($point);
 		if(!in_array($mode, ['add', 'plus', 'minus', 'update', 'signup']))
@@ -675,213 +806,44 @@ class PointController extends Point
 			$mode = 'update';
 		}
 
-		// Get configuration information
-		$config = ModuleModel::getModuleConfig('point');
+		[$reason_code, $memo] = Zittme\Modules\Point\Models\Ledger::splitNote((string)$note);
+		$request = [
+			'member_srl' => $member_srl,
+			'note' => $note,
+			'reason_code' => $reason_code,
+			'memo' => $memo,
+			'policy' => Zittme\Modules\Point\Models\Ledger::POLICY_CLAMP,
+			'type' => '',
+		];
 
-		// Get current points for the member
-		$current_point = PointModel::getPoint($member_srl, false, $exists);
-		$current_level = PointModel::getLevel($current_point, $config->level_step);
-		$new_point = $current_point;
-		$new_level = $current_level;
-
-		// Initialize query arguments
-		$args = new stdClass();
-		$args->member_srl = $member_srl;
-
-		// Set or update depending on mode
-		switch($mode)
+		switch ($mode)
 		{
 			case 'add':
 			case 'plus':
-				$new_point += $point;
-				$args->diff = $point;
-				if ($point < 0)
-				{
-					$mode = 'minus';
-					$point = $point * -1;
-				}
+				$request['delta'] = $point;
+				$request['trigger_mode'] = $point < 0 ? 'minus' : 'add';
+				$request['apply_limit'] = $note !== 'admin_update';
 				break;
 			case 'minus':
-				$new_point -= $point;
-				$args->diff = $point * -1;
-				if ($point < 0)
-				{
-					$mode = 'plus';
-					$point = $point * -1;
-				}
+				$request['delta'] = -$point;
+				$request['trigger_mode'] = $point < 0 ? 'add' : 'minus';
+				$request['apply_limit'] = $note !== 'admin_update';
 				break;
-			case 'update':
-			case 'signup':
-				$new_point = $point;
-				$args->point = $point;
+			default:
+				$request['target'] = $point;
+				$request['trigger_mode'] = $mode;
 				break;
 		}
 
-		// Prevent negative points. This may not be 100% reliable if using diff.
-		if (isset($args->diff) && $current_point + $args->diff < 0)
+		if ($note === 'admin_update')
 		{
-			$args->diff = $current_point * -1;
-		}
-		if (isset($args->point) && $args->point < 0)
-		{
-			$new_point = 0;
-			$args->point = 0;
+			$request['type_plus'] = 'admin_add';
+			$request['type_minus'] = 'admin_take';
+			$logged_info = Context::get('logged_info');
+			$request['actor_srl'] = is_object($logged_info) ? intval($logged_info->member_srl) : 0;
 		}
 
-		// Call a trigger (before)
-		$trigger_obj = new stdClass();
-		$trigger_obj->member_srl = $args->member_srl;
-		$trigger_obj->mode = $mode === 'plus' ? 'add' : $mode;
-		$trigger_obj->note = $note;
-		$trigger_obj->current_point = $current_point;
-		$trigger_obj->current_level = $current_level;
-		$trigger_obj->set_point = $new_point;
-		$trigger_obj->new_point = $new_point;
-		$trigger_output = ModuleHandler::triggerCall('point.setPoint', 'before', $trigger_obj);
-		if(!$trigger_output->toBool())
-		{
-			return $trigger_output;
-		}
-
-		// begin transaction
-		$oDB = DB::getInstance();
-		$oDB->begin();
-
-		// If there are points, update, if no, insert
-		if ($exists)
-		{
-			$output = executeQuery("point.updatePoint", $args);
-		}
-		else
-		{
-			// This will fail if someone else has inserted points for this member.
-			$args->point = $new_point;
-			$output = executeQuery("point.insertPoint", $args);
-
-			// Handle race condition by re-trying update if insert fails.
-			if(!$output->toBool())
-			{
-				if(isset($args->diff)) unset($args->point);
-				$output = executeQuery("point.updatePoint", $args);
-			}
-		}
-
-		if(!$output->toBool())
-		{
-			$oDB->rollback();
-			return $output;
-		}
-
-		// Get a new level
-		$new_level = PointModel::getLevel($new_point, $config->level_step);
-
-		// If existing level and a new one are different attempt to set a point group
-		$new_group_list = array();
-		$del_group_list = array();
-		if ($config->group_ratchet === 'Y')
-		{
-			$change_group = ($new_level > $current_level);
-		}
-		else
-		{
-			$change_group = ($new_level != $current_level);
-		}
-
-		if ($change_group)
-		{
-			// Check if the level, for which the current points are prepared, is calculate and set the correct group
-			$point_group = $config->point_group;
-			// If the point group exists
-			if($point_group && is_array($point_group) && count($point_group))
-			{
-				// Get the default group
-				$default_group = MemberModel::getDefaultGroup();
-				asort($point_group);
-
-				// Reset group after initialization
-				if($config->group_reset != 'N')
-				{
-					// If the new level is in the right group
-					if(in_array($new_level, $point_group))
-					{
-						// Delete all groups except the one which the current level belongs to
-						foreach($point_group as $group_srl => $target_level)
-						{
-							$del_group_list[] = $group_srl;
-							if($target_level == $new_level) $new_group_list[] = $group_srl;
-						}
-					}
-					// Otherwise, in case the level is reduced, add the recent group
-					else
-					{
-						$i = $new_level;
-						while($i > 0)
-						{
-							if(in_array($i, $point_group))
-							{
-								foreach($point_group as $group_srl => $target_level)
-								{
-									if($target_level == $i)
-									{
-										$new_group_list[] = $group_srl;
-									}
-								}
-								$i = 0;
-							}
-							$i--;
-						}
-					}
-					// Delete the group of a level which is higher than the current level
-					foreach($point_group as $group_srl => $target_level)
-					{
-						if($target_level > $new_level) $del_group_list[] = $group_srl;
-					}
-					$del_group_list[] = $default_group->group_srl;
-				}
-				// Grant a new group
-				else
-				{
-					// Check until the current level by rotating setting the configurations of the point groups
-					foreach($point_group as $group_srl => $target_level)
-					{
-						$del_group_list[] = $group_srl;
-						if($target_level <= $new_level) $new_group_list[] = $group_srl;
-					}
-				}
-				// If there is no a new group, granted the default group
-				if(!$new_group_list[0]) $new_group_list[0] = $default_group->group_srl;
-				// Remove linkage group
-				if($del_group_list && count($del_group_list))
-				{
-					$del_group_args = new stdClass;
-					$del_group_args->member_srl = $member_srl;
-					$del_group_args->group_srl = implode(',', $del_group_list);
-					executeQuery('point.deleteMemberGroup', $del_group_args);
-				}
-				// Grant a new group
-				foreach($new_group_list as $group_srl)
-				{
-					$new_group_args = new stdClass;
-					$new_group_args->member_srl = $member_srl;
-					$new_group_args->group_srl = $group_srl;
-					executeQuery('member.addMemberToGroup', $new_group_args);
-				}
-			}
-		}
-
-		// Call a trigger (after)
-		$trigger_obj->new_level = $new_level;
-		$trigger_obj->new_group_list = $new_group_list;
-		$trigger_obj->del_group_list = $del_group_list;
-		ModuleHandler::triggerCall('point.setPoint', 'after', $trigger_obj);
-
-		$oDB->commit();
-
-		// Refresh cache
-		PointModel::getPoint($member_srl, true);
-		MemberController::clearMemberCache($member_srl);
-
-		return $output;
+		return Zittme\Modules\Point\Models\Ledger::write($request);
 	}
 }
 /* End of file point.controller.php */
