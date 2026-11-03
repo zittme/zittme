@@ -312,7 +312,7 @@ class Context
 		{
 			$lang_type = $site_module_info->settings->language;
 		}
-		elseif (Zittme\Framework\Router::getLangPrefixLevel() >= 2 && self::getRequestMethod() === 'GET' && !(string)self::get('l') && isset($enabled_langs[config('locale.default_lang')]))
+		elseif (Zittme\Framework\Router::getLangPrefixLevel() >= 2 && self::getRequestMethod() === 'GET' && !(string)self::get('l') && isset($enabled_langs[config('locale.default_lang')]) && !self::_isAdminRequest())
 		{
 			$lang_type = config('locale.default_lang');
 			$set_lang_cookie = ($_COOKIE['lang_type'] ?? '') !== $lang_type;
@@ -916,6 +916,16 @@ class Context
 		}
 
 		return $GLOBALS['lang']->loadDirectory($path, $plugin_name);
+	}
+
+	/**
+	 * Check whether the current request targets the admin or a module admin console.
+	 *
+	 * @return bool
+	 */
+	protected static function _isAdminRequest()
+	{
+		return self::get('module') === 'admin' || preg_match('/^(?:disp|proc|get)\w*Admin/', (string)self::get('act')) === 1;
 	}
 
 	/**

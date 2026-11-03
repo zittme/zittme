@@ -117,7 +117,31 @@ class MessageView extends Message
 		{
 			$this->setHttpStatusCode(200);
 		}
+		if ($mx->type === 'login' && ($config->login_redirect ?? '') === 'Y' && self::canRedirectToLogin($this->preview_type))
+		{
+			$login_url = getNotEncodedUrl('', 'module', 'member', 'act', 'dispMemberLoginForm');
+			Context::redirect($login_url . (strpos($login_url, '?') === false ? '?' : '&') . 'referer_url=' . rawurlencode(getRequestUriByServerEnviroment()), 302);
+			exit;
+		}
 		Context::set('mx', $mx);
+	}
+
+	/**
+	 * Check whether a visitor may be sent from the login-required screen to the member login screen.
+	 *
+	 * @param ?string $preview_type
+	 * @return bool
+	 */
+	protected static function canRedirectToLogin(?string $preview_type): bool
+	{
+		$logged_info = Context::get('logged_info');
+		return !$preview_type
+			&& (!$logged_info || empty($logged_info->member_srl))
+			&& PHP_SAPI !== 'cli'
+			&& Context::getResponseMethod() === 'HTML'
+			&& Context::getRequestMethod() === 'GET'
+			&& Context::get('module') !== 'admin'
+			&& !preg_match('/^(?:disp|proc)Member/', strval(Context::get('act')));
 	}
 
 	/**

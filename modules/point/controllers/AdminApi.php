@@ -1054,6 +1054,10 @@ class AdminApi extends \Point
 			return $output;
 		}
 		$config = Config::get();
+		if ($key === 'point_group')
+		{
+			Ledger::mergeDuplicateGroupMembers(array_keys($values['point_group']));
+		}
 		if ($key === 'able_module')
 		{
 			if ($yn === 'Y')

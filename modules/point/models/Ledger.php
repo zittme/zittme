@@ -373,46 +373,38 @@ class Ledger
 			return [$new_group_list, $del_group_list];
 		}
 
+		// Administrator groups are never granted by level, even if an old setting links one.
+		foreach (\MemberModel::getGroups() ?: [] as $group)
+		{
+			if (($group->is_admin ?? 'N') === 'Y')
+			{
+				unset($point_group[$group->group_srl]);
+			}
+		}
+		if (!count($point_group))
+		{
+			return [$new_group_list, $del_group_list];
+		}
+
 		$default_group = \MemberModel::getDefaultGroup();
 		asort($point_group);
 
 		if (($config->group_reset ?? 'Y') != 'N')
 		{
-			if (in_array($new_level, $point_group))
+			$top_level = 0;
+			foreach ($point_group as $target_level)
 			{
-				foreach ($point_group as $group_srl => $target_level)
+				if ($target_level <= $new_level && $target_level > $top_level)
 				{
-					$del_group_list[] = $group_srl;
-					if ($target_level == $new_level)
-					{
-						$new_group_list[] = $group_srl;
-					}
-				}
-			}
-			else
-			{
-				$i = $new_level;
-				while ($i > 0)
-				{
-					if (in_array($i, $point_group))
-					{
-						foreach ($point_group as $group_srl => $target_level)
-						{
-							if ($target_level == $i)
-							{
-								$new_group_list[] = $group_srl;
-							}
-						}
-						$i = 0;
-					}
-					$i--;
+					$top_level = $target_level;
 				}
 			}
 			foreach ($point_group as $group_srl => $target_level)
 			{
-				if ($target_level > $new_level)
+				$del_group_list[] = $group_srl;
+				if ($top_level > 0 && $target_level == $top_level)
 				{
-					$del_group_list[] = $group_srl;
+					$new_group_list[] = $group_srl;
 				}
 			}
 			$del_group_list[] = $default_group->group_srl;
@@ -429,9 +421,11 @@ class Ledger
 			}
 		}
 
-		if (empty($new_group_list[0]))
+		$new_group_list = array_values(array_unique($new_group_list));
+		$del_group_list = array_values(array_unique($del_group_list));
+		if (!$new_group_list)
 		{
-			$new_group_list[0] = $default_group->group_srl;
+			$new_group_list[] = $default_group->group_srl;
 		}
 		if ($del_group_list)
 		{
@@ -442,13 +436,38 @@ class Ledger
 		}
 		foreach ($new_group_list as $group_srl)
 		{
-			$args = new \stdClass;
-			$args->member_srl = $member_srl;
-			$args->group_srl = $group_srl;
-			executeQuery('member.addMemberToGroup', $args);
+			\MemberController::addMemberToGroup($member_srl, $group_srl);
 		}
 
 		return [$new_group_list, $del_group_list];
+	}
+
+	/**
+	 * Leave one membership row where a member was put into the same group more than once.
+	 * Works on the given groups only and handles a limited number of members per call.
+	 *
+	 * @return int Number of members whose duplicate rows were merged
+	 */
+	public static function mergeDuplicateGroupMembers(array $group_srls, int $limit = 2000): int
+	{
+		$group_srls = array_values(array_filter(array_map('intval', $group_srls)));
+		if (!$group_srls)
+		{
+			return 0;
+		}
+		$oDB = DB::getInstance();
+		$marks = implode(',', array_fill(0, count($group_srls), '?'));
+		$rows = $oDB->query('SELECT group_srl, member_srl, MIN(regdate) AS regdate FROM member_group_member WHERE group_srl IN (' . $marks . ') GROUP BY group_srl, member_srl HAVING COUNT(*) > 1 LIMIT ' . max(1, $limit), $group_srls)->fetchAll();
+		foreach ($rows as $row)
+		{
+			$oDB->query('DELETE FROM member_group_member WHERE group_srl = ? AND member_srl = ?', [$row->group_srl, $row->member_srl]);
+			$oDB->query('INSERT INTO member_group_member (site_srl, group_srl, member_srl, regdate) VALUES (0, ?, ?, ?)', [$row->group_srl, $row->member_srl, $row->regdate]);
+		}
+		if ($rows)
+		{
+			\Zittme\Framework\Cache::clearGroup('member');
+		}
+		return count($rows);
 	}
 
 	/**

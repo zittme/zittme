@@ -18,6 +18,9 @@ function memberSetEvent() {
 	}
 	fields.each(function() {
 		var field = this;
+		if (field.type === 'hidden' || field.readOnly || field.disabled) {
+			return;
+		}
 		var btn = jQuery('<button type="button" class="btn x_btn memberCheckBtn" style="margin-left:6px" />').text(opt.label);
 		btn.on('click', function() {
 			if (!field.value) {

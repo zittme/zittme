@@ -281,11 +281,11 @@ function addContentWidget(fo_obj) {
 /* 박스 위젯 추가 */
 function doAddWidgetBox() {
 	var tpl = ''+
-	'<div class="widgetOutput" style="float:left;width:100%;height:20px;" widget="widgetBox" >'+
+	'<div class="widgetOutput" style="float:left;width:100%;" widget="widgetBox" >'+
 		'<button type="button" class="widgetBoxResize"></button>'+
 		'<button type="button" class="widgetBoxResizeLeft"></button>'+
 		'<div class="widgetBoxBorder">'+
-			'<div class="nullWidget" style="width:100%;height:100px;"></div>'+
+			'<div class="nullWidget" style="width:100%;min-height:100px;"></div>'+
 		'</div>'+
 	'</div>';
 	zonePageObj.insertAdjacentHTML('beforeend', tpl);
@@ -970,7 +970,10 @@ function widgetCreateTmpObject(obj) {
 // 기생성된 임시 object를 찾아서 return, 없으면 만들어서 return
 var idStep = 0;
 function widgetGetTmpObject(obj) {
-	if(!obj.id) obj.id = 'widget_'+idStep++;
+	if(!obj.id) {
+		while(document.getElementById('widget_'+idStep)) idStep++;
+		obj.id = 'widget_'+idStep++;
+	}
 	var tmpObj = widgetTmpObject[obj.id];
 	if(!tmpObj) tmpObj = widgetCreateTmpObject(obj);
 	return tmpObj;
@@ -988,6 +991,29 @@ function widgetDragEnable(obj, funcDragStart, funcDrag, funcDragEnd) {
 	if (!widgetDragManager.isDrag) {
 		widgetDragManager.isDrag = true;
 		jQuery(document).on('mousemove', widgetDragMouseMove);
+	}
+}
+
+// 두 노드의 자리를 바꾼다. 빈 div 같은 자리 표시자를 남기지 않는다
+function widgetSwapNodes(a, b) {
+	var pa = a.parentNode;
+	var pb = b.parentNode;
+	var marker = document.createElement('span');
+	pa.insertBefore(marker, a);
+	pb.insertBefore(a, b);
+	pa.insertBefore(b, marker);
+	pa.removeChild(marker);
+}
+
+// 상자 안 내용이 상자 높이보다 크면 높이 제한을 푼다 (넘친 위젯이 아래 위젯에 가려지거나 잘리는 것을 막음)
+function widgetBoxFit(box) {
+	if (!box || box.nodeType !== 1) return;
+	var nw = jQuery(box).find('div.nullWidget').get(0);
+	if (!nw) return;
+	if (box.scrollHeight > box.clientHeight + 1 || nw.scrollHeight > nw.clientHeight + 1) {
+		box.style.height = 'auto';
+		nw.style.height = 'auto';
+		nw.style.minHeight = '100px';
 	}
 }
 
@@ -1078,19 +1104,7 @@ function widgetDrag(tobj, dx, dy) {
 				var tt =  parseInt(t,10) + parseInt(xHeight(target_obj),10);
 
 				if( tobj != target_obj && tobj.xDPX >= l && tobj.xDPX <= ll && tobj.xDPY >= t && tobj.xDPY <= tt && tobj.parentNode == target_obj.parentNode) {
-					var next1 = target_obj.nextSibling;
-					if(!next1) {
-						next1 = document.createElement('div');
-						target_obj.parentNode.appendChild(next1);
-					}
-					var next2 = tobj.nextSibling;
-					if(!next2) {
-						next2 = document.createElement('div');
-						tobj.parentNode.appendChild(next2);
-					}
-
-					if(next1) next1.parentNode.insertBefore(tobj, next1);
-					if(next2) next2.parentNode.insertBefore(target_obj, next2);
+					widgetSwapNodes(tobj, target_obj);
 					widgetList = null;
 					return;
 				}
@@ -1104,7 +1118,8 @@ function widgetDrag(tobj, dx, dy) {
 			var ll =  parseInt(l,10) + parseInt(xWidth(p_tobj),10);
 			var tt =  parseInt(t,10) + parseInt(xHeight(p_tobj),10);
 			if( (tobj.xDPX < l || tobj.xDPX > ll) || (tobj.xDPY < t || tobj.xDPY > tt) ) {
-				zonePageObj.insertBefore(tobj, jQuery(tobj).parents('div.widgetOutput[widget=widgetBox]').get(0));
+				var out_box = jQuery(tobj).parents('div.widgetOutput[widget=widgetBox]').get(0);
+				zonePageObj.insertBefore(tobj, out_box);
 				return;
 			}
 
@@ -1117,14 +1132,12 @@ function widgetDrag(tobj, dx, dy) {
 				for(var i=0;i<boxList.length;i++) {
 					var target_obj = boxList[i];
 					var $target_obj = jQuery(target_obj);
+					var hit_obj = $target_obj.closest('div.widgetOutput[widget=widgetBox]').get(0) || target_obj;
 
-					xHeight(target_obj, xHeight(target_obj.parentNode));
-					xWidth(target_obj, xWidth(target_obj.parentNode));
-
-					var l =  xPageX(target_obj);
-					var t =  xPageY(target_obj);
-					var ll =  parseInt(l,10) + parseInt(xWidth(target_obj),10);
-					var tt =  parseInt(t,10) + parseInt(xHeight(target_obj),10);
+					var l =  Math.min(xPageX(hit_obj), xPageX(target_obj));
+					var t =  Math.min(xPageY(hit_obj), xPageY(target_obj));
+					var ll =  Math.max(parseInt(xPageX(hit_obj),10) + parseInt(xWidth(hit_obj),10), parseInt(xPageX(target_obj),10) + parseInt(xWidth(target_obj),10));
+					var tt =  Math.max(parseInt(xPageY(hit_obj),10) + parseInt(xHeight(hit_obj),10), parseInt(xPageY(target_obj),10) + parseInt(xHeight(target_obj),10));
 					if( tobj.xDPX >= l && tobj.xDPX <= ll && tobj.xDPY >= t && tobj.xDPY <= tt) {
 
 						//박스 위젯이다
@@ -1140,6 +1153,7 @@ function widgetDrag(tobj, dx, dy) {
 							}else{
 								wb_ws.get(0).appendChild(tobj);
 							}
+							widgetBoxFit(hit_obj);
 
 							// 이동을 멈춤
 							widgetManualEnd();
@@ -1164,20 +1178,7 @@ function widgetDrag(tobj, dx, dy) {
 				var tt =  parseInt(t,10) + parseInt(xHeight(target_obj),10);
 
 				if( tobj != target_obj && tobj.xDPX >= l && tobj.xDPX <= ll && tobj.xDPY >= t && tobj.xDPY <= tt && tobj.parentNode == target_obj.parentNode) {
-					var next1 = target_obj.nextSibling;
-					if(!next1) next1 = target_obj.parentNode.lastChild;
-					if(!next1) {
-						next1 = document.createElement('div');
-						target_obj.parentNode.appendChild(next1);
-					}
-					var next2 = tobj.nextSibling;
-					if(!next2) {
-						next2 = document.createElement('div');
-						tobj.parentNode.appendChild(next2);
-					}
-
-					if(next1) next1.parentNode.insertBefore(tobj, next1);
-					if(next2) next2.parentNode.insertBefore(target_obj, next2);
+					widgetSwapNodes(tobj, target_obj);
 					widgetList = null;
 					return;
 				}

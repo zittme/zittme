@@ -319,10 +319,7 @@ class MemberView extends Member
 		$trigger_output = ModuleHandler::triggerCall('member.dispMemberSignUpForm', 'before', $member_config);
 		if(!$trigger_output->toBool()) return $trigger_output;
 
-		if (($member_config->signup_dup_button ?? 'N') === 'Y')
-		{
-			Context::addHtmlFooter('<script>window.zmSignupDupBtn=' . json_encode(['label' => lang('member.signup_dup_check_button'), 'ok' => lang('member.signup_dup_check_ok')], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ';</script>');
-		}
+		$this->addDuplicateCheckButtonScript();
 
 		// Error appears if the member is not allowed to join
 		if ($member_config->enable_join !== 'Y')
@@ -473,6 +470,18 @@ class MemberView extends Member
 	}
 
 	/**
+	 * Hand the duplicate-check button labels to the sign-up and edit forms when the setting is on.
+	 */
+	protected function addDuplicateCheckButtonScript()
+	{
+		if (($this->member_config->signup_dup_button ?? 'N') !== 'Y')
+		{
+			return;
+		}
+		Context::addHtmlFooter('<script>window.zmSignupDupBtn=' . json_encode(['label' => lang('member.signup_dup_check_button'), 'ok' => lang('member.signup_dup_check_ok')], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ';</script>');
+	}
+
+	/**
 	 * @brief Modify member information
 	 */
 	function dispMemberModifyInfo()
@@ -491,6 +500,7 @@ class MemberView extends Member
 		$_SESSION['rechecked_password_step'] = 'INPUT_DATA';
 
 		$member_config = $this->member_config;
+		$this->addDuplicateCheckButtonScript();
 
 		// A message appears if the user is not logged-in
 		if(!$this->user->member_srl) throw new Zittme\Framework\Exceptions\MustLogin;

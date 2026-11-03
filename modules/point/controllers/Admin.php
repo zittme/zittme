@@ -289,7 +289,7 @@ class Admin extends \Point
 			}
 			$config->able_module = 'Y';
 		}
-		else
+		elseif (property_exists($args, 'able_module'))
 		{
 			$config->able_module = 'N';
 			$oModuleController->deleteModuleTriggers('point');
@@ -341,7 +341,8 @@ class Admin extends \Point
 		$config->disable_read_document = (($args->disable_read_document ?? '') === 'Y') ? 'Y' : 'N';
 		$config->disable_read_document_except_robots = (($args->disable_read_document_except_robots ?? '') === 'Y') ? 'Y' : 'N';
 
-		$config->point_group = [];
+		$point_group = [];
+		$point_group_posted = false;
 		foreach (\MemberModel::getGroups() ?: [] as $group)
 		{
 			if ($group->is_admin == 'Y' || $group->is_default == 'Y')
@@ -349,23 +350,30 @@ class Admin extends \Point
 				continue;
 			}
 			$key = 'point_group_' . $group->group_srl;
+			if (property_exists($args, $key))
+			{
+				$point_group_posted = true;
+			}
 			if (isset($args->$key))
 			{
-				$level = $args->$key;
+				$level = intval($args->$key);
 				if ($level > $config->max_level)
 				{
 					$level = $config->max_level;
 				}
-				if ($level && $level < 1)
+				if ($level >= 1)
 				{
-					$level = 1;
+					$point_group[$group->group_srl] = $level;
 				}
-				$config->point_group[$group->group_srl] = $level;
 			}
 		}
+		if ($point_group_posted)
+		{
+			$config->point_group = $point_group;
+		}
 
-		$config->group_reset = $args->group_reset ?? 'Y';
-		$config->group_ratchet = $args->group_ratchet ?? 'N';
+		$config->group_reset = $args->group_reset ?? ($config->group_reset ?? 'Y');
+		$config->group_ratchet = $args->group_ratchet ?? ($config->group_ratchet ?? 'N');
 
 		$level_step = array_map('intval', explode(',', ($args->level_step ?? '') ?: '0'));
 		$config->level_step = [];

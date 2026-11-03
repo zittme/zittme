@@ -9,8 +9,8 @@
 	<description xml:lang="en">
 		One widget renders one responsive row of 1-4 content slots (list/webzine/thumbnail/magazine/tab). Stack rows to build a front page.
 	</description>
-	<version>0.3.5</version>
-	<date>2026-09-15</date>
+	<version>0.3.6</version>
+	<date>2026-11-03</date>
 	<author email_address="contact@zzan.me" link="https://zzan.me/">
 		<name xml:lang="ko">ZZAN Studio</name>
 		<name xml:lang="en">ZZAN Studio</name>
@@ -43,6 +43,15 @@
 						<name xml:lang="en">How long to show the New (N) badge</name>
 			<description xml:lang="ko">등록 후 몇 시간까지 N 배지를 붙일지. 비우면 24시간</description>
 		<description xml:lang="en">Hours after posting during which the N badge appears. Leave blank for 24 hours.</description>
+		</var>
+		<var id="mobile_cols" type="select">
+			<name xml:lang="ko">모바일 섬네일·매거진 열 수</name>
+			<name xml:lang="en">Thumbnail and magazine columns on mobile</name>
+			<description xml:lang="ko">화면 폭 640px 이하에서 섬네일형·매거진형을 몇 칸으로 보일지 정합니다. 기본은 칸 폭에 맞춰 자동입니다.</description>
+			<description xml:lang="en">Number of columns for thumbnail and magazine blocks on screens up to 640px wide. The default adapts to the block width.</description>
+			<options><value>auto</value><name xml:lang="ko">기본(자동)</name><name xml:lang="en">Default (automatic)</name></options>
+			<options><value>1</value><name xml:lang="ko">1칸</name><name xml:lang="en">1 column</name></options>
+			<options><value>2</value><name xml:lang="ko">2칸</name><name xml:lang="en">2 columns</name></options>
 		</var>
 		<var id="columns" type="text">
 			<name xml:lang="ko">직접 구성 - 폭 비율</name>

@@ -188,8 +188,11 @@ class zittme_content extends WidgetHandler
 			$widths[] = max(5, (float)$col['width']) . 'fr';
 		}
 
+		$mobile_cols = trim((string)($args->mobile_cols ?? ''));
+		$mobile_class = in_array($mobile_cols, ['1', '2'], true) ? ' zc-m' . $mobile_cols : '';
+
 		$html = self::styleTag();
-		$html .= '<div class="zc zc-sk-' . self::$variant . '"><div class="zc-row zc-cols-' . count($cols) . '" style="grid-template-columns:' . implode(' ', $widths) . '">';
+		$html .= '<div class="zc zc-sk-' . self::$variant . $mobile_class . '"><div class="zc-row zc-cols-' . count($cols) . '" style="grid-template-columns:' . implode(' ', $widths) . '">';
 		foreach ($cols as $col)
 		{
 			$html .= '<div class="zc-cell">' . self::renderBlock($col) . '</div>';
@@ -503,10 +506,10 @@ class zittme_content extends WidgetHandler
 				continue;
 			}
 			$items[] = [
-				'title' => $oDocument->getTitleText(60),
+				'title' => mb_strimwidth(html_entity_decode((string)$oDocument->get('title'), \ENT_QUOTES), 0, 64, '...', 'UTF-8'),
 				'url' => html_entity_decode((string)$oDocument->getPermanentUrl(), \ENT_QUOTES),
 				'thumb' => $need_thumb ? (string)$oDocument->getThumbnail(560, 380, 'crop') : '',
-				'summary' => $need_thumb ? trim((string)$oDocument->getSummary(80)) : '',
+				'summary' => $need_thumb ? trim(html_entity_decode((string)$oDocument->getSummary(80), \ENT_QUOTES)) : '',
 				'date' => $oDocument->getRegdate('m.d'),
 				'is_new' => $oDocument->getRegdateTime() > time() - 3600 * self::$new_hours,
 				'comment_count' => (int)$oDocument->get('comment_count'),
@@ -548,7 +551,7 @@ class zittme_content extends WidgetHandler
 				break;
 			}
 			$items[] = [
-				'title' => trim((string)$oComment->getSummary(60)),
+				'title' => trim(html_entity_decode((string)$oComment->getSummary(60), \ENT_QUOTES)),
 				'url' => self::commentUrl($oComment),
 				'thumb' => '',
 				'summary' => '',
@@ -714,6 +717,7 @@ class zittme_content extends WidgetHandler
 			. '@media (max-width: 380px){.zc-cols-1 .zc-webzine a{flex-direction:column;}.zc-cols-1 .zc-wz-thumb{width:100%;flex-basis:auto;height:140px;}.zc-cols-1 .zc-thumbs,.zc-cols-1 .zc-magazine{grid-template-columns:1fr;}}'
 			. '@media (max-width: 960px){.zc-row:not(.zc-cols-1){grid-template-columns:1fr 1fr !important;}}'
 			. '@media (max-width: 640px){.zc-row{grid-template-columns:1fr !important;}}'
+			. '@media (max-width: 640px){.zc-m1 .zc-thumbs,.zc-m1 .zc-magazine{grid-template-columns:1fr !important;}.zc-m2 .zc-thumbs,.zc-m2 .zc-magazine{grid-template-columns:repeat(2,1fr) !important;}}'
 			// 밝기는 레이아웃(data-theme)과 코어(color_scheme)가 정한다. 기기 설정은 코어가 읽어 옮겨 준다
 			. self::darkRules(':root[data-theme="dark"] .zc,body.color_scheme_dark .zc')
 			. '</style>';
