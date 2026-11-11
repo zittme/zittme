@@ -513,14 +513,15 @@
 		return country ? country.value.toUpperCase() !== 'KR' : false;
 	}
 
+	var zip = document.querySelector('[name="zipcode"], [name="zipcode_kr"]');
+	var zipIntl = document.querySelector('[name="zipcode_intl"]');
+
 	function apply() {
 		var overseas = isOverseas();
 		document.querySelectorAll('.shp-kr-only').forEach(function (el) { el.hidden = overseas; });
 		document.querySelectorAll('.shp-intl-only').forEach(function (el) { el.hidden = !overseas; });
 		var city = document.querySelector('[name="city"]');
 		if (city) city.required = overseas;
-		var zip = document.querySelector('[name="zipcode"], [name="zipcode_kr"]');
-		var zipIntl = document.querySelector('[name="zipcode_intl"]');
 		if (zip && zipIntl) {
 			if (overseas) { zipIntl.name = 'zipcode'; zip.name = 'zipcode_kr'; }
 			else { zip.name = 'zipcode'; zipIntl.name = 'zipcode_intl'; }

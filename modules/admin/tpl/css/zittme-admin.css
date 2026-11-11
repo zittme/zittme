@@ -152,7 +152,12 @@
 }
 
 html { -webkit-text-size-adjust: 100%; }
-body { margin: 0; background: var(--zm-bg); }
+@supports selector(:has(*)) {
+	body:has(> .zm-gnb-top) { margin: 0; background: var(--zm-bg); }
+}
+@supports not selector(:has(*)) {
+	body { margin: 0; background: var(--zm-bg); }
+}
 
 /* 전역 스크롤바 */
 html, body, * { scrollbar-width: thin; scrollbar-color: var(--zm-input-border) transparent; }

@@ -323,14 +323,15 @@ class Admin extends \Point
 			$config->$key = (int)($args->$key ?? 0);
 		}
 
-		$max_level = (int)($args->max_level ?? 0);
+		$max_level = property_exists($args, 'max_level') ? (int)$args->max_level : max(1, intval($config->max_level ?? 30));
 		if ($max_level >= 10000)
 		{
 			throw new Exception('point.msg_max_level_too_high');
 		}
 		$config->max_level = max(1, $max_level);
 
-		$config->level_icon = basename((string)($args->level_icon ?? '')) ?: 'default';
+		$level_icon = property_exists($args, 'level_icon') ? (string)$args->level_icon : (string)($config->level_icon ?? '');
+		$config->level_icon = basename($level_icon) ?: 'default';
 		$config->level_icon_type = self::detectIconType($this->module_path . 'icons/' . $config->level_icon);
 		if ($config->level_icon_type === '')
 		{
@@ -375,13 +376,20 @@ class Admin extends \Point
 		$config->group_reset = $args->group_reset ?? ($config->group_reset ?? 'Y');
 		$config->group_ratchet = $args->group_ratchet ?? ($config->group_ratchet ?? 'N');
 
-		$level_step = array_map('intval', explode(',', ($args->level_step ?? '') ?: '0'));
+		if (property_exists($args, 'level_step'))
+		{
+			$level_step = array_map('intval', explode(',', ($args->level_step ?? '') ?: '0'));
+		}
+		else
+		{
+			$level_step = array_map('intval', array_values((array)($config->level_step ?? []))) ?: [0];
+		}
 		$config->level_step = [];
 		for ($i = 1; $i <= $config->max_level; $i++)
 		{
 			$config->level_step[$i] = isset($level_step[$i - 1]) ? $level_step[$i - 1] : array_last($level_step);
 		}
-		$config->expression = $args->expression ?? '';
+		$config->expression = $args->expression ?? ($config->expression ?? '');
 
 		$oModuleController->insertModuleConfig('point', $config);
 		\Point::resetConfigCache();
