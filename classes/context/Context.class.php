@@ -925,7 +925,7 @@ class Context
 	 */
 	protected static function _isAdminRequest()
 	{
-		return self::get('module') === 'admin' || preg_match('/^(?:disp|proc|get)\w*Admin/', (string)self::get('act')) === 1;
+		return self::get('module') === 'admin' || preg_match('/^(?:disp|proc|get)\w*(?:Admin|Console)/', (string)self::get('act')) === 1;
 	}
 
 	/**
