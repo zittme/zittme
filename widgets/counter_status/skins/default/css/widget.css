@@ -3,4 +3,10 @@
 .widgetCounter{font-size:12px;margin:0;line-height:1.4;color:#333}
 .widgetCounter:after{content:"";display:block;clear:both}
 .widgetCounter dt{float:left;clear:left;margin:0 4px 0 0}
-.widgetCounter dd{margin:0}
+.widgetCounter dd{margin:0;font-size:var(--counter-number-size,inherit)}
+.widgetCounter.is-inline{display:flex;flex-wrap:wrap;align-items:baseline}
+.widgetCounter.is-inline:after{display:none}
+.widgetCounter.is-inline dt{float:none;clear:none}
+.widgetCounter.is-inline dd{margin-right:12px}
+.widgetCounter.is-inline dd:last-child{margin-right:0}
+:root[data-theme="dark"] .widgetCounter,.color_scheme_dark .widgetCounter{color:#e5e7eb}

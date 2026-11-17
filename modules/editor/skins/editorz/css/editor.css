@@ -88,6 +88,7 @@
 .edz__pop--menu{flex-direction:column;gap:2px;padding:6px;min-width:118px;}
 .edz__pop--menu button{display:block;width:100%;text-align:left;padding:8px 10px;border:0;background:none;border-radius:7px;font-size:13.5px;color:var(--edz-text);cursor:pointer;font-family:inherit;}
 .edz__pop--menu button:hover{background:var(--edz-surface-2);}
+.edz__pop--menu button.is-on{background:var(--edz-accent-soft);color:var(--edz-accent);}
 .edz__mi-h2{font-size:16px;font-weight:800;}
 .edz__mi-h3{font-size:14px;font-weight:700;}
 
@@ -105,6 +106,11 @@
 .edz__body>p:only-child:has(>br:only-child){position:relative;}
 .edz__body>p:only-child:has(>br:only-child)::before{position:absolute;left:0;top:0;}
 .edz__body p{margin:0 0 var(--edz-para,0);}
+.edz .edz__body ul,.edz .edz__body ol{margin:6px 0;padding:0 0 0 1.6em;}
+.edz .edz__body ul{list-style:disc outside;}
+.edz .edz__body ol{list-style:decimal outside;}
+.edz .edz__body ul ul{list-style-type:circle;}
+.edz .edz__body li{display:list-item;list-style-type:inherit !important;margin:2px 0;}
 .edz__src{display:block;width:100%;box-sizing:border-box;min-height:200px;padding:16px;border:0;outline:0;resize:vertical;background:var(--edz-bg);color:var(--edz-text);font:13px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;}
 .edz__src[hidden]{display:none;}
 .edz.is-src .edz__body{display:none;}
@@ -184,3 +190,7 @@
 /* 첨부영역(점선 박스)이 에디터 좌우 끝까지 꽉 차 본문(16px)보다 넓어 보이던 것 →
    컨테이너에 좌우 바깥 여백을 줘 본문 텍스트와 같은 라인에 맞춘다. */
 .edz .xefu-container{margin:4px 16px 14px !important;}
+.edz[data-edz-scheme="dark"] .xefu-container,.edz.dark .xefu-container{color:var(--edz-text);}
+.edz[data-edz-scheme="dark"] .xefu-dropzone,.edz.dark .xefu-dropzone{background:var(--edz-surface-2);border-color:var(--edz-border);}
+.edz[data-edz-scheme="dark"] .xefu-dropzone-message,.edz.dark .xefu-dropzone-message{color:var(--edz-sub);}
+.edz[data-edz-scheme="dark"] .xefu-list-files li,.edz.dark .xefu-list-files li{background:var(--edz-surface-2);border-color:var(--edz-border) !important;}

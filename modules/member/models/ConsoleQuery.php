@@ -679,7 +679,7 @@ class ConsoleQuery
 		$data['dormant'] = $one('SELECT COUNT(*) AS cnt FROM member WHERE last_login < ?', [date('YmdHis', strtotime('-1 year'))]);
 
 		$groups = [];
-		foreach ($db->query('SELECT group_srl, COUNT(*) AS cnt FROM member_group_member GROUP BY group_srl')->fetchAll() as $row)
+		foreach ($db->query('SELECT group_srl, COUNT(DISTINCT member_srl) AS cnt FROM member_group_member GROUP BY group_srl')->fetchAll() as $row)
 		{
 			$groups[] = [intval($row->group_srl), intval($row->cnt)];
 		}

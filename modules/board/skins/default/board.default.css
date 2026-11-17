@@ -519,8 +519,8 @@
 	background: url(bgHeader.gif) no-repeat right -50px;
 }
 .read_header h1 {
-	width: 600px;
-	margin: 0 0 0 15px;
+	max-width: 600px;
+	margin: 0 130px 0 15px;
 	font-size: 12px;
 	line-height: 36px;
 	overflow: hidden;
@@ -1194,3 +1194,204 @@
 	background-color: #e6e6e6;
 }
 .read_footer .zm-share { clear: both; margin: 16px 15px; }
+
+/* Dark: follows the layout (data-theme on :root, or color_scheme_dark on body) */
+:root[data-theme="dark"] .board,
+.color_scheme_dark .board {
+	--bdd-bg: var(--zm-surface, #1b1e24);
+	--bdd-bg2: var(--zm-surface-2, #23272f);
+	--bdd-ink: var(--zm-ink, #e4e7ec);
+	--bdd-sub: var(--zm-sub, #a3abb8);
+	--bdd-line: var(--zm-line, #363c47);
+	--bdd-accent: var(--zm-brand, #9db7ff);
+	background-color: var(--bdd-bg);
+	color: var(--bdd-ink);
+}
+:root[data-theme="dark"] .board .read_footer a,
+:root[data-theme="dark"] .board .xe_content a,
+.color_scheme_dark .board .read_footer a,
+.color_scheme_dark .board .xe_content a {
+	color: var(--bdd-accent);
+}
+:root[data-theme="dark"] .board .board_read,
+:root[data-theme="dark"] .board .read_body,
+:root[data-theme="dark"] .board .exForm,
+:root[data-theme="dark"] .board .exOut,
+.color_scheme_dark .board .board_read,
+.color_scheme_dark .board .read_body,
+.color_scheme_dark .board .exForm,
+.color_scheme_dark .board .exOut {
+	background-color: var(--bdd-bg);
+}
+:root[data-theme="dark"] .board .read_header .meta,
+:root[data-theme="dark"] .board .board_list tr.notice,
+:root[data-theme="dark"] .board .feedback .fbHeader,
+:root[data-theme="dark"] .board .context_data,
+.color_scheme_dark .board .read_header .meta,
+.color_scheme_dark .board .board_list tr.notice,
+.color_scheme_dark .board .feedback .fbHeader,
+.color_scheme_dark .board .context_data {
+	background-color: var(--bdd-bg2);
+	border-color: var(--bdd-line);
+}
+:root[data-theme="dark"] .board .read_body .xe_content,
+:root[data-theme="dark"] .board .board_list table,
+:root[data-theme="dark"] .board .board_list a,
+:root[data-theme="dark"] .board .exForm th,
+:root[data-theme="dark"] .board .exOut th,
+:root[data-theme="dark"] .board .read_footer .sign .tx,
+:root[data-theme="dark"] .board .context_data h3.author,
+:root[data-theme="dark"] .board .context_data h3.title,
+:root[data-theme="dark"] .board .cTab li.on a,
+:root[data-theme="dark"] .board .feedback,
+.color_scheme_dark .board .read_body .xe_content,
+.color_scheme_dark .board .board_list table,
+.color_scheme_dark .board .board_list a,
+.color_scheme_dark .board .exForm th,
+.color_scheme_dark .board .exOut th,
+.color_scheme_dark .board .read_footer .sign .tx,
+.color_scheme_dark .board .context_data h3.author,
+.color_scheme_dark .board .context_data h3.title,
+.color_scheme_dark .board .cTab li.on a,
+.color_scheme_dark .board .feedback {
+	color: var(--bdd-ink);
+}
+:root[data-theme="dark"] .board .cTab li a,
+:root[data-theme="dark"] .board .cTab li em,
+:root[data-theme="dark"] .board .exForm td,
+:root[data-theme="dark"] .board .exOut td,
+:root[data-theme="dark"] .board .read_header .meta .author,
+:root[data-theme="dark"] .board .read_header .meta .sum,
+:root[data-theme="dark"] .board .read_footer .toggleFile,
+:root[data-theme="dark"] .board .read_footer .files a,
+:root[data-theme="dark"] .board .read_footer .tags,
+:root[data-theme="dark"] .board .read_footer .tags a,
+:root[data-theme="dark"] .board .feedback .author a,
+:root[data-theme="dark"] .board .feedback .time,
+:root[data-theme="dark"] .board .feedback .xe_content,
+:root[data-theme="dark"] .board .feedback .toggleFile,
+:root[data-theme="dark"] .board .feedback .files a,
+:root[data-theme="dark"] .board .feedback .action a,
+:root[data-theme="dark"] .board .feedback .action .vote,
+:root[data-theme="dark"] .board #comment .fbHeader .wComment,
+:root[data-theme="dark"] .board .feedback .fbHeader .trackbackURL,
+:root[data-theme="dark"] .board .feedback .fbHeader .trackbackURL a,
+:root[data-theme="dark"] .board .write_author .iLabel,
+:root[data-theme="dark"] .board .context_data,
+:root[data-theme="dark"] .board .context_data .xe_content,
+:root[data-theme="dark"] .board .pagination strong,
+:root[data-theme="dark"] .board .pagination .direction,
+.color_scheme_dark .board .cTab li a,
+.color_scheme_dark .board .cTab li em,
+.color_scheme_dark .board .exForm td,
+.color_scheme_dark .board .exOut td,
+.color_scheme_dark .board .read_header .meta .author,
+.color_scheme_dark .board .read_header .meta .sum,
+.color_scheme_dark .board .read_footer .toggleFile,
+.color_scheme_dark .board .read_footer .files a,
+.color_scheme_dark .board .read_footer .tags,
+.color_scheme_dark .board .read_footer .tags a,
+.color_scheme_dark .board .feedback .author a,
+.color_scheme_dark .board .feedback .time,
+.color_scheme_dark .board .feedback .xe_content,
+.color_scheme_dark .board .feedback .toggleFile,
+.color_scheme_dark .board .feedback .files a,
+.color_scheme_dark .board .feedback .action a,
+.color_scheme_dark .board .feedback .action .vote,
+.color_scheme_dark .board #comment .fbHeader .wComment,
+.color_scheme_dark .board .feedback .fbHeader .trackbackURL,
+.color_scheme_dark .board .feedback .fbHeader .trackbackURL a,
+.color_scheme_dark .board .write_author .iLabel,
+.color_scheme_dark .board .context_data,
+.color_scheme_dark .board .context_data .xe_content,
+.color_scheme_dark .board .pagination strong,
+.color_scheme_dark .board .pagination .direction {
+	color: var(--bdd-sub);
+}
+:root[data-theme="dark"] .board .feedback .fbHeader h2 em,
+:root[data-theme="dark"] .board .cTab li.on ul li.on_ a,
+.color_scheme_dark .board .feedback .fbHeader h2 em,
+.color_scheme_dark .board .cTab li.on ul li.on_ a {
+	color: var(--bdd-accent);
+}
+:root[data-theme="dark"] .board .iText,
+:root[data-theme="dark"] .board textarea,
+:root[data-theme="dark"] .board select,
+:root[data-theme="dark"] .board .write_header .iText,
+:root[data-theme="dark"] .board .exForm .date,
+:root[data-theme="dark"] .board .read_footer .files a .fileSize,
+:root[data-theme="dark"] .board .feedback .files a .fileSize,
+.color_scheme_dark .board .iText,
+.color_scheme_dark .board textarea,
+.color_scheme_dark .board select,
+.color_scheme_dark .board .write_header .iText,
+.color_scheme_dark .board .exForm .date,
+.color_scheme_dark .board .read_footer .files a .fileSize,
+.color_scheme_dark .board .feedback .files a .fileSize {
+	background-color: var(--bdd-bg2);
+	border-color: var(--bdd-line);
+	color: var(--bdd-ink);
+}
+:root[data-theme="dark"] .board .board_list th,
+:root[data-theme="dark"] .board .board_list td,
+:root[data-theme="dark"] .board .exForm th,
+:root[data-theme="dark"] .board .exForm td,
+:root[data-theme="dark"] .board .exOut th,
+:root[data-theme="dark"] .board .exOut td,
+:root[data-theme="dark"] .board .feedback .fbItem,
+.color_scheme_dark .board .board_list th,
+.color_scheme_dark .board .board_list td,
+.color_scheme_dark .board .exForm th,
+.color_scheme_dark .board .exForm td,
+.color_scheme_dark .board .exOut th,
+.color_scheme_dark .board .exOut td,
+.color_scheme_dark .board .feedback .fbItem {
+	border-color: var(--bdd-line);
+}
+:root[data-theme="dark"] .board .pagination strong,
+:root[data-theme="dark"] .board .pagination a:hover,
+:root[data-theme="dark"] .board .pagination a:focus,
+:root[data-theme="dark"] .board .pagination .direction:hover,
+:root[data-theme="dark"] .board .pagination .direction:focus,
+.color_scheme_dark .board .pagination strong,
+.color_scheme_dark .board .pagination a:hover,
+.color_scheme_dark .board .pagination a:focus,
+.color_scheme_dark .board .pagination .direction:hover,
+.color_scheme_dark .board .pagination .direction:focus {
+	background-color: var(--bdd-bg2);
+	color: var(--bdd-ink);
+}
+:root[data-theme="dark"] .board .btn,
+.color_scheme_dark .board .btn {
+	background: var(--bdd-bg2);
+	border-color: var(--bdd-line);
+	color: var(--bdd-ink);
+	box-shadow: none;
+}
+:root[data-theme="dark"] .board .btn:hover,
+:root[data-theme="dark"] .board .btn:active,
+:root[data-theme="dark"] .board .btn[disabled],
+.color_scheme_dark .board .btn:hover,
+.color_scheme_dark .board .btn:active,
+.color_scheme_dark .board .btn[disabled] {
+	background: var(--bdd-line);
+	color: #fff;
+}
+:root[data-theme="dark"] .board .pagination a,
+.color_scheme_dark .board .pagination a {
+	background-color: transparent;
+	border-color: var(--bdd-line);
+	color: var(--bdd-sub);
+}
+:root[data-theme="dark"] .board .board_list thead,
+.color_scheme_dark .board .board_list thead {
+	background: var(--bdd-bg2);
+}
+:root[data-theme="dark"] .board .board_list th,
+.color_scheme_dark .board .board_list th {
+	color: var(--bdd-sub);
+}
+:root[data-theme="dark"] .board .board_list th span,
+.color_scheme_dark .board .board_list th span {
+	border-color: var(--bdd-line);
+}

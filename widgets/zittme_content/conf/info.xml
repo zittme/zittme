@@ -9,8 +9,8 @@
 	<description xml:lang="en">
 		One widget renders one responsive row of 1-4 content slots (list/webzine/thumbnail/magazine/tab). Stack rows to build a front page.
 	</description>
-	<version>0.3.6</version>
-	<date>2026-11-03</date>
+	<version>0.3.7</version>
+	<date>2026-11-18</date>
 	<author email_address="contact@zzan.me" link="https://zzan.me/">
 		<name xml:lang="ko">ZZAN Studio</name>
 		<name xml:lang="en">ZZAN Studio</name>

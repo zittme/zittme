@@ -302,6 +302,36 @@ class Context
 			}
 		}
 
+		// Send first-time visitors on an unprefixed URL to their browser language.
+		if (PHP_SAPI !== 'cli' && Zittme\Framework\Router::getLangPrefixLevel() >= 2 && config('locale.auto_select_lang') && count($enabled_langs) > 1 &&
+			empty($_COOKIE['lang_type']) && !empty($_SERVER['HTTP_ACCEPT_LANGUAGE']) && !self::$_current_request->getRouteOption('lang_prefix') &&
+			empty($site_module_info->settings->force_language) && (string)self::get('l') === '' && !self::_isAdminRequest() &&
+			in_array($_SERVER['REQUEST_METHOD'] ?? 'GET', array('GET', 'HEAD'), true) && !Zittme\Framework\UA::isRobot())
+		{
+			$ua_locale = Zittme\Framework\UA::getLocale();
+			if (substr($ua_locale, 0, 2) !== 'zh')
+			{
+				$ua_locale = substr($ua_locale, 0, 2);
+			}
+			$path = Zittme\Framework\Router::cleanLangRedirectPath(self::$_current_request->url);
+			if (isset($enabled_langs[$ua_locale]) && ($target_prefix = Zittme\Framework\Router::getLangPrefix($ua_locale)) !== '' && $path !== null)
+			{
+				$query = array();
+				parse_str(ltrim(strstr(RX_REQUEST_URL, '?') ?: '', '?'), $query);
+				if ($path === '' && $query && ($short_path = Zittme\Framework\Router::getURL($query, Zittme\Framework\Router::getRewriteLevel())) !== '' && strncmp($short_path, 'index.php', 9) !== 0)
+				{
+					$path = $short_path;
+					$query = array();
+				}
+				$target = RX_BASEURL . $target_prefix . ($path === '' ? '' : ('/' . $path)) . ($query ? ('?' . http_build_query($query)) : '');
+				if (($path === '' || strncmp($path, 'index.php', 9) !== 0) && Zittme\Framework\URL::isInternalURL($target))
+				{
+					self::redirect($target, 302);
+					exit;
+				}
+			}
+		}
+
 		$lang_prefix = self::$_current_request->getRouteOption('lang_prefix');
 		if ($lang_prefix && isset($enabled_langs[$lang_prefix]))
 		{

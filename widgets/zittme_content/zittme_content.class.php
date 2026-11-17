@@ -270,7 +270,7 @@ class zittme_content extends WidgetHandler
 				? self::fetchComments([$module_srl], $count)
 				: self::fetchDocuments([$module_srl], $count, false);
 			$on = $i === 0 ? ' is-on' : '';
-			$tabs .= '<button type="button" class="zc-tab' . $on . '" data-zct="' . $uid . '-' . $i . '">' . escape((string)$info->browser_title, false) . '</button>';
+			$tabs .= '<button type="button" class="zc-tab' . $on . '" data-zct="' . $uid . '-' . $i . '">' . escape(Context::replaceUserLang((string)$info->browser_title), false) . '</button>';
 			$panes .= '<div class="zc-pane' . $on . '" id="' . $uid . '-' . $i . '">' . self::renderItems('list', $items) . '</div>';
 			// 더보기는 판 아래가 아니라 탭 줄 오른쪽에 붙는다. 활성 탭 것만 보인다
 			$mores .= '<a class="zc-more zc-tab-more' . $on . '" data-zctm="' . $uid . '-' . $i . '" href="' . escape(getNotEncodedUrl('', 'mid', $info->mid)) . '">' . escape(self::lang('zc_more')) . '</a>';
@@ -282,7 +282,7 @@ class zittme_content extends WidgetHandler
 
 	protected static function blockShell(string $title, string $more_url, string $body, string $style): string
 	{
-		$head = '<div class="zc-head"><h3>' . escape($title, false) . '</h3>';
+		$head = '<div class="zc-head"><h3>' . escape(Context::replaceUserLang($title), false) . '</h3>';
 		if ($more_url !== '')
 		{
 			$head .= '<a class="zc-more" href="' . escape($more_url) . '">' . escape(self::lang('zc_more'))
@@ -716,7 +716,7 @@ class zittme_content extends WidgetHandler
 			. '@media (max-width: 640px){.zc-cols-1 .zc-thumbs{grid-template-columns:repeat(2,1fr);}.zc-cols-1 .zc-wz-thumb{flex-basis:92px;height:66px;}.zc-cols-1 .zc-mg.is-lead{min-height:170px;}}'
 			. '@media (max-width: 380px){.zc-cols-1 .zc-webzine a{flex-direction:column;}.zc-cols-1 .zc-wz-thumb{width:100%;flex-basis:auto;height:140px;}.zc-cols-1 .zc-thumbs,.zc-cols-1 .zc-magazine{grid-template-columns:1fr;}}'
 			. '@media (max-width: 960px){.zc-row:not(.zc-cols-1){grid-template-columns:1fr 1fr !important;}}'
-			. '@media (max-width: 640px){.zc-row{grid-template-columns:1fr !important;}}'
+			. '@media (max-width: 640px){.zc-row,.zc-row:not(.zc-cols-1){grid-template-columns:1fr !important;}}'
 			. '@media (max-width: 640px){.zc-m1 .zc-thumbs,.zc-m1 .zc-magazine{grid-template-columns:1fr !important;}.zc-m2 .zc-thumbs,.zc-m2 .zc-magazine{grid-template-columns:repeat(2,1fr) !important;}}'
 			// 밝기는 레이아웃(data-theme)과 코어(color_scheme)가 정한다. 기기 설정은 코어가 읽어 옮겨 준다
 			. self::darkRules(':root[data-theme="dark"] .zc,body.color_scheme_dark .zc')

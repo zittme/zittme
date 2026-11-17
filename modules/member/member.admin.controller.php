@@ -1298,6 +1298,8 @@ class MemberAdminController extends Member
 		$group_srl = Context::get('group_srls');
 		if(!is_array($group_srl)) $group_srls = explode('|@|', $group_srl);
 		else $group_srls = $group_srl;
+		$group_srls = array_values(array_unique(array_map('intval', $group_srls)));
+		$member_srls = array_values(array_unique(array_map('intval', $member_srls)));
 
 		$oDB = DB::getInstance();
 		$oDB->begin();

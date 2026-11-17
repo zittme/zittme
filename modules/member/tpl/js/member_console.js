@@ -620,10 +620,9 @@
 		return '<dt>' + (raw ? label : esc(label)) + '</dt><dd>' + value + '</dd>';
 	}
 	function pInfo(m) {
-		var gs = GROUPS.filter(function (g) { return !g.admin || m.groups.indexOf(g.id) >= 0; });
 		var html = '<div class="sec' + (S.flash === 'groups' ? ' flash' : '') + '"><h3>' + term('group', T('sec_groups')) + '<span class="h-r hint" style="margin:0">' + esc(T('groups_hint')) + '</span></h3><div class="grpchecks">' +
-			gs.map(function (g) {
-				return '<button type="button" class="checkline" data-act="mgroup" data-v="' + g.id + '"' + (g.admin ? ' disabled' : '') + ' aria-pressed="' + (m.groups.indexOf(g.id) >= 0) + '">' + cbox(m.groups.indexOf(g.id) >= 0) + '<span>' + esc(g.title) + (g.def ? ' ' + '<span class="bdg def">' + term('def_group', T('badge_def')) + '</span>' : '') + '</span></button>';
+			GROUPS.map(function (g) {
+				return '<button type="button" class="checkline" data-act="mgroup" data-v="' + g.id + '" aria-pressed="' + (m.groups.indexOf(g.id) >= 0) + '">' + cbox(m.groups.indexOf(g.id) >= 0) + '<span>' + esc(g.title) + (g.def ? ' ' + '<span class="bdg def">' + term('def_group', T('badge_def')) + '</span>' : '') + '</span></button>';
 			}).join('') + '</div></div>';
 		if (m.point) {
 			html += '<div class="sec"><h3>' + term('point', T('sec_point')) + '<button type="button" class="h-r linkbtn" data-act="tab" data-v="point">' + esc(T('pt_history_link')) + ' ' + ic('chevr', 14) + '</button></h3><div class="bigpt"><b>' + fmt(m.point.value) + '</b><span>' + T('pt_unit_level', term('level', T('level')), m.point.level) + '</span></div></div>';
@@ -967,14 +966,14 @@
 	function toggleGroup(gid) {
 		var m = S.detail;
 		var g = GMAP[gid];
-		if (!m || !g || g.admin) return;
+		if (!m || !g) return;
 		var had = m.groups.indexOf(gid) >= 0;
 		if (had && m.groups.length === 1) { toast(T('toast_need_group'), T('toast_need_group_sub'), null); return; }
 		busy(true);
 		groupsCall([m.id], had ? 'remove' : 'add', [gid]).then(function (d) {
 			busy(false);
 			var before = fromPairs(d.before);
-			pushUndo(T('undo_group', m.nick), function () { return restoreGroups(before); });
+			pushUndo(T('undo_group', m.nick), function () { return g.admin ? groupsCall([m.id], had ? 'add' : 'remove', [gid]) : restoreGroups(before); });
 			S.flash = 'groups';
 			toast(T(had ? 'toast_group_out' : 'toast_group_in', m.nick, g.title), had ? '' : T('toast_group_in_sub', g.title), T('undo'));
 			refreshAll();

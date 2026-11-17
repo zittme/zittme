@@ -3176,6 +3176,36 @@ class MemberController extends Member
 	 */
 	public static function addMemberToGroup($member_srl, $group_srl): BaseObject
 	{
+		// Serialize per member and group; concurrent requests could otherwise both pass the check below
+		$oDB = DB::getInstance();
+		$lock_name = 'member_group_' . intval($member_srl) . '_' . intval($group_srl);
+		$lock = $oDB->query('SELECT GET_LOCK(?, 5) AS l', [$lock_name]);
+		$locked = $lock && ($row = $lock->fetch()) && intval($row->l) === 1;
+		if ($lock)
+		{
+			$lock->closeCursor();
+		}
+		try
+		{
+			return self::_addMemberToGroup($member_srl, $group_srl);
+		}
+		finally
+		{
+			if ($locked)
+			{
+				// An unread result set here makes the caller's COMMIT fail with MySQL error 2014
+				$release = $oDB->query('SELECT RELEASE_LOCK(?) AS l', [$lock_name]);
+				if ($release)
+				{
+					$release->fetchAll();
+					$release->closeCursor();
+				}
+			}
+		}
+	}
+
+	protected static function _addMemberToGroup($member_srl, $group_srl): BaseObject
+	{
 		// Return if member already belongs to group
 		$args = new stdClass();
 		$args->member_srl = $member_srl;

@@ -6,10 +6,29 @@
 
     var composing = false;
 
+    // 크롬은 목록을 풀 때 <span style="background-color: initial;"> 같은 빈 서식을 남기고, 캐럿이 그 안에 있으면 다음 글자도 따라 들어간다
+    function stripNoopStyles(root) {
+        if (!root || !root.querySelectorAll) return;
+        root.querySelectorAll('[style*="initial"], [style*="inherit"]').forEach(function (el) {
+            var kept = el.getAttribute('style').split(';').filter(function (decl) {
+                return /\S/.test(decl) && !/:\s*(initial|inherit)\s*(!important)?\s*$/i.test(decl);
+            });
+            if (kept.length) el.setAttribute('style', kept.join(';'));
+            else el.removeAttribute('style');
+        });
+        root.querySelectorAll('span').forEach(function (sp) {
+            if (sp.attributes.length || !sp.parentNode) return;
+            while (sp.firstChild) sp.parentNode.insertBefore(sp.firstChild, sp);
+            sp.parentNode.removeChild(sp);
+        });
+    }
+    window.edzStripNoopStyles = stripNoopStyles;
+
     // 저장/동기화용 HTML — 편집 전용 표시(edz-img-selected)를 제거한 본문을 반환
     window.edzCleanHtml = function (el) {
         if (!el) return '';
         var clone = el.cloneNode(true);
+        stripNoopStyles(clone);
         clone.querySelectorAll('img.edz-img-selected').forEach(function (im) {
             im.classList.remove('edz-img-selected');
             if (!im.getAttribute('class')) im.removeAttribute('class');
@@ -19,6 +38,21 @@
             el.setAttribute('style', el.getAttribute('style')
                 .replace(/aspect-ratio:\s*([0-9.]+)\s*\/\s*1\s*(;|$)/, 'aspect-ratio:$1$2')
                 .replace(/aspect-ratio:\s*(\d+)\s*\/\s*(\d+)/, 'aspect-ratio:$1/$2'));
+        });
+        // 테마가 ul/ol 의 기호를 지우는 경우가 많아, 읽기 화면에서도 기호·번호가 보이도록 목록에 모양을 직접 적는다
+        clone.querySelectorAll('ul, ol').forEach(function (list) {
+            var type = list.style.listStyleType;
+            if (!type || /^(disc|circle|decimal)$/.test(type)) {
+                var nested = list.parentElement && list.parentElement.closest('ul, ol');
+                type = list.tagName === 'OL' ? 'decimal' : (nested && nested.tagName === 'UL' ? 'circle' : 'disc');
+                list.style.listStyleType = type;
+            }
+            if (!list.style.paddingLeft) list.style.paddingLeft = '1.6em';
+            Array.prototype.forEach.call(list.children, function (li) {
+                if (li.tagName !== 'LI') return;
+                li.style.listStyleType = type;
+                if (!li.style.display) li.style.display = 'list-item';
+            });
         });
         return clone.innerHTML;
     };
@@ -195,6 +229,7 @@
         try {
             document.execCommand(cmd, false, val || null);
         } catch (e) { /* 미지원 브라우저는 조용히 무시 */ }
+        if (/^(insertUnorderedList|insertOrderedList|outdent|indent)$/.test(cmd)) stripNoopStyles(getBody(seq));
     }
 
     function putCaretIn(cell) {
@@ -316,10 +351,54 @@
 
     // 색은 고정하지 않는다. 밝은 사이트와 어두운 사이트 어느 쪽에서 보아도 읽히도록 반투명 회색과 글자색 상속만 쓴다.
     function insertQuote(seq) {
-        focusBody(seq);
-        document.execCommand('formatBlock', false, 'BLOCKQUOTE');
         var body = getBody(seq);
         if (!body) return;
+        var sel = window.getSelection();
+        if (!sel.rangeCount || !body.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+            focusBody(seq);
+            sel = window.getSelection();
+            if (!sel.rangeCount) return;
+        }
+        var range = sel.getRangeAt(0);
+        var topOf = function (n) {
+            while (n && n.parentNode !== body) n = n.parentNode;
+            return n;
+        };
+        var first = topOf(range.startContainer === body ? (body.childNodes[range.startOffset] || body.lastChild) : range.startContainer);
+        var last = topOf(range.endContainer === body ? (body.childNodes[Math.max(range.endOffset - 1, 0)] || body.lastChild) : range.endContainer);
+        if (!first || !last) return;
+        if (first.compareDocumentPosition(last) & Node.DOCUMENT_POSITION_PRECEDING) { var t = first; first = last; last = t; }
+        var blocks = [];
+        for (var n = first; n; n = n.nextSibling) { blocks.push(n); if (n === last) break; }
+        var isQuote = function (x) { return x.nodeType === 1 && x.tagName === 'BLOCKQUOTE'; };
+        var meaningful = blocks.filter(function (x) { return !(x.nodeType === 3 && !x.textContent.trim()); });
+        if (meaningful.length && meaningful.every(isQuote)) {
+            meaningful.forEach(function (bq) {
+                while (bq.firstChild) bq.parentNode.insertBefore(bq.firstChild, bq);
+                bq.remove();
+            });
+        } else {
+            var wrapEl = document.createElement('blockquote');
+            first.parentNode.insertBefore(wrapEl, first);
+            blocks.forEach(function (b) {
+                if (isQuote(b)) { while (b.firstChild) wrapEl.appendChild(b.firstChild); b.remove(); }
+                else if (b.nodeType === 3 || (b.nodeType === 1 && /^(SPAN|B|STRONG|I|EM|U|S|A|CODE|BR|IMG|FONT)$/.test(b.tagName))) {
+                    var lp = wrapEl.lastChild;
+                    if (!lp || lp.nodeType !== 1 || lp.tagName !== 'P' || lp.getAttribute('data-edz-inline') !== '1') { lp = document.createElement('p'); lp.setAttribute('data-edz-inline', '1'); wrapEl.appendChild(lp); }
+                    lp.appendChild(b);
+                }
+                else wrapEl.appendChild(b);
+            });
+            wrapEl.querySelectorAll('p[data-edz-inline]').forEach(function (p) { p.removeAttribute('data-edz-inline'); });
+            wrapEl.querySelectorAll('blockquote').forEach(function (inner) {
+                while (inner.firstChild) inner.parentNode.insertBefore(inner.firstChild, inner);
+                inner.remove();
+            });
+            if (!wrapEl.nextSibling) { var tail = document.createElement('p'); tail.appendChild(document.createElement('br')); body.appendChild(tail); }
+            var r2 = document.createRange();
+            r2.selectNodeContents(wrapEl);
+            sel.removeAllRanges(); sel.addRange(r2);
+        }
         body.querySelectorAll('blockquote').forEach(function (bq) {
             if (bq.getAttribute('data-edz-quote')) return;
             bq.setAttribute('data-edz-quote', '1');
@@ -784,6 +863,7 @@
         });
         bodyEl.addEventListener('input', function () {
             if (composing) return;
+            if (bodyEl.querySelector('[style*="initial"], [style*="inherit"]')) stripNoopStyles(bodyEl);
             var stray = false;
             for (var n = bodyEl.firstChild; n; n = n.nextSibling) {
                 if ((n.nodeType === 3 && /\S/.test(n.nodeValue)) || (n.nodeType === 1 && (!BLOCK_TAGS.test(n.tagName) || isPlainDiv(n)))) { stray = true; break; }
@@ -809,6 +889,20 @@
                     document.execCommand(e.shiftKey ? 'outdent' : 'indent');
                 }
                 return;
+            }
+            if ((e.key === 'Enter' && !e.shiftKey) || e.key === 'Backspace') {
+                var ls = window.getSelection();
+                var ln = ls.rangeCount && ls.isCollapsed ? ls.anchorNode : null;
+                var lel = ln && (ln.nodeType === 1 ? ln : ln.parentElement);
+                var li = lel && lel.closest ? lel.closest('li') : null;
+                if (li && bodyEl.contains(li) && !/\S/.test(li.textContent) && !li.querySelector('img,iframe,video,table,ul,ol')) {
+                    e.preventDefault();
+                    var listCmd = li.parentNode.tagName === 'OL' ? 'insertOrderedList' : 'insertUnorderedList';
+                    var nestedLi = li.parentNode.parentNode && li.parentNode.parentNode.closest && li.parentNode.parentNode.closest('li');
+                    document.execCommand(nestedLi ? 'outdent' : listCmd);
+                    try { bodyEl.dispatchEvent(new Event('input', { bubbles: true })); } catch (er) {}
+                    return;
+                }
             }
             if (e.key === 'Enter' && !e.shiftKey) {
                 var sel = window.getSelection();
@@ -1016,6 +1110,8 @@
             try { on = document.queryCommandState(cmd); } catch (e) {}
             wrap.querySelectorAll('.edz__tool [data-cmd="' + cmd + '"]').forEach(function (b) { b.classList.toggle('is-on', on); });
         });
+        var listBtn = wrap.querySelector('#edzListBtn');
+        if (listBtn) listBtn.classList.toggle('is-on', !!wrap.querySelector('#edzListPop [data-cmd].is-on'));
         var label = wrap.querySelector('#edzFmtLabel');
         if (label) {
             var blk = '';
@@ -1095,7 +1191,14 @@
                 e.stopPropagation();
                 var isHidden = pop.hasAttribute('hidden');
                 document.querySelectorAll('.edz__pop').forEach(function (p) { p.setAttribute('hidden', ''); });
-                if (isHidden) pop.removeAttribute('hidden');
+                if (isHidden) {
+                    pop.removeAttribute('hidden');
+                    pop.style.left = ''; pop.style.right = '';
+                    var box = (toolbar.closest('.edz') || toolbar).getBoundingClientRect();
+                    if (pop.getBoundingClientRect().right > Math.min(box.right, document.documentElement.clientWidth)) {
+                        pop.style.left = 'auto'; pop.style.right = '0';
+                    }
+                }
             });
             pop.querySelectorAll('button[data-cmd]').forEach(function (mi) {
                 mi.addEventListener('click', function () {

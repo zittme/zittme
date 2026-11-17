@@ -32,6 +32,9 @@ class counter_status extends WidgetHandler
 		// Set a path of the template skin (values of skin, colorset settings)
 		$tpl_path = sprintf('%sskins/%s', $this->widget_path, $args->skin);
 		Context::set('colorset', $args->colorset);
+		$number_size = (int)($args->number_size ?? 0);
+		Context::set('counter_number_size', $number_size >= 10 && $number_size <= 60 ? $number_size : 0);
+		Context::set('counter_inline', ($args->display_style ?? '') === 'inline');
 		// Specify a template file
 		$tpl_file = 'counter_status';
 		// Compile a template

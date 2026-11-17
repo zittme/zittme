@@ -411,8 +411,8 @@ class AdminConsole extends \Member
 	/**
 	 * Put members into a group, take them out, or leave only the given groups.
 	 *
-	 * The management group is never added or removed here, and a removal that
-	 * would leave a member without any group is skipped.
+	 * The management group can only be added to or removed from one member at a
+	 * time, and a removal that would leave a member without any group is skipped.
 	 */
 	public function procMemberAdminUpdateMemberGroups()
 	{
@@ -433,9 +433,10 @@ class AdminConsole extends \Member
 				$admin_groups[] = intval($group->group_srl);
 			}
 		}
+		$single = count($member_srls) === 1 && $mode !== 'set';
 		foreach ($group_srls as $group_srl)
 		{
-			if (!isset($all_groups[$group_srl]) || in_array($group_srl, $admin_groups, true))
+			if (!isset($all_groups[$group_srl]) || (!$single && in_array($group_srl, $admin_groups, true)))
 			{
 				throw new InvalidRequest;
 			}

@@ -63,8 +63,10 @@ a img {
 			padding-right: 20px;
 		}
 	}
+}
 
-	/* lists */
+/* Doubled classes keep content lists visible over theme resets such as .wrap ul { list-style: none; padding: 0; } */
+.xe_content.xe_content, .Zittme_content.Zittme_content, .rhymix_content.rhymix_content {
 	ul {
 		list-style-type: disc;
 	}

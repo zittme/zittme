@@ -487,7 +487,14 @@ class HTMLDisplayHandler
 			// ruleset forms reload the iframe only on success: second load = saved
 			. 'f.addEventListener("load",function(){if(!f.src||f.src==="about:blank"||m.hidden)return;loads++;if(loads>1){close();setTimeout(function(){window.location.reload();},120);}});'
 			. 'document.querySelectorAll("#zittme-adminbar [data-zab-open]").forEach(function(b){b.addEventListener("click",function(){open(b.getAttribute("data-zab-open"));});});'
-			. 'm.querySelector(".zab-back").addEventListener("click",close);m.querySelector(".zab-close").addEventListener("click",close);})();</script>';
+			. 'm.querySelector(".zab-back").addEventListener("click",close);m.querySelector(".zab-close").addEventListener("click",close);})();'
+			// Themes with a fixed bottom tab bar or buy bar: sit above it instead of covering its labels
+			. '(function(){var b=document.getElementById("zittme-adminbar");if(!b)return;'
+			. 'function lift(){b.style.bottom="";var h=window.innerHeight,top=h,xs=[window.innerWidth/2,window.innerWidth-6];'
+			. 'xs.forEach(function(x){var el=document.elementFromPoint(x,h-2);while(el&&el!==document.body&&el!==document.documentElement){if(b.contains(el))break;var cs=getComputedStyle(el);if((cs.position==="fixed"||cs.position==="sticky")&&cs.visibility!=="hidden"){var r=el.getBoundingClientRect();if(r.bottom>=h-1&&r.top>h/2&&r.top<top)top=r.top;break;}el=el.parentElement;}});'
+			. 'if(top<h){b.style.bottom=(h-top+8)+"px";}}'
+			. 'var t;function later(){clearTimeout(t);t=setTimeout(lift,150);}'
+			. 'if(document.readyState==="complete")lift();else window.addEventListener("load",lift);window.addEventListener("resize",later);})();</script>';
 
 		$output = preg_replace('@</body>@i', $bar . '</body>', $output, 1);
 	}
