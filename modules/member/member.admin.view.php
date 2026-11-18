@@ -700,6 +700,33 @@ class MemberAdminView extends Member
 		$this->_openConsole('form', ['join_form' => intval(Context::get('member_join_form_srl'))]);
 	}
 
+	public function dispMemberAdminAuthLog()
+	{
+		$args = new stdClass();
+		$args->sort_order = 'desc';
+		$args->page = max(1, intval(Context::get('page')));
+		$args->action_type = Context::get('action_type');
+		$search_target = Context::get('search_target');
+		$search_keyword = Context::get('search_keyword');
+		if (in_array($search_target, ['ipaddress', 'user_id', 'email_address', 'phone_number', 'user_name', 'nick_name']) && $search_keyword)
+		{
+			$args->$search_target = $search_keyword;
+			if ($search_target === 'phone_number')
+			{
+				$args->$search_target = preg_replace('/[^0-9]/', '', $search_keyword);
+			}
+		}
+		$output = executeQueryArray('member.getAuthLogList', $args);
+
+		Context::set('auth_log', $output->data);
+		Context::set('page_navigation', $output->page_navigation);
+		Context::set('total_count', $output->total_count);
+		Context::set('total_page', $output->total_page);
+		Context::set('page', $output->page);
+
+		$this->setTemplateFile('auth_log');
+	}
+
 	/**
 	 * Nickname change log, in the advanced settings.
 	 *

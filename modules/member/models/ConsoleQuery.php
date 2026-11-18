@@ -998,7 +998,17 @@ class ConsoleQuery
 				'last' => strval($row->last_visit ?: $row->regdate),
 			];
 		}
-		if (self::tableExists('member_count_history'))
+		if (self::tableExists('member_auth_log'))
+		{
+			$types = lang('member.auth_log_action_types');
+			$rows = $db->query("SELECT ipaddress, action_type, regdate FROM member_auth_log WHERE member_srl = ? AND (action_type = 'login_failed' OR action_type LIKE 'login_denied%' OR action_type = 'login_rate_limited') ORDER BY id DESC LIMIT 5", [$member_srl])->fetchAll();
+			foreach ($rows as $row)
+			{
+				$type = strval($row->action_type);
+				$result['failures'][] = ['ip' => strval($row->ipaddress), 'message' => is_array($types) && isset($types[$type]) ? strval($types[$type]) : $type, 'time' => date('YmdHis', strtotime(strval($row->regdate)))];
+			}
+		}
+		if (!$result['failures'] && self::tableExists('member_count_history'))
 		{
 			$rows = $db->query('SELECT content FROM member_count_history WHERE member_srl = ?', [$member_srl])->fetchAll();
 			$content = $rows ? @unserialize(strval($rows[0]->content)) : null;

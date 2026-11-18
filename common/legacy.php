@@ -910,7 +910,8 @@ function getNumberingPath($no, int $size = 3): string
  */
 function removeHackTag($content): string
 {
-	return Zittme\Framework\Filters\HTMLFilter::clean((string)$content);
+	$allow_editor_components = array_keys(get_object_vars(EditorModel::getComponentList()));
+	return Zittme\Framework\Filters\HTMLFilter::clean((string)$content, false, $allow_editor_components);
 }
 
 /**

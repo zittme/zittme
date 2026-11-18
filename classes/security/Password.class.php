@@ -78,18 +78,18 @@ class Password
 
 	public static function pbkdf2($password, $salt, $algorithm = 'sha256', $iterations = 8192, $length = 24)
 	{
-		$hash = Zittme\Framework\Security::pbkdf2($password, $salt, $algorithm, $iterations, $length);
+		$hash = Zittme\Framework\Password::pbkdf2($password, $salt, $algorithm, $iterations, $length);
 		$hash = explode(':', $hash);
 		return base64_decode($hash[3]);
 	}
 
 	public static function bcrypt($password, $salt = null)
 	{
-		return Zittme\Framework\Security::bcrypt($password, $salt);
+		return Zittme\Framework\Password::bcrypt($password, $salt);
 	}
 
 	public static function strcmpConstantTime($a, $b)
 	{
-		return Zittme\Framework\Security::compareStrings($a, $b);
+		return hash_equals($a, $b);
 	}
 }

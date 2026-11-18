@@ -115,11 +115,15 @@ class BoardAdminController extends Board {
 		{
 			$args->header_text = Zittme\Modules\Admin\Models\Utility::cleanHeaderAndFooterScripts($args->header_text ?? '');
 			$args->footer_text = Zittme\Modules\Admin\Models\Utility::cleanHeaderAndFooterScripts($args->footer_text ?? '');
+			$args->mobile_header_text = Zittme\Modules\Admin\Models\Utility::cleanHeaderAndFooterScripts($args->mobile_header_text ?? '');
+			$args->mobile_footer_text = Zittme\Modules\Admin\Models\Utility::cleanHeaderAndFooterScripts($args->mobile_footer_text ?? '');
 		}
 		else
 		{
 			$args->header_text = $module_info->header_text ?? '';
 			$args->footer_text = $module_info->footer_text ?? '';
+			$args->mobile_header_text = $module_info->mobile_header_text ?? '';
+			$args->mobile_footer_text = $module_info->mobile_footer_text ?? '';
 		}
 
 		$args->admin_mail = implode(', ', array_map('trim', explode(',', $args->admin_mail ?? '')));

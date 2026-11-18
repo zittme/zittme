@@ -1113,6 +1113,9 @@ window.addEventListener('unhandledrejection', function(event) {
 		if (Zittme.showAjaxErrors.indexOf('ALL') >= 0 || Zittme.showAjaxErrors.indexOf(error_xhr.status) >= 0) {
 			alert(error_message.trim() + (error_details ? ("\n\n" + error_details) : ''));
 		}
+		if (event.reason && event.reason.cause && event.reason.cause.redirect_url) {
+			redirect(event.reason.cause.redirect_url);
+		}
 	}
 });
 

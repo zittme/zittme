@@ -17,15 +17,17 @@ class PageAdminController extends Page
 	/**
 	 * @brief Add a Page
 	 */
-	function procPageAdminInsert()
+	function procPageAdminInsert($mode = 'insert')
 	{
-		// Set board module
+		// Get basic request variables
 		$args = Context::getRequestVars();
 		$args->module = 'page';
 		$args->mid = $args->page_name;	//because if mid is empty in context, set start page mid
 		$args->path = isset($args->path) ? strval($args->path) : '';
 		$args->mpath = isset($args->mpath) ? strval($args->mpath) : '';
-		if ($args->path !== '')
+
+		// Check paths for outside page
+		if ($args->page_type === 'OUTSIDE' && $args->path !== '')
 		{
 			$output = self::_isAllowedExternalPath($args->path, 'P');
 			if (!$output->toBool())
@@ -36,7 +38,7 @@ class PageAdminController extends Page
 				return;
 			}
 		}
-		if ($args->mpath !== '')
+		if ($args->page_type === 'OUTSIDE' && $args->mpath !== '')
 		{
 			$output = self::_isAllowedExternalPath($args->mpath, 'M');
 			if (!$output->toBool())
@@ -61,23 +63,18 @@ class PageAdminController extends Page
 		$args->meta_keywords = $args->meta_keywords ? implode(', ', array_map('trim', explode(',', $args->meta_keywords))) : '';
 		$args->meta_description = trim(utf8_normalize_spaces($args->meta_description));
 
-		// Check if an original module exists by using module_srl
-		if($args->module_srl)
+		// Update existing module
+		if ($mode === 'update')
 		{
-			$columnList = array('module_srl');
-			$module_info = ModuleModel::getModuleInfoByModuleSrl($args->module_srl, $columnList);
-			if($module_info->module_srl != $args->module_srl)
+			$module_info = ModuleModel::getModuleInfoByModuleSrl($args->module_srl);
+			foreach ($args as $key => $val)
 			{
-				unset($args->module_srl);
-			}
-			else
-			{
-				foreach($args as $key=>$val)
+				if (!in_array($key, ['module', 'module_srl', 'page_type']))
 				{
 					$module_info->{$key} = $val;
 				}
-				$args = $module_info;
 			}
+			$args = $module_info;
 		}
 
 		switch ($args->page_type)
@@ -106,7 +103,7 @@ class PageAdminController extends Page
 		}
 		// Insert/update depending on module_srl
 		$oModuleController = ModuleController::getInstance();
-		if(!$args->module_srl)
+		if($mode === 'insert')
 		{
 			$output = $oModuleController->insertModule($args);
 			$msg_code = 'success_registed';
@@ -145,7 +142,13 @@ class PageAdminController extends Page
 	 */
 	function procPageAdminUpdate()
 	{
-		$this->procPageAdminInsert();
+		$module_info = ModuleModel::getModuleInfoByModuleSrl(Context::get('module_srl'));
+		if (!$module_info || $module_info->module !== 'page')
+		{
+			throw new Zittme\Framework\Exceptions\InvalidRequest;
+		}
+
+		return $this->procPageAdminInsert('update');
 	}
 
 	function putDocumentsInPageToArray($target, &$array)
