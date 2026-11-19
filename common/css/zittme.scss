@@ -65,15 +65,15 @@ a img {
 	}
 }
 
-/* Doubled classes keep content lists visible over theme resets such as .wrap ul { list-style: none; padding: 0; } */
-.xe_content.xe_content, .Zittme_content.Zittme_content, .rhymix_content.rhymix_content {
-	ul {
+/* Doubled classes keep content lists visible over theme resets such as .wrap ul { list-style: none; padding: 0; }. Layouts may put rhymix_content on the whole module area, so only content bodies and the editorZ body are targeted, and lists with their own class (menus, grids, tabs) keep their component styles. */
+.xe_content.xe_content, .Zittme_content.Zittme_content, .edz__body.rhymix_content {
+	ul:not([class]) {
 		list-style-type: disc;
 	}
-	ol {
+	ol:not([class]) {
 		list-style-type: decimal;
 	}
-	ul, ol {
+	ul:not([class]), ol:not([class]) {
 		display: block;
 		margin-left: 1em;
 		margin-right: 0;
@@ -86,7 +86,7 @@ a img {
 			margin-right: 1em;
 		}
 	}
-	li {
+	ul:not([class]) > li, ol:not([class]) > li {
 		display: list-item;
 	}
 }

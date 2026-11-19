@@ -228,7 +228,7 @@ class AdminApi extends \Point
 			{
 				if (isset($part[$key]) && $part[$key] !== '' && $part[$key] !== null)
 				{
-					$overrides[$key][intval($module_srl)] = intval($part[$key]);
+					$overrides[$key][] = ['board' => intval($module_srl), 'value' => intval($part[$key])];
 				}
 			}
 		}
@@ -737,6 +737,7 @@ class AdminApi extends \Point
 		$actor = self::actor();
 		$done = [];
 		$done_list = [];
+		$balance_list = [];
 		$failed = [];
 		$existing = [];
 		foreach (DB::getInstance()->query('SELECT member_srl FROM member WHERE member_srl IN (' . implode(',', array_fill(0, count($srls), '?')) . ')', $srls)->fetchAll() as $row)
@@ -755,6 +756,7 @@ class AdminApi extends \Point
 			{
 				$done[$srl] = intval($output->get('balance'));
 				$done_list[] = [$srl, intval($output->get('balance'))];
+				$balance_list[] = ['member' => $srl, 'balance' => intval($output->get('balance'))];
 			}
 			else
 			{
@@ -767,7 +769,7 @@ class AdminApi extends \Point
 			'done' => $done_list,
 			'failed' => $failed,
 			'count' => count($done),
-			'balances' => (object)$done,
+			'balances' => $balance_list,
 			'amount' => $amount,
 			'ledger' => $ready,
 		]);
@@ -805,7 +807,7 @@ class AdminApi extends \Point
 			if ($output->toBool())
 			{
 				$srl = intval($output->get('member_srl'));
-				$balances[$srl] = intval($output->get('balance'));
+				$balances[] = ['member' => $srl, 'balance' => intval($output->get('balance'))];
 				$done[] = [$srl, intval($output->get('balance'))];
 			}
 			else
@@ -813,7 +815,7 @@ class AdminApi extends \Point
 				$failed[] = [intval($row->ledger_srl), lang($output->getMessage())];
 			}
 		}
-		$this->addAll(['batch_id' => $batch, 'count' => count($done), 'done' => $done, 'failed' => $failed, 'balances' => (object)$balances]);
+		$this->addAll(['batch_id' => $batch, 'count' => count($done), 'done' => $done, 'failed' => $failed, 'balances' => $balances]);
 	}
 
 	/**
@@ -846,10 +848,27 @@ class AdminApi extends \Point
 				$counts = Stats::levelCounts($buckets, $config->level_step ?? [], $max);
 			}
 		}
+		$linkable = [];
+		foreach (\MemberModel::getGroups() ?: [] as $group)
+		{
+			if ($group->is_admin !== 'Y' && $group->is_default !== 'Y')
+			{
+				$linkable[intval($group->group_srl)] = true;
+			}
+		}
 		$links = [];
 		foreach (($config->point_group ?? []) as $group_srl => $level)
 		{
-			$links[intval($group_srl)] = intval($level);
+			if (isset($linkable[intval($group_srl)]) && intval($level) >= 1)
+			{
+				$links[intval($group_srl)] = intval($level);
+			}
+		}
+		// JSON responses turn maps with only numeric keys into lists, which would drop the group numbers.
+		$link_list = [];
+		foreach ($links as $group_srl => $level)
+		{
+			$link_list[] = ['group' => $group_srl, 'level' => $level];
 		}
 		$this->addAll([
 			'max_level' => $max,
@@ -857,7 +876,7 @@ class AdminApi extends \Point
 			'icon' => (string)($config->level_icon ?? 'default'),
 			'icon_type' => (string)($config->level_icon_type ?? 'gif'),
 			'sets' => $sets,
-			'links' => (object)$links,
+			'links' => $link_list,
 			'group_reset' => ($config->group_reset ?? 'Y') !== 'N',
 			'group_ratchet' => ($config->group_ratchet ?? 'N') === 'Y',
 			'expression' => (string)($config->expression ?? ''),
@@ -955,15 +974,10 @@ class AdminApi extends \Point
 				{
 					throw new Exception('point.msg_max_level_range');
 				}
-				$steps = [];
-				$last = 0;
-				for ($i = 1; $i <= $max; $i++)
-				{
-					$last = isset($config->level_step[$i]) ? intval($config->level_step[$i]) : ($last ?: 0);
-					$steps[$i] = $last;
-				}
+				[$steps, $spare] = Admin::resizeSteps($config, $max);
 				$values['max_level'] = $max;
 				$values['level_step'] = $steps;
+				$values['level_step_spare'] = $spare;
 				break;
 			case 'level_icon':
 				$set = basename($raw);

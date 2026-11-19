@@ -382,7 +382,8 @@ class Admin extends \Point
 		}
 		else
 		{
-			$level_step = array_map('intval', array_values((array)($config->level_step ?? []))) ?: [0];
+			[$resized, $config->level_step_spare] = self::resizeSteps($config, $config->max_level);
+			$level_step = array_values($resized);
 		}
 		$config->level_step = [];
 		for ($i = 1; $i <= $config->max_level; $i++)
@@ -878,6 +879,61 @@ class Admin extends \Point
 			return get_object_vars($part);
 		}
 		return is_array($part) ? $part : [];
+	}
+
+	/**
+	 * Thresholds for 1..$max. Levels cut off by a smaller maximum are kept in
+	 * level_step_spare and come back when the maximum grows again; levels that
+	 * never existed continue the last step.
+	 *
+	 * @return array [steps, spare]
+	 */
+	public static function resizeSteps(object $config, int $max): array
+	{
+		$known = [];
+		foreach ((array)($config->level_step ?? []) as $level => $value)
+		{
+			$known[intval($level)] = intval($value);
+		}
+		$spare = [];
+		foreach ((array)($config->level_step_spare ?? []) as $level => $value)
+		{
+			$spare[intval($level)] = intval($value);
+		}
+		foreach ($known as $level => $value)
+		{
+			if ($level > $max)
+			{
+				$spare[$level] = $value;
+			}
+		}
+		$steps = [];
+		for ($i = 1; $i <= $max; $i++)
+		{
+			if (isset($known[$i]))
+			{
+				$steps[$i] = $known[$i];
+			}
+			elseif (isset($spare[$i]))
+			{
+				$steps[$i] = max($spare[$i], $steps[$i - 1] ?? 0);
+			}
+			else
+			{
+				$prev = $steps[$i - 1] ?? 0;
+				$gap = $i > 2 ? $prev - $steps[$i - 2] : $prev;
+				$steps[$i] = $prev + max(1, $gap);
+			}
+		}
+		foreach (array_keys($spare) as $level)
+		{
+			if ($level <= $max)
+			{
+				unset($spare[$level]);
+			}
+		}
+		ksort($spare);
+		return [$steps, $spare];
 	}
 
 	/**

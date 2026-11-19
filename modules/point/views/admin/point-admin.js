@@ -1120,6 +1120,23 @@
 			});
 		} else if (what === 'rules') {
 			p = api('getPointAdminRules').then(function (d) {
+				var overrides = {};
+				Object.keys(d.overrides || {}).forEach(function (k) {
+					var map = overrides[k] = {};
+					var list = d.overrides[k];
+					if (Array.isArray(list)) {
+						list.forEach(function (x) {
+							if (x && typeof x === 'object' && x.board) {
+								map[+x.board] = +x.value;
+							}
+						});
+					} else {
+						Object.keys(list || {}).forEach(function (b) {
+							map[+b] = +list[b];
+						});
+					}
+				});
+				d.overrides = overrides;
 				S.rules = d;
 			});
 		} else if (what === 'members') {
@@ -1163,6 +1180,19 @@
 			});
 		} else if (what === 'level') {
 			p = api('getPointAdminLevels').then(function (d) {
+				var links = {};
+				if (Array.isArray(d.links)) {
+					d.links.forEach(function (x) {
+						if (x && typeof x === 'object' && x.group) {
+							links[+x.group] = +x.level;
+						}
+					});
+				} else {
+					Object.keys(d.links || {}).forEach(function (g) {
+						links[+g] = +d.links[g];
+					});
+				}
+				d.links = links;
 				S.levels = d;
 			});
 		} else if (what === 'uses') {
@@ -1439,7 +1469,7 @@
 					});
 					toast(title, sub, item, T('cmd_revert'));
 				} else {
-					var done = Object.keys(d.balances || {});
+					var done = Array.isArray(d.balances) ? d.balances.map(function (x) { return x.member; }) : Object.keys(d.balances || {});
 					item = pushUndo(T('undo_bulk', { n: d.count }), function () {
 						return api('procPointAdminBulkAdjust', { member_srls: done.join(','), amount: -amount, memo: d.ledger ? T('memo_undo', { memo: memo }) : '' }).then(refreshAfterPoints);
 					});
