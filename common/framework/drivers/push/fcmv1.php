@@ -70,7 +70,7 @@ class FCMv1 extends Base implements PushInterface
 		$output->needUpdate = [];
 
 		// Configure Google OAuth2 access token, with appropriate caching.
-		$service_account = Storage::read($this->_config['service_account'] ?? '');
+		$service_account = Storage::read(\FileHandler::getRealPath($this->_config['service_account'] ?? ''));
 		$service_account = json_decode($service_account, true);
 		if (!$service_account || empty($service_account['project_id']))
 		{

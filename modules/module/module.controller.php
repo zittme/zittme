@@ -1022,8 +1022,8 @@ class ModuleController extends Module
 
 			$args = new stdClass();
 			$args->module_srl = $module_srl;
-			$args->name = trim($key);
-			$args->value = trim($val);
+			$args->name = trim((string)$key);
+			$args->value = trim((string)$val);
 			if(!$args->name || !$args->value) continue;
 			$output = executeQuery('module.insertModuleExtraVars', $args);
 		}

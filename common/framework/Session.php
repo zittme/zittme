@@ -1026,6 +1026,7 @@ class Session
 		if ($autologin_key && $security_key)
 		{
 			$_SESSION['Zittme']['autologin_key'] = $autologin_key . $security_key;
+			self::$_autologin_key = $autologin_key . $security_key;
 			self::destroyCookiesFromConflictingDomains(array('rx_autologin'));
 			Cookie::set('rx_autologin', $autologin_key . $security_key, array(
 				'expires' => $lifetime,

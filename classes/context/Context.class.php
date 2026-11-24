@@ -1620,21 +1620,21 @@ class Context
 						self::$_instance->security_check_detail = 'ERR_UNSAFE_VAR';
 					}
 				}
-				elseif(in_array($key, ['search_target', 'search_keyword', 'is_keyword', 'xe_validator_id']) || ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET')
-				{
-					$_val = escape($_val, false);
-					if(ends_with('url', $key, false))
-					{
-						$_val = strtr($_val, array('&amp;' => '&'));
-					}
-				}
-				elseif(in_array($key, array('success_return_url', 'error_return_url')))
+				elseif(in_array($key, ['success_return_url', 'error_return_url']))
 				{
 					if (!Zittme\Framework\URL::isInternalURL($_val))
 					{
 						self::$_instance->security_check = 'DENY ALL';
 						self::$_instance->security_check_detail = 'ERR_UNSAFE_VAR';
 						$_val = null;
+					}
+				}
+				elseif(in_array($key, ['search_target', 'search_keyword', 'is_keyword', 'xe_validator_id']) || ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET')
+				{
+					$_val = escape($_val, false);
+					if(ends_with('url', $key, false))
+					{
+						$_val = strtr($_val, array('&amp;' => '&'));
 					}
 				}
 			}
@@ -1809,6 +1809,56 @@ class Context
 		}
 
 		return $js_callback_func;
+	}
+
+	/**
+	 * Add the current language prefix to an internal URL entered by hand (e.g. a shortcut menu item).
+	 *
+	 * @param string $url
+	 * @return string
+	 */
+	public static function addLangPrefix($url): string
+	{
+		$url = (string)$url;
+		if ($url === '' || Zittme\Framework\Router::getLangPrefixLevel() < 2)
+		{
+			return $url;
+		}
+		$prefix = Zittme\Framework\Router::getLangPrefix(self::getLangType());
+		if ($prefix === '' || preg_match('!^(#|//|[a-z][a-z0-9+.\-]*:)!i', $url))
+		{
+			return $url;
+		}
+		if (strncmp($url, \RX_BASEURL, strlen(\RX_BASEURL)) === 0)
+		{
+			$path = substr($url, strlen(\RX_BASEURL));
+		}
+		elseif ($url[0] === '/')
+		{
+			return $url;
+		}
+		else
+		{
+			$path = $url;
+		}
+		if (preg_match('!(^|[?&;])module=admin\b!', $path))
+		{
+			return $url;
+		}
+		$first = strtok($path, '/?#');
+		if ($first !== false && ($first === $prefix || isset(Zittme\Framework\Router::getLangPrefixes()[$first]) || $first === config('locale.default_lang')))
+		{
+			return $url;
+		}
+		if ($path === '')
+		{
+			return \RX_BASEURL . $prefix;
+		}
+		if ($path[0] === '?' || strncmp($path, 'index.php', 9) === 0)
+		{
+			return $url . (strpos($url, '?') === false ? '?' : '&amp;') . 'l=' . $prefix;
+		}
+		return \RX_BASEURL . $prefix . '/' . $path;
 	}
 
 	/**

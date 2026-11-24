@@ -55,7 +55,7 @@ class APNs extends Base implements PushInterface
 		$output->needUpdate = [];
 
 		// Set parameters
-		$local_cert = $this->_config['certificate'];
+		$local_cert = \FileHandler::getRealPath($this->_config['certificate']);
 		$passphrase = $this->_config['passphrase'];
 		$metadata = $message->getMetadata();
 

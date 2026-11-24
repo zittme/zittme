@@ -271,7 +271,7 @@ class EditorController extends Editor
 	{
 		$args = new stdClass;
 		$args->module_srl = Context::get('current_module_info')->module_srl;
-		$args->document_srl = Context::get('document_srl');
+		$args->document_srl = intval(Context::get('document_srl') ?? 0);
 		$args->content = Context::get('content');
 		$args->title = Context::get('title');
 
@@ -300,6 +300,10 @@ class EditorController extends Editor
 			return new BaseObject(-1, 'msg_invalid_request');
 		}
 		if (!isset($args->document_srl))
+		{
+			return new BaseObject(-1, 'msg_invalid_request');
+		}
+		if ($args->document_srl && !checkUserSequence($args->document_srl))
 		{
 			return new BaseObject(-1, 'msg_invalid_request');
 		}

@@ -69,7 +69,7 @@ class Notification extends Base
 		$fcmv1_service_account = false;
 		if ($fcmv1_service_account_filename = config('push.fcmv1.service_account'))
 		{
-			$fcmv1_service_account = Storage::read($fcmv1_service_account_filename);
+			$fcmv1_service_account = Storage::read(\FileHandler::getRealPath($fcmv1_service_account_filename));
 		}
 		Context::set('fcmv1_service_account', $fcmv1_service_account);
 

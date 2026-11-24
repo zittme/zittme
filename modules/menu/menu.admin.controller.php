@@ -2031,7 +2031,7 @@ class MenuAdminController extends Menu
 			}
 			else
 			{
-				$href = var_export($url, true);
+				$href = sprintf('Context::addLangPrefix(%s)', var_export($url, true));
 			}
 			$is_shortcut = strval($node->is_shortcut);
 			$open_window = strval($node->open_window);
@@ -2184,7 +2184,7 @@ class MenuAdminController extends Menu
 			}
 			else
 			{
-				$href = var_export($url, true);
+				$href = sprintf('Context::addLangPrefix(%s)', var_export($url, true));
 			}
 			$is_shortcut = $node->is_shortcut;
 			$open_window = $node->open_window;

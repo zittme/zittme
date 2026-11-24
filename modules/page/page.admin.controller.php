@@ -25,6 +25,20 @@ class PageAdminController extends Page
 		$args->mid = $args->page_name;	//because if mid is empty in context, set start page mid
 		$args->path = isset($args->path) ? strval($args->path) : '';
 		$args->mpath = isset($args->mpath) ? strval($args->mpath) : '';
+		unset($args->page_name);
+
+		// Check existing module
+		if ($mode === 'update')
+		{
+			$module_info = ModuleModel::getModuleInfoByModuleSrl($args->module_srl);
+			if (!$module_info || $module_info->module !== 'page')
+			{
+				throw new Rhymix\Framework\Exceptions\InvalidRequest;
+			}
+			$args->module = $module_info->module;
+			$args->module_srl = $module_info->module_srl;
+			$args->page_type = $module_info->page_type;
+		}
 
 		// Check paths for outside page
 		if ($args->page_type === 'OUTSIDE' && $args->path !== '')
@@ -55,7 +69,6 @@ class PageAdminController extends Page
 		{
 			$args->opage_proc_php = 'Y';
 		}
-		unset($args->page_name);
 
 		$args->use_mobile = Mobile::sanitizeViewMode($args->use_mobile ?? '');
 		$args->browser_title = trim(utf8_normalize_spaces($args->browser_title));
@@ -69,10 +82,7 @@ class PageAdminController extends Page
 			$module_info = ModuleModel::getModuleInfoByModuleSrl($args->module_srl);
 			foreach ($args as $key => $val)
 			{
-				if (!in_array($key, ['module', 'module_srl', 'page_type']))
-				{
-					$module_info->{$key} = $val;
-				}
+				$module_info->{$key} = $val;
 			}
 			$args = $module_info;
 		}
@@ -120,7 +130,7 @@ class PageAdminController extends Page
 		}
 
 		// Clear cache for outside page
-		if ($args->page_type === 'OUTSIDE' && !empty($args->module_srl))
+		if ($args->page_type === 'OUTSIDE' && $mode === 'update')
 		{
 			$cache_files = glob(RX_BASEDIR . sprintf('files/cache/opage/%d.*.php', $args->module_srl));
 			foreach ($cache_files as $cache_file)
@@ -142,12 +152,6 @@ class PageAdminController extends Page
 	 */
 	function procPageAdminUpdate()
 	{
-		$module_info = ModuleModel::getModuleInfoByModuleSrl(Context::get('module_srl'));
-		if (!$module_info || $module_info->module !== 'page')
-		{
-			throw new Zittme\Framework\Exceptions\InvalidRequest;
-		}
-
 		return $this->procPageAdminInsert('update');
 	}
 
